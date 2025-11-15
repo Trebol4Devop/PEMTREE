@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PEMTREE</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <img src="./images/logo_trebol.jpg" alt="Trebol4Asociados" width="50">
+            <h1>PEMTREE</h1>
+            <ul>
+                <li><a href="#inicio">Inicio</a></li>
+                <li><a href="#rutas">Rutas</a></li>
+                <li><a href="#acerca">Acerca de</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="inicio">
+            <h2>¡Bienvenido a PEMTREE!</h2>
+            <p>Donde podras ver las rutas que puedes tomar al cursar PENSUM CLAR 2022.</p>
+        </section>
+
+        <section id="rutas">
+            <div class="container">
+                <div class="sidebar">
+                    <h2>Controles</h2>
+                    <div class="controls">
+                        <button id="resetView">Limpiar Selección</button>
+                        <button id="toggleObligatory">Mostrar/Ocultar Optativos</button>
+                        <button id="layoutVertical">Layout Vertical</button>
+                        <button id="layoutHorizontal">Layout Horizontal</button>
+                        <div class="zoom-controls">
+                            <button id="zoomIn">+</button>
+                            <button id="zoomOut">-</button>
+                            <button id="zoomReset">100%</button>
+                        </div>
+                    </div>
+                    <div class="node-details">
+                        <p><strong>Selecciona un curso para ver detalles</strong></p>
+                    </div>
+                </div>
+                <div class="main-content">
+                    <h2>Visualización del Grafo</h2>
+                    <div id="graph"></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="acerca">
+            <h2>Acerca de este Proyecto</h2>
+            <p>Proyecto desarrollado con el objetivo de facilitar la visualización y planificación de las rutas académicas para estudiantes de la carrera de ingenieria en ciencias y sistemas del PENSUM CLAR 2022 para la Facultad de ingenieria de la Universidad de San Carlos de Guatemala de San Carlos de Guatemala.</p>
+            <div>
+                <h3>Colaboradores implicados</h3>
+                <p>José Emanuel Monzón Lémus - 202300539</p>
+            </div>
+        </section>
+
+        <section id="contacto">
+            <h1>Contacto</h1>
+            <div class="contact-info">
+            <a href="" title="Enviar correo">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/maildotru.svg" alt="Email" style="width:200px;vertical-align:middle;margin-right:10px;">
+            </a>
+            <a href="https://www.linkedin.com/groups/16028067/" target="_blank" rel="noopener" title="Ver perfil de LinkedIn">
+                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" style="width:200px;vertical-align:middle;">
+            </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 - Trebol4Devop</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

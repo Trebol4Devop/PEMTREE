@@ -1,0 +1,16 @@
+[build]
+  publish = "."
+  command = "echo 'No build step required'"
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[dev]
+  publish = "."
+  port = 8888
+  target = "static"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
