@@ -1,83 +1,133 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PEMTREE</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <header>
-        <nav>
-            <img src="./images/logo_trebol.jpg" alt="Trebol4Asociados" width="50">
-            <h1>PEMTREE</h1>
-            <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#rutas">Rutas</a></li>
-                <li><a href="#acerca">Acerca de</a></li>
-                <li><a href="#contacto">Contacto</a></li>
-            </ul>
-        </nav>
-    </header>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>PEMTREE | Grafo de Estudios Ingeniería Sistemas USAC</title>
+        <meta name="description" content="PEMTREE es una aplicación web interactiva que permite a los estudiantes explorar y visualizar las rutas académicas del PENSUM CLAR 2022, facilitando la planificación de sus estudios.">
+        <meta name="keywords" content="PEMTREE, rutas académicas, PENSUM CLAR 2022, visualizador, planificación de estudios">
+        <meta name="author" content="Trebol4Devop">
+        <meta name="robots" content="index, follow">
+        <link rel="icon" type="image/jpeg" href="./images/logo_trebol.jpg">
+        <link rel="stylesheet" href="styles.css">
+    </head>
+    <body>
+        <header>
+            <nav>
+                <div class="logo-container">
+                    <img src="./images/logo_trebol.jpg" alt="Trebol4Asociados" class="logo">
+                    <h1>PEMTREE</h1>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#inicio">Inicio</a></li>
+                    <li><a href="#rutas">Rutas</a></li>
+                    <li><a href="#acerca">Acerca de</a></li>
+                    <li><a href="#contacto">Contacto</a></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <section id="inicio">
+                <div class="decoracion-inicio">
+                    <div class="contenedor-presentacion">
+                        <h2>¡Bienvenido a PEMTREE!</h2>
+                        <p>Donde podrás ver las rutas que puedes tomar al cursar PENSUM CLAR 2022.</p>
+                    </div>
+                </div>
+            </section>
 
-    <main>
-        <section id="inicio">
-            <h2>¡Bienvenido a PEMTREE!</h2>
-            <p>Donde podras ver las rutas que puedes tomar al cursar PENSUM CLAR 2022.</p>
-        </section>
-
-        <section id="rutas">
-            <div class="container">
-                <div class="sidebar">
-                    <h2>Controles</h2>
-                    <div class="controls">
-                        <button id="resetView">Limpiar Selección</button>
-                        <button id="toggleObligatory">Mostrar/Ocultar Optativos</button>
-                        <button id="layoutVertical">Layout Vertical</button>
-                        <button id="layoutHorizontal">Layout Horizontal</button>
-                        <div class="zoom-controls">
-                            <button id="zoomIn">+</button>
-                            <button id="zoomOut">-</button>
-                            <button id="zoomReset">100%</button>
+            <section id="rutas">
+                <div id="rutas-vista" class="rutas-vista">
+                    <div class="decoracion-vista">
+                        <div class="contenido-vista">
+                            <h3>Mapa Curricular Interactivo</h3>
+                            <p>Explora las pre-rrequisitos y rutas críticas en pantalla completa.</p>
+                            <button id="btnEntrarGrafo" class="boton-vista">Abrir Visualizador</button>
                         </div>
                     </div>
-                    <div class="node-details">
-                        <p><strong>Selecciona un curso para ver detalles</strong></p>
+                </div>
+
+                <div class="contenedor-app" id="contenedorApp" style="display: none;">
+                    <button id="btnSalirGrafo" class="boton-salir" title="Salir de pantalla completa">
+                        Salir
+                    </button>
+
+                    <div class="barraHerramienta">
+                        <div class="barraHerramienta-grupo">
+                            <span class="grupo-etiqueta">Vista</span>
+                            <button id="vistaRecetear">Limpiar</button>
+                            <button id="cursosObligatorios">Optativos</button>
+                        </div>
+
+                        <div class="barraHerramienta-grupo">
+                            <span class="grupo-etiqueta">Análisis</span>
+                            <button id="btnRutaCritica" class="boton-Ruta">Ruta Crítica</button>
+                            <button id="btnVistaSemestre">Por Semestres</button>
+                        </div>
+
+                        <div class="barraHerramienta-grupo">
+                            <span class="grupo-etiqueta">Diseño</span>
+                            <button id="disposicionVertical">Vertical</button>
+                            <button id="disposicionHorizontal">Horizontal</button>
+                        </div>
+                        
+                        <div class="barraHerramienta-grupo zoom-group">
+                            <button id="zoomOut">-</button>
+                            <span id="zoomLevel">100%</span>
+                            <button id="zoomIn">+</button>
+                            <button id="zoomReset">R</button>
+                        </div>
+                        </div>
+
+                    <div class="contenedor-grafica">
+                        <div id="infoCard" class="floating-card hidden">
+                            <button class="close-card" onclick="cerrarInfo()">×</button>
+                            <div class="node-details-content">
+                                <p class="seleccionarCurso">Selecciona un curso</p>
+                            </div>
+                        </div>
+
+                        <div id="grafica"></div>
+                        
+                        <div class="marcaAgua">
+                            <span>by Trebol4Devop</span>
+                            <img src="./images/logo_trebol.jpg" alt="Logo Pequeño">
+                        </div>
                     </div>
                 </div>
-                <div class="main-content">
-                    <h2>Visualización del Grafo</h2>
-                    <div id="graph"></div>
+            </section>
+
+            <section id="acerca">
+                <div class="contenedor-acercade">
+                    <h1>Acerca del Proyecto</h1>
+                    <p>Proyecto desarrollado con el objetivo de facilitar la visualización y planificación de las rutas académicas para estudiantes de la carrera de ingeniería en ciencias y sistemas del PENSUM CLAR 2022.</p>
+                    <div class="colaboradores">
+                        <h2>Colaboradores</h2>
+                        <p>José Emanuel Monzón Lémus - 202300539</p>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <section id="acerca">
-            <h2>Acerca de este Proyecto</h2>
-            <p>Proyecto desarrollado con el objetivo de facilitar la visualización y planificación de las rutas académicas para estudiantes de la carrera de ingenieria en ciencias y sistemas del PENSUM CLAR 2022 para la Facultad de ingenieria de la Universidad de San Carlos de Guatemala de San Carlos de Guatemala.</p>
-            <div>
-                <h3>Colaboradores implicados</h3>
-                <p>José Emanuel Monzón Lémus - 202300539</p>
-            </div>
-        </section>
+            <section id="contacto">
+                <h2>Contacto</h2>
+                <div class="contenedor-contacto">
+                    <a href="mailto:tuemail@ejemplo.com" class="iconos-contacto">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon">
+                            <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/>
+                        </svg>
+                    </a>
 
-        <section id="contacto">
-            <h1>Contacto</h1>
-            <div class="contact-info">
-            <a href="" title="Enviar correo">
-                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/maildotru.svg" alt="Email" style="width:200px;vertical-align:middle;margin-right:10px;">
-            </a>
-            <a href="https://www.linkedin.com/groups/16028067/" target="_blank" rel="noopener" title="Ver perfil de LinkedIn">
-                <img src="https://cdn.jsdelivr.net/npm/simple-icons@v9/icons/linkedin.svg" alt="LinkedIn" style="width:200px;vertical-align:middle;">
-            </a>
-            </div>
-        </section>
-    </main>
-
-    <footer>
-        <p>&copy; 2025 - Trebol4Devop</p>
-    </footer>
-
-    <script src="script.js"></script>
-</body>
+                    <a href="https://www.linkedin.com/groups/16028067/" target="_blank" rel="noopener" class="iconos-contacto">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon">
+                            <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+                        </svg>
+                    </a>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p>&copy; 2025 - Trebol4Devop</p>
+        </footer>
+        <script src="script.js"></script>
+    </body>
 </html>

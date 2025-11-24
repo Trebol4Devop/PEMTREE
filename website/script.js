@@ -11,7 +11,10 @@ class NodoCurso {
         this.y = 0;
         this.selected = false;
         this.nivel = 0;
+        this.semestreMasTemprano = 1;
+        this.esCritico = false;
         this.highlighted = false;
+        this.enRutaCritica = false;
     }
 }
 
@@ -96,11 +99,16 @@ const cursos = [
 let selectedNode = null;
 let showOptional = true;
 let currentLayout = 'horizontal';
-let nodeWidth = 140;
-let nodeHeight = 90;
-let horizontalGap = 320;
-let verticalGap = 20;
+let viewMode = 'topological'; 
+let showCriticalPath = false;
+
+const nodeWidth = 140;
+const nodeHeight = 90;
 let scale = 1.0;
+
+let isDragging = false;
+let startX, startY;
+let translateX = 0, translateY = 0;
 
 const cursoMap = new Map();
 cursos.forEach(curso => cursoMap.set(curso.id, curso));
@@ -116,7 +124,60 @@ function calcularPosrequisitos() {
     });
 }
 
+function calcularSemestreMasTemprano() {
+    let changed = true;
+    
+    cursos.forEach(c => c.semestreMasTemprano = 1);
+
+    while(changed) {
+        changed = false;
+        cursos.forEach(curso => {
+            let maxPrereqSemestre = 0;
+            curso.prerequisitos.forEach(pid => {
+                const p = cursoMap.get(pid);
+                if(p) maxPrereqSemestre = Math.max(maxPrereqSemestre, p.semestreMasTemprano);
+            });
+            
+            const nuevoSemestre = curso.prerequisitos.length > 0 ? maxPrereqSemestre + 1 : 1;
+            
+            if(nuevoSemestre > curso.semestreMasTemprano) {
+                curso.semestreMasTemprano = nuevoSemestre;
+                changed = true;
+            }
+        });
+    }
+}
+
+function calcularRutaCritica() {
+    calcularSemestreMasTemprano();
+    
+    const maxSemestre = Math.max(...cursos.map(c => c.semestreMasTemprano));
+    
+    cursos.forEach(c => c.enRutaCritica = false);
+    
+    let nodosCandidatos = cursos.filter(c => c.semestreMasTemprano === maxSemestre);
+    
+    const visitados = new Set();
+    const cola = [...nodosCandidatos];
+    
+    while(cola.length > 0) {
+        const actual = cola.shift();
+        if(visitados.has(actual.id)) continue;
+        visitados.add(actual.id);
+        
+        actual.enRutaCritica = true;
+        
+        actual.prerequisitos.forEach(pid => {
+            const prereq = cursoMap.get(pid);
+            if(prereq && prereq.semestreMasTemprano === actual.semestreMasTemprano - 1) {
+                cola.push(prereq);
+            }
+        });
+    }
+}
+
 calcularPosrequisitos();
+calcularRutaCritica();
 
 function calcularNivelesTopologicos() {
     const indegree = new Map();
@@ -161,6 +222,20 @@ function calcularNivelesTopologicos() {
     return niveles;
 }
 
+function calcularNivelesPorSemestre() {
+    const niveles = new Map();
+    const cursosVisibles = cursos.filter(curso => showOptional || curso.obligatorio);
+    
+    cursosVisibles.forEach(curso => {
+        const sem = curso.semestreMasTemprano;
+        if(!niveles.has(sem)) niveles.set(sem, []);
+        niveles.get(sem).push(curso.id);
+        curso.nivel = sem; 
+    });
+    
+    return niveles;
+}
+
 function ordenarNodosEnNivel(nivel) {
     return nivel.sort((a, b) => {
         const cursoA = cursoMap.get(a);
@@ -169,46 +244,40 @@ function ordenarNodosEnNivel(nivel) {
     });
 }
 
-function calcularLayoutHorizontal() {
-    const nivelesMap = calcularNivelesTopologicos();
-    const niveles = Array.from(nivelesMap.entries())
-        .sort(([a], [b]) => a - b)
-        .map(([_, nodos]) => ordenarNodosEnNivel(nodos));
+function calcularLayout() {
+    let nivelesMap;
     
-    const maxNodosEnNivel = Math.max(...niveles.map(nivel => nivel.length));
-    const graphHeight = maxNodosEnNivel * (nodeHeight + verticalGap);
-    
-    niveles.forEach((nivel, levelIndex) => {
-        const nodesInLevel = nivel.length;
-        const levelHeight = nodesInLevel * (nodeHeight + verticalGap);
-        const startY = 50 + (graphHeight - levelHeight) / 2;
-        
-        nivel.forEach((nodeId, nodeIndex) => {
-            const curso = cursoMap.get(nodeId);
-            curso.x = 50 + levelIndex * (nodeWidth + horizontalGap);
-            curso.y = startY + nodeIndex * (nodeHeight + verticalGap);
-        });
-    });
-}
+    if(viewMode === 'semester') {
+        nivelesMap = calcularNivelesPorSemestre();
+    } else {
+        nivelesMap = calcularNivelesTopologicos();
+    }
 
-function calcularLayoutVertical() {
-    const nivelesMap = calcularNivelesTopologicos();
     const niveles = Array.from(nivelesMap.entries())
         .sort(([a], [b]) => a - b)
         .map(([_, nodos]) => ordenarNodosEnNivel(nodos));
     
-    const svg = document.getElementById('svg-graph');
-    const svgRect = svg.getBoundingClientRect();
-    
+    const isVertical = currentLayout === 'vertical';
+    const gapX = isVertical ? 80 : 300; 
+    const gapY = isVertical ? 100 : 20;
+
     niveles.forEach((nivel, levelIndex) => {
         const nodesInLevel = nivel.length;
-        const levelWidth = nodesInLevel * (nodeWidth + 80);
-        const startX = 50 + (svgRect.width - levelWidth) / 2;
         
         nivel.forEach((nodeId, nodeIndex) => {
             const curso = cursoMap.get(nodeId);
-            curso.x = startX + nodeIndex * (nodeWidth + 80);
-            curso.y = 50 + levelIndex * (nodeHeight + verticalGap);
+            
+            if (isVertical) {
+                const levelWidth = nodesInLevel * (nodeWidth + gapX);
+                const startX = 50 + (2000 - levelWidth) / 2; 
+                curso.x = startX + nodeIndex * (nodeWidth + gapX);
+                curso.y = 50 + levelIndex * (nodeHeight + gapY);
+            } else {
+                const levelHeight = nodesInLevel * (nodeHeight + gapY);
+                const startY = 50 + (1500 - levelHeight) / 2;
+                curso.x = 50 + levelIndex * (nodeWidth + gapX);
+                curso.y = startY + nodeIndex * (nodeHeight + gapY);
+            }
         });
     });
 }
@@ -228,12 +297,7 @@ function dividirTextoEnLineas(texto, maxChars) {
     });
     
     if (lineaActual) lineas.push(lineaActual);
-    
-    if (lineas.length > 3) {
-        return [lineas[0], lineas[1], lineas[2].substring(0, maxChars - 3) + '...'];
-    }
-    
-    return lineas;
+    return lineas.slice(0, 3);
 }
 
 function encontrarRutaHastaCurso(cursoObjetivo) {
@@ -257,24 +321,6 @@ function encontrarRutaHastaCurso(cursoObjetivo) {
     return ruta;
 }
 
-function limpiarResaltados() {
-    cursos.forEach(curso => {
-        curso.highlighted = false;
-    });
-}
-
-function resaltarRuta(cursoObjetivo) {
-    limpiarResaltados();
-    const ruta = encontrarRutaHastaCurso(cursoObjetivo);
-    
-    ruta.forEach(cursoId => {
-        const curso = cursoMap.get(cursoId);
-        if (curso) {
-            curso.highlighted = true;
-        }
-    });
-}
-
 function dibujarArista(graphGroup, fromNode, toNode) {
     const svgNS = "http://www.w3.org/2000/svg";
     const path = document.createElementNS(svgNS, "path");
@@ -283,7 +329,8 @@ function dibujarArista(graphGroup, fromNode, toNode) {
 
     const fromHighlighted = fromNode.highlighted || fromNode.selected;
     const toHighlighted = toNode.highlighted || toNode.selected;
-    const aristaEnRuta = fromHighlighted && toHighlighted;
+    const aristaEnRutaActiva = fromHighlighted && toHighlighted;
+    const aristaCritica = showCriticalPath && fromNode.enRutaCritica && toNode.enRutaCritica;
 
     if (currentLayout === 'vertical') {
         fromX = fromNode.x + nodeWidth / 2;
@@ -291,8 +338,8 @@ function dibujarArista(graphGroup, fromNode, toNode) {
         toX = toNode.x + nodeWidth / 2;
         toY = toNode.y;
         
-        const controlY1 = fromY + (toY - fromY) * 0.3;
-        const controlY2 = fromY + (toY - fromY) * 0.7;
+        const controlY1 = fromY + (toY - fromY) * 0.4;
+        const controlY2 = fromY + (toY - fromY) * 0.6;
         d = `M ${fromX} ${fromY} C ${fromX} ${controlY1}, ${toX} ${controlY2}, ${toX} ${toY}`;
     } else {
         fromX = fromNode.x + nodeWidth;
@@ -300,22 +347,26 @@ function dibujarArista(graphGroup, fromNode, toNode) {
         toX = toNode.x;
         toY = toNode.y + nodeHeight / 2;
         
-        const controlX1 = fromX + (toX - fromX) * 0.3;
-        const controlX2 = fromX + (toX - fromX) * 0.7;
+        const controlX1 = fromX + (toX - fromX) * 0.4;
+        const controlX2 = fromX + (toX - fromX) * 0.6;
         d = `M ${fromX} ${fromY} C ${controlX1} ${fromY}, ${controlX2} ${toY}, ${toX} ${toY}`;
     }
     
     path.setAttribute("d", d);
     path.setAttribute("fill", "none");
     
-    if (selectedNode && aristaEnRuta) {
-        path.setAttribute("stroke", "#666");
+    if (selectedNode && aristaEnRutaActiva) {
+        path.setAttribute("stroke", "#2c3e50");
         path.setAttribute("stroke-width", "2");
         path.setAttribute("marker-end", "url(#arrowhead)");
+    } else if (aristaCritica) {
+        path.setAttribute("stroke", "#e74c3c");
+        path.setAttribute("stroke-width", "3");
+        path.setAttribute("stroke-dasharray", "5,5");
     } else {
-        path.setAttribute("stroke", "transparent");
-        path.setAttribute("stroke-width", "0");
-        path.setAttribute("marker-end", "none");
+        path.setAttribute("stroke", "#bdc3c7");
+        path.setAttribute("stroke-width", "1");
+        path.setAttribute("opacity", "0.4");
     }
     
     graphGroup.appendChild(path);
@@ -325,20 +376,26 @@ function dibujarNodo(graphGroup, curso) {
     const svgNS = "http://www.w3.org/2000/svg";
     const group = document.createElementNS(svgNS, "g");
     
-    let fillColor, strokeColor, strokeWidth, textColor, tipoColor;
+    let fillColor, strokeColor, strokeWidth;
     
-    if (curso.selected || curso.highlighted) {
-        fillColor = curso.obligatorio ? "#ffd8b0" : "#e0f7fa";
-        strokeColor = curso.selected ? "#ff0000" : (curso.obligatorio ? "#cc8a3a" : "#0097a7");
-        strokeWidth = curso.selected ? "4" : "2";
-        textColor = "#333";
-        tipoColor = curso.obligatorio ? "#cc8a3a" : "#0097a7";
+    const isCriticalView = showCriticalPath && curso.enRutaCritica;
+
+    if (curso.selected) {
+        fillColor = "#fff";
+        strokeColor = "#2c3e50";
+        strokeWidth = "3";
+    } else if (curso.highlighted) {
+        fillColor = "#e8f6f3";
+        strokeColor = "#14ab85";
+        strokeWidth = "2";
+    } else if (isCriticalView) {
+        fillColor = "#fdedec";
+        strokeColor = "#e74c3c";
+        strokeWidth = "2";
     } else {
-        fillColor = "#f5f5f5";
-        strokeColor = "#cccccc";
+        fillColor = "#fff";
+        strokeColor = curso.obligatorio ? "#e67e22" : "#3498db";
         strokeWidth = "1";
-        textColor = "#999999";
-        tipoColor = "#999999";
     }
     
     const rect = document.createElementNS(svgNS, "rect");
@@ -346,13 +403,17 @@ function dibujarNodo(graphGroup, curso) {
     rect.setAttribute("y", curso.y);
     rect.setAttribute("width", nodeWidth);
     rect.setAttribute("height", nodeHeight);
-    rect.setAttribute("rx", "6");
-    rect.setAttribute("ry", "6");
+    rect.setAttribute("rx", "8");
+    rect.setAttribute("ry", "8");
     rect.setAttribute("fill", fillColor);
     rect.setAttribute("stroke", strokeColor);
     rect.setAttribute("stroke-width", strokeWidth);
-    rect.setAttribute("cursor", "pointer");
+    rect.setAttribute("class", "node-rect");
     
+    if(isCriticalView) {
+        rect.setAttribute("filter", "drop-shadow(0 0 5px rgba(231, 76, 60, 0.4))");
+    }
+
     rect.addEventListener("click", (e) => {
         e.stopPropagation();
         seleccionarNodo(curso, graphGroup);
@@ -363,48 +424,38 @@ function dibujarNodo(graphGroup, curso) {
     const textCodigo = document.createElementNS(svgNS, "text");
     textCodigo.setAttribute("x", curso.x + nodeWidth / 2);
     textCodigo.setAttribute("y", curso.y + 20);
-    textCodigo.setAttribute("font-family", "Arial, sans-serif");
+    textCodigo.setAttribute("font-family", "Segoe UI, Arial");
     textCodigo.setAttribute("font-size", "12");
     textCodigo.setAttribute("text-anchor", "middle");
     textCodigo.setAttribute("font-weight", "bold");
-    textCodigo.setAttribute("fill", textColor);
+    textCodigo.setAttribute("fill", "#555");
     textCodigo.textContent = curso.codigo;
     group.appendChild(textCodigo);
     
-    const nombreLines = dividirTextoEnLineas(curso.nombre, 15);
+    const nombreLines = dividirTextoEnLineas(curso.nombre, 18);
     nombreLines.forEach((line, index) => {
         const textLine = document.createElementNS(svgNS, "text");
         textLine.setAttribute("x", curso.x + nodeWidth / 2);
         textLine.setAttribute("y", curso.y + 40 + (index * 12));
-        textLine.setAttribute("font-family", "Arial, sans-serif");
-        textLine.setAttribute("font-size", "9");
+        textLine.setAttribute("font-family", "Segoe UI, Arial");
+        textLine.setAttribute("font-size", "10");
         textLine.setAttribute("text-anchor", "middle");
-        textLine.setAttribute("fill", textColor);
+        textLine.setAttribute("fill", "#333");
         textLine.textContent = line;
         group.appendChild(textLine);
     });
     
-    const textTipo = document.createElementNS(svgNS, "text");
-    textTipo.setAttribute("x", curso.x + nodeWidth / 2);
-    textTipo.setAttribute("y", curso.y + nodeHeight - 20);
-    textTipo.setAttribute("font-family", "Arial, sans-serif");
-    textTipo.setAttribute("font-size", "8");
-    textTipo.setAttribute("text-anchor", "middle");
-    textTipo.setAttribute("fill", tipoColor);
-    textTipo.setAttribute("font-style", "italic");
-    textTipo.textContent = curso.obligatorio ? "Obligatorio" : "Optativo";
-    group.appendChild(textTipo);
-    
-    const textCreditos = document.createElementNS(svgNS, "text");
-    textCreditos.setAttribute("x", curso.x + nodeWidth / 2);
-    textCreditos.setAttribute("y", curso.y + nodeHeight - 8);
-    textCreditos.setAttribute("font-family", "Arial, sans-serif");
-    textCreditos.setAttribute("font-size", "9");
-    textCreditos.setAttribute("text-anchor", "middle");
-    textCreditos.setAttribute("fill", textColor);
-    textCreditos.textContent = `${curso.creditos} crédito${curso.creditos !== 1 ? 's' : ''}`;
-    group.appendChild(textCreditos);
-    
+    if (showCriticalPath && curso.enRutaCritica) {
+        const warning = document.createElementNS(svgNS, "text");
+        warning.setAttribute("x", curso.x + nodeWidth - 15);
+        warning.setAttribute("y", curso.y + 15);
+        warning.setAttribute("fill", "#e74c3c");
+        warning.setAttribute("font-size", "14");
+        warning.setAttribute("font-weight", "bold");
+        warning.textContent = "!";
+        group.appendChild(warning);
+    }
+
     graphGroup.appendChild(group);
 }
 
@@ -413,11 +464,7 @@ function dibujarGrafo(graphGroup) {
         graphGroup.removeChild(graphGroup.firstChild);
     }
     
-    if (currentLayout === 'vertical') {
-        calcularLayoutVertical();
-    } else {
-        calcularLayoutHorizontal();
-    }
+    calcularLayout();
     
     cursos.forEach(curso => {
         if (!showOptional && !curso.obligatorio) return;
@@ -433,6 +480,9 @@ function dibujarGrafo(graphGroup) {
         if (!showOptional && !curso.obligatorio) return;
         dibujarNodo(graphGroup, curso);
     });
+
+    const svg = document.getElementById('svg-grafica');
+    ajustarTamanioSVG(svg);
 }
 
 function seleccionarNodo(curso, graphGroup) {
@@ -443,45 +493,61 @@ function seleccionarNodo(curso, graphGroup) {
     curso.selected = true;
     selectedNode = curso;
     
-    resaltarRuta(curso);
+    cursos.forEach(c => c.highlighted = false);
+    const ruta = encontrarRutaHastaCurso(curso);
+    ruta.forEach(id => {
+        const c = cursoMap.get(id);
+        if(c) c.highlighted = true;
+    });
+
     actualizarInfoNodo(curso);
-    
     dibujarGrafo(graphGroup);
 }
 
 function actualizarInfoNodo(curso) {
-    const nodeDetails = document.querySelector('.node-details');
+    const infoCard = document.getElementById('infoCard');
+    const content = infoCard.querySelector('.node-details-content');
     
-    const prerequisitosNombres = curso.prerequisitos
-        .map(id => {
-            const prereq = cursoMap.get(id);
-            return prereq ? `${prereq.codigo} - ${prereq.nombre}` : 'N/A';
-        })
-        .join(', ') || 'Ninguno';
+    infoCard.classList.remove('hidden');
+    
+    const getNames = (ids) => ids.map(id => {
+        const c = cursoMap.get(id);
+        return c ? `<span class="badge" title="${c.nombre}">${c.codigo}</span>` : '';
+    }).join(' ') || '<span style="color:#999; font-size:0.8em">Ninguno</span>';
+    
+    content.innerHTML = `
+        <h3>${curso.codigo} - ${curso.nombre}</h3>
+        <div class="detail-row">
+            <span><strong>Créditos:</strong> ${curso.creditos}</span>
+            <span><strong>Semestre:</strong> ${curso.semestreMasTemprano}</span>
+        </div>
+        <div class="detail-row">
+            <strong>Estado:</strong> ${curso.obligatorio ? 'Obligatorio' : 'Optativo'}
+        </div>
         
-    const posrequisitosNombres = curso.posrequisitos
-        .map(id => {
-            const posreq = cursoMap.get(id);
-            return posreq ? `${posreq.codigo} - ${posreq.nombre}` : 'N/A';
-        })
-        .join(', ') || 'Ninguno';
-    
-    const rutaCursos = Array.from(encontrarRutaHastaCurso(curso))
-        .map(id => {
-            const cursoRuta = cursoMap.get(id);
-            return cursoRuta ? `${cursoRuta.codigo} - ${cursoRuta.nombre}` : 'N/A';
-        })
-        .join(' → ');
-    
-    nodeDetails.innerHTML = `
-        <p><strong>Código:</strong> ${curso.codigo}</p>
-        <p><strong>Nombre:</strong> ${curso.nombre}</p>
-        <p><strong>Créditos:</strong> ${curso.creditos}</p>
-        <p><strong>Tipo:</strong> ${curso.obligatorio ? 'Obligatorio' : 'Optativo'}</p>
-        <p><strong>Prerrequisitos:</strong> ${prerequisitosNombres}</p>
-        <p><strong>Posrequisitos:</strong> ${posrequisitosNombres}</p>
-        <p><strong>Ruta completa:</strong> ${rutaCursos}</p>
+        <div style="margin-top:8px;">
+            <strong style="font-size:0.85rem">Prerrequisitos:</strong>
+            <div class="badges">${getNames(curso.prerequisitos)}</div>
+        </div>
+        
+        <div style="margin-top:8px;">
+            <strong style="font-size:0.85rem">Habilita (Posrequisitos):</strong>
+            <div class="badges">${getNames(curso.posrequisitos)}</div>
+        </div>
+        
+        ${curso.enRutaCritica ? '<div class="alert-critical">Curso Crítico (Retrasarlo afecta graduación)</div>' : ''}
     `;
+}
+
+function cerrarInfo() {
+    document.getElementById('infoCard').classList.add('hidden');
+    if (selectedNode) {
+        selectedNode.selected = false;
+        selectedNode = null;
+        cursos.forEach(c => c.highlighted = false);
+        const graphGroup = document.getElementById('grafica-group');
+        if(graphGroup) dibujarGrafo(graphGroup);
+    }
 }
 
 function crearFlecha(svg) {
@@ -496,7 +562,7 @@ function crearFlecha(svg) {
     
     const polygon = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
     polygon.setAttribute("points", "0 0, 10 3.5, 0 7");
-    polygon.setAttribute("fill", "#666");
+    polygon.setAttribute("fill", "#2c3e50");
     
     marker.appendChild(polygon);
     defs.appendChild(marker);
@@ -504,36 +570,56 @@ function crearFlecha(svg) {
 }
 
 function ajustarTamanioSVG(svg) {
-    const nivelesMap = calcularNivelesTopologicos();
-    const numNiveles = nivelesMap.size;
-    const maxNodosEnNivel = Math.max(...Array.from(nivelesMap.values()).map(nivel => nivel.length));
+    let maxX = 0, maxY = 0;
     
-    if (currentLayout === 'horizontal') {
-        const width = 100 + numNiveles * (nodeWidth + horizontalGap);
-        const height = 100 + maxNodosEnNivel * (nodeHeight + verticalGap);
-        svg.setAttribute("width", `${width}px`);
-        svg.setAttribute("height", `${height}px`);
-    } else {
-        const width = 100 + maxNodosEnNivel * (nodeWidth + 80);
-        const height = 100 + numNiveles * (nodeHeight + verticalGap);
-        svg.setAttribute("width", `${width}px`);
-        svg.setAttribute("height", `${height}px`);
-    }
+    cursos.forEach(c => {
+        if(!showOptional && !c.obligatorio) return;
+        maxX = Math.max(maxX, c.x + nodeWidth);
+        maxY = Math.max(maxY, c.y + nodeHeight);
+    });
+
+    svg.setAttribute("width", `${Math.max(maxX + 100, 2000)}px`);
+    svg.setAttribute("height", `${Math.max(maxY + 100, 2000)}px`);
 }
 
-function aplicarZoom() {
-    const graphGroup = document.getElementById('graph-group');
-    if (graphGroup) {
-        graphGroup.setAttribute('transform', `scale(${scale})`);
+function initPanZoom(svg) {
+    const container = document.querySelector('.contenedor-grafica');
+    
+    container.addEventListener('mousedown', (e) => {
+        if(e.target.closest('.floating-card')) return;
+        
+        if(e.target.tagName === 'rect' || e.target.tagName === 'text') return;
+        isDragging = true;
+        startX = e.clientX - translateX;
+        startY = e.clientY - translateY;
+        container.style.cursor = 'grabbing';
+    });
+
+    window.addEventListener('mouseup', () => {
+        isDragging = false;
+        container.style.cursor = 'grab';
+    });
+
+    window.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        translateX = e.clientX - startX;
+        translateY = e.clientY - startY;
+        actualizarTransform();
+    });
+}
+
+function actualizarTransform() {
+    const graphGroup = document.getElementById('grafica-group');
+    if(graphGroup) {
+        graphGroup.setAttribute('transform', `translate(${translateX}, ${translateY}) scale(${scale})`);
     }
+    document.getElementById('zoomLevel').textContent = `${Math.round(scale * 100)}%`;
 }
 
 function inicializarGrafo() {
-    const graphContainer = document.getElementById('graph');
-    
-    if (!graphContainer) {
-        return;
-    }
+    const graphContainer = document.getElementById('grafica');
+    if (!graphContainer) return;
     
     graphContainer.innerHTML = '';
     
@@ -541,74 +627,101 @@ function inicializarGrafo() {
     const svg = document.createElementNS(svgNS, "svg");
     svg.setAttribute("width", "100%");
     svg.setAttribute("height", "100%");
-    svg.setAttribute("id", "svg-graph");
+    svg.setAttribute("id", "svg-grafica");
     graphContainer.appendChild(svg);
     
     const graphGroup = document.createElementNS(svgNS, "g");
-    graphGroup.setAttribute("id", "graph-group");
+    graphGroup.setAttribute("id", "grafica-group");
     svg.appendChild(graphGroup);
     
     crearFlecha(svg);
-    
-    ajustarTamanioSVG(svg);
-    
     dibujarGrafo(graphGroup);
+    initPanZoom(svg);
     
-    configurarControles(graphGroup);
+    setupControls(graphGroup);
 }
 
-function configurarControles(graphGroup) {
-    document.getElementById('resetView').addEventListener('click', () => {
-        if (selectedNode) {
-            selectedNode.selected = false;
-            selectedNode = null;
-        }
-        limpiarResaltados();
-        document.querySelector('.node-details').innerHTML = 
-            '<p><strong>Selecciona un curso para ver detalles</strong></p>';
-        dibujarGrafo(graphGroup);
+function setupControls(graphGroup) {
+    document.getElementById('vistaRecetear').addEventListener('click', () => {
+        cerrarInfo();
     });
 
-    document.getElementById('toggleObligatory').addEventListener('click', () => {
+    document.getElementById('cursosObligatorios').addEventListener('click', (e) => {
         showOptional = !showOptional;
-        if (selectedNode) {
-            limpiarResaltados();
-        }
+        e.target.innerHTML = showOptional ? "Optativos" : "Optativos (Ocultos)";
+        dibujarGrafo(graphGroup);
+    });
+    
+    document.getElementById('btnRutaCritica').addEventListener('click', (e) => {
+        showCriticalPath = !showCriticalPath;
+        e.target.classList.toggle('active');
         dibujarGrafo(graphGroup);
     });
 
-    document.getElementById('layoutVertical').addEventListener('click', () => {
+    document.getElementById('btnVistaSemestre').addEventListener('click', (e) => {
+        viewMode = viewMode === 'topological' ? 'semester' : 'topological';
+        e.target.classList.toggle('active');
+        dibujarGrafo(graphGroup);
+    });
+
+    document.getElementById('disposicionVertical').addEventListener('click', () => {
         currentLayout = 'vertical';
-        if (selectedNode) {
-            limpiarResaltados();
-        }
         dibujarGrafo(graphGroup);
     });
 
-    document.getElementById('layoutHorizontal').addEventListener('click', () => {
+    document.getElementById('disposicionHorizontal').addEventListener('click', () => {
         currentLayout = 'horizontal';
-        if (selectedNode) {
-            limpiarResaltados();
-        }
         dibujarGrafo(graphGroup);
+    });
+
+    // --- LÓGICA DE PANTALLA COMPLETA ---
+    const btnEntrar = document.getElementById('btnEntrarGrafo');
+    const btnSalir = document.getElementById('btnSalirGrafo');
+    const contenedorApp = document.getElementById('contenedorApp');
+    const rutasPreview = document.getElementById('rutas-vista');
+    
+    // Al entrar
+    btnEntrar.addEventListener('click', () => {
+        contenedorApp.style.display = 'flex'; // Primero lo hacemos visible
+        
+        // Pequeño timeout para asegurar que el navegador procese el cambio de display
+        setTimeout(() => {
+            contenedorApp.classList.add('pantalla-completa');
+            document.body.classList.add('no-scroll'); // Bloquea scroll de la pagina
+            
+            // Importante: Recalcular tamaño del SVG ahora que el contenedor es visible y grande
+            const svg = document.getElementById('svg-grafica');
+            if(svg) ajustarTamanioSVG(svg); 
+        }, 10);
+    });
+
+    // Al salir
+    btnSalir.addEventListener('click', () => {
+        contenedorApp.classList.remove('pantalla-completa');
+        document.body.classList.remove('no-scroll');
+        
+        // Esperamos la transición si quisieras poner animaciones, si no, inmediato:
+        setTimeout(() => {
+            contenedorApp.style.display = 'none';
+        }, 200);
     });
 
     document.getElementById('zoomIn').addEventListener('click', () => {
         scale = Math.min(scale * 1.2, 3.0);
-        aplicarZoom();
+        actualizarTransform();
     });
 
     document.getElementById('zoomOut').addEventListener('click', () => {
         scale = Math.max(scale / 1.2, 0.3);
-        aplicarZoom();
+        actualizarTransform();
     });
-
+    
     document.getElementById('zoomReset').addEventListener('click', () => {
         scale = 1.0;
-        aplicarZoom();
+        translateX = 0;
+        translateY = 0;
+        actualizarTransform();
     });
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-    inicializarGrafo();
-});
+document.addEventListener('DOMContentLoaded', inicializarGrafo);
