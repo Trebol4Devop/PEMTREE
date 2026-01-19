@@ -5,7 +5,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>PEMTREE | Grafo de Estudios Ingeniería Sistemas USAC</title>
         <meta name="description" content="PEMTREE es una aplicación web interactiva que permite a los estudiantes explorar y visualizar las rutas académicas del PENSUM CLAR 2022, facilitando la planificación de sus estudios.">
-        <meta name="keywords" content="PEMTREE, rutas académicas, PENSUM CLAR 2022, visualizador, planificación de estudios">
+        <meta name="keywords" content="PEMTREE, rutas académicas, PENSUM CLAR 2022, visualizador, planificación de estudios, ingeniería en ciencias y sistemas, USAC, FIUSAC, pemsum ingeniería, USAC, cursos ingeniería sistemas">
         <meta name="author" content="Trebol4Devop">
         <meta name="robots" content="index, follow">
         <meta name="google-site-verification" content="4Mzl8w7Q8MXOk6LtYL1Cl7KicrmHYPQKYEFnRLoCtDQ" />
@@ -19,7 +19,16 @@
                     <img src="./images/logo_trebol.jpg" alt="Trebol4Asociados" class="logo">
                     <h1>PEMTREE</h1>
                 </div>
-                <ul class="nav-links">
+                
+                <button class="menu-toggle" id="nav-toggle">
+                    <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none">
+                        <line x1="3" y1="12" x2="21" y2="12"></line>
+                        <line x1="3" y1="6" x2="21" y2="6"></line>
+                        <line x1="3" y1="18" x2="21" y2="18"></line>
+                    </svg>
+                </button>
+
+                <ul class="nav-links" id="nav-links">
                     <li><a href="#inicio">Inicio</a></li>
                     <li><a href="#rutas">Rutas</a></li>
                     <li><a href="#acerca">Acerca de</a></li>
@@ -52,8 +61,14 @@
                         Salir
                     </button>
 
-                    <div class="barraHerramienta">
-                        <div class="barraHerramienta-grupo">
+                    <button class="tools-toggle" id="tools-toggle">
+                        <span>⚙️ Tools</span>
+                    </button>
+
+                    <div class="barraHerramienta" id="barraHerramienta">
+                        <button class="close-tools-btn" id="close-tools-btn">×</button>
+
+                        <div class="barraHerramienta-grupo" id="buscador">
                             <span class="grupo-etiqueta">Buscador</span>
                             <input type="text" id="buscadorCurso" placeholder="Buscar código o nombre..." class="input-buscador">
                         </div>
@@ -104,7 +119,7 @@
             <section id="acerca">
                 <div class="contenedor-acercade">
                     <h1>Acerca del Proyecto</h1>
-                    <p>Proyecto desarrollado con el objetivo de facilitar la visualización y planificación de las rutas académicas para estudiantes de la carrera de ingeniería en ciencias y sistemas del PENSUM CLAR 2022.</p>
+                    <p>Proyecto desarrollado por Trebol4Devop grupo de desarrolladores independientes actualmente estudiantes de ingeniería en ciencias y sistemas en la USAC. Este proyecto cuenta con el objetivo de facilitar la visualización y planificación de las rutas académicas para estudiantes de la USAC en la carrera de ingeniería en ciencias y sistemas del PENSUM CLAR 2022.</p>
                     <div class="colaboradores">
                         <h2>Colaboradores</h2>
                         <p>José Emanuel Monzón Lémus - 202300539</p>
@@ -125,7 +140,12 @@
                             <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
                         </svg>
                     </a>
-                </div>
+
+                    <a href="https://github.com/Trebol4Devop" target="_blank" rel="noopener" class="iconos-contacto">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" class="svg-icon">
+                            <path d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.387.6.113.82-.258.82-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.107-.776.418-1.305.762-1.605-2.665-.3-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.135-.303-.54-1.523.105-3.176 0 0 1.008-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.221 0 4.609-2.805 5.625-5.475 5.921.429.369.825 1.096.825 2.213v3.293c0 .319.21.694.825.576C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12"/>
+                        </svg>
+                    </a>
             </section>
         </main>
         <footer>

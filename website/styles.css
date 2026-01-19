@@ -1,3 +1,5 @@
+/* Estilos generales */
+
 * {
     margin: 0;
     padding: 0;
@@ -15,6 +17,8 @@ body {
     overflow-x: hidden;
 }
 
+/* Estilo barra navegacion */
+
 header {
     background-color: white;
     height: 60px;
@@ -26,6 +30,7 @@ header {
     display: flex;
     align-items: center;
     padding: 2%;
+    justify-content: space-between;
 }
 
 nav {
@@ -50,6 +55,7 @@ nav {
 nav h1 {
     font-size: 20px;
     color: #2c3e50;
+    margin-left: 10px;
 }
 
 .nav-links {
@@ -69,6 +75,8 @@ nav h1 {
 .nav-links a:hover {
     color: #0e7a5f;
 }
+
+/* Estilo sección inicio */
 
 #inicio {
     height: 100vh;
@@ -120,6 +128,8 @@ nav h1 {
         transform: translateY(0);
     }
 }
+
+/* Estilo sección rutas */
 
 section#rutas {
     width: 100%;
@@ -189,6 +199,8 @@ section#rutas {
     background-color: #00332e;
 }
 
+/* Estilo contenedor app */
+
 .contenedor-app {
     display: flex;
     flex-direction: column;
@@ -215,20 +227,21 @@ body.no-scroll {
     overflow: hidden;
 }
 
+/* Estilo barra herramientas */
+
 .barraHerramienta {
     background: white;
     border-bottom: 1px solid var(--border);
     padding: 0.5rem 1rem;
     display: flex;
     flex-wrap: nowrap;
-    gap: 1.5rem;
+    gap: 1.2rem;
     align-items: center;
     justify-content: flex-start;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     z-index: 900;
     user-select: none;
     white-space: nowrap;
-    scrollbar-width: thin;
 }
 
 .contenedor-app.pantalla-completa .barraHerramienta {
@@ -296,7 +309,6 @@ body.no-scroll {
     border-color: #c0392b;
 }
 
-/* Nuevo estilo para el input del buscador */
 .input-buscador {
     padding: 8px 12px;
     border: 1px solid #ccc;
@@ -318,6 +330,10 @@ body.no-scroll {
     width: 30px;
     padding: 0;
     justify-content: center;
+}
+
+.zoom-group {
+    gap: 5px;
 }
 
 #zoomLevel {
@@ -356,6 +372,8 @@ body.no-scroll {
     transform: scale(1.05);
 }
 
+/* Estilo gráfica */
+
 .contenedor-grafica {
     flex-grow: 1;
     position: relative;
@@ -363,6 +381,8 @@ body.no-scroll {
     overflow: hidden;
     cursor: grab;
     user-select: none;
+    touch-action: none; 
+    -webkit-overflow-scrolling: touch;
 }
 
 .contenedor-grafica:active {
@@ -382,6 +402,8 @@ body.no-scroll {
     -ms-user-select: none;
     cursor: default;
 }
+
+/* Estilos flotantes */
 
 .marcaAgua {
     position: absolute;
@@ -506,123 +528,6 @@ body.no-scroll {
     gap: 5px;
 }
 
-#acerca {
-    padding: 2%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #cbcaca;
-    min-height: 100vh;
-}
-
-#acerca h1 {
-    margin-bottom: 2%;
-    color: #00332e;
-}
-
-.contenedor-acercade {
-    max-width: 800px;
-    text-align: center;
-}
-
-.colaboradores {
-    margin-top: 10%;
-    padding: 5%;
-    background: #0e7a5f;
-    border-radius: 8px;
-}
-
-.colaboradores h2 {
-    margin-bottom: 3%;
-    color: #002420;
-}
-
-.colaboradores p {
-    color: white;
-    margin-bottom: 1.5%;
-    font-size: 16px;
-}
-
-#contacto {
-    background-color: white;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 3%;
-    min-height: 50vh;
-}
-
-#contacto h2 {
-    font-size: 40px;
-    color: #002521;
-}
-
-.contenedor-contacto {
-    display: flex;
-    gap: 2rem;
-    margin-top: 3%;
-    flex-wrap: wrap;
-    justify-content: center;
-}
-
-.iconos-contacto {
-    background: white;
-    padding: 2%;
-    border-radius: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    width: 80px;
-    height: 80px;
-    transition: transform 0.7s ease;
-}
-
-.iconos-contacto:hover {
-    transform: scale(1.1);
-}
-
-.iconos-contacto svg {
-    transition: fill 0.7s;
-}
-
-.iconos-contacto:hover svg {
-    fill: #017063;
-}
-
-footer {
-    background: #002521;
-    color: white;
-    text-align: center;
-    padding: 1.5%;
-}
-
-@media (max-width: 768px) {
-    .barraHerramienta {
-        justify-content: flex-start;
-        gap: 1rem;
-    }
-    
-    .floating-card {
-        top: auto;
-        bottom: 0;
-        right: 0;
-        left: 0;
-        width: 100%;
-        border-radius: 15px 15px 0 0;
-        transform: translateY(0);
-    }
-    
-    .floating-card.hidden {
-        transform: translateY(100%);
-    }
-
-    .contenedor-presentacion h2 {
-        font-size: 2.5rem;
-    }
-}
-
 .btn-completar {
     width: 100%;
     padding: 10px;
@@ -703,4 +608,389 @@ footer {
     text-align: center;
     backdrop-filter: blur(4px);
     border: 1px solid rgba(255,255,255,0.1);
+}
+
+/* Estilo sección acerca */
+
+#acerca {
+    padding: 2%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #cbcaca;
+    min-height: 100vh;
+}
+
+#acerca h1 {
+    margin-bottom: 2%;
+    color: #00332e;
+}
+
+.contenedor-acercade {
+    max-width: 800px;
+    text-align: center;
+}
+
+.colaboradores {
+    margin-top: 10%;
+    padding: 5%;
+    background: #0e7a5f;
+    border-radius: 8px;
+}
+
+.colaboradores h2 {
+    margin-bottom: 3%;
+    color: #002420;
+}
+
+.colaboradores p {
+    color: white;
+    margin-bottom: 1.5%;
+    font-size: 16px;
+}
+
+/* Estilo sección contacto */
+
+#contacto {
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3%;
+    min-height: 50vh;
+}
+
+#contacto h2 {
+    font-size: 40px;
+    color: #002521;
+}
+
+.contenedor-contacto {
+    display: flex;
+    gap: 2rem;
+    margin-top: 3%;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.iconos-contacto {
+    background: white;
+    padding: 2%;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    width: 80px;
+    height: 80px;
+    transition: transform 0.7s ease;
+}
+
+.iconos-contacto:hover {
+    transform: scale(1.1);
+}
+
+.iconos-contacto svg {
+    transition: fill 0.7s;
+}
+
+.iconos-contacto:hover svg {
+    fill: #017063;
+}
+
+/* Estilo footer */
+
+footer {
+    background: #002521;
+    color: white;
+    text-align: center;
+    padding: 1.5%;
+}
+
+/* Estilo elementos móviles */
+
+.menu-toggle, .tools-toggle, .close-tools-btn {
+    display: none;
+    opacity: 0;
+}
+
+.menu-toggle {
+    background: none;
+    border: none;
+    color: #2c3e50;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.tools-toggle {
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #fff;
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: #2c3e50;
+    z-index: 2200;
+    align-items: center;
+    gap: 5px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.close-tools-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 2.5rem;
+    color: #333;
+    cursor: pointer;
+    z-index: 3002;
+    line-height: 1;
+    width: 10% !important;
+}
+/* Estilos media movil */
+
+@media (max-width: 768px) {
+
+    /* Estilos barra navegacion movil */
+
+    header {
+        height: auto;
+        padding: 10px;
+    }
+
+    nav {
+        flex-direction: row; 
+        flex-wrap: wrap;
+    }
+
+    /* Estilos menus moviles */
+
+    .menu-toggle {
+        display: block;
+        opacity: 1;
+    }
+
+    .nav-links {
+        width: 100%;
+        display: none;
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px 0;
+        background: white;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
+
+    .contenedor-presentacion h2 {
+        font-size: 32px;
+    }
+    
+    .contenedor-presentacion p {
+        font-size: 16px;
+        padding: 0 10px;
+    }
+    
+    .tools-toggle {
+        display: flex;
+        opacity: 1;
+    }
+
+    .barraHerramienta {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        padding: 15% 10% 70% 10%;
+        background: white;
+        flex-direction: column;
+        z-index: 3000;
+        overflow-y: auto;
+    }
+
+    .barraHerramienta.active {
+        display: flex;
+    }
+
+    .close-tools-btn {
+        display: block;
+        opacity: 1;
+    }
+
+    .barraHerramienta-grupo {
+        width: 100%;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        padding-top: 25px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 5px;
+        flex-shrink: 0;
+        background-color: rgb(255, 255, 255);
+    }
+
+    .barraHerramienta button {
+        width: 48%; 
+        margin-right: 0;
+        margin-bottom: 8px;
+        font-size: 14px;
+        padding: 12px;
+    }
+
+    /* Buscador flotante fuera del menú */
+    #buscador {
+        display: block !important;
+        position: fixed !important;
+        z-index: 2500 !important;
+        background-color: #ffffff;
+        width: calc(100% - 30px);
+        height: fit-content;
+        top: 60px !important;
+        left: 15px;
+        right: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+
+    #buscador .grupo-etiqueta {
+        color: #fff;
+    }
+
+    #buscador .input-buscador {
+        width: 100%;
+        margin-bottom: 0;
+        padding: 10px;
+    }
+
+    /* Contador de créditos flotante fuera del menú */
+    .creditos-counter {
+        display: flex !important;
+        position: fixed !important;
+        top: 14px !important;
+        left: 120px !important;
+        z-index: 2500 !important;
+        width: 150px !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .barraHerramienta-grupo.zoom-group {
+        width: 100%;
+        border-bottom: none;
+        justify-content: center;
+        gap: 15px;
+        margin-top: auto; 
+    }
+    
+    .zoom-group button {
+        width: 45px;
+        height: 45px;
+    }
+
+    #curso-tooltip {
+        display: none !important;
+    }
+
+    .floating-card {
+        width: 100%;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: 50vh; 
+        border-radius: 15px 15px 0 0;
+        transform: translateY(0);
+        max-height: 60vh;
+        overflow-y: auto;
+    }
+    
+    .floating-card.hidden {
+        transform: translateY(100%);
+    }
+
+    .boton-salir {
+        top: 15px;
+        right: 15px;
+        font-size: 0.9rem;
+        padding: 8px 12px;
+    }
+
+    .contenido-vista {
+        width: 90%;
+        padding: 1rem;
+    }
+    
+    .contenido-vista h3 {
+        font-size: 28px;
+    }
+
+    .marcaAgua {
+        bottom : 10vh;
+        right: 5%;
+    }
+}
+
+.modo-flotante {
+    position: fixed !important;
+    z-index: 2500 !important;
+    background: white;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 50px; 
+    padding: 8px 15px !important;
+    border: 1px solid #ddd;
+    display: flex !important;
+    align-items: center;
+    margin: 0 !important;
+    top: auto; bottom: auto; left: auto; right: auto;
+}
+
+#buscador.modo-flotante {
+    top: 80px;
+    left: 15px;
+    width: auto;
+    border-bottom: 1px solid #ddd;
+}
+
+#buscador.modo-flotante .grupo-etiqueta {
+    display: none; 
+}
+
+#buscador.modo-flotante .input-buscador {
+    border: none;
+    outline: none;
+    background: transparent;
+    width: 180px; 
+    padding: 5px;
+}
+
+#creditos-display.modo-flotante {
+    top: 80px;
+    right: 15px;
+    color: #27ae60 !important;
+    border-color: #27ae60 !important;
+    font-weight: bold;
+}
+
+@media (max-width: 480px) {
+    #buscador.modo-flotante {
+        top: 75px;
+        left: 10px;
+    }
+    #creditos-display.modo-flotante {
+        top: 135px; 
+        left: 10px;
+        right: auto;
+    }
 }
