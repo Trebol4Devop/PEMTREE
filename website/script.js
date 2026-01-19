@@ -470,8 +470,10 @@ function actualizarContadorCreditos() {
 }
 
 function mostrarTooltip(e, curso) {
+    // Si la pantalla es menor a 768px (móvil), NO mostrar el tooltip
+    if (window.innerWidth <= 768) return;
+
     if (!tooltipEl) return;
-    
     tooltipEl.textContent = `${curso.codigo} - ${curso.nombre}`;
     tooltipEl.style.display = 'block';
     moverTooltip(e);
@@ -760,9 +762,14 @@ function ajustarTamanioSVG(svg) {
 function initPanZoom(svg) {
     const container = document.querySelector('.contenedor-grafica');
     
+    container.addEventListener('click', (e) => {
+        if(e.target.tagName !== 'rect' && e.target.tagName !== 'text' && !e.target.closest('.floating-card')) {
+            cerrarInfo();
+        }
+    });
+
     container.addEventListener('mousedown', (e) => {
         if(e.target.closest('.floating-card')) return;
-        
         if(e.target.tagName === 'rect' || e.target.tagName === 'text') return;
         
         e.preventDefault();
@@ -821,6 +828,13 @@ function inicializarGrafo() {
     cargarProgreso();
     dibujarGrafo(graphGroup);
     initPanZoom(svg);
+    
+    initTouchEvents();
+    setupMobileMenus();
+}
+
+function normalizarTexto(texto) {
+    return texto.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }
 
 function setupSearch(graphGroup) {
@@ -828,23 +842,41 @@ function setupSearch(graphGroup) {
     if (!searchInput) return;
 
     searchInput.addEventListener('input', (e) => {
-        const term = e.target.value.toLowerCase();
+        const term = normalizarTexto(e.target.value);
         if (term.length < 2) return; 
         
-        const cursoEncontrado = cursos.find(c => 
-            c.codigo.toLowerCase().includes(term) || 
-            c.nombre.toLowerCase().includes(term)
-        );
+        const resultados = cursos.filter(c => {
+            const codigo = normalizarTexto(c.codigo);
+            const nombre = normalizarTexto(c.nombre);
+            return codigo.includes(term) || nombre.includes(term);
+        });
         
-        if (cursoEncontrado) {
-            if (!showOptional && !cursoEncontrado.obligatorio) {
+        if (resultados.length > 0) {
+            resultados.sort((a, b) => {
+                const nombreA = normalizarTexto(a.nombre);
+                const nombreB = normalizarTexto(b.nombre);
+                
+                if (nombreA === term) return -1;
+                if (nombreB === term) return 1;
+                
+                const aStarts = nombreA.startsWith(term);
+                const bStarts = nombreB.startsWith(term);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                
+                return a.nombre.length - b.nombre.length;
+            });
+            
+            const mejorCoincidencia = resultados[0];
+            
+            if (!showOptional && !mejorCoincidencia.obligatorio) {
                 showOptional = true;
                 document.getElementById('cursosObligatorios').innerHTML = "Optativos";
                 dibujarGrafo(graphGroup);
             }
             
-            seleccionarNodo(cursoEncontrado, graphGroup);
-            centrarEnNodo(cursoEncontrado);
+            seleccionarNodo(mejorCoincidencia, graphGroup);
+            centrarEnNodo(mejorCoincidencia);
         }
     });
 }
@@ -869,16 +901,18 @@ function centrarEnNodo(curso) {
 function setupControls(graphGroup) {
     const barra = document.querySelector('.barraHerramienta');
     if(barra) {
-        const divCreditos = document.createElement('div');
-        divCreditos.id = 'creditos-display';
-        divCreditos.className = 'creditos-counter';
-        divCreditos.innerHTML = '<span>Créditos: 0</span>';
-        
-        const zoomGroup = barra.querySelector('.zoom-group');
-        if(zoomGroup) {
-            barra.insertBefore(divCreditos, zoomGroup);
-        } else {
-            barra.appendChild(divCreditos);
+        if(!document.getElementById('creditos-display')) {
+            const divCreditos = document.createElement('div');
+            divCreditos.id = 'creditos-display';
+            divCreditos.className = 'creditos-counter';
+            divCreditos.innerHTML = '<span>Créditos: 0</span>';
+            
+            const zoomGroup = barra.querySelector('.zoom-group');
+            if(zoomGroup) {
+                barra.insertBefore(divCreditos, zoomGroup);
+            } else {
+                barra.appendChild(divCreditos);
+            }
         }
     }
     
@@ -984,6 +1018,120 @@ function setupControls(graphGroup) {
         translateX = 0;
         translateY = 0;
         actualizarTransform();
+    });
+
+    function adaptarInterfazMovil() {
+        const isMobile = window.innerWidth <= 768;
+        const buscador = document.getElementById('buscador');
+        const creditos = document.getElementById('creditos-display');
+        const barra = document.getElementById('barraHerramienta');
+        const app = document.getElementById('contenedorApp');
+        
+        if (!buscador || !creditos || !barra || !app) return;
+
+        if (isMobile) {
+            if (buscador.parentElement !== app) {
+                app.appendChild(buscador);
+                app.appendChild(creditos);
+                
+                buscador.classList.add('modo-flotante');
+                creditos.classList.add('modo-flotante');
+            }
+        } else {
+            if (buscador.parentElement !== barra) {
+                const closeBtn = document.getElementById('close-tools-btn');
+                if (closeBtn && closeBtn.nextSibling) {
+                    barra.insertBefore(buscador, closeBtn.nextSibling);
+                } else {
+                    barra.prepend(buscador);
+                }
+
+                const zoomGroup = barra.querySelector('.zoom-group');
+                if (zoomGroup) {
+                    barra.insertBefore(creditos, zoomGroup);
+                } else {
+                    barra.appendChild(creditos);
+                }
+
+                buscador.classList.remove('modo-flotante');
+                creditos.classList.remove('modo-flotante');
+            }
+        }
+    }
+
+    adaptarInterfazMovil();
+    window.addEventListener('resize', adaptarInterfazMovil);
+}
+
+function initTouchEvents() {
+    const container = document.querySelector('.contenedor-grafica');
+    
+    container.addEventListener('touchstart', (e) => {
+        if(e.target.closest('.floating-card')) return;
+        if(e.target.tagName === 'rect' || e.target.tagName === 'text') return;
+
+        if (e.touches.length === 1) {
+            isDragging = true;
+            startX = e.touches[0].clientX - translateX;
+            startY = e.touches[0].clientY - translateY;
+        }
+    }, { passive: false });
+
+    window.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        
+        if (e.cancelable) e.preventDefault(); 
+        
+        translateX = e.touches[0].clientX - startX;
+        translateY = e.touches[0].clientY - startY;
+        actualizarTransform();
+    }, { passive: false });
+
+    window.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+}
+
+function setupMobileMenus() {
+    const navToggle = document.getElementById('nav-toggle');
+    const navLinks = document.getElementById('nav-links');
+    
+    if(navToggle && navLinks) {
+        navToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    const toolsToggle = document.getElementById('tools-toggle');
+    const barraHerramienta = document.getElementById('barraHerramienta');
+    const closeToolsBtn = document.getElementById('close-tools-btn');
+
+    if(toolsToggle && barraHerramienta) {
+        toolsToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
+            barraHerramienta.classList.add('active');
+        });
+
+        if(closeToolsBtn) {
+            closeToolsBtn.addEventListener('click', () => {
+                barraHerramienta.classList.remove('active');
+            });
+        }
+    }
+
+    document.addEventListener('click', (e) => {
+        if(navLinks && navLinks.classList.contains('active')) {
+            if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
+                navLinks.classList.remove('active');
+            }
+        }
+
+        if(barraHerramienta && barraHerramienta.classList.contains('active')) {
+            if (!barraHerramienta.contains(e.target) && !toolsToggle.contains(e.target)) {
+                barraHerramienta.classList.remove('active');
+            }
+        }
     });
 }
 
