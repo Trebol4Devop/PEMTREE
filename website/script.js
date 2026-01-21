@@ -104,6 +104,7 @@ let showOptional = true;
 let currentLayout = 'horizontal';
 let viewMode = 'topological'; 
 let showCriticalPath = false;
+let temaOscuro = false;
 
 const nodeWidth = 140;
 const nodeHeight = 90;
@@ -366,7 +367,7 @@ function dibujarArista(graphGroup, fromNode, toNode) {
         path.setAttribute("stroke-dasharray", "5,5");
         path.setAttribute("marker-end", "url(#arrowhead-yellow)");
     } else if (selectedNode && aristaEnRutaActiva) {
-        path.setAttribute("stroke", "#2c3e50");
+        path.setAttribute("stroke", temaOscuro ? "#95a5a6" : "#2c3e50");
         path.setAttribute("stroke-width", "2");
         path.setAttribute("marker-end", "url(#arrowhead)");
     } else if (aristaCritica) {
@@ -374,9 +375,9 @@ function dibujarArista(graphGroup, fromNode, toNode) {
         path.setAttribute("stroke-width", "3");
         path.setAttribute("stroke-dasharray", "5,5");
     } else {
-        path.setAttribute("stroke", "#bdc3c7");
+        path.setAttribute("stroke", temaOscuro ? "#7f8c8d" : "#bdc3c7");
         path.setAttribute("stroke-width", "1");
-        path.setAttribute("opacity", "0.4");
+        path.setAttribute("opacity", temaOscuro ? "0.5" : "0.4");
     }
     
     graphGroup.appendChild(path);
@@ -498,6 +499,29 @@ function dibujarNodo(graphGroup, curso) {
     let fillColor, strokeColor, strokeWidth;
     
     const isCriticalView = showCriticalPath && curso.enRutaCritica;
+    
+    // Colores base según el tema
+    const baseColors = temaOscuro ? {
+        fill: '#2c3e50',
+        stroke: '#34495e',
+        text: '#ecf0f1',
+        completado: '#27ae60',
+        disponible: '#3498db',
+        bloqueado: '#7f8c8d',
+        selected: '#e67e22',
+        highlighted: '#f39c12',
+        critical: '#e74c3c'
+    } : {
+        fill: 'white',
+        stroke: '#ccc',
+        text: '#555',
+        completado: '#1e8449',
+        disponible: '#3498db',
+        bloqueado: '#bdc3c7',
+        selected: '#e67e22',
+        highlighted: '#f39c12',
+        critical: '#e74c3c'
+    };
 
     if (curso.selected) {
         fillColor = "#fff";
@@ -559,7 +583,7 @@ function dibujarNodo(graphGroup, curso) {
     textCodigo.setAttribute("font-size", "12");
     textCodigo.setAttribute("text-anchor", "middle");
     textCodigo.setAttribute("font-weight", "bold");
-    textCodigo.setAttribute("fill", curso.completado ? "#1e8449" : "#555");
+    textCodigo.setAttribute("fill", curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : (temaOscuro ? "#ecf0f1" : "#555"));
     textCodigo.textContent = curso.codigo;
     
     if(curso.completado) {
@@ -576,7 +600,7 @@ function dibujarNodo(graphGroup, curso) {
         textLine.setAttribute("font-family", "Segoe UI, Arial");
         textLine.setAttribute("font-size", "10");
         textLine.setAttribute("text-anchor", "middle");
-        textLine.setAttribute("fill", "#333");
+        textLine.setAttribute("fill", temaOscuro ? "#bdc3c7" : "#333");
         textLine.textContent = line;
         group.appendChild(textLine);
     });
@@ -824,6 +848,7 @@ function inicializarGrafo() {
     document.body.appendChild(tooltipEl);
     
     crearFlecha(svg);
+    cargarPreferenciaTema();
     setupControls(graphGroup); 
     cargarProgreso();
     dibujarGrafo(graphGroup);
@@ -898,6 +923,39 @@ function centrarEnNodo(curso) {
     actualizarTransform();
 }
 
+function toggleTemaOscuro() {
+    temaOscuro = !temaOscuro;
+    const container = document.querySelector('.contenedor-grafica');
+    const btnTema = document.getElementById('toggleTema');
+    
+    if (temaOscuro) {
+        container.classList.add('tema-oscuro');
+        btnTema.classList.add('active');
+    } else {
+        container.classList.remove('tema-oscuro');
+        btnTema.classList.remove('active');
+    }
+    
+    const graphGroup = document.getElementById('grafica-group');
+    if (graphGroup) {
+        dibujarGrafo(graphGroup);
+    }
+    
+    // Guardar preferencia
+    localStorage.setItem('pemtree_tema', temaOscuro ? 'oscuro' : 'claro');
+}
+
+function cargarPreferenciaTema() {
+    const temaGuardado = localStorage.getItem('pemtree_tema');
+    if (temaGuardado === 'oscuro') {
+        temaOscuro = true;
+        const container = document.querySelector('.contenedor-grafica');
+        const btnTema = document.getElementById('toggleTema');
+        if (container) container.classList.add('tema-oscuro');
+        if (btnTema) btnTema.classList.add('active');
+    }
+}
+
 function setupControls(graphGroup) {
     const barra = document.querySelector('.barraHerramienta');
     if(barra) {
@@ -917,6 +975,8 @@ function setupControls(graphGroup) {
     }
     
     setupSearch(graphGroup);
+    
+    document.getElementById('toggleTema').addEventListener('click', toggleTemaOscuro);
 
     document.getElementById('vistaRecetear').addEventListener('click', () => {
         if(confirm("¿Estás seguro de que quieres borrar todo el progreso y reiniciar la vista?")) {
