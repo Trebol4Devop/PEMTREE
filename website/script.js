@@ -524,28 +524,28 @@ function dibujarNodo(graphGroup, curso) {
     };
 
     if (curso.selected) {
-        fillColor = "#fff";
-        strokeColor = "#2c3e50";
+        fillColor = temaOscuro ? "#34495e" : "#fff";
+        strokeColor = baseColors.selected;
         strokeWidth = "3";
     } else if (curso.completado) {
-        fillColor = "#d4efdf"; 
-        strokeColor = "#27ae60";
+        fillColor = temaOscuro ? "#1e4d40" : "#d4efdf"; 
+        strokeColor = baseColors.completado;
         strokeWidth = "2";
     } else if (curso.disponible) {
-        fillColor = "#fff";
-        strokeColor = "#f39c12"; 
+        fillColor = temaOscuro ? "#2c3e50" : "#fff";
+        strokeColor = baseColors.highlighted; 
         strokeWidth = "3"; 
     } else if (curso.highlighted) {
-        fillColor = "#e8f6f3";
-        strokeColor = "#14ab85";
+        fillColor = temaOscuro ? "#2c4f4a" : "#e8f6f3";
+        strokeColor = temaOscuro ? "#3fa688" : "#14ab85";
         strokeWidth = "2";
     } else if (isCriticalView) {
-        fillColor = "#fdedec";
-        strokeColor = "#e74c3c";
+        fillColor = temaOscuro ? "#4a2626" : "#fdedec";
+        strokeColor = baseColors.critical;
         strokeWidth = "2";
     } else {
-        fillColor = "#f4f6f7"; 
-        strokeColor = "#bdc3c7"; 
+        fillColor = temaOscuro ? "#34495e" : "#f4f6f7"; 
+        strokeColor = baseColors.bloqueado; 
         strokeWidth = "1";
     }
     
@@ -926,13 +926,19 @@ function centrarEnNodo(curso) {
 function toggleTemaOscuro() {
     temaOscuro = !temaOscuro;
     const container = document.querySelector('.contenedor-grafica');
+    const barraHerramienta = document.querySelector('.barraHerramienta');
+    const floatingCard = document.querySelector('.floating-card');
     const btnTema = document.getElementById('toggleTema');
     
     if (temaOscuro) {
         container.classList.add('tema-oscuro');
+        if (barraHerramienta) barraHerramienta.classList.add('tema-oscuro');
+        if (floatingCard) floatingCard.classList.add('tema-oscuro');
         btnTema.classList.add('active');
     } else {
         container.classList.remove('tema-oscuro');
+        if (barraHerramienta) barraHerramienta.classList.remove('tema-oscuro');
+        if (floatingCard) floatingCard.classList.remove('tema-oscuro');
         btnTema.classList.remove('active');
     }
     
@@ -950,8 +956,12 @@ function cargarPreferenciaTema() {
     if (temaGuardado === 'oscuro') {
         temaOscuro = true;
         const container = document.querySelector('.contenedor-grafica');
+        const barraHerramienta = document.querySelector('.barraHerramienta');
+        const floatingCard = document.querySelector('.floating-card');
         const btnTema = document.getElementById('toggleTema');
         if (container) container.classList.add('tema-oscuro');
+        if (barraHerramienta) barraHerramienta.classList.add('tema-oscuro');
+        if (floatingCard) floatingCard.classList.add('tema-oscuro');
         if (btnTema) btnTema.classList.add('active');
     }
 }
