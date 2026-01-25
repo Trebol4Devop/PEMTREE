@@ -106,8 +106,17 @@ let viewMode = 'topological';
 let showCriticalPath = false;
 let temaOscuro = false;
 
-const nodeWidth = 140;
-const nodeHeight = 90;
+// Tamaños adaptativos según el ancho de pantalla
+const getNodeDimensions = () => {
+    const isMobile = window.innerWidth <= 768;
+    return {
+        width: isMobile ? 100 : 140,
+        height: isMobile ? 65 : 90
+    };
+};
+
+let nodeWidth = 140;
+let nodeHeight = 90;
 let scale = 1.0;
 
 let isDragging = false;
@@ -251,6 +260,11 @@ function ordenarNodosEnNivel(nivel) {
 }
 
 function calcularLayout() {
+    // Actualizar dimensiones según tamaño de pantalla
+    const dims = getNodeDimensions();
+    nodeWidth = dims.width;
+    nodeHeight = dims.height;
+    
     let nivelesMap;
     
     if(viewMode === 'semester') {
@@ -264,8 +278,11 @@ function calcularLayout() {
         .map(([_, nodos]) => ordenarNodosEnNivel(nodos));
     
     const isVertical = currentLayout === 'vertical';
-    const gapX = isVertical ? 80 : 300; 
-    const gapY = isVertical ? 100 : 20;
+    const isMobile = window.innerWidth <= 768;
+    
+    // Gaps adaptativos para móvil
+    const gapX = isMobile ? (isVertical ? 50 : 180) : (isVertical ? 80 : 300);
+    const gapY = isMobile ? (isVertical ? 70 : 15) : (isVertical ? 100 : 20);
 
     niveles.forEach((nivel, levelIndex) => {
         const nodesInLevel = nivel.length;
@@ -576,11 +593,13 @@ function dibujarNodo(graphGroup, curso) {
     
     group.appendChild(rect);
     
+    const isMobile = window.innerWidth <= 768;
+    
     const textCodigo = document.createElementNS(svgNS, "text");
     textCodigo.setAttribute("x", curso.x + nodeWidth / 2);
-    textCodigo.setAttribute("y", curso.y + 20);
+    textCodigo.setAttribute("y", curso.y + (isMobile ? 15 : 20));
     textCodigo.setAttribute("font-family", "Segoe UI, Arial");
-    textCodigo.setAttribute("font-size", "12");
+    textCodigo.setAttribute("font-size", isMobile ? "10" : "12");
     textCodigo.setAttribute("text-anchor", "middle");
     textCodigo.setAttribute("font-weight", "bold");
     textCodigo.setAttribute("fill", curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : (temaOscuro ? "#ecf0f1" : "#555"));
@@ -592,27 +611,28 @@ function dibujarNodo(graphGroup, curso) {
     
     group.appendChild(textCodigo);
     
-    const nombreLines = dividirTextoEnLineas(curso.nombre, 18);
+    const maxCharsPerLine = isMobile ? 12 : 18;
+    const nombreLines = dividirTextoEnLineas(curso.nombre, maxCharsPerLine);
     nombreLines.forEach((line, index) => {
         const textLine = document.createElementNS(svgNS, "text");
         textLine.setAttribute("x", curso.x + nodeWidth / 2);
-        textLine.setAttribute("y", curso.y + 40 + (index * 12));
+        textLine.setAttribute("y", curso.y + (isMobile ? 28 : 35) + (index * (isMobile ? 10 : 14)));
         textLine.setAttribute("font-family", "Segoe UI, Arial");
-        textLine.setAttribute("font-size", "10");
+        textLine.setAttribute("font-size", isMobile ? "7" : "9");
         textLine.setAttribute("text-anchor", "middle");
-        textLine.setAttribute("fill", temaOscuro ? "#bdc3c7" : "#333");
+        textLine.setAttribute("fill", temaOscuro ? "#bdc3c7" : "#555");
         textLine.textContent = line;
         group.appendChild(textLine);
     });
     
     if (showCriticalPath && curso.enRutaCritica && !curso.completado) {
         const warning = document.createElementNS(svgNS, "text");
-        warning.setAttribute("x", curso.x + nodeWidth - 15);
-        warning.setAttribute("y", curso.y + 15);
+        warning.setAttribute("x", curso.x + nodeWidth - (isMobile ? 8 : 10));
+        warning.setAttribute("y", curso.y + (isMobile ? 12 : 15));
         warning.setAttribute("fill", "#e74c3c");
-        warning.setAttribute("font-size", "14");
+        warning.setAttribute("font-size", isMobile ? "12" : "16");
         warning.setAttribute("font-weight", "bold");
-        warning.textContent = "!";
+        warning.textContent = "⚠️";
         group.appendChild(warning);
     }
 
@@ -847,12 +867,24 @@ function inicializarGrafo() {
     tooltipEl.id = 'curso-tooltip';
     document.body.appendChild(tooltipEl);
     
+    // Zoom inicial adaptativo para móviles
+    if (window.innerWidth <= 768) {
+        scale = 0.5;
+        translateX = 50;
+        translateY = 50;
+    }
+    
     crearFlecha(svg);
     cargarPreferenciaTema();
     setupControls(graphGroup); 
     cargarProgreso();
     dibujarGrafo(graphGroup);
     initPanZoom(svg);
+    
+    // Aplicar zoom inicial para móviles
+    if (window.innerWidth <= 768) {
+        actualizarTransform();
+    }
     
     initTouchEvents();
     setupMobileMenus();
@@ -1084,9 +1116,10 @@ function setupControls(graphGroup) {
     });
     
     document.getElementById('zoomReset').addEventListener('click', () => {
-        scale = 1.0;
-        translateX = 0;
-        translateY = 0;
+        const isMobile = window.innerWidth <= 768;
+        scale = isMobile ? 0.5 : 1.0;
+        translateX = isMobile ? 50 : 0;
+        translateY = isMobile ? 50 : 0;
         actualizarTransform();
     });
 
@@ -1206,3 +1239,22 @@ function setupMobileMenus() {
 }
 
 document.addEventListener('DOMContentLoaded', inicializarGrafo);
+
+// Recalcular layout cuando cambia el tamaño de ventana (orientación móvil)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        const graphGroup = document.getElementById('grafica-group');
+        if (graphGroup) {
+            // Ajustar zoom para móviles al cambiar orientación
+            if (window.innerWidth <= 768) {
+                scale = 0.5;
+                translateX = 50;
+                translateY = 50;
+                actualizarTransform();
+            }
+            dibujarGrafo(graphGroup);
+        }
+    }, 300);
+});
