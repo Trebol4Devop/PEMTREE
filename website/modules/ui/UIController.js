@@ -132,53 +132,64 @@ export class UIController {
         const barraHerramienta = document.getElementById('barraHerramienta');
         const closeToolsBtn = document.getElementById('close-tools-btn');
 
+        // Crear overlay para toolbar si no existe
+        let toolbarOverlay = document.querySelector('.toolbar-overlay');
+        if (!toolbarOverlay && toolsToggle && barraHerramienta) {
+            toolbarOverlay = document.createElement('div');
+            toolbarOverlay.className = 'toolbar-overlay';
+            document.body.appendChild(toolbarOverlay);
+        }
+
         if(toolsToggle && barraHerramienta) {
+            // Abrir toolbar
             toolsToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 barraHerramienta.classList.add('active');
                 toolsToggle.style.display = 'none';
+                if (toolbarOverlay) {
+                    toolbarOverlay.classList.add('active');
+                }
             });
 
+            // Cerrar con botón X
             if(closeToolsBtn) {
-                closeToolsBtn.addEventListener('click', () => {
+                closeToolsBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
                     barraHerramienta.classList.remove('active');
                     if (toolsToggle) {
                         toolsToggle.style.display = 'flex';
                     }
+                    if (toolbarOverlay) {
+                        toolbarOverlay.classList.remove('active');
+                    }
                 });
             }
-        }
 
-        // Cerrar toolbar al hacer clic en botones (en móvil)
-        if (window.innerWidth <= 768 && barraHerramienta) {
-            const buttons = barraHerramienta.querySelectorAll('button:not(#close-tools-btn)');
-            buttons.forEach(button => {
-                button.addEventListener('click', () => {
-                    setTimeout(() => {
-                        barraHerramienta.classList.remove('active');
-                        if (toolsToggle) {
-                            toolsToggle.style.display = 'flex';
-                        }
-                    }, 300);
+            // Cerrar SOLO al hacer clic en overlay (área oscura)
+            if (toolbarOverlay) {
+                toolbarOverlay.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    barraHerramienta.classList.remove('active');
+                    if (toolsToggle) {
+                        toolsToggle.style.display = 'flex';
+                    }
+                    toolbarOverlay.classList.remove('active');
                 });
+            }
+
+            // Prevenir que clics dentro del sidebar lo cierren
+            barraHerramienta.addEventListener('click', (e) => {
+                e.stopPropagation();
             });
         }
 
+        // Solo cerrar navLinks cuando se hace clic fuera
         document.addEventListener('click', (e) => {
             if(navLinks && navLinks.classList.contains('active')) {
                 if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
                     navLinks.classList.remove('active');
                     if (navOverlay) {
                         navOverlay.classList.remove('active');
-                    }
-                }
-            }
-
-            if(barraHerramienta && barraHerramienta.classList.contains('active')) {
-                if (!barraHerramienta.contains(e.target) && !toolsToggle.contains(e.target)) {
-                    barraHerramienta.classList.remove('active');
-                    if (toolsToggle) {
-                        toolsToggle.style.display = 'flex';
                     }
                 }
             }
