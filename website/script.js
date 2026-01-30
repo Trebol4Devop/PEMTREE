@@ -104,9 +104,19 @@ let showOptional = true;
 let currentLayout = 'horizontal';
 let viewMode = 'topological'; 
 let showCriticalPath = false;
+let temaOscuro = false;
 
-const nodeWidth = 140;
-const nodeHeight = 90;
+// Tamaños adaptativos según el ancho de pantalla
+const getNodeDimensions = () => {
+    const isMobile = window.innerWidth <= 768;
+    return {
+        width: isMobile ? 100 : 140,
+        height: isMobile ? 65 : 90
+    };
+};
+
+let nodeWidth = 140;
+let nodeHeight = 90;
 let scale = 1.0;
 
 let isDragging = false;
@@ -250,6 +260,11 @@ function ordenarNodosEnNivel(nivel) {
 }
 
 function calcularLayout() {
+    // Actualizar dimensiones según tamaño de pantalla
+    const dims = getNodeDimensions();
+    nodeWidth = dims.width;
+    nodeHeight = dims.height;
+    
     let nivelesMap;
     
     if(viewMode === 'semester') {
@@ -263,8 +278,11 @@ function calcularLayout() {
         .map(([_, nodos]) => ordenarNodosEnNivel(nodos));
     
     const isVertical = currentLayout === 'vertical';
-    const gapX = isVertical ? 80 : 300; 
-    const gapY = isVertical ? 100 : 20;
+    const isMobile = window.innerWidth <= 768;
+    
+    // Gaps adaptativos para móvil
+    const gapX = isMobile ? (isVertical ? 50 : 180) : (isVertical ? 80 : 300);
+    const gapY = isMobile ? (isVertical ? 70 : 15) : (isVertical ? 100 : 20);
 
     niveles.forEach((nivel, levelIndex) => {
         const nodesInLevel = nivel.length;
@@ -366,7 +384,7 @@ function dibujarArista(graphGroup, fromNode, toNode) {
         path.setAttribute("stroke-dasharray", "5,5");
         path.setAttribute("marker-end", "url(#arrowhead-yellow)");
     } else if (selectedNode && aristaEnRutaActiva) {
-        path.setAttribute("stroke", "#2c3e50");
+        path.setAttribute("stroke", temaOscuro ? "#95a5a6" : "#2c3e50");
         path.setAttribute("stroke-width", "2");
         path.setAttribute("marker-end", "url(#arrowhead)");
     } else if (aristaCritica) {
@@ -374,9 +392,9 @@ function dibujarArista(graphGroup, fromNode, toNode) {
         path.setAttribute("stroke-width", "3");
         path.setAttribute("stroke-dasharray", "5,5");
     } else {
-        path.setAttribute("stroke", "#bdc3c7");
+        path.setAttribute("stroke", temaOscuro ? "#7f8c8d" : "#bdc3c7");
         path.setAttribute("stroke-width", "1");
-        path.setAttribute("opacity", "0.4");
+        path.setAttribute("opacity", temaOscuro ? "0.5" : "0.4");
     }
     
     graphGroup.appendChild(path);
@@ -498,30 +516,53 @@ function dibujarNodo(graphGroup, curso) {
     let fillColor, strokeColor, strokeWidth;
     
     const isCriticalView = showCriticalPath && curso.enRutaCritica;
+    
+    // Colores base según el tema
+    const baseColors = temaOscuro ? {
+        fill: '#2c3e50',
+        stroke: '#34495e',
+        text: '#ecf0f1',
+        completado: '#27ae60',
+        disponible: '#3498db',
+        bloqueado: '#7f8c8d',
+        selected: '#e67e22',
+        highlighted: '#f39c12',
+        critical: '#e74c3c'
+    } : {
+        fill: 'white',
+        stroke: '#ccc',
+        text: '#555',
+        completado: '#1e8449',
+        disponible: '#3498db',
+        bloqueado: '#bdc3c7',
+        selected: '#e67e22',
+        highlighted: '#f39c12',
+        critical: '#e74c3c'
+    };
 
     if (curso.selected) {
-        fillColor = "#fff";
-        strokeColor = "#2c3e50";
+        fillColor = temaOscuro ? "#34495e" : "#fff";
+        strokeColor = baseColors.selected;
         strokeWidth = "3";
     } else if (curso.completado) {
-        fillColor = "#d4efdf"; 
-        strokeColor = "#27ae60";
+        fillColor = temaOscuro ? "#1e4d40" : "#d4efdf"; 
+        strokeColor = baseColors.completado;
         strokeWidth = "2";
     } else if (curso.disponible) {
-        fillColor = "#fff";
-        strokeColor = "#f39c12"; 
+        fillColor = temaOscuro ? "#2c3e50" : "#fff";
+        strokeColor = baseColors.highlighted; 
         strokeWidth = "3"; 
     } else if (curso.highlighted) {
-        fillColor = "#e8f6f3";
-        strokeColor = "#14ab85";
+        fillColor = temaOscuro ? "#2c4f4a" : "#e8f6f3";
+        strokeColor = temaOscuro ? "#3fa688" : "#14ab85";
         strokeWidth = "2";
     } else if (isCriticalView) {
-        fillColor = "#fdedec";
-        strokeColor = "#e74c3c";
+        fillColor = temaOscuro ? "#4a2626" : "#fdedec";
+        strokeColor = baseColors.critical;
         strokeWidth = "2";
     } else {
-        fillColor = "#f4f6f7"; 
-        strokeColor = "#bdc3c7"; 
+        fillColor = temaOscuro ? "#34495e" : "#f4f6f7"; 
+        strokeColor = baseColors.bloqueado; 
         strokeWidth = "1";
     }
     
@@ -552,14 +593,16 @@ function dibujarNodo(graphGroup, curso) {
     
     group.appendChild(rect);
     
+    const isMobile = window.innerWidth <= 768;
+    
     const textCodigo = document.createElementNS(svgNS, "text");
     textCodigo.setAttribute("x", curso.x + nodeWidth / 2);
-    textCodigo.setAttribute("y", curso.y + 20);
+    textCodigo.setAttribute("y", curso.y + (isMobile ? 15 : 20));
     textCodigo.setAttribute("font-family", "Segoe UI, Arial");
-    textCodigo.setAttribute("font-size", "12");
+    textCodigo.setAttribute("font-size", isMobile ? "10" : "12");
     textCodigo.setAttribute("text-anchor", "middle");
     textCodigo.setAttribute("font-weight", "bold");
-    textCodigo.setAttribute("fill", curso.completado ? "#1e8449" : "#555");
+    textCodigo.setAttribute("fill", curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : (temaOscuro ? "#ecf0f1" : "#555"));
     textCodigo.textContent = curso.codigo;
     
     if(curso.completado) {
@@ -568,27 +611,28 @@ function dibujarNodo(graphGroup, curso) {
     
     group.appendChild(textCodigo);
     
-    const nombreLines = dividirTextoEnLineas(curso.nombre, 18);
+    const maxCharsPerLine = isMobile ? 12 : 18;
+    const nombreLines = dividirTextoEnLineas(curso.nombre, maxCharsPerLine);
     nombreLines.forEach((line, index) => {
         const textLine = document.createElementNS(svgNS, "text");
         textLine.setAttribute("x", curso.x + nodeWidth / 2);
-        textLine.setAttribute("y", curso.y + 40 + (index * 12));
+        textLine.setAttribute("y", curso.y + (isMobile ? 28 : 35) + (index * (isMobile ? 10 : 14)));
         textLine.setAttribute("font-family", "Segoe UI, Arial");
-        textLine.setAttribute("font-size", "10");
+        textLine.setAttribute("font-size", isMobile ? "7" : "9");
         textLine.setAttribute("text-anchor", "middle");
-        textLine.setAttribute("fill", "#333");
+        textLine.setAttribute("fill", temaOscuro ? "#bdc3c7" : "#555");
         textLine.textContent = line;
         group.appendChild(textLine);
     });
     
     if (showCriticalPath && curso.enRutaCritica && !curso.completado) {
         const warning = document.createElementNS(svgNS, "text");
-        warning.setAttribute("x", curso.x + nodeWidth - 15);
-        warning.setAttribute("y", curso.y + 15);
+        warning.setAttribute("x", curso.x + nodeWidth - (isMobile ? 8 : 10));
+        warning.setAttribute("y", curso.y + (isMobile ? 12 : 15));
         warning.setAttribute("fill", "#e74c3c");
-        warning.setAttribute("font-size", "14");
+        warning.setAttribute("font-size", isMobile ? "12" : "16");
         warning.setAttribute("font-weight", "bold");
-        warning.textContent = "!";
+        warning.textContent = "⚠️";
         group.appendChild(warning);
     }
 
@@ -823,11 +867,24 @@ function inicializarGrafo() {
     tooltipEl.id = 'curso-tooltip';
     document.body.appendChild(tooltipEl);
     
+    // Zoom inicial adaptativo para móviles
+    if (window.innerWidth <= 768) {
+        scale = 0.5;
+        translateX = 50;
+        translateY = 50;
+    }
+    
     crearFlecha(svg);
+    cargarPreferenciaTema();
     setupControls(graphGroup); 
     cargarProgreso();
     dibujarGrafo(graphGroup);
     initPanZoom(svg);
+    
+    // Aplicar zoom inicial para móviles
+    if (window.innerWidth <= 768) {
+        actualizarTransform();
+    }
     
     initTouchEvents();
     setupMobileMenus();
@@ -898,6 +955,49 @@ function centrarEnNodo(curso) {
     actualizarTransform();
 }
 
+function toggleTemaOscuro() {
+    temaOscuro = !temaOscuro;
+    const container = document.querySelector('.contenedor-grafica');
+    const barraHerramienta = document.querySelector('.barraHerramienta');
+    const floatingCard = document.querySelector('.floating-card');
+    const btnTema = document.getElementById('toggleTema');
+    
+    if (temaOscuro) {
+        container.classList.add('tema-oscuro');
+        if (barraHerramienta) barraHerramienta.classList.add('tema-oscuro');
+        if (floatingCard) floatingCard.classList.add('tema-oscuro');
+        btnTema.classList.add('active');
+    } else {
+        container.classList.remove('tema-oscuro');
+        if (barraHerramienta) barraHerramienta.classList.remove('tema-oscuro');
+        if (floatingCard) floatingCard.classList.remove('tema-oscuro');
+        btnTema.classList.remove('active');
+    }
+    
+    const graphGroup = document.getElementById('grafica-group');
+    if (graphGroup) {
+        dibujarGrafo(graphGroup);
+    }
+    
+    // Guardar preferencia
+    localStorage.setItem('pemtree_tema', temaOscuro ? 'oscuro' : 'claro');
+}
+
+function cargarPreferenciaTema() {
+    const temaGuardado = localStorage.getItem('pemtree_tema');
+    if (temaGuardado === 'oscuro') {
+        temaOscuro = true;
+        const container = document.querySelector('.contenedor-grafica');
+        const barraHerramienta = document.querySelector('.barraHerramienta');
+        const floatingCard = document.querySelector('.floating-card');
+        const btnTema = document.getElementById('toggleTema');
+        if (container) container.classList.add('tema-oscuro');
+        if (barraHerramienta) barraHerramienta.classList.add('tema-oscuro');
+        if (floatingCard) floatingCard.classList.add('tema-oscuro');
+        if (btnTema) btnTema.classList.add('active');
+    }
+}
+
 function setupControls(graphGroup) {
     const barra = document.querySelector('.barraHerramienta');
     if(barra) {
@@ -917,6 +1017,8 @@ function setupControls(graphGroup) {
     }
     
     setupSearch(graphGroup);
+    
+    document.getElementById('toggleTema').addEventListener('click', toggleTemaOscuro);
 
     document.getElementById('vistaRecetear').addEventListener('click', () => {
         if(confirm("¿Estás seguro de que quieres borrar todo el progreso y reiniciar la vista?")) {
@@ -1014,9 +1116,10 @@ function setupControls(graphGroup) {
     });
     
     document.getElementById('zoomReset').addEventListener('click', () => {
-        scale = 1.0;
-        translateX = 0;
-        translateY = 0;
+        const isMobile = window.innerWidth <= 768;
+        scale = isMobile ? 0.5 : 1.0;
+        translateX = isMobile ? 50 : 0;
+        translateY = isMobile ? 50 : 0;
         actualizarTransform();
     });
 
@@ -1136,3 +1239,22 @@ function setupMobileMenus() {
 }
 
 document.addEventListener('DOMContentLoaded', inicializarGrafo);
+
+// Recalcular layout cuando cambia el tamaño de ventana (orientación móvil)
+let resizeTimeout;
+window.addEventListener('resize', () => {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(() => {
+        const graphGroup = document.getElementById('grafica-group');
+        if (graphGroup) {
+            // Ajustar zoom para móviles al cambiar orientación
+            if (window.innerWidth <= 768) {
+                scale = 0.5;
+                translateX = 50;
+                translateY = 50;
+                actualizarTransform();
+            }
+            dibujarGrafo(graphGroup);
+        }
+    }, 300);
+});
