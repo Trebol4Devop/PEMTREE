@@ -1,404 +1,186 @@
-/* styles/mobile.css - Estilos optimizados para dispositivos móviles */
-
-/* ===== OPTIMIZACIÓN MÓVIL ===== */
-
 @media (max-width: 768px) {
-    
-    /* Mejorar táctil */
-    * {
-        -webkit-tap-highlight-color: transparent;
-        touch-action: pan-y pinch-zoom;
-    }
 
-    /* Header responsive */
+    /* Estilos barra navegacion movil */
+
     header {
-        padding: 0.7rem 1rem;
+        height: auto;
+        padding: 10px;
     }
 
-    nav h1 {
-        font-size: 1.1rem;
+    nav {
+        flex-direction: row; 
+        flex-wrap: wrap;
     }
 
-    .logo {
-        width: 30px;
-        height: 30px;
-    }
+    /* Estilos menus moviles */
 
-    /* Botón de menú hamburguesa */
     .menu-toggle {
         display: block;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 6px;
-        z-index: 1001;
+        opacity: 1;
     }
 
-    /* Menú de navegación móvil */
     .nav-links {
-        position: fixed;
-        top: 55px;
-        right: -100%;
-        width: 220px;
-        height: calc(100vh - 55px);
-        background: white;
+        width: 100%;
+        display: none;
         flex-direction: column;
-        padding: 1.5rem 0;
-        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
-        z-index: 1000;
-        align-items: flex-start;
+        gap: 15px;
+        padding: 15px 0;
+        background: white;
+        margin-top: 10px;
+        border-top: 1px solid #eee;
     }
 
     .nav-links.active {
-        right: 0;
-    }
-
-    .nav-links li {
-        width: 100%;
-        padding: 0;
-        margin: 0;
-    }
-
-    .nav-links a {
-        display: block;
-        padding: 0.9rem 1.5rem;
-        width: 100%;
-        font-size: 0.9rem;
-    }
-
-    /* Overlay para cerrar menú */
-    .nav-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 999;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-
-    .nav-overlay.active {
-        opacity: 1;
-        pointer-events: all;
-    }
-
-    /* Sección de inicio móvil */
-    #inicio {
-        padding: 1.5rem 1rem;
-    }
-
-    .contenedor-presentacion {
-        padding: 1.5rem 1rem;
+        display: flex;
     }
 
     .contenedor-presentacion h2 {
-        font-size: 1.6rem;
+        font-size: 32px;
     }
-
+    
     .contenedor-presentacion p {
-        font-size: 0.95rem;
+        font-size: 16px;
+        padding: 0 10px;
     }
-
-    .boton-vista {
-        padding: 0.7rem 1.3rem;
-        font-size: 0.9rem;
-    }
-
-    /* ===== TOOLBAR MÓVIL - SIDEBAR ===== */
-
-    /* Botón para abrir toolbar (Tools) - OCULTO por defecto */
+    
     .tools-toggle {
-        display: flex !important;
-        position: fixed;
-        top: 15px;
-        left: 15px;
-        background: #4a6fa5;
-        color: white;
-        border: none;
-        padding: 8px 16px;
-        border-radius: 25px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        z-index: 2200;
-        align-items: center;
-        gap: 6px;
-        font-weight: bold;
-        font-size: 0.9rem;
-        cursor: pointer;
-        opacity: 1 !important;
+        display: flex;
+        opacity: 1;
     }
 
-    .tools-toggle span {
-        font-size: 1rem;
-    }
-
-    /* Barra de herramientas - Sidebar lateral IZQUIERDO */
     .barraHerramienta {
         display: none;
         position: fixed;
         top: 0;
-        left: -100%;
-        width: 240px;
-        max-width: 70vw;
+        left: 0;
+        width: 100vw;
         height: 100vh;
-        background: rgba(44, 62, 80, 0.97);
-        z-index: 2500;
+        padding: 15% 10% 70% 10%;
+        background: white;
         flex-direction: column;
-        gap: 0;
-        padding: 70px 10px 20px 10px;
+        z-index: 3000;
         overflow-y: auto;
-        box-shadow: 3px 0 15px rgba(0, 0, 0, 0.5);
-        transition: left 0.3s ease;
     }
 
     .barraHerramienta.active {
         display: flex;
-        left: 0;
     }
 
-    .barraHerramienta.tema-oscuro {
-        background: rgba(26, 35, 45, 0.98);
-    }
-
-    /* Botón cerrar toolbar */
     .close-tools-btn {
-        display: block !important;
-        opacity: 1 !important;
-        position: absolute;
-        top: 15px;
-        right: 15px;
-        background: rgba(255, 255, 255, 0.1);
-        border: none;
-        font-size: 1.8rem;
-        color: #ecf0f1;
-        cursor: pointer;
-        z-index: 2600;
-        line-height: 1;
-        width: 36px !important;
-        height: 36px;
-        border-radius: 50%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-    }
-
-    /* Overlay para cerrar toolbar */
-    .toolbar-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        z-index: 2400;
-        opacity: 0;
-        pointer-events: none;
-        transition: opacity 0.3s ease;
-    }
-
-    .toolbar-overlay.active {
+        display: block;
         opacity: 1;
-        pointer-events: all;
     }
-
-    /* ===== GRUPOS DE HERRAMIENTAS ===== */
 
     .barraHerramienta-grupo {
         width: 100%;
-        display: flex;
-        flex-direction: column;
-        gap: 8px;
-        padding: 12px 8px;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-        position: relative;
-        background: transparent;
-    }
-
-    /* Ocultar buscador del sidebar - estará flotante */
-    .barraHerramienta-grupo#buscador {
-        display: none !important;
-    }
-
-    /* Etiquetas de grupo */
-    .grupo-etiqueta {
-        font-size: 0.65rem;
-        color: #95a5a6;
-        margin-bottom: 6px;
-        left: 8px;
-        top: 6px;
-        position: relative;
-        text-transform: uppercase;
-        letter-spacing: 0.5px;
-    }
-
-    /* Botones del toolbar */
-    .barraHerramienta button {
-        width: 100%;
-        margin-right: 0;
-        margin-bottom: 0;
-        font-size: 0.8rem;
-        padding: 10px;
-        height: auto;
-        min-height: 38px;
-        background: rgba(52, 73, 94, 0.6);
-        border: 1px solid rgba(127, 140, 141, 0.3);
-        color: #ecf0f1;
-        border-radius: 6px;
-    }
-
-    .barraHerramienta button:hover,
-    .barraHerramienta button:active {
-        background: rgba(52, 73, 94, 0.8);
-        border-color: rgba(127, 140, 141, 0.5);
-    }
-
-    .barraHerramienta button.active {
-        background: rgba(231, 76, 60, 0.8);
-        border-color: rgba(192, 57, 43, 0.8);
-    }
-
-    .barraHerramienta button.boton-Ruta {
-        background: rgba(0, 36, 32, 0.8);
-        border-color: rgba(1, 102, 90, 0.5);
-    }
-
-    /* ===== CONTROLES DE ZOOM ===== */
-
-    .barraHerramienta-grupo.zoom-group {
-        flex-direction: row;
+        flex-wrap: wrap;
         justify-content: space-between;
-        border-bottom: none;
-        gap: 8px;
-        padding-top: 20px;
-        margin-top: auto;
-    }
-
-    .zoom-group button {
-        width: 40px;
-        min-width: 40px;
-        height: 40px;
-        padding: 0;
+        padding-top: 25px;
+        border-bottom: 1px solid #eee;
+        margin-bottom: 5px;
         flex-shrink: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1rem;
-        font-weight: bold;
+        background-color: rgb(255, 255, 255);
     }
 
-    #zoomLevel {
-        width: auto;
-        flex: 1;
-        text-align: center;
-        font-size: 0.85rem;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: none;
-        border: none;
-        color: #ecf0f1;
-        font-weight: bold;
-        padding: 0;
-        margin: 0;
+    .barraHerramienta button {
+        width: 48%; 
+        margin-right: 0;
+        margin-bottom: 8px;
+        font-size: 14px;
+        padding: 12px;
     }
 
-    /* ===== BUSCADOR FLOTANTE (fuera del sidebar) ===== */
-
+    /* Buscador flotante fuera del menú */
     #buscador {
         display: block !important;
         position: fixed !important;
-        top: 70px !important;
-        left: 15px !important;
-        right: 15px !important;
-        width: auto !important;
-        z-index: 2100 !important;
-        background: rgba(255, 255, 255, 0.95) !important;
-        padding: 10px !important;
-        border-radius: 12px !important;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2) !important;
-        border: 1px solid rgba(0, 0, 0, 0.1) !important;
-        backdrop-filter: blur(10px);
-    }
-
-    .tema-oscuro #buscador {
-        background: rgba(44, 62, 80, 0.95) !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
+        z-index: 2500 !important;
+        background-color: #ffffff;
+        width: calc(100% - 30px);
+        height: fit-content;
+        top: 60px !important;
+        left: 15px;
+        right: 15px;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        border-bottom: none;
+        margin-bottom: 0;
     }
 
     #buscador .grupo-etiqueta {
-        display: none;
+        color: #fff;
     }
 
     #buscador .input-buscador {
-        width: 100% !important;
-        padding: 10px 12px !important;
-        font-size: 0.9rem !important;
-        background: rgba(255, 255, 255, 0.9) !important;
-        border: 1px solid rgba(0, 0, 0, 0.1) !important;
-        color: #2c3e50 !important;
-        border-radius: 8px !important;
-        margin: 0 !important;
+        width: 100%;
+        margin-bottom: 0;
+        padding: 10px;
     }
 
-    .tema-oscuro #buscador .input-buscador {
-        background: rgba(52, 73, 94, 0.8) !important;
-        border-color: rgba(255, 255, 255, 0.1) !important;
-        color: #ecf0f1 !important;
-    }
-
-    /* ===== CONTADOR DE CRÉDITOS FLOTANTE (fuera del sidebar) ===== */
-
-    .creditos-counter,
-    #creditos-display {
+    /* Contador de créditos flotante fuera del menú */
+    .creditos-counter {
         display: flex !important;
         position: fixed !important;
-        top: 15px !important;
-        left: 50% !important;
-        transform: translateX(-50%) !important;
-        width: auto !important;
-        padding: 8px 16px !important;
-        align-items: center !important;
-        justify-content: center !important;
-        gap: 8px !important;
-        background: rgba(39, 174, 96, 0.15) !important;
-        border: 2px solid rgba(39, 174, 96, 0.6) !important;
-        border-radius: 20px !important;
-        color: #27ae60 !important;
-        font-size: 0.85rem !important;
-        font-weight: 700 !important;
-        z-index: 2100 !important;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.15) !important;
-        backdrop-filter: blur(10px);
-        margin: 0 !important;
+        top: 14px !important;
+        left: 120px !important;
+        z-index: 2500 !important;
+        width: 150px !important;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     }
 
-    .tema-oscuro .creditos-counter,
-    .tema-oscuro #creditos-display {
-        background: rgba(46, 204, 113, 0.2) !important;
-        border-color: rgba(46, 204, 113, 0.6) !important;
-        color: #2ecc71 !important;
-    }
-
-    .creditos-counter svg,
-    #creditos-display svg {
-        width: 16px !important;
-        height: 16px !important;
-    }
-
-    /* ===== GRÁFICO MÓVIL ===== */
-
-    .contenedor-grafica {
+    .barraHerramienta-grupo.zoom-group {
         width: 100%;
-        height: calc(100vh - 55px);
+        border-bottom: none;
+        justify-content: center;
+        gap: 15px;
+        margin-top: auto; 
+    }
+    
+    .zoom-group button {
+        width: 45px;
+        height: 45px;
+    }
+
+    #curso-tooltip {
+        display: none !important;
+    }
+
+    .floating-card {
+        width: 100%;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto;
+        border-radius: 15px 15px 0 0;
+        transform: translateY(0);
+        max-height: 50vh;
+        overflow-y: auto;
+        padding: 15px;
+    }
+    
+    .floating-card.hidden {
+        transform: translateY(100%);
+    }
+
+    .floating-card .node-details-content h3 {
+        font-size: 0.9rem;
+    }
+
+    .floating-card .badge {
+        font-size: 0.65rem;
+        padding: 2px 4px;
+    }
+
+    .floating-card .btn-completar {
+        padding: 8px;
+        font-size: 0.85rem;
+    }
+
+    /* Optimizaciones para el grafo SVG en móvil */
+    .contenedor-grafica {
         touch-action: pan-x pan-y;
         -webkit-overflow-scrolling: touch;
-    }
-
-    .contenedor-app.pantalla-completa .contenedor-grafica {
-        height: 100vh;
     }
 
     #grafica {
@@ -410,289 +192,67 @@
         min-height: 100%;
     }
 
-    /* ===== BOTONES FLOTANTES ===== */
-
     .boton-salir {
-        bottom: 20px;
-        left: 20px;
+        bottom: 15px;
+        left: 15px;
         font-size: 0.9rem;
-        padding: 10px 18px;
-        border-radius: 25px;
+        padding: 8px 12px;
     }
 
     .boton-tema-flotante {
         top: 15px;
         right: 15px;
-        width: 48px;
-        height: 48px;
+        width: 45px;
+        height: 45px;
         padding: 10px;
     }
 
-    /* ===== MARCA DE AGUA - ESQUINA INFERIOR DERECHA ===== */
-
-    .marcaAgua {
-        position: absolute !important;
-        bottom: 20px !important;
-        right: 20px !important;
-        left: auto !important;
-        top: auto !important;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        background: rgba(255, 255, 255, 0.95);
-        padding: 6px 12px;
-        border-radius: 20px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-        z-index: 100;
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #555;
-        pointer-events: none;
-    }
-
-    .tema-oscuro .marcaAgua {
-        background: rgba(44, 62, 80, 0.95);
-        color: #ecf0f1;
-    }
-
-    .marcaAgua span {
-        white-space: nowrap;
-    }
-
-    .marcaAgua img {
-        width: 18px;
-        height: 18px;
-        border-radius: 50%;
-        object-fit: cover;
-    }
-
-    /* ===== TARJETA FLOTANTE (INFO CARD) ===== */
-
-    .floating-card {
-        position: fixed;
-        top: auto;
-        right: 0;
-        bottom: 0;
-        left: 0;
-        width: 100%;
-        max-width: 100%;
-        max-height: 65vh;
-        border-radius: 20px 20px 0 0;
-        z-index: 2300;
-        transform: translateY(0);
-        transition: transform 0.3s ease;
-        overflow-y: auto;
-    }
-
-    .floating-card.hidden {
-        transform: translateY(100%);
-    }
-
-    .node-details-content {
-        padding: 20px;
-        padding-top: 40px;
-    }
-
-    .node-details-content h3 {
-        font-size: 0.95rem;
-    }
-
-    .detail-row {
-        flex-wrap: wrap;
-        font-size: 0.85rem;
-    }
-
-    .btn-completar {
-        padding: 12px;
-        font-size: 0.9rem;
-        min-height: 44px;
-    }
-
-    .badge {
-        font-size: 0.75rem;
-        padding: 4px 8px;
-    }
-
-    /* ===== TOOLTIP MÓVIL ===== */
-
-    #curso-tooltip {
-        display: none !important;
-    }
-
-    /* ===== SECCIÓN ACERCA DE ===== */
-
-    #acerca {
-        padding: 1.5rem 1rem;
-    }
-
-    .contenedor-acercade {
-        padding: 1.2rem;
-    }
-
-    .contenedor-acercade h2 {
-        font-size: 1.4rem;
-    }
-
-    .contenedor-acercade p {
-        font-size: 0.9rem;
-    }
-
-    /* ===== CONTACTO ===== */
-
-    #contacto {
-        padding: 1.5rem 1rem;
-    }
-
-    .contenedor-contacto {
-        flex-direction: column;
-        gap: 0.8rem;
+    .contenido-vista {
+        width: 90%;
         padding: 1rem;
     }
+    
+    .contenido-vista h3 {
+        font-size: 28px;
+    }
 
-    /* ===== FOOTER ===== */
-
-    footer {
-        padding: 0.8rem;
-        font-size: 0.85rem;
+    .marcaAgua {
+        bottom : 10vh;
+        right: 5%;
     }
 }
-
-/* ===== TABLETS (768px - 1024px) ===== */
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .barraHerramienta {
-        padding: 0.8rem 1rem;
-    }
-
-    .barraHerramienta button {
-        padding: 0.6rem 1rem;
-        font-size: 0.9rem;
-    }
-
-    .contenedor-grafica {
-        height: calc(100vh - 70px);
-    }
-}
-
-/* ===== PANTALLAS PEQUEÑAS (< 480px) ===== */
 
 @media (max-width: 480px) {
-    nav h1 {
-        font-size: 1rem;
+    #buscador.modo-flotante {
+        top: 75px;
+        left: 10px;
     }
-
-    .logo {
-        width: 26px;
-        height: 26px;
-    }
-
-    .contenedor-presentacion h2 {
-        font-size: 1.4rem;
-    }
-
-    .barraHerramienta {
-        width: 220px;
-        padding: 60px 8px 15px 8px;
-    }
-
-    .barraHerramienta button {
-        font-size: 0.75rem;
-        padding: 9px;
-        min-height: 36px;
-    }
-
-    .barraHerramienta-grupo {
-        padding: 10px 6px;
-        gap: 6px;
-    }
-
-    .grupo-etiqueta {
-        font-size: 0.6rem;
-    }
-
-    .node-details-content h3 {
-        font-size: 0.9rem;
-    }
-
-    .tools-toggle {
-        top: 12px;
-        left: 12px;
-        padding: 7px 14px;
-        font-size: 0.85rem;
+    #creditos-display.modo-flotante {
+        top: 135px; 
+        left: 10px;
+        right: auto;
     }
 
     .boton-salir {
-        bottom: 15px;
-        left: 15px;
-        padding: 8px 16px;
-        font-size: 0.85rem;
+        font-size: 0.8rem;
+        padding: 6px 10px;
+        bottom: 9vh;
     }
 
     .boton-tema-flotante {
-        top: 12px;
-        right: 12px;
-        width: 44px;
-        height: 44px;
-    }
-
-    .marcaAgua {
-        bottom: 15px !important;
-        right: 15px !important;
-        padding: 5px 10px;
-        font-size: 0.65rem;
-    }
-
-    .marcaAgua img {
-        width: 16px;
-        height: 16px;
-    }
-
-    #buscador {
-        top: 65px !important;
-        left: 12px !important;
-        right: 12px !important;
-    }
-
-    .creditos-counter,
-    #creditos-display {
-        top: 12px !important;
-        font-size: 0.8rem !important;
-        padding: 7px 14px !important;
-    }
-}
-
-/* ===== LANDSCAPE MODE MÓVIL ===== */
-
-@media (max-width: 768px) and (orientation: landscape) {
-    .floating-card {
-        max-height: 75vh;
-    }
-
-    .barraHerramienta {
-        padding: 50px 8px 15px 8px;
-    }
-
-    .barraHerramienta-grupo {
-        padding: 8px 6px;
-        gap: 6px;
-    }
-
-    .barraHerramienta button {
+        width: 40px;
+        height: 40px;
         padding: 8px;
-        font-size: 0.75rem;
-        min-height: 34px;
     }
 
-    .grupo-etiqueta {
-        font-size: 0.6rem;
-    }
-
-    #buscador {
-        top: 15px !important;
+    .floating-card {
+        max-height: 45vh;
+        padding: 12px;
     }
 
     .marcaAgua {
-        bottom: 15px !important;
-        right: 15px !important;
+        bottom: 9vh;
+        right: 1%;
+        transform: scale(0.85);
     }
 }
