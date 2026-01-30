@@ -1,6 +1,7 @@
 // modules/graph/NodeRenderer.js - Renderizado de nodos
 
 import { TextUtils } from '../utils/TextUtils.js';
+import { cursoMap } from '../data/cursos.js';
 
 export class NodeRenderer {
     constructor() {
@@ -9,9 +10,14 @@ export class NodeRenderer {
 
     getNodeDimensions() {
         const isMobile = window.innerWidth <= 768;
+        // Base original (antes reducción): 48 (móvil) / 90 (desktop)
+        const baseHeight = isMobile ? 48 : 90;
+        // Reducir tamaño en 40% -> mantener 60% del original
+        const height = Math.round(baseHeight * 0.6);
+        const width = height * 6; // formato 6:1
         return {
-            width: isMobile ? 100 : 140,
-            height: isMobile ? 65 : 90
+            width: width,
+            height: height
         };
     }
 
@@ -19,25 +25,33 @@ export class NodeRenderer {
         const dims = this.getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
-        
+
         const group = document.createElementNS(this.svgNS, "g");
-        
-        // Determinar colores
+        group.setAttribute("class", "node-group");
+
+        // Determinar colores base y por secciones (modulares)
         const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
-        
-        // Dibujar rectángulo
-        const rect = this.crearRectangulo(curso, nodeWidth, nodeHeight, colors);
-        
-        rect.addEventListener("click", (e) => {
+        const sectionColors = this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
+
+        // Dibujar las 5 partes (izq arriba, izq abajo, centro, der arriba, der abajo)
+        const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
+
+        // Click en todo el nodo
+        group.addEventListener("click", (e) => {
             e.stopPropagation();
             if (onClickCallback) onClickCallback(curso);
         });
-        
-        group.appendChild(rect);
-        
-        // Dibujar texto
-        this.dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro);
-        
+
+        // Si está seleccionado, aplicar clase para aumentar tamaño y sombra
+        if (curso.selected) {
+            group.classList.add('node-selected');
+        }
+
+        group.appendChild(parts);
+
+        // Dibujar textos en sus secciones
+        this.dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro, sectionColors);
+
         // Dibujar advertencia si es curso crítico
         if (showCriticalPath && curso.enRutaCritica && !curso.completado) {
             this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
@@ -106,64 +120,202 @@ export class NodeRenderer {
         };
     }
 
-    crearRectangulo(curso, nodeWidth, nodeHeight, colors) {
-        const rect = document.createElementNS(this.svgNS, "rect");
-        rect.setAttribute("x", curso.x);
-        rect.setAttribute("y", curso.y);
-        rect.setAttribute("width", nodeWidth);
-        rect.setAttribute("height", nodeHeight);
-        rect.setAttribute("rx", "8");
-        rect.setAttribute("ry", "8");
-        rect.setAttribute("fill", colors.fillColor);
-        rect.setAttribute("stroke", colors.strokeColor);
-        rect.setAttribute("stroke-width", colors.strokeWidth);
-        rect.setAttribute("class", "node-rect");
-        
-        if (colors.strokeDasharray) {
-            rect.setAttribute("stroke-dasharray", colors.strokeDasharray);
-        }
+    // Devuelve colores para cada sección (permitir overrides en curso.colors)
+    // Nuevos colores base solicitados: #fc904f, #ffd0b6
+    getSectionColors(curso, colors, temaOscuro) {
+        const defaultText = temaOscuro ? '#ecf0f1' : '#333';
+        const s = curso.colors || {};
+        // Eliminamos bordes: siempre stroke = 'none' y strokeWidth = '0'
+        const stroke = 'none';
+        const strokeWidth = '0';
 
-        return rect;
+        return {
+            leftTop: {
+                fill: (s.leftTop && s.leftTop.fill) || '#fc904f',
+                stroke, strokeWidth
+            },
+            leftBottom: {
+                fill: (s.leftBottom && s.leftBottom.fill) || '#ffd0b6',
+                stroke, strokeWidth
+            },
+            center: {
+                fill: (s.center && s.center.fill) || '#ffd0b6',
+                stroke, strokeWidth
+            },
+            right: {
+                fill: (s.right && s.right.fill) || (s.rightTop && s.rightTop.fill) || (s.rightBottom && s.rightBottom.fill) || '#fc904f',
+                stroke, strokeWidth
+            },
+            text: (s.text && s.text.fill) || defaultText
+        };
     }
 
-    dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro) {
+    // Crea el conjunto de rects que conforman el nodo
+    // Los laterales están formados por dos rectángulos (cada uno height/2) y ancho = nodeHeight,
+    // de modo que al unirse verticalmente forman un cuadrado de lado = nodeHeight
+    crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors) {
+        const g = document.createElementNS(this.svgNS, "g");
+        const leftX = curso.x;
+        const lateralWidth = nodeHeight; // ancho de cada lateral para formar un cuadrado
+        const halfH = nodeHeight / 2; // altura de cada rectángulo lateral
+        const centerX = leftX + lateralWidth;
+        const centerW = nodeWidth - (2 * lateralWidth);
+        const rightX = centerX + centerW;
+
+        // Izquierda - arriba
+        const leftTop = document.createElementNS(this.svgNS, "rect");
+        leftTop.setAttribute("x", leftX);
+        leftTop.setAttribute("y", curso.y);
+        leftTop.setAttribute("width", lateralWidth);
+        leftTop.setAttribute("height", halfH);
+        leftTop.setAttribute("fill", sectionColors.leftTop.fill);
+        leftTop.setAttribute("stroke", "none");
+        leftTop.setAttribute("stroke-width", "0");
+        leftTop.setAttribute("class", "node-section left-top");
+        g.appendChild(leftTop);
+
+        // Izquierda - abajo
+        const leftBottom = document.createElementNS(this.svgNS, "rect");
+        leftBottom.setAttribute("x", leftX);
+        leftBottom.setAttribute("y", curso.y + halfH);
+        leftBottom.setAttribute("width", lateralWidth);
+        leftBottom.setAttribute("height", halfH);
+        leftBottom.setAttribute("fill", sectionColors.leftBottom.fill);
+        leftBottom.setAttribute("stroke", "none");
+        leftBottom.setAttribute("stroke-width", "0");
+        leftBottom.setAttribute("class", "node-section left-bottom");
+        g.appendChild(leftBottom);
+
+        // Centro (con esquinas ligeramente redondeadas)
+        const center = document.createElementNS(this.svgNS, "rect");
+        center.setAttribute("x", centerX);
+        center.setAttribute("y", curso.y);
+        center.setAttribute("width", centerW);
+        center.setAttribute("height", nodeHeight);
+        center.setAttribute("rx", Math.max(2, lateralWidth * 0.08));
+        center.setAttribute("ry", Math.max(2, lateralWidth * 0.08));
+        center.setAttribute("fill", sectionColors.center.fill);
+        center.setAttribute("stroke", "none");
+        center.setAttribute("stroke-width", "0");
+        center.setAttribute("class", "node-section center");
+        g.appendChild(center);
+
+        // Derecha (un solo rectángulo que muestra todos los prerrequisitos)
+        const rightRect = document.createElementNS(this.svgNS, "rect");
+        rightRect.setAttribute("x", rightX);
+        rightRect.setAttribute("y", curso.y);
+        rightRect.setAttribute("width", lateralWidth);
+        rightRect.setAttribute("height", nodeHeight);
+        rightRect.setAttribute("fill", sectionColors.right.fill);
+        rightRect.setAttribute("stroke", "none");
+        rightRect.setAttribute("stroke-width", "0");
+        rightRect.setAttribute("class", "node-section right");
+        g.appendChild(rightRect);
+
+        // Añadir clase para estilos si se desea
+        g.setAttribute("class", "node-composite");
+
+        return g;
+    }
+
+    dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro, sectionColors) {
         const isMobile = window.innerWidth <= 768;
-        
-        // Código del curso
-        const textCodigo = document.createElementNS(this.svgNS, "text");
-        textCodigo.setAttribute("x", curso.x + nodeWidth / 2);
-        textCodigo.setAttribute("y", curso.y + (isMobile ? 15 : 20));
-        textCodigo.setAttribute("font-family", "Segoe UI, Arial");
-        textCodigo.setAttribute("font-size", isMobile ? "10" : "12");
-        textCodigo.setAttribute("text-anchor", "middle");
-        textCodigo.setAttribute("font-weight", "bold");
-        textCodigo.setAttribute("fill", curso.completado ? 
-            (temaOscuro ? "#2ecc71" : "#1e8449") : 
-            (temaOscuro ? "#ecf0f1" : "#555"));
-        textCodigo.textContent = curso.codigo + (curso.completado ? " ✓" : "");
-        group.appendChild(textCodigo);
-        
-        // Nombre del curso (múltiples líneas)
-        const maxCharsPerLine = isMobile ? 12 : 18;
+        const leftX = curso.x;
+        const lateralWidth = nodeHeight; // coincide con crearNodoCompuesto
+        const halfH = nodeHeight / 2;
+        const centerX = leftX + lateralWidth;
+        const centerW = nodeWidth - (2 * lateralWidth);
+        const rightX = centerX + centerW;
+
+        // Texto en izquierda superior: código (centrado dentro del rectángulo ancho = lateralWidth)
+        const codeText = document.createElementNS(this.svgNS, "text");
+        codeText.setAttribute("x", leftX + lateralWidth / 2);
+        codeText.setAttribute("y", curso.y + halfH / 2 + (isMobile ? 3 : 5));
+        codeText.setAttribute("font-family", "Segoe UI, Arial");
+        codeText.setAttribute("font-size", isMobile ? "8" : "10");
+        codeText.setAttribute("text-anchor", "middle");
+        codeText.setAttribute("font-weight", "bold");
+        codeText.setAttribute("fill", curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : sectionColors.text);
+        codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
+        group.appendChild(codeText);
+
+        // Texto en izquierda inferior: créditos
+        const creditsText = document.createElementNS(this.svgNS, "text");
+        creditsText.setAttribute("x", leftX + lateralWidth / 2);
+        creditsText.setAttribute("y", curso.y + halfH + halfH / 2 + (isMobile ? 3 : 5));
+        creditsText.setAttribute("font-family", "Segoe UI, Arial");
+        creditsText.setAttribute("font-size", isMobile ? "7" : "9");
+        creditsText.setAttribute("text-anchor", "middle");
+        creditsText.setAttribute("fill", sectionColors.text);
+        creditsText.textContent = String(curso.creditos);
+        group.appendChild(creditsText);
+
+        // Nombre del curso en centro (centrado verticalmente)
+        const nameFontSize = isMobile ? 8 : 11;
+        const maxCharsPerLine = Math.max(6, Math.floor((centerW - 12) / (isMobile ? 6 : 7)));
         const nombreLines = TextUtils.dividirTextoEnLineas(curso.nombre, maxCharsPerLine);
+
+        const lineHeight = isMobile ? 10 : 12;
+        const totalHeight = nombreLines.length * lineHeight;
+        let startY = curso.y + (nodeHeight / 2) - (totalHeight / 2) + (isMobile ? 4 : 5);
+
         nombreLines.forEach((line, index) => {
-            const textLine = document.createElementNS(this.svgNS, "text");
-            textLine.setAttribute("x", curso.x + nodeWidth / 2);
-            textLine.setAttribute("y", curso.y + (isMobile ? 28 : 35) + (index * (isMobile ? 10 : 14)));
-            textLine.setAttribute("font-family", "Segoe UI, Arial");
-            textLine.setAttribute("font-size", isMobile ? "7" : "9");
-            textLine.setAttribute("text-anchor", "middle");
-            textLine.setAttribute("fill", temaOscuro ? "#bdc3c7" : "#555");
-            textLine.textContent = line;
-            group.appendChild(textLine);
+            const ln = document.createElementNS(this.svgNS, "text");
+            ln.setAttribute("x", centerX + centerW / 2);
+            ln.setAttribute("y", startY + (index * lineHeight));
+            ln.setAttribute("font-family", "Segoe UI, Arial");
+            ln.setAttribute("font-size", String(nameFontSize));
+            ln.setAttribute("text-anchor", "middle");
+            ln.setAttribute("fill", sectionColors.text);
+            ln.textContent = line;
+            group.appendChild(ln);
         });
+
+        // Punto pequeño en esquina superior derecha del centro si es obligatorio
+        if (curso.obligatorio) {
+            const dot = document.createElementNS(this.svgNS, "circle");
+            const dotR = isMobile ? 2 : 3;
+            dot.setAttribute("cx", centerX + centerW - (dotR + 4));
+            dot.setAttribute("cy", curso.y + (dotR + 4));
+            dot.setAttribute("r", dotR);
+            dot.setAttribute("fill", "#e74c3c");
+            group.appendChild(dot);
+        }
+
+        // Prerrequisitos en la columna derecha (lista vertical dentro de un único rectángulo)
+        const prereqIds = curso.prerequisitos || [];
+        const prereqCodes = prereqIds.map(id => {
+            const c = cursoMap.get(id);
+            return c ? c.codigo : '';
+        }).filter(Boolean);
+
+        if (prereqCodes.length > 0) {
+            const lineHeightReq = isMobile ? 9 : 11;
+            // Mostrar todos los prerrequisitos apilados verticalmente (el usuario pidió mostrar todos)
+            const startYReq = curso.y + (nodeHeight / 2) - ((prereqCodes.length - 1) * lineHeightReq / 2) + (isMobile ? 3 : 5);
+            prereqCodes.forEach((code, idx) => {
+                const t = document.createElementNS(this.svgNS, "text");
+                t.setAttribute("x", rightX + lateralWidth / 2);
+                t.setAttribute("y", startYReq + idx * lineHeightReq);
+                t.setAttribute("font-family", "Segoe UI, Arial");
+                t.setAttribute("font-size", isMobile ? "7" : "9");
+                t.setAttribute("text-anchor", "middle");
+                t.setAttribute("fill", sectionColors.text);
+                t.textContent = code;
+                group.appendChild(t);
+            });
+        }
     }
 
     dibujarAdvertencia(group, curso, nodeWidth, nodeHeight) {
         const isMobile = window.innerWidth <= 768;
+        const squareSize = nodeHeight / 2;
+        const centerX = curso.x + squareSize;
+        const centerW = nodeWidth - (2 * squareSize);
+
         const warning = document.createElementNS(this.svgNS, "text");
-        warning.setAttribute("x", curso.x + nodeWidth - (isMobile ? 8 : 10));
-        warning.setAttribute("y", curso.y + (isMobile ? 12 : 15));
+        warning.setAttribute("x", centerX + centerW - (isMobile ? 12 : 16));
+        warning.setAttribute("y", curso.y + (isMobile ? 12 : 16));
         warning.setAttribute("fill", "#e74c3c");
         warning.setAttribute("font-size", isMobile ? "12" : "16");
         warning.setAttribute("font-weight", "bold");

@@ -47,6 +47,8 @@ export class GraphManager {
             this.viewMode
         );
 
+        console.debug(`[GraphManager] Cursos totales: ${this.cursos.length}`);
+
         // Dibujar aristas
         this.cursos.forEach(curso => {
             if (!this.showOptional && !curso.obligatorio) return;
@@ -79,6 +81,10 @@ export class GraphManager {
                 (curso) => this.onNodeClick(curso, graphGroup)
             );
         });
+
+        // Contar nodos dibujados (compatibilidad con distintos renderers)
+        const nodeCount = graphGroup.querySelectorAll('.node-rect, .node-group, .node-composite').length;
+        console.debug(`[GraphManager] Nodos dibujados: ${nodeCount}`);
 
         // Ajustar tamaño SVG
         this.ajustarTamanioSVG();

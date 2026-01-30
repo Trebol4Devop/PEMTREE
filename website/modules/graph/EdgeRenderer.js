@@ -7,10 +7,9 @@ export class EdgeRenderer {
 
     getNodeDimensions() {
         const isMobile = window.innerWidth <= 768;
-        return {
-            width: isMobile ? 100 : 140,
-            height: isMobile ? 65 : 90
-        };
+        const width = isMobile ? 100 : 140;
+        const height = isMobile ? 65 : 90;
+        return { width, height };
     }
 
     dibujarArista(graphGroup, fromNode, toNode, currentLayout, selectedNode, showCriticalPath, temaOscuro) {

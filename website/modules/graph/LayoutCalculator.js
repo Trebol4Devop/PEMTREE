@@ -8,10 +8,10 @@ export class LayoutCalculator {
 
     getNodeDimensions() {
         const isMobile = window.innerWidth <= 768;
-        return {
-            width: isMobile ? 100 : 140,
-            height: isMobile ? 65 : 90
-        };
+        const baseHeight = isMobile ? 48 : 90;
+        const height = Math.round(baseHeight * 0.6); // igual reducción que NodeRenderer
+        const width = height * 6; // formato 6:1
+        return { width, height };
     }
 
     calcularLayout(showOptional, currentLayout, viewMode) {
@@ -35,7 +35,12 @@ export class LayoutCalculator {
         const isMobile = window.innerWidth <= 768;
         
         const gapX = isMobile ? (isVertical ? 50 : 180) : (isVertical ? 80 : 300);
-        const gapY = isMobile ? (isVertical ? 70 : 15) : (isVertical ? 100 : 20);
+        let gapY = isMobile ? (isVertical ? 70 : 15) : (isVertical ? 100 : 20);
+
+        // Si la vista es por semestres, separar más para evitar traslapes
+        if (viewMode === 'semester') {
+            gapY = Math.round(gapY * 3);
+        }
 
         niveles.forEach((nivel, levelIndex) => {
             const nodesInLevel = nivel.length;
