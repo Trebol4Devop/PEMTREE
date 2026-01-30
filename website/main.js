@@ -1,5 +1,5 @@
 // main.js - Punto de entrada principal
-import { cursos, cursoMap } from './modules/data/cursos.js';
+import { cursos, cursoMap, initializeCursos } from './modules/data/cursos.js';
 import { GraphManager } from './modules/graph/GraphManager.js';
 import { UIController } from './modules/ui/UIController.js';
 import { StorageManager } from './modules/storage/StorageManager.js';
@@ -14,6 +14,9 @@ class PemtreeApp {
     }
 
     async init() {
+        // Inicializar cursos desde JSON (o fallback)
+        await initializeCursos();
+
         // Inicializar managers
         this.storageManager = new StorageManager();
         this.graphManager = new GraphManager(cursos, cursoMap);

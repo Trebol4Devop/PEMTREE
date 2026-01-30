@@ -5,6 +5,7 @@ import { InfoCardManager } from './InfoCardManager.js';
 import { TooltipManager } from './TooltipManager.js';
 import { ThemeManager } from './ThemeManager.js';
 import { SearchManager } from './SearchManager.js';
+import { listAvailablePensums, loadPensum, cursos, cursoMap } from '../data/cursos.js';
 
 export class UIController {
     constructor(graphManager, storageManager) {
@@ -20,6 +21,8 @@ export class UIController {
 
     init() {
         this.inicializarGrafo();
+        // Inicializar selector de pensum en la barra de herramientas
+        this.setupPensumSelector();
         this.setupMobileUI();
     }
 
@@ -163,6 +166,62 @@ export class UIController {
 
         window.addEventListener('touchend', () => {
             isDragging = false;
+        });
+    }
+
+    /**
+     * Inicializa el selector de pensum y maneja el cambio de pensum
+     */
+    setupPensumSelector() {
+        const select = document.getElementById('pensumSelect');
+        if (!select) return;
+
+        // Poblar opciones
+        try {
+            const pensums = listAvailablePensums();
+            console.debug('Pensums cargados:', pensums); // Debug: mostrar pensums cargados
+            select.innerHTML = '';
+            const defaultOpt = document.createElement('option');
+            defaultOpt.value = '';
+            defaultOpt.textContent = '-- Selecciona pensum --';
+            select.appendChild(defaultOpt);
+
+            pensums.forEach(p => {
+                const opt = document.createElement('option');
+                opt.value = p.file;
+                opt.textContent = p.name;
+                select.appendChild(opt);
+            });
+        } catch (err) {
+            console.warn('No se pudieron listar pensums:', err);
+            select.innerHTML = '<option value="">Error</option>';
+            return;
+        }
+
+        select.addEventListener('change', async () => {
+            const relPath = select.value;
+            if (!relPath) return;
+
+            try {
+                await loadPensum(relPath);
+
+                // Actualizar estructura del grafo
+                if (this.graphManager && typeof this.graphManager.updateCursos === 'function') {
+                    this.graphManager.updateCursos(cursos, cursoMap);
+                }
+
+                // Volver a cargar progreso (si aplica)
+                if (this.storageManager && typeof this.storageManager.cargarProgreso === 'function') {
+                    this.storageManager.cargarProgreso(cursos, cursoMap);
+                }
+
+                // Redibujar grafo
+                this.graphManager.dibujarGrafo();
+
+            } catch (err) {
+                console.error('Error al cargar pensum:', err);
+                alert('No se pudo cargar el pensum seleccionado. Revisa la consola para más detalles.');
+            }
         });
     }
 

@@ -1,0 +1,668 @@
+[
+  {
+    "codigo": "0005",
+    "semestre": "1",
+    "nombre": "TÉCNICAS DE ESTUDIO E INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0017",
+    "semestre": "1",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA SOCIAL HUMANÍSTICA 2"
+  },
+  {
+    "codigo": "0027",
+    "semestre": "1",
+    "nombre": "BIOLOGÍA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0069",
+    "semestre": "1",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DIBUJO CONSTRUCTIVO PARA INGENIERÍA, DIBUJO COMPUTARIZADO"
+  },
+  {
+    "codigo": "0101",
+    "semestre": "1",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA MATEMÁTICA BÁSICA 2, FÍSICA BÁSICA"
+  },
+  {
+    "codigo": "0289",
+    "semestre": "1",
+    "nombre": "INTRODUCCIÓN A LA INGENIERÍA AMBIENTAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0354",
+    "semestre": "1",
+    "nombre": "QUÍMICA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "QUÍMICA 4"
+  },
+  {
+    "codigo": "0019",
+    "semestre": "2",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0017",
+    "post_requisitos": "FILOSOFÍA DE LA CIENCIA, INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL, ÉTICA PROFESIONAL, LÓGICA"
+  },
+  {
+    "codigo": "0074",
+    "semestre": "2",
+    "nombre": "DIBUJO CONSTRUCTIVO PARA INGENIERÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0069",
+    "post_requisitos": "TOPOGRAFÍA 1"
+  },
+  {
+    "codigo": "0103",
+    "semestre": "2",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 2",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 1, FÍSICA 1, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0147",
+    "semestre": "2",
+    "nombre": "FÍSICA BÁSICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "FÍSICA 1, GEOGRAFÍA"
+  },
+  {
+    "codigo": "0356",
+    "semestre": "2",
+    "nombre": "QUÍMICA 4",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0354",
+    "post_requisitos": "ECOLOGÍA, QUÍMICA ORGÁNICA 1, ANÁLISIS CUALITATIVO, FÍSICO QUÍMICA 1"
+  },
+  {
+    "codigo": "0028",
+    "semestre": "3",
+    "nombre": "ECOLOGÍA",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356",
+    "post_requisitos": "GEOGRAFÍA, GEOLOGÍA, CLIMATOLOGÍA, QUÍMICA AMBIENTAL, INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL"
+  },
+  {
+    "codigo": "0107",
+    "semestre": "3",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 2, ÁREA MATEMÁTICA INTERMEDIA 3, FÍSICA 2, TOPOGRAFÍA 1, MECÁNICA ANALÍTICA 1, ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0150",
+    "semestre": "3",
+    "nombre": "FÍSICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147",
+    "post_requisitos": "FÍSICA 2, MECÁNICA ANALÍTICA 1, GEOLOGÍA"
+  },
+  {
+    "codigo": "0358",
+    "semestre": "3",
+    "nombre": "QUÍMICA ORGÁNICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356",
+    "post_requisitos": "QUÍMICA ORGÁNICA 2"
+  },
+  {
+    "codigo": "0362",
+    "semestre": "3",
+    "nombre": "ANÁLISIS CUALITATIVO",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356",
+    "post_requisitos": "ANÁLISIS CUANTITATIVO"
+  },
+  {
+    "codigo": "2025",
+    "semestre": "3",
+    "nombre": "PRÁCTICAS INICIALES",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0030",
+    "semestre": "4",
+    "nombre": "GEOGRAFÍA",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0147, 0028",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0112",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 1, MATEMÁTICA APLICADA 3, MECÁNICA DE FLUIDOS"
+  },
+  {
+    "codigo": "0114",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 1, MATEMÁTICA APLICADA 3, FÍSICO QUÍMICA 1"
+  },
+  {
+    "codigo": "0152",
+    "semestre": "4",
+    "nombre": "FÍSICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0360",
+    "semestre": "4",
+    "nombre": "QUÍMICA ORGÁNICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0358",
+    "post_requisitos": "LEGISLACIÓN AMBIENTAL 2, BIOQUÍMICA 1, MICROBIOLOGÍA, ANÁLISIS INSTRUMENTAL"
+  },
+  {
+    "codigo": "0039",
+    "semestre": "4",
+    "nombre": "DEPORTES 1",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DEPORTES 2"
+  },
+  {
+    "codigo": "0080",
+    "semestre": "5",
+    "nombre": "TOPOGRAFÍA 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0074, 0107",
+    "post_requisitos": "TOPOGRAFÍA 2"
+  },
+  {
+    "codigo": "0118",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "INGENIERÍA ECONÓMICA 1, TOPOGRAFÍA 3"
+  },
+  {
+    "codigo": "0170",
+    "semestre": "5",
+    "nombre": "MECÁNICA ANALÍTICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "MECÁNICA DE FLUIDOS, DIBUJO COMPUTARIZADO"
+  },
+  {
+    "codigo": "0450",
+    "semestre": "5",
+    "nombre": "GEOLOGÍA",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0150, 0028",
+    "post_requisitos": "GESTIÓN DE DESASTRES"
+  },
+  {
+    "codigo": "0732",
+    "semestre": "5",
+    "nombre": "ESTADÍSTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0005",
+    "post_requisitos": "INGENIERÍA ECONÓMICA 1, CLIMATOLOGÍA, GESTIÓN DE LA INNOVACIÓN Y LA TECNOLOGÍA EN LA INDUSTRIA, HIDROLOGÍA, MICROBIOLOGÍA, ESTADÍSTICA 2"
+  },
+  {
+    "codigo": "0116",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 3",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0082",
+    "semestre": "6",
+    "nombre": "TOPOGRAFÍA 2",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0080",
+    "post_requisitos": "TOPOGRAFÍA 3, PRÁCTICAS INTERMEDIAS, HIDROLOGÍA"
+  },
+  {
+    "codigo": "0250",
+    "semestre": "6",
+    "nombre": "MECÁNICA DE FLUIDOS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0170",
+    "post_requisitos": "HIDRÁULICA"
+  },
+  {
+    "codigo": "0380",
+    "semestre": "6",
+    "nombre": "FÍSICO QUÍMICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356, 0114",
+    "post_requisitos": "QUÍMICA AMBIENTAL"
+  },
+  {
+    "codigo": "0700",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ECONÓMICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0118, 0732",
+    "post_requisitos": "ECONOMÍA DE LOS RECURSOS NATURALES RENOVABLES, INGENIERÍA DE LA PRODUCCIÓN, INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL, PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1"
+  },
+  {
+    "codigo": "0879",
+    "semestre": "6",
+    "nombre": "CLIMATOLOGÍA",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0028, 0732",
+    "post_requisitos": "GESTIÓN DE DESASTRES, LEGISLACIÓN AMBIENTAL 1, PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0075",
+    "semestre": "6",
+    "nombre": "DIBUJO COMPUTARIZADO",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0069, 0170",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0419",
+    "semestre": "6",
+    "nombre": "GESTIÓN DE LA INNOVACIÓN Y LA TECNOLOGÍA EN LA INDUSTRIA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0084",
+    "semestre": "7",
+    "nombre": "TOPOGRAFÍA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0082, 0118",
+    "post_requisitos": "TALLER DE SIST DE INF GEOGRÁFICA, MANEJO DE CUENCAS HIDROGRÁFICAS"
+  },
+  {
+    "codigo": "0252",
+    "semestre": "7",
+    "nombre": "HIDRÁULICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0250",
+    "post_requisitos": "HIDROLOGÍA"
+  },
+  {
+    "codigo": "0335",
+    "semestre": "7",
+    "nombre": "GESTIÓN DE DESASTRES",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0450, 0879",
+    "post_requisitos": "SISMOLOGÍA"
+  },
+  {
+    "codigo": "0370",
+    "semestre": "7",
+    "nombre": "QUÍMICA AMBIENTAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0028, 0380",
+    "post_requisitos": "MANEJO ADECUADO DE LOS DESECHOS SÓLIDOS"
+  },
+  {
+    "codigo": "0431",
+    "semestre": "7",
+    "nombre": "ECONOMÍA DE LOS RECURSOS NATURALES RENOVABLES",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0700",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0663",
+    "semestre": "7",
+    "nombre": "LEGISLACIÓN AMBIENTAL 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0879",
+    "post_requisitos": "MANEJO ADECUADO DE LOS DESECHOS SÓLIDOS, LEGISLACIÓN AMBIENTAL 2"
+  },
+  {
+    "codigo": "2036",
+    "semestre": "7",
+    "nombre": "PRÁCTICAS INTERMEDIAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2025, 0879, 0082",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA AMBIENTAL"
+  },
+  {
+    "codigo": "0060",
+    "semestre": "8",
+    "nombre": "TALLER DE SIST DE INF GEOGRÁFICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0084",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0254",
+    "semestre": "8",
+    "nombre": "HIDROLOGÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0252, 0732, 0082",
+    "post_requisitos": "MANEJO DE CUENCAS HIDROGRÁFICAS, AGUAS SUBTERRÁNEAS, INGENIERÍA SANITARIA 1, INGENIERÍA SANITARIA 2, INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL"
+  },
+  {
+    "codigo": "0441",
+    "semestre": "8",
+    "nombre": "MANEJO ADECUADO DE LOS DESECHOS SÓLIDOS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0370, 0663",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0670",
+    "semestre": "8",
+    "nombre": "LEGISLACIÓN AMBIENTAL 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0663, 0360",
+    "post_requisitos": "INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL, MICROBIOLOGÍA, CALIDAD DEL AIRE, CALIDAD DEL AGUA, AUDITORIAS AMBIENTALES (SIG/SGC), PRÁCTICAS FINALES INGENIERÍA AMBIENTAL"
+  },
+  {
+    "codigo": "0018",
+    "semestre": "8",
+    "nombre": "FILOSOFÍA DE LA CIENCIA",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0040",
+    "semestre": "8",
+    "nombre": "DEPORTES 2",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0039",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0361",
+    "semestre": "8",
+    "nombre": "BIOQUÍMICA 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0360",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0364",
+    "semestre": "8",
+    "nombre": "ANÁLISIS CUANTITATIVO",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0362",
+    "post_requisitos": "ANÁLISIS INSTRUMENTAL"
+  },
+  {
+    "codigo": "0630",
+    "semestre": "8",
+    "nombre": "INGENIERÍA DE LA PRODUCCIÓN",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0700",
+    "post_requisitos": "SALUD Y SEGURIDAD OCUPACIONAL"
+  },
+  {
+    "codigo": "0193",
+    "semestre": "9",
+    "nombre": "MANEJO DE CUENCAS HIDROGRÁFICAS",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0084, 0254",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA AMBIENTAL, SEMINARIO DE INVESTIGACIÓN AMBIENTAL, SEMINARIO DE INVESTIGACIÓN E.P.S. AMBIENTAL"
+  },
+  {
+    "codigo": "0262",
+    "semestre": "9",
+    "nombre": "AGUAS SUBTERRÁNEAS",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0254",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0280",
+    "semestre": "9",
+    "nombre": "INGENIERÍA SANITARIA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0254",
+    "post_requisitos": "SANEAMIENTO AMBIENTAL"
+  },
+  {
+    "codigo": "0282",
+    "semestre": "9",
+    "nombre": "INGENIERÍA SANITARIA 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0254",
+    "post_requisitos": "SANEAMIENTO AMBIENTAL"
+  },
+  {
+    "codigo": "0288",
+    "semestre": "9",
+    "nombre": "INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0019, 0700, 0028, 0254, 0670",
+    "post_requisitos": "AUDITORIAS AMBIENTALES (SIG/SGC), PRÁCTICAS FINALES INGENIERÍA AMBIENTAL, SEMINARIO DE INVESTIGACIÓN AMBIENTAL, SEMINARIO DE INVESTIGACIÓN E.P.S. AMBIENTAL, PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1"
+  },
+  {
+    "codigo": "0440",
+    "semestre": "9",
+    "nombre": "MICROBIOLOGÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0360, 0732, 0670",
+    "post_requisitos": "CALIDAD DEL AIRE, CALIDAD DEL AGUA"
+  },
+  {
+    "codigo": "0366",
+    "semestre": "9",
+    "nombre": "ANÁLISIS INSTRUMENTAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0360, 0364",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0643",
+    "semestre": "9",
+    "nombre": "SALUD Y SEGURIDAD OCUPACIONAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0630",
+    "post_requisitos": "PSICOLOGÍA INDUSTRIAL"
+  },
+  {
+    "codigo": "0734",
+    "semestre": "9",
+    "nombre": "ESTADÍSTICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0196",
+    "semestre": "10",
+    "nombre": "CALIDAD DEL AIRE",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0440, 0670",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0198",
+    "semestre": "10",
+    "nombre": "CALIDAD DEL AGUA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0440, 0670",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0284",
+    "semestre": "10",
+    "nombre": "SANEAMIENTO AMBIENTAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0280, 0282",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0369",
+    "semestre": "10",
+    "nombre": "AUDITORIAS AMBIENTALES (SIG/SGC)",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0288, 0670",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "2035",
+    "semestre": "10",
+    "nombre": "PRÁCTICAS FINALES INGENIERÍA AMBIENTAL",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2036, 0193, 0288, 0670",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7935",
+    "semestre": "10",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN AMBIENTAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0288, 0193",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7989",
+    "semestre": "10",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. AMBIENTAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0288, 0193",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0001",
+    "semestre": "10",
+    "nombre": "ÉTICA PROFESIONAL",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0010",
+    "semestre": "10",
+    "nombre": "LÓGICA",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0022",
+    "semestre": "10",
+    "nombre": "PSICOLOGÍA INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0643",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0706",
+    "semestre": "10",
+    "nombre": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0700, 0288",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0870",
+    "semestre": "10",
+    "nombre": "SISMOLOGÍA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0335",
+    "post_requisitos": "Ninguno"
+  }
+]

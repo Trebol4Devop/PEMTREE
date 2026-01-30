@@ -23,7 +23,7 @@ export class NodoCurso {
     }
 }
 
-export const cursos = [
+const DEFAULT_CURSOS = [
     new NodoCurso(1, "0005", "Técnicas de Estudio e Investigación", 3, true, 1, []),
     new NodoCurso(2, "0017", "Área Social Humanística 1", 3, true, 1, []),
     new NodoCurso(3, "0101", "Área Matemática Básica 1", 9, true, 1, []),
@@ -101,6 +101,135 @@ export const cursos = [
     new NodoCurso(76, "7999", "Seminario de Investigación E.P.S. Sistemas", 3, false, 10, [59, 60, 61]),
 ];
 
-// Crear mapa de cursos para acceso rápido
+
+
+// Importador que convierte JSON en instancias de NodoCurso (evita ejecución en carga por la circularidad)
+import { importarCursosDesdeJSON } from './importFromJSON.js';
+
+// Exportar cursos como variable mutable para que otros módulos puedan leer la referencia
+export let cursos = [];
+
+// Mapa de cursos (se actualiza en initializeCursos)
 export const cursoMap = new Map();
+
+// Archivos JSON a intentar cargar desde la carpeta modules/json
+/* const JSON_FILES = [
+    '../json/Ciencias_y_Sistemas.json',
+    '../json/electronica.json',
+    '../json/civil.json',
+    '../json/electrica.json',
+    '../json/industrial.json',
+    '../json/mecanica_electrica.json',
+    '../json/mecanica_industrial.json',
+    '../json/mecanica.json',
+    '../json/quimica.json'
+];
+ */
+
+const JSON_FILES = [];
+
+/**
+ * Inicializa `cursos` cargando archivos JSON desde `modules/json`.
+ * Si la carga falla, usa `DEFAULT_CURSOS` como fallback.
+ */
+export async function initializeCursos() {
+    try {
+        const allJson = [];
+
+        for (const relPath of JSON_FILES) {
+            try {
+                const url = new URL(relPath, import.meta.url).href;
+                const res = await fetch(url);
+                if (!res.ok) {
+                    console.warn(`No se pudo cargar ${relPath}: ${res.status}`);
+                    continue;
+                }
+                const json = await res.json();
+                if (Array.isArray(json)) {
+                    allJson.push(...json);
+                }
+            } catch (innerErr) {
+                console.warn(`Error cargando ${relPath}:`, innerErr);
+            }
+        }
+
+        if (allJson.length > 0) {
+            // Convertir y asignar
+            const imported = importarCursosDesdeJSON(allJson);
+            cursos = imported;
+        } else {
+            // Si no hay JSON cargado, dejar el fallback
+            cursos = DEFAULT_CURSOS.slice();
+            console.warn('No se cargaron JSONs; usando datos por defecto.');
+        }
+
+        // Reconstruir el mapa
+        cursoMap.clear();
+        cursos.forEach(curso => cursoMap.set(curso.id, curso));
+
+        console.log(`✅ Cursos inicializados (${cursos.length} cursos)`);
+        return cursos;
+    } catch (error) {
+        console.error('Error inicializando cursos:', error);
+        // Fallback
+        cursos = DEFAULT_CURSOS.slice();
+        cursoMap.clear();
+        cursos.forEach(curso => cursoMap.set(curso.id, curso));
+        return cursos;
+    }
+}
+
+
+// Inicializar `cursos` y `cursoMap` con los valores por defecto para mantener compatibilidad
+cursos = DEFAULT_CURSOS.slice();
+cursoMap.clear();
 cursos.forEach(curso => cursoMap.set(curso.id, curso));
+
+/**
+ * Devuelve la lista de pensums disponibles (basada en JSON_FILES)
+ * @returns {Array<{file: string, id: string, name: string}>}
+ */
+export function listAvailablePensums() {
+    const pensums = JSON_FILES.map(p => {
+        const fileName = p.split('/').pop();
+        const id = fileName.replace('.json', '');
+        const name = id.replace(/_/g, ' ');
+        return { file: p, id, name };
+    });
+    
+    console.log('📋 Pensums disponibles:', pensums.length);
+    pensums.forEach(p => {
+        console.log(`  - ${p.id}: ${p.name} (${p.file})`);
+    });
+    
+    return pensums;
+}
+
+/**
+ * Carga un pensum (archivo JSON) individual por su ruta relativa (tal como está en JSON_FILES)
+ * Actualiza `cursos` y `cursoMap`.
+ * @param {string} relPath
+ * @returns {Promise<Array>} cursos
+ */
+export async function loadPensum(relPath) {
+    try {
+        const url = new URL(relPath, import.meta.url).href;
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
+        const json = await res.json();
+        if (!Array.isArray(json)) throw new Error('Formato de JSON inválido');
+
+        const imported = importarCursosDesdeJSON(json);
+        cursos = imported;
+
+        // Reconstruir mapa
+        cursoMap.clear();
+        cursos.forEach(curso => cursoMap.set(curso.id, curso));
+
+        console.log(`✅ Pensum cargado: ${relPath} (${cursos.length} cursos)`);
+        return cursos;
+    } catch (error) {
+        console.error('Error cargando pensum:', error);
+        throw error;
+    }
+} 

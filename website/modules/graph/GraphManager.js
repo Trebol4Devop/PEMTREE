@@ -31,6 +31,21 @@ export class GraphManager {
         this.criticalPathAnalyzer.calcularRutaCritica();
     }
 
+    /**
+     * Actualiza los cursos y el mapa, reconfigura calculadores y recalcula la ruta
+     * @param {Array} nuevosCursos
+     * @param {Map} nuevoMapa
+     */
+    updateCursos(nuevosCursos, nuevoMapa) {
+        this.cursos = nuevosCursos;
+        this.cursoMap = nuevoMapa;
+        // Reinstanciar calculadores que dependen de la estructura de cursos
+        this.layoutCalculator = new LayoutCalculator(this.cursos, this.cursoMap);
+        this.criticalPathAnalyzer = new CriticalPathAnalyzer(this.cursos, this.cursoMap);
+        // Recalcular análisis
+        this.init();
+    } 
+
     dibujarGrafo() {
         const graphGroup = document.getElementById('grafica-group');
         if (!graphGroup) return;

@@ -1,0 +1,875 @@
+[
+  {
+    "codigo": "0017",
+    "semestre": "1",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA SOCIAL HUMANÍSTICA 2"
+  },
+  {
+    "codigo": "0069",
+    "semestre": "1",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA TÉCNICA COMPLEMENTARIA 2, DIBUJO TÉCNICO MECÁNICO"
+  },
+  {
+    "codigo": "0101",
+    "semestre": "1",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA MATEMÁTICA BÁSICA 2, FÍSICA BÁSICA, INTRODUCCIÓN A LA PROGRAMACIÓN DE COMPUTADORAS"
+  },
+  {
+    "codigo": "0348",
+    "semestre": "1",
+    "nombre": "QUÍMICA GENERAL 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0006",
+    "semestre": "1",
+    "nombre": "IDIOMA TÉCNICO 1",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "IDIOMA TÉCNICO 2"
+  },
+  {
+    "codigo": "0039",
+    "semestre": "1",
+    "nombre": "DEPORTES 1",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DEPORTES 2"
+  },
+  {
+    "codigo": "0005",
+    "semestre": "2",
+    "nombre": "TÉCNICAS DE ESTUDIO E INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0019",
+    "semestre": "2",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0017",
+    "post_requisitos": "FILOSOFÍA DE LA CIENCIA, LÓGICA, ÉTICA PROFESIONAL, LEGISLACIÓN 1"
+  },
+  {
+    "codigo": "0103",
+    "semestre": "2",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 2",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 1, FÍSICA 1, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0147",
+    "semestre": "2",
+    "nombre": "FÍSICA BÁSICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "FÍSICA 1"
+  },
+  {
+    "codigo": "0769",
+    "semestre": "2",
+    "nombre": "INTRODUCCIÓN A LA PROGRAMACIÓN DE COMPUTADORAS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "LENGUAJES DE PROGRAMACIÓN APLICADOS A I.E., PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0008",
+    "semestre": "2",
+    "nombre": "IDIOMA TÉCNICO 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0006",
+    "post_requisitos": "IDIOMA TÉCNICO 3"
+  },
+  {
+    "codigo": "0040",
+    "semestre": "2",
+    "nombre": "DEPORTES 2",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0039",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0071",
+    "semestre": "2",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0069",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0018",
+    "semestre": "3",
+    "nombre": "FILOSOFÍA DE LA CIENCIA",
+    "creditos": 1,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0107",
+    "semestre": "3",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 2, ÁREA MATEMÁTICA INTERMEDIA 3, FÍSICA 2, ESTADÍSTICA 1, MECÁNICA ANALÍTICA 1"
+  },
+  {
+    "codigo": "0150",
+    "semestre": "3",
+    "nombre": "FÍSICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147",
+    "post_requisitos": "FÍSICA 2"
+  },
+  {
+    "codigo": "0991",
+    "semestre": "3",
+    "nombre": "LENGUAJES DE PROGRAMACIÓN APLICADOS A I.E.",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0769",
+    "post_requisitos": "INVESTIGACIÓN DE OPERACIONES I"
+  },
+  {
+    "codigo": "2025",
+    "semestre": "3",
+    "nombre": "PRÁCTICAS INICIALES",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0769",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0009",
+    "semestre": "3",
+    "nombre": "IDIOMA TÉCNICO 3",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0008",
+    "post_requisitos": "IDIOMA TÉCNICO 4"
+  },
+  {
+    "codigo": "0010",
+    "semestre": "4",
+    "nombre": "LÓGICA",
+    "creditos": 1,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0112",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 1, MATEMÁTICA APLICADA 5, CIRCUITOS ELÉCTRICOS 1, MATEMÁTICA APLICADA 3"
+  },
+  {
+    "codigo": "0114",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 1, MATEMÁTICA APLICADA 5, CIRCUITOS ELÉCTRICOS 1, MATEMÁTICA APLICADA 3, RESISTENCIA DE MATERIALES 1, MECÁNICA ANALÍTICA 2, MECÁNICA DE FLUIDOS"
+  },
+  {
+    "codigo": "0152",
+    "semestre": "4",
+    "nombre": "FÍSICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "FÍSICA 3, CIRCUITOS ELÉCTRICOS 1, CIENCIA DE LOS MATERIALES, ELECTRICIDAD Y ELECTRÓNICA BÁSICA"
+  },
+  {
+    "codigo": "0732",
+    "semestre": "4",
+    "nombre": "ESTADÍSTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0005",
+    "post_requisitos": "INGENIERÍA ECONÓMICA 1, ANÁLISIS PROBABILÍSTICO, PSICOLOGÍA INDUSTRIAL, INGENIERÍA DE COSTOS, INSTRUMENTACIÓN ELÉCTRICA"
+  },
+  {
+    "codigo": "0011",
+    "semestre": "4",
+    "nombre": "IDIOMA TÉCNICO 4",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0009",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0073",
+    "semestre": "4",
+    "nombre": "DIBUJO TÉCNICO MECÁNICO",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0069",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0001",
+    "semestre": "5",
+    "nombre": "ÉTICA PROFESIONAL",
+    "creditos": 2,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0118",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "TEORÍA ELECTROMAGNÉTICA 1, MATEMÁTICA APLICADA 2, MATEMÁTICA APLICADA 4, CIRCUITOS ELÉCTRICOS 2"
+  },
+  {
+    "codigo": "0123",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 5",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "TEORÍA ELECTROMAGNÉTICA 1, CIRCUITOS ELÉCTRICOS 2"
+  },
+  {
+    "codigo": "0154",
+    "semestre": "5",
+    "nombre": "FÍSICA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0152",
+    "post_requisitos": "TEORÍA ELECTROMAGNÉTICA 1, FÍSICA 4"
+  },
+  {
+    "codigo": "0170",
+    "semestre": "5",
+    "nombre": "MECÁNICA ANALÍTICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "RESISTENCIA DE MATERIALES 1, MECÁNICA ANALÍTICA 2, MECÁNICA DE FLUIDOS, TRANSMISIÓN Y DISTRIBUCIÓN"
+  },
+  {
+    "codigo": "0204",
+    "semestre": "5",
+    "nombre": "CIRCUITOS ELÉCTRICOS 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114, 0152",
+    "post_requisitos": "CIRCUITOS ELÉCTRICOS 2, LÍNEAS DE TRANSMISIÓN, PRÁCTICAS INTERMEDIAS, CONVERSIÓN DE ENERGÍA ELECTROMECÁNICA 1, ELECTRÓNICA 1"
+  },
+  {
+    "codigo": "0116",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 3",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0601",
+    "semestre": "5",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES I",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0991",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0210",
+    "semestre": "6",
+    "nombre": "TEORÍA ELECTROMAGNÉTICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0118, 0123, 0154",
+    "post_requisitos": "LÍNEAS DE TRANSMISIÓN, PRÁCTICAS INTERMEDIAS, CONVERSIÓN DE ENERGÍA ELECTROMECÁNICA 1, TEORÍA ELECTROMAGNÉTICA 2"
+  },
+  {
+    "codigo": "0452",
+    "semestre": "6",
+    "nombre": "CIENCIA DE LOS MATERIALES",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0152",
+    "post_requisitos": "METALURGIA Y METALOGRAFÍA, PROCESOS DE MANUFACTURA 1, DISEÑO DE MÁQUINAS 1, MECANISMOS"
+  },
+  {
+    "codigo": "0462",
+    "semestre": "6",
+    "nombre": "ELECTRICIDAD Y ELECTRÓNICA BÁSICA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0152",
+    "post_requisitos": "ELECTRÓNICA 1"
+  },
+  {
+    "codigo": "0700",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ECONÓMICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732",
+    "post_requisitos": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1"
+  },
+  {
+    "codigo": "0736",
+    "semestre": "6",
+    "nombre": "ANÁLISIS PROBABILÍSTICO",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0022",
+    "semestre": "6",
+    "nombre": "PSICOLOGÍA INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "ADMINISTRACIÓN DE RECURSOS HUMANOS"
+  },
+  {
+    "codigo": "0120",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0122",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 4",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0653",
+    "semestre": "6",
+    "nombre": "INGENIERÍA DE COSTOS",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0206",
+    "semestre": "7",
+    "nombre": "CIRCUITOS ELÉCTRICOS 2",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0118, 0123, 0204",
+    "post_requisitos": "MÁQUINAS ELÉCTRICAS, INSTRUMENTACIÓN ELÉCTRICA"
+  },
+  {
+    "codigo": "0218",
+    "semestre": "7",
+    "nombre": "LÍNEAS DE TRANSMISIÓN",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0204, 0210",
+    "post_requisitos": "TRANSMISIÓN Y DISTRIBUCIÓN, SUBESTACIONES, ANÁLISIS DE SISTEMAS DE POTENCIA 1, ALTA TENSIÓN"
+  },
+  {
+    "codigo": "0300",
+    "semestre": "7",
+    "nombre": "RESISTENCIA DE MATERIALES 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "RESISTENCIA DE MATERIALES 2"
+  },
+  {
+    "codigo": "0454",
+    "semestre": "7",
+    "nombre": "METALURGIA Y METALOGRAFÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0452",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0520",
+    "semestre": "7",
+    "nombre": "PROCESOS DE MANUFACTURA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0452",
+    "post_requisitos": "PROCESOS DE MANUFACTURA 2, FUNDAMENTOS DE ADMINISTRACIÓN, MONTAJE Y MANTENIMIENTO DE EQUIPO"
+  },
+  {
+    "codigo": "2036",
+    "semestre": "7",
+    "nombre": "PRÁCTICAS INTERMEDIAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2025, 0210, 0204",
+    "post_requisitos": "FUNDAMENTOS DE ADMINISTRACIÓN, PRÁCTICAS FINALES INGENIERÍA MECÁNICA ELÉCTRICA"
+  },
+  {
+    "codigo": "0659",
+    "semestre": "7",
+    "nombre": "ADMINISTRACIÓN DE RECURSOS HUMANOS",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0022",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0662",
+    "semestre": "7",
+    "nombre": "LEGISLACIÓN 1",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0172",
+    "semestre": "8",
+    "nombre": "MECÁNICA ANALÍTICA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "MECANISMOS"
+  },
+  {
+    "codigo": "0212",
+    "semestre": "8",
+    "nombre": "CONVERSIÓN DE ENERGÍA ELECTROMECÁNICA 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0204, 0210",
+    "post_requisitos": "CONVERSIÓN DE ENERGÍA ELECTROMECÁNICA 2, MÁQUINAS ELÉCTRICAS, TRANSMISIÓN Y DISTRIBUCIÓN, SISTEMAS DE CONTROL 1"
+  },
+  {
+    "codigo": "0232",
+    "semestre": "8",
+    "nombre": "ELECTRÓNICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0204, 0462",
+    "post_requisitos": "SISTEMAS DE CONTROL 1, ELECTRÓNICA 3"
+  },
+  {
+    "codigo": "0250",
+    "semestre": "8",
+    "nombre": "MECÁNICA DE FLUIDOS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "TERMODINÁMICA 1, HIDRÁULICA"
+  },
+  {
+    "codigo": "0302",
+    "semestre": "8",
+    "nombre": "RESISTENCIA DE MATERIALES 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0300",
+    "post_requisitos": "DISEÑO DE MÁQUINAS 1, MANTENIMIENTO DE HOSPITALES 1"
+  },
+  {
+    "codigo": "0156",
+    "semestre": "8",
+    "nombre": "FÍSICA 4",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0154",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0213",
+    "semestre": "9",
+    "nombre": "CONVERSIÓN DE ENERGÍA ELECTROMECÁNICA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0212",
+    "post_requisitos": "SUBESTACIONES, ANÁLISIS DE SISTEMAS DE POTENCIA 1, ALTA TENSIÓN, PROTECCIÓN DE SISTEMAS DE POTENCIA"
+  },
+  {
+    "codigo": "0214",
+    "semestre": "9",
+    "nombre": "MÁQUINAS ELÉCTRICAS",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0206, 0212",
+    "post_requisitos": "INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL, SUBESTACIONES, ANÁLISIS DE SISTEMAS DE POTENCIA 1, ALTA TENSIÓN, SALUD Y SEGURIDAD OCUPACIONAL, INSTALACIONES ELÉCTRICAS, AUTOMATIZACIÓN INDUSTRIAL, MANTENIMIENTO DE HOSPITALES 1, INSTRUMENTACIÓN MECÁNICA"
+  },
+  {
+    "codigo": "0390",
+    "semestre": "9",
+    "nombre": "TERMODINÁMICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0250",
+    "post_requisitos": "TERMODINÁMICA 2"
+  },
+  {
+    "codigo": "0522",
+    "semestre": "9",
+    "nombre": "PROCESOS DE MANUFACTURA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0520",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0524",
+    "semestre": "9",
+    "nombre": "DISEÑO DE MÁQUINAS 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0302, 0452",
+    "post_requisitos": "DISEÑO DE MÁQUINAS 2, INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL"
+  },
+  {
+    "codigo": "0211",
+    "semestre": "9",
+    "nombre": "TEORÍA ELECTROMAGNÉTICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0210",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0219",
+    "semestre": "9",
+    "nombre": "TRANSMISIÓN Y DISTRIBUCIÓN",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0170, 0212, 0218",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0672",
+    "semestre": "9",
+    "nombre": "FUNDAMENTOS DE ADMINISTRACIÓN",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0520, 2036",
+    "post_requisitos": "MANTENIMIENTO DE HOSPITALES 1"
+  },
+  {
+    "codigo": "0230",
+    "semestre": "10",
+    "nombre": "INSTRUMENTACIÓN ELÉCTRICA",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0206, 0732",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA MECÁNICA ELÉCTRICA"
+  },
+  {
+    "codigo": "0236",
+    "semestre": "10",
+    "nombre": "SISTEMAS DE CONTROL 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0212, 0232",
+    "post_requisitos": "SISTEMAS DE CONTROL 2, SISTEMAS DE GENERACIÓN"
+  },
+  {
+    "codigo": "0392",
+    "semestre": "10",
+    "nombre": "TERMODINÁMICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0390",
+    "post_requisitos": "PLANTAS DE VAPOR, REFRIGERACIÓN Y AIRE ACONDICIONADO, MOTORES DE COMBUSTIÓN INTERNA, MANTENIMIENTO DE HOSPITALES 1"
+  },
+  {
+    "codigo": "0526",
+    "semestre": "10",
+    "nombre": "DISEÑO DE MÁQUINAS 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0524",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA MECÁNICA ELÉCTRICA, DISEÑO DE MÁQUINAS 3, SEMINARIO DE INVESTIGACIÓN MECÁNICA ELÉCTRICA, INSTALACIONES MECÁNICAS, INSTRUMENTACIÓN MECÁNICA, SEMINARIO DE INVESTIGACIÓN E.P.S. MECÁNICA ELÉCTRICA"
+  },
+  {
+    "codigo": "0530",
+    "semestre": "10",
+    "nombre": "MECANISMOS",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0172, 0452",
+    "post_requisitos": "VIBRACIONES"
+  },
+  {
+    "codigo": "0288",
+    "semestre": "10",
+    "nombre": "INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0214, 0524",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0508",
+    "semestre": "10",
+    "nombre": "MONTAJE Y MANTENIMIENTO DE EQUIPO",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0520",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0706",
+    "semestre": "10",
+    "nombre": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0700",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0216",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "SUBESTACIONES",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0213, 0214, 0218",
+    "post_requisitos": "SEMINARIO DE INVESTIGACIÓN MECÁNICA ELÉCTRICA, SEMINARIO DE INVESTIGACIÓN E.P.S. MECÁNICA ELÉCTRICA"
+  },
+  {
+    "codigo": "0220",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "ANÁLISIS DE SISTEMAS DE POTENCIA 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0213, 0214, 0218",
+    "post_requisitos": "SEMINARIO DE INVESTIGACIÓN MECÁNICA ELÉCTRICA, SISTEMAS DE GENERACIÓN, PROTECCIÓN DE SISTEMAS DE POTENCIA, SEMINARIO DE INVESTIGACIÓN E.P.S. MECÁNICA ELÉCTRICA"
+  },
+  {
+    "codigo": "0246",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "ELECTRÓNICA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0232",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0252",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "HIDRÁULICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0250",
+    "post_requisitos": "MÁQUINAS HIDRÁULICAS"
+  },
+  {
+    "codigo": "0506",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "PLANTAS DE VAPOR",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0392",
+    "post_requisitos": "INSTALACIONES MECÁNICAS, INSTRUMENTACIÓN MECÁNICA"
+  },
+  {
+    "codigo": "2006",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "PRÁCTICAS FINALES INGENIERÍA MECÁNICA ELÉCTRICA",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2036, 0230, 0526",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0224",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "ALTA TENSIÓN",
+    "creditos": 7,
+    "tipo": "Electivo",
+    "pre_requisitos": "0213, 0214, 0218",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0237",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "SISTEMAS DE CONTROL 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0236",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0528",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "DISEÑO DE MÁQUINAS 3",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0526",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0643",
+    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "nombre": "SALUD Y SEGURIDAD OCUPACIONAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0214",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0208",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "INSTALACIONES ELÉCTRICAS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0214",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0238",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "AUTOMATIZACIÓN INDUSTRIAL",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0214",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0532",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "VIBRACIONES",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0530",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7994",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN MECÁNICA ELÉCTRICA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0220, 0216, 0526",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0221",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "SISTEMAS DE GENERACIÓN",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0220, 0236",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0222",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "PROTECCIÓN DE SISTEMAS DE POTENCIA",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0220, 0213",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0258",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "MÁQUINAS HIDRÁULICAS",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0252",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0502",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "REFRIGERACIÓN Y AIRE ACONDICIONADO",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0392",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0504",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "MOTORES DE COMBUSTIÓN INTERNA",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0392",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0510",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "INSTALACIONES MECÁNICAS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0506, 0526",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0511",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "MANTENIMIENTO DE HOSPITALES 1",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0214, 0302, 0392, 0672",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0512",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "INSTRUMENTACIÓN MECÁNICA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0214, 0506, 0526",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7986",
+    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. MECÁNICA ELÉCTRICA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0220, 0216, 0526",
+    "post_requisitos": "Ninguno"
+  }
+]
