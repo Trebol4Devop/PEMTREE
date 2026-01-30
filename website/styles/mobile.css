@@ -220,6 +220,34 @@
         bottom : 10vh;
         right: 5%;
     }
+    #buscador.modo-flotante {
+        display: block !important;
+        position: fixed !important;
+        z-index: 2500 !important;
+        top: 60px !important;
+        left: 15px;
+        right: 15px;
+        width: calc(100% - 30px);
+        background: white;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+
+    .creditos-counter.modo-flotante {
+        display: flex !important;
+        position: fixed !important;
+        top: 15px !important;
+        left: 130px !important; /* Ajustar según posición del logo/título */
+        z-index: 2500 !important;
+        background: white;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+    }
+
+    /* Ocultar etiquetas de grupo en móvil para ahorrar espacio */
+    #buscador.modo-flotante .grupo-etiqueta {
+        display: none;
+    }
 }
 
 @media (max-width: 480px) {

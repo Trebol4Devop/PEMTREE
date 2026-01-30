@@ -21,7 +21,7 @@ class NodoCurso {
     }
 }
 
-const cursos = [
+export const cursos = [
     new NodoCurso(1, "0005", "Técnicas de Estudio e Investigación", 3, true, 1, []),
     new NodoCurso(2, "0017", "Área Social Humanística 1", 3, true, 1, []),
     new NodoCurso(3, "0101", "Área Matemática Básica 1", 9, true, 1, []),
@@ -34,7 +34,7 @@ const cursos = [
     new NodoCurso(11, "0008", "Idioma Técnico 2", 3, false, 2, [4]),
     new NodoCurso(12, "0040", "Deportes 2", 2, false, 2, [5]),
     new NodoCurso(13, "0107", "Área Matemática Intermedia 1", 9, true, 3, [7]),
-    new NodoCurso(14, "0150", "Física", 5, true, 3, [7,8]),
+    new NodoCurso(14, "0150", "Física 1", 5, true, 3, [7,8]),
     new NodoCurso(15, "0770", "Introducción a la Programación y Computación 1", 6, true, 3, [7, 8, 9]),
     new NodoCurso(16, "0795", "Lógica de Sistemas", 3, true, 3, [7, 8, 9]),
     new NodoCurso(17, "0962", "Matemática para Computación 2", 5, true, 3, [7, 8, 9]),
@@ -81,11 +81,11 @@ const cursos = [
     new NodoCurso(58, "0729", "Modelación y Simulación 1", 5, true, 9, [45, 46]),
     new NodoCurso(59, "0785", "Análisis y Diseño de Sistemas 2", 7, true, 9, [52]),
     new NodoCurso(60, "0786", "Sistemas Organizacionales y Gerenciales 1", 5, true, 9, [37, 52]),
-    new NodoCurso(61, "0798", "Seminario de Sistemas 2", 5, true, 9, [53, 55]),
-    new NodoCurso(62, "0972", "Inteligencia Artificial 1", 7, true, 9, [40, 46, 47]),
-    new NodoCurso(63, "2009", "Prácticas Finales Ingeniería Ciencias y Sistemas", 0, false, 9, [50, 52, 53, 56]),
-    new NodoCurso(64, "0776", "Bases de Datos Avanzadas", 5, true, 9, [54]),
-    new NodoCurso(65, "0788", "Sistemas Aplicados 1", 5, true, 9, [52]),
+    new NodoCurso(61, "0798", "Seminario de Sistemas 2", 5, true, 9, [53, 54, 55]),
+    new NodoCurso(62, "0972", "Inteligencia Artificial 1", 7, true, 9, [40, 46, 54]),
+    new NodoCurso(63, "2009", "Prácticas Finales Ingeniería Ciencias y Sistemas", 0, true, 9, [50, 52, 53, 56]),
+    new NodoCurso(64, "0776", "Bases de Datos Avanzadas", 5, false, 9, [54]),
+    new NodoCurso(65, "0788", "Sistemas Aplicados 1", 5, false, 9, [52]),
     new NodoCurso(66, "0966", "Seguridad y Auditoría de Redes de Computadoras", 3, false, 9, [56]),
     new NodoCurso(67, "0720", "Modelación y Simulación 2", 6, true, 10, [58]),
     new NodoCurso(68, "0780", "Software Avanzado", 8, true, 10, [59]),

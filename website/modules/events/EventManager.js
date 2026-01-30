@@ -15,6 +15,8 @@ export class EventManager {
         this.setupFullscreenControls();
         this.setupCreditsCounter();
         this.setupCloseInfoCard();
+        this.adaptarInterfazMovil();
+        window.addEventListener('resize', () => this.adaptarInterfazMovil())
     }
 
     setupCreditsCounter() {
@@ -189,5 +191,35 @@ export class EventManager {
         
         // Resetear zoom
         this.uiController.getPanZoomManager().zoomReset();
+    }
+
+    adaptarInterfazMovil() {
+        const isMobile = window.innerWidth <= 768;
+        const buscador = document.getElementById('buscador');
+        const creditos = document.getElementById('creditos-display');
+        const barra = document.getElementById('barraHerramienta');
+        const app = document.getElementById('contenedorApp');
+        
+        if (!buscador || !creditos || !barra || !app) return;
+
+        if (isMobile) {
+            if (buscador.parentElement !== app) {
+                app.appendChild(buscador);
+                app.appendChild(creditos);
+                
+                buscador.classList.add('modo-flotante');
+                creditos.classList.add('modo-flotante');
+            }
+        } else {
+            if (buscador.parentElement !== barra) {
+                barra.prepend(buscador);
+                const zoomGroup = barra.querySelector('.zoom-group');
+                if (zoomGroup) {
+                    barra.insertBefore(creditos, zoomGroup);
+                }
+                buscador.classList.remove('modo-flotante');
+                creditos.classList.remove('modo-flotante');
+            }
+        }
     }
 }
