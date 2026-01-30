@@ -128,7 +128,15 @@ export class GraphManager {
     }
 
     onNodeClick(curso, graphGroup) {
-        return this.seleccionarNodo(curso, graphGroup);
+        const cursoSeleccionado = this.seleccionarNodo(curso, graphGroup);
+        
+        // Mostrar info card del curso
+        const infoCardManager = window.app?.uiController?.getInfoCardManager();
+        if (infoCardManager) {
+            infoCardManager.mostrar(cursoSeleccionado);
+        }
+        
+        return cursoSeleccionado;
     }
 
     desseleccionarNodo() {
@@ -137,6 +145,12 @@ export class GraphManager {
             this.selectedNode = null;
             this.cursos.forEach(c => c.highlighted = false);
             this.dibujarGrafo();
+        }
+        
+        // Ocultar info card
+        const infoCardManager = window.app?.uiController?.getInfoCardManager();
+        if (infoCardManager) {
+            infoCardManager.ocultar();
         }
     }
 

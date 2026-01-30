@@ -14,6 +14,9 @@ class PemtreeApp {
     }
 
     async init() {
+        // Exponer app globalmente para acceso desde otros módulos
+        window.app = this;
+        
         // Inicializar managers
         this.storageManager = new StorageManager();
         this.graphManager = new GraphManager(cursos, cursoMap);

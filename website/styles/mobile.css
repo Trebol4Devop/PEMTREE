@@ -1,0 +1,456 @@
+/* styles/mobile.css - Estilos optimizados para dispositivos móviles */
+
+/* ===== OPTIMIZACIÓN MÓVIL ===== */
+
+@media (max-width: 768px) {
+    
+    /* Mejorar táctil */
+    * {
+        -webkit-tap-highlight-color: transparent;
+        touch-action: pan-y pinch-zoom;
+    }
+
+    /* Header responsive */
+    header {
+        padding: 0.7rem 1rem;
+    }
+
+    nav h1 {
+        font-size: 1.1rem;
+    }
+
+    .logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    /* Botón de menú hamburguesa */
+    .menu-toggle {
+        display: block;
+        background: none;
+        border: none;
+        cursor: pointer;
+        padding: 6px;
+        z-index: 1001;
+    }
+
+    /* Menú de navegación móvil */
+    .nav-links {
+        position: fixed;
+        top: 55px;
+        right: -100%;
+        width: 220px;
+        height: calc(100vh - 55px);
+        background: white;
+        flex-direction: column;
+        padding: 1.5rem 0;
+        box-shadow: -2px 0 8px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        align-items: flex-start;
+    }
+
+    .nav-links.active {
+        right: 0;
+    }
+
+    .nav-links li {
+        width: 100%;
+        padding: 0;
+        margin: 0;
+    }
+
+    .nav-links a {
+        display: block;
+        padding: 0.9rem 1.5rem;
+        width: 100%;
+        font-size: 0.9rem;
+    }
+
+    /* Overlay para cerrar menú */
+    .nav-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        z-index: 999;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .nav-overlay.active {
+        opacity: 1;
+        pointer-events: all;
+    }
+
+    /* Sección de inicio móvil */
+    #inicio {
+        padding: 1.5rem 1rem;
+    }
+
+    .contenedor-presentacion {
+        padding: 1.5rem 1rem;
+    }
+
+    .contenedor-presentacion h2 {
+        font-size: 1.6rem;
+    }
+
+    .contenedor-presentacion p {
+        font-size: 0.95rem;
+    }
+
+    .boton-vista {
+        padding: 0.7rem 1.3rem;
+        font-size: 0.9rem;
+    }
+
+    /* ===== TOOLBAR MÓVIL ===== */
+
+    /* Ocultar toolbar por defecto en móvil */
+    .barraHerramienta {
+        display: none;
+    }
+
+    /* Mostrar cuando esté activa */
+    .barraHerramienta.active {
+        display: flex;
+        position: fixed;
+        top: 55px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: white;
+        z-index: 998;
+        flex-direction: column;
+        gap: 0.5rem;
+        padding: 0.7rem;
+        overflow-y: auto;
+    }
+
+    .barraHerramienta.tema-oscuro.active {
+        background: #2c3e50;
+    }
+
+    /* Botón para abrir toolbar */
+    .tools-toggle {
+        display: flex !important;
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #667eea;
+        color: white;
+        border: none;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+        z-index: 999;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        font-size: 1.3rem;
+    }
+
+    .tools-toggle:active {
+        transform: scale(0.95);
+    }
+
+    /* Botón de cerrar toolbar */
+    .close-tools-btn {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background: rgba(0, 0, 0, 0.05);
+        border: none;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.1rem;
+        color: #555;
+        z-index: 10;
+    }
+
+    .tema-oscuro .close-tools-btn {
+        background: rgba(255, 255, 255, 0.1);
+        color: #ecf0f1;
+    }
+
+    /* Grupos de herramientas móvil - mantener estilo original */
+    .barraHerramienta-grupo {
+        display: flex;
+        flex-direction: column;
+        gap: 0.4rem;
+        padding: 0.6rem;
+        background: #f8f9fa;
+        border-radius: 6px;
+    }
+
+    .tema-oscuro .barraHerramienta-grupo {
+        background: #34495e;
+    }
+
+    /* Etiquetas de grupo - mantener estilo */
+    .grupo-etiqueta {
+        font-size: 0.7rem;
+        font-weight: 600;
+        color: #666;
+        margin-bottom: 0.2rem;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .tema-oscuro .grupo-etiqueta {
+        color: #bdc3c7;
+    }
+
+    /* Botones de la toolbar - más pequeños pero mismo estilo */
+    .barraHerramienta button {
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        font-size: 0.8rem;
+        min-height: 36px;
+    }
+
+    .barraHerramienta button:active {
+        transform: scale(0.98);
+    }
+
+    /* Input de búsqueda móvil */
+    .input-buscador {
+        width: 100%;
+        padding: 0.5rem 0.6rem;
+        font-size: 0.8rem;
+        min-height: 36px;
+    }
+
+    /* Zoom controls móvil */
+    .zoom-group {
+        display: flex;
+        flex-direction: row;
+        gap: 0.4rem;
+        width: 100%;
+    }
+
+    .zoom-group button {
+        flex: 1;
+        min-height: 36px;
+        padding: 0.5rem;
+        font-size: 0.8rem;
+    }
+
+    #zoomLevel {
+        flex: 0 0 auto;
+        min-width: 45px;
+        padding: 0.3rem;
+        font-size: 0.8rem;
+    }
+
+    /* ===== GRÁFICO MÓVIL ===== */
+
+    .contenedor-grafica {
+        width: 100%;
+        height: calc(100vh - 55px);
+    }
+
+    .contenedor-app.pantalla-completa .contenedor-grafica {
+        height: 100vh;
+    }
+
+    /* ===== TARJETA FLOTANTE MÓVIL ===== */
+
+    .floating-card {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        max-width: 100%;
+        max-height: 60vh;
+        border-radius: 12px 12px 0 0;
+        z-index: 1001;
+        overflow-y: auto;
+    }
+
+    .floating-card.hidden {
+        bottom: -100%;
+        transition: bottom 0.3s ease;
+    }
+
+    .node-details-content {
+        padding: 1.2rem;
+    }
+
+    .node-details-content h3 {
+        font-size: 1.1rem;
+    }
+
+    .detail-row {
+        display: flex;
+        gap: 0.8rem;
+        flex-wrap: wrap;
+        margin: 0.6rem 0;
+        font-size: 0.85rem;
+    }
+
+    .btn-completar {
+        width: 100%;
+        padding: 0.8rem;
+        font-size: 0.9rem;
+        min-height: 44px;
+        margin: 0.8rem 0;
+    }
+
+    .badges {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.3rem;
+        margin-top: 0.4rem;
+        font-size: 0.8rem;
+    }
+
+    /* ===== TOOLTIP MÓVIL ===== */
+
+    #curso-tooltip {
+        display: none !important;
+    }
+
+    /* ===== SECCIÓN ACERCA DE ===== */
+
+    #acerca {
+        padding: 1.5rem 1rem;
+    }
+
+    .contenedor-acercade {
+        padding: 1.2rem;
+    }
+
+    .contenedor-acercade h2 {
+        font-size: 1.4rem;
+    }
+
+    .contenedor-acercade p {
+        font-size: 0.9rem;
+    }
+
+    /* ===== CONTACTO ===== */
+
+    #contacto {
+        padding: 1.5rem 1rem;
+    }
+
+    .contenedor-contacto {
+        flex-direction: column;
+        gap: 0.8rem;
+        padding: 1rem;
+    }
+
+    /* ===== FOOTER ===== */
+
+    footer {
+        padding: 0.8rem;
+        font-size: 0.85rem;
+    }
+
+    /* ===== CREDITOS DISPLAY ===== */
+
+    #creditos-display {
+        width: 100%;
+        padding: 0.5rem;
+        font-size: 0.85rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+    }
+
+    #creditos-display svg {
+        width: 14px;
+        height: 14px;
+    }
+
+    /* ===== ESTADOS DE CURSOS ===== */
+
+    .estado-badge {
+        padding: 0.3rem 0.6rem;
+        font-size: 0.75rem;
+    }
+}
+
+/* ===== TABLETS (768px - 1024px) ===== */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+    .barraHerramienta {
+        padding: 0.8rem 1rem;
+    }
+
+    .barraHerramienta button {
+        padding: 0.6rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .contenedor-grafica {
+        height: calc(100vh - 70px);
+    }
+}
+
+/* ===== PANTALLAS PEQUEÑAS (< 480px) ===== */
+
+@media (max-width: 480px) {
+    nav h1 {
+        font-size: 1rem;
+    }
+
+    .logo {
+        width: 26px;
+        height: 26px;
+    }
+
+    .contenedor-presentacion h2 {
+        font-size: 1.4rem;
+    }
+
+    .barraHerramienta button {
+        font-size: 0.8rem;
+        padding: 0.6rem;
+    }
+
+    .node-details-content h3 {
+        font-size: 1rem;
+    }
+
+    .tools-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1.2rem;
+    }
+}
+
+/* ===== LANDSCAPE MODE MÓVIL ===== */
+
+@media (max-width: 768px) and (orientation: landscape) {
+    .floating-card {
+        max-height: 70vh;
+    }
+
+    .barraHerramienta.active {
+        padding: 0.6rem;
+    }
+
+    .barraHerramienta-grupo {
+        padding: 0.5rem;
+        gap: 0.3rem;
+    }
+
+    .barraHerramienta button {
+        padding: 0.4rem 0.5rem;
+        font-size: 0.75rem;
+        min-height: 34px;
+    }
+}

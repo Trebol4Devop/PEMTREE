@@ -21,6 +21,7 @@ export class NodeRenderer {
         const nodeHeight = dims.height;
         
         const group = document.createElementNS(this.svgNS, "g");
+        group.style.cursor = "pointer";
         
         // Determinar colores
         const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
@@ -28,7 +29,8 @@ export class NodeRenderer {
         // Dibujar rectángulo
         const rect = this.crearRectangulo(curso, nodeWidth, nodeHeight, colors);
         
-        rect.addEventListener("click", (e) => {
+        // Agregar evento de click al grupo completo (rectángulo y texto)
+        group.addEventListener("click", (e) => {
             e.stopPropagation();
             if (onClickCallback) onClickCallback(curso);
         });

@@ -92,11 +92,40 @@ export class UIController {
         const navToggle = document.getElementById('nav-toggle');
         const navLinks = document.getElementById('nav-links');
         
+        // Crear overlay si no existe
+        let navOverlay = document.querySelector('.nav-overlay');
+        if (!navOverlay && navToggle && navLinks) {
+            navOverlay = document.createElement('div');
+            navOverlay.className = 'nav-overlay';
+            document.body.appendChild(navOverlay);
+        }
+        
         if(navToggle && navLinks) {
             navToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 navLinks.classList.toggle('active');
+                if (navOverlay) {
+                    navOverlay.classList.toggle('active');
+                }
             });
+            
+            // Cerrar menú al hacer clic en un enlace
+            navLinks.querySelectorAll('a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    if (navOverlay) {
+                        navOverlay.classList.remove('active');
+                    }
+                });
+            });
+            
+            // Cerrar menú al hacer clic en overlay
+            if (navOverlay) {
+                navOverlay.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    navOverlay.classList.remove('active');
+                });
+            }
         }
 
         const toolsToggle = document.getElementById('tools-toggle');
@@ -107,25 +136,50 @@ export class UIController {
             toolsToggle.addEventListener('click', (e) => {
                 e.stopPropagation();
                 barraHerramienta.classList.add('active');
+                toolsToggle.style.display = 'none';
             });
 
             if(closeToolsBtn) {
                 closeToolsBtn.addEventListener('click', () => {
                     barraHerramienta.classList.remove('active');
+                    if (toolsToggle) {
+                        toolsToggle.style.display = 'flex';
+                    }
                 });
             }
+        }
+
+        // Cerrar toolbar al hacer clic en botones (en móvil)
+        if (window.innerWidth <= 768 && barraHerramienta) {
+            const buttons = barraHerramienta.querySelectorAll('button:not(#close-tools-btn)');
+            buttons.forEach(button => {
+                button.addEventListener('click', () => {
+                    setTimeout(() => {
+                        barraHerramienta.classList.remove('active');
+                        if (toolsToggle) {
+                            toolsToggle.style.display = 'flex';
+                        }
+                    }, 300);
+                });
+            });
         }
 
         document.addEventListener('click', (e) => {
             if(navLinks && navLinks.classList.contains('active')) {
                 if (!navLinks.contains(e.target) && !navToggle.contains(e.target)) {
                     navLinks.classList.remove('active');
+                    if (navOverlay) {
+                        navOverlay.classList.remove('active');
+                    }
                 }
             }
 
             if(barraHerramienta && barraHerramienta.classList.contains('active')) {
                 if (!barraHerramienta.contains(e.target) && !toolsToggle.contains(e.target)) {
                     barraHerramienta.classList.remove('active');
+                    if (toolsToggle) {
+                        toolsToggle.style.display = 'flex';
+                    }
                 }
             }
         });
