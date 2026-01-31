@@ -54,6 +54,11 @@ export class UIController {
         this.themeManager = new ThemeManager(this.graphManager);
         this.searchManager = new SearchManager(this.graphManager, this.panZoomManager);
         
+        // Asignar referencias en graphManager para que pueda usarlas
+        this.graphManager.storageManager = this.storageManager;
+        this.graphManager.infoCardManager = this.infoCardManager;
+        this.graphManager.tooltipManager = this.tooltipManager;
+        
         // Zoom inicial para móviles
         if (window.innerWidth <= 768) {
             this.panZoomManager.setScale(0.5);

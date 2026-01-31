@@ -112,20 +112,6 @@ export let cursos = [];
 // Mapa de cursos (se actualiza en initializeCursos)
 export const cursoMap = new Map();
 
-// Archivos JSON a intentar cargar desde la carpeta modules/json
-/* const JSON_FILES = [
-    '../json/Ciencias_y_Sistemas.json',
-    '../json/electronica.json',
-    '../json/civil.json',
-    '../json/electrica.json',
-    '../json/industrial.json',
-    '../json/mecanica_electrica.json',
-    '../json/mecanica_industrial.json',
-    '../json/mecanica.json',
-    '../json/quimica.json'
-];
- */
-
 const JSON_FILES = [];
 const JSON_INDEX_URL = new URL('../json/index.json', import.meta.url).href;
 
