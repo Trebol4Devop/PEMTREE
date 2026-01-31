@@ -5,7 +5,7 @@ import { InfoCardManager } from './InfoCardManager.js';
 import { TooltipManager } from './TooltipManager.js';
 import { ThemeManager } from './ThemeManager.js';
 import { SearchManager } from './SearchManager.js';
-import { listAvailablePensums, loadPensum, cursos, cursoMap } from '../data/cursos.js';
+import { listAvailablePensums, loadPensum, applyPensumColors, cursos, cursoMap, STARTUP_LOADED_PENSUM } from '../data/cursos.js';
 
 export class UIController {
     constructor(graphManager, storageManager) {
@@ -21,8 +21,8 @@ export class UIController {
 
     init() {
         this.inicializarGrafo();
-        // Inicializar selector de pensum en la barra de herramientas
-        this.setupPensumSelector();
+        // Inicializar selector de pensum en la barra de herramientas (asincrónico)
+        this.setupPensumSelector().catch(err => console.error('Error inicializando selector de pensum:', err));
         this.setupMobileUI();
     }
 
@@ -172,19 +172,35 @@ export class UIController {
     /**
      * Inicializa el selector de pensum y maneja el cambio de pensum
      */
-    setupPensumSelector() {
+    async setupPensumSelector() {
         const select = document.getElementById('pensumSelect');
-        if (!select) return;
+        if (!select) {
+            console.warn('Selector de pensum no encontrado en DOM');
+            return;
+        }
+
+        console.debug('Inicializando selector de pensum...');
 
         // Poblar opciones
         try {
-            const pensums = listAvailablePensums();
-            console.debug('Pensums cargados:', pensums); // Debug: mostrar pensums cargados
+            const pensums = await listAvailablePensums();
+            console.debug('Pensums cargados en UIController:', pensums);
+
             select.innerHTML = '';
             const defaultOpt = document.createElement('option');
             defaultOpt.value = '';
             defaultOpt.textContent = '-- Selecciona pensum --';
             select.appendChild(defaultOpt);
+
+            if (!pensums || pensums.length === 0) {
+                const opt = document.createElement('option');
+                opt.value = '';
+                opt.textContent = 'No hay pensums disponibles';
+                select.appendChild(opt);
+                select.dataset.pensumsLoaded = 'false';
+                console.warn('No se encontraron pensums disponibles.');
+                return;
+            }
 
             pensums.forEach(p => {
                 const opt = document.createElement('option');
@@ -192,9 +208,23 @@ export class UIController {
                 opt.textContent = p.name;
                 select.appendChild(opt);
             });
+
+            select.dataset.pensumsLoaded = 'true';
+            console.debug(`Selector de pensum poblado con ${pensums.length} entradas.`);
+
+            // Auto-seleccionar el pensum que se cargó al inicio (si aplica)
+            if (STARTUP_LOADED_PENSUM) {
+                const option = Array.from(select.options).find(o => o.value === STARTUP_LOADED_PENSUM);
+                if (option) {
+                    option.selected = true;
+                    select.value = STARTUP_LOADED_PENSUM;
+                    console.debug(`Selector marcado con pensum por defecto: ${STARTUP_LOADED_PENSUM}`);
+                }
+            }
         } catch (err) {
             console.warn('No se pudieron listar pensums:', err);
             select.innerHTML = '<option value="">Error</option>';
+            select.dataset.pensumsLoaded = 'error';
             return;
         }
 
@@ -204,6 +234,14 @@ export class UIController {
 
             try {
                 await loadPensum(relPath);
+
+                // Aplicar colores asociados al pensum (si existe)
+                try {
+                    const applied = await applyPensumColors(relPath);
+                    console.debug('applyPensumColors result:', applied);
+                } catch (e) {
+                    console.debug('No se aplicaron colores al cargar desde UI:', e);
+                }
 
                 // Actualizar estructura del grafo
                 if (this.graphManager && typeof this.graphManager.updateCursos === 'function') {

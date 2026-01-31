@@ -6,6 +6,7 @@ import { cursoMap } from '../data/cursos.js';
 export class NodeRenderer {
     constructor() {
         this.svgNS = "http://www.w3.org/2000/svg";
+        this.pensumColorCache = {};
     }
 
     getNodeDimensions() {
@@ -14,14 +15,14 @@ export class NodeRenderer {
         const baseHeight = isMobile ? 48 : 90;
         // Reducir tamaño en 40% -> mantener 60% del original
         const height = Math.round(baseHeight * 0.6);
-        const width = height * 6; // formato 6:1
+        const width = height * 5; // formato 5:1
         return {
             width: width,
             height: height
         };
     }
 
-    dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback) {
+    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback) {
         const dims = this.getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
@@ -31,7 +32,7 @@ export class NodeRenderer {
 
         // Determinar colores base y por secciones (modulares)
         const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
-        const sectionColors = this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
+        const sectionColors = await this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
 
         // Dibujar las 5 partes (izq arriba, izq abajo, centro, der arriba, der abajo)
         const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
@@ -120,34 +121,93 @@ export class NodeRenderer {
         };
     }
 
-    // Devuelve colores para cada sección (permitir overrides en curso.colors)
-    // Nuevos colores base solicitados: #fc904f, #ffd0b6
-    getSectionColors(curso, colors, temaOscuro) {
+    async getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight) {
         const defaultText = temaOscuro ? '#ecf0f1' : '#333';
         const s = curso.colors || {};
-        // Eliminamos bordes: siempre stroke = 'none' y strokeWidth = '0'
         const stroke = 'none';
         const strokeWidth = '0';
 
+        // Obtener colores del pensum según la carrera del curso
+        const pensumColors = await this.getPensumColors(curso);
+
         return {
             leftTop: {
-                fill: (s.leftTop && s.leftTop.fill) || '#fc904f',
+                fill: (s.leftTop && s.leftTop.fill) || pensumColors.primary || '#fc904f',
                 stroke, strokeWidth
             },
             leftBottom: {
-                fill: (s.leftBottom && s.leftBottom.fill) || '#ffd0b6',
+                fill: (s.leftBottom && s.leftBottom.fill) || pensumColors.secondary || '#ffd0b6',
                 stroke, strokeWidth
             },
             center: {
-                fill: (s.center && s.center.fill) || '#ffd0b6',
+                fill: (s.center && s.center.fill) || pensumColors.secondary || '#ffd0b6',
                 stroke, strokeWidth
             },
             right: {
-                fill: (s.right && s.right.fill) || (s.rightTop && s.rightTop.fill) || (s.rightBottom && s.rightBottom.fill) || '#fc904f',
+                fill: (s.right && s.right.fill) || pensumColors.primary || '#fc904f',
                 stroke, strokeWidth
             },
             text: (s.text && s.text.fill) || defaultText
         };
+    }
+
+    async getPensumColors(curso) {
+        // Mapeo de carreras a archivos de color del pensum
+        const carreraMap = {
+            'ambiental': 'ambiental_color',
+            'ciencias y sistemas': 'ciencias_y_sistemas_color', // Corregido
+            'civil': 'civil_color',
+            'electrica': 'electrica_color',
+            'electronica': 'electronica_color',
+            'industrial': 'industrial_color',
+            'mecanica': 'mecanica_color',
+            'mecanica electrica': 'mecanica_electrica_color',
+            'mecanica industrial': 'mecanica_industrial_color',
+            'quimica': 'quimica_color'
+        };
+
+        const carrera = curso.carrera?.toLowerCase() || '';
+        const filename = carreraMap[carrera];
+
+        console.debug(`[getPensumColors] Carrera: "${curso.carrera}" -> "${carrera}"`);
+        console.debug(`[getPensumColors] Filename mapeado: "${filename}"`);
+
+        if (!filename) {
+            console.warn(`[getPensumColors] No se encontró mapeo para carrera: "${carrera}". Usando colores por defecto.`);
+            return { primary: '#fc904f', secondary: '#ffd0b6' };
+        }
+
+        // Si no está en caché, buscar y almacenar
+        if (!this.pensumColorCache[filename]) {
+            try {
+                const response = await fetch(`modules/pensum_color/${filename}.json`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const data = await response.json();
+                // Almacenar el primer objeto del array de colores
+                this.pensumColorCache[filename] = data[0]; 
+                console.debug(`[getPensumColors] Colores para "${filename}" cargados y cacheados:`, data[0]);
+
+            } catch (e) {
+                console.error(`[getPensumColors] Error al cargar colores para ${filename}:`, e.message);
+                // Usar colores por defecto en caso de error
+                return { primary: '#fc904f', secondary: '#ffd0b6' };
+            }
+        }
+
+        const colorData = this.pensumColorCache[filename];
+        if (colorData) {
+            const colors = {
+                primary: colorData.color1 || '#fc904f',
+                secondary: colorData.color2 || '#ffd0b6'
+            };
+            console.debug(`[getPensumColors] Colores extraídos de caché:`, colors);
+            return colors;
+        }
+
+        console.debug(`[getPensumColors] Usando colores por defecto para "${carrera}"`);
+        return { primary: '#fc904f', secondary: '#ffd0b6' };
     }
 
     // Crea el conjunto de rects que conforman el nodo
@@ -161,6 +221,8 @@ export class NodeRenderer {
         const centerX = leftX + lateralWidth;
         const centerW = nodeWidth - (2 * lateralWidth);
         const rightX = centerX + centerW;
+
+        console.debug(`[crearNodoCompuesto] Curso: ${curso.codigo}, sectionColors:`, sectionColors);
 
         // Izquierda - arriba
         const leftTop = document.createElementNS(this.svgNS, "rect");
@@ -186,14 +248,12 @@ export class NodeRenderer {
         leftBottom.setAttribute("class", "node-section left-bottom");
         g.appendChild(leftBottom);
 
-        // Centro (con esquinas ligeramente redondeadas)
+
         const center = document.createElementNS(this.svgNS, "rect");
         center.setAttribute("x", centerX);
         center.setAttribute("y", curso.y);
         center.setAttribute("width", centerW);
         center.setAttribute("height", nodeHeight);
-        center.setAttribute("rx", Math.max(2, lateralWidth * 0.08));
-        center.setAttribute("ry", Math.max(2, lateralWidth * 0.08));
         center.setAttribute("fill", sectionColors.center.fill);
         center.setAttribute("stroke", "none");
         center.setAttribute("stroke-width", "0");

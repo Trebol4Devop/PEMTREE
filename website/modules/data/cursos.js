@@ -127,6 +127,24 @@ export const cursoMap = new Map();
  */
 
 const JSON_FILES = [];
+const JSON_INDEX_URL = new URL('../json/index.json', import.meta.url).href;
+
+// Nombre del pensum que debe cargarse al iniciar
+const DEFAULT_STARTUP_FILENAME = 'ciencias_y_sistemas_22.json';
+const DEFAULT_STARTUP_REL = `../json/${DEFAULT_STARTUP_FILENAME}`;
+
+// Exporta el pensum cargado al iniciar (para sincronizar la UI)
+export let STARTUP_LOADED_PENSUM = '';
+
+// Rutas candidatas (intentar varias formas en caso de diferencias en el servidor o base path)"
+const INDEX_CANDIDATES = [
+    '../json/index.json',
+    './modules/json/index.json',
+    '/modules/json/index.json',
+    './json/index.json'
+].map(p => ({ rel: p, url: (() => {
+    try { return new URL(p, import.meta.url).href; } catch { return p; }
+})() }));
 
 /**
  * Inicializa `cursos` cargando archivos JSON desde `modules/json`.
@@ -136,7 +154,61 @@ export async function initializeCursos() {
     try {
         const allJson = [];
 
-        for (const relPath of JSON_FILES) {
+        // Preferir archivos explícitos en JSON_FILES, si existen. Si no, intentar leer index.json
+        let pensumFiles = JSON_FILES.slice();
+        if (pensumFiles.length === 0) {
+            // Intentar leer index.json desde varias rutas candidatas
+            let indexList = null;
+            for (const candidate of INDEX_CANDIDATES) {
+                try {
+                    const resIndex = await fetch(candidate.url);
+                    if (!resIndex.ok) {
+                        console.debug(`Index no encontrado en ${candidate.url}: ${resIndex.status}`);
+                        continue;
+                    }
+                    const parsed = await resIndex.json();
+                    if (Array.isArray(parsed)) {
+                        indexList = parsed;
+                        break;
+                    }
+                } catch (e) {
+                    console.debug(`Error leyendo index en ${candidate.url}:`, e);
+                    continue;
+                }
+            }
+
+            if (Array.isArray(indexList)) {
+                pensumFiles = indexList.map(entry => typeof entry === 'string' ? `../json/${entry}` : (entry.file ? `../json/${entry.file}` : ''))
+                                     .filter(Boolean);
+            }
+        }
+
+        // Preferir cargar solo el pensum por defecto al iniciar (ciencias_y_sistemas_22)
+        try {
+            const preferredSuffix = DEFAULT_STARTUP_FILENAME.toLowerCase();
+            const foundPreferred = pensumFiles.find(p => p.toLowerCase().endsWith(preferredSuffix));
+            if (foundPreferred) {
+                pensumFiles = [foundPreferred];
+                console.debug(`Inicializando solo con el pensum por defecto: ${foundPreferred}`);
+            } else if (pensumFiles.length === 0) {
+                // Si la lista está vacía, comprobar si el archivo por defecto existe y usarlo
+                try {
+                    const testUrl = new URL(DEFAULT_STARTUP_REL, import.meta.url).href;
+                    const headRes = await fetch(testUrl, { method: 'HEAD' });
+                    if (headRes.ok) {
+                        pensumFiles = [DEFAULT_STARTUP_REL];
+                        console.debug(`Archivo por defecto encontrado: ${DEFAULT_STARTUP_REL}, cargando solo este.`);
+                    }
+                } catch (e) {
+                    // ignorar errores al probar existencia
+                }
+            }
+        } catch (e) {
+            // no bloquear inicialización por este paso
+            console.debug('Error verificando pensum por defecto:', e);
+        }
+
+        for (const relPath of pensumFiles) {
             try {
                 const url = new URL(relPath, import.meta.url).href;
                 const res = await fetch(url);
@@ -147,6 +219,7 @@ export async function initializeCursos() {
                 const json = await res.json();
                 if (Array.isArray(json)) {
                     allJson.push(...json);
+                    if (!STARTUP_LOADED_PENSUM) STARTUP_LOADED_PENSUM = relPath;
                 }
             } catch (innerErr) {
                 console.warn(`Error cargando ${relPath}:`, innerErr);
@@ -157,6 +230,13 @@ export async function initializeCursos() {
             // Convertir y asignar
             const imported = importarCursosDesdeJSON(allJson);
             cursos = imported;
+
+            // intentar aplicar colores asociados al pensum de arranque
+            try {
+                await applyPensumColors(STARTUP_LOADED_PENSUM);
+            } catch (e) {
+                console.debug('No se aplicaron colores al inicializar:', e);
+            }
         } else {
             // Si no hay JSON cargado, dejar el fallback
             cursos = DEFAULT_CURSOS.slice();
@@ -186,22 +266,94 @@ cursoMap.clear();
 cursos.forEach(curso => cursoMap.set(curso.id, curso));
 
 /**
- * Devuelve la lista de pensums disponibles (basada en JSON_FILES)
- * @returns {Array<{file: string, id: string, name: string}>}
+ * Devuelve la lista de pensums disponibles leyendo `modules/json/index.json` si existe
+ * @returns {Promise<Array<{file: string, id: string, name: string}>>}
  */
-export function listAvailablePensums() {
+export async function listAvailablePensums() {
+    // Intentar varias rutas para index.json
+    let indexList = null;
+    for (const candidate of INDEX_CANDIDATES) {
+        try {
+            const res = await fetch(candidate.url);
+            if (!res.ok) {
+                console.debug(`Index no encontrado en ${candidate.url}: ${res.status}`);
+                continue;
+            }
+            const parsed = await res.json();
+            if (Array.isArray(parsed)) {
+                indexList = parsed;
+                break;
+            }
+        } catch (err) {
+            console.debug(`Error leyendo index en ${candidate.url}:`, err);
+        }
+    }
+
+    if (Array.isArray(indexList)) {
+        const pensums = indexList.map(entry => {
+            if (typeof entry === 'string') {
+                const file = `../json/${entry}`;
+                const id = entry.replace('.json', '');
+                const name = id.replace(/_/g, ' ');
+                return { file, id, name };
+            } else if (typeof entry === 'object' && entry.file) {
+                const file = `../json/${entry.file}`;
+                const id = entry.id || entry.file.replace('.json','');
+                const name = entry.name || id.replace(/_/g, ' ');
+                return { file, id, name };
+            }
+            return null;
+        }).filter(Boolean);
+
+        console.log('📋 Pensums disponibles (desde index):', pensums.length);
+        pensums.forEach(p => console.log(`  - ${p.id}: ${p.name} (${p.file})`));
+        return pensums;
+    }
+
+    // Si no hay index, intentar descubrir archivos probando una lista conocida
+    const KNOWN_FILES = [
+        'ambiental_25.json',
+        'ciencias_y_sistemas_22.json',
+        'ciencias_y_sistemas_25.json',
+        'civil_22.json',
+        'electrica_22.json',
+        'electronica_22.json',
+        'industrial_22.json',
+        'mecanica_22.json',
+        'mecanica_electrica_22.json',
+        'mecanica_industrial_22.json',
+        'quimica_22.json'
+    ];
+
+    const detectedPensums = [];
+    for (const fileName of KNOWN_FILES) {
+        const rel = `../json/${fileName}`;
+        try {
+            const url = new URL(rel, import.meta.url).href;
+            const res = await fetch(url, { method: 'HEAD' });
+            if (res.ok) {
+                const id = fileName.replace('.json','');
+                detectedPensums.push({ file: rel, id, name: id.replace(/_/g,' ') });
+            }
+        } catch (err) {
+            // ignorar
+        }
+    }
+
+    if (detectedPensums.length > 0) {
+        console.log('📋 Pensums detectados (probe):', detectedPensums.length);
+        return detectedPensums;
+    }
+
+    // Fallback final: usar JSON_FILES (posiblemente vacío)
     const pensums = JSON_FILES.map(p => {
         const fileName = p.split('/').pop();
         const id = fileName.replace('.json', '');
         const name = id.replace(/_/g, ' ');
         return { file: p, id, name };
     });
-    
-    console.log('📋 Pensums disponibles:', pensums.length);
-    pensums.forEach(p => {
-        console.log(`  - ${p.id}: ${p.name} (${p.file})`);
-    });
-    
+
+    console.log('📋 Pensums disponibles (fallback):', pensums.length);
     return pensums;
 }
 
@@ -226,10 +378,107 @@ export async function loadPensum(relPath) {
         cursoMap.clear();
         cursos.forEach(curso => cursoMap.set(curso.id, curso));
 
+        // Intentar cargar y aplicar colores específicos para este pensum (si existe)
+        try {
+            await applyPensumColors(relPath);
+        } catch (e) {
+            console.debug('No se aplicaron colores para el pensum:', e);
+        }
+
+        // Registrar el pensum cargado para la UI
+        STARTUP_LOADED_PENSUM = relPath;
+
         console.log(`✅ Pensum cargado: ${relPath} (${cursos.length} cursos)`);
         return cursos;
     } catch (error) {
         console.error('Error cargando pensum:', error);
         throw error;
     }
+}
+
+/**
+ * Intenta encontrar y aplicar un archivo de colores asociado al pensum cargado.
+ * El archivo esperado se encuentra en `modules/pensum_color/<pensum>_color.json`.
+ * Ejemplo: `ciencias_y_sistemas_22.json` -> `ciencias_y_sistemas_color.json`
+ * No sobrescribe colores ya definidos por curso en el JSON del pensum.
+ */
+export async function applyPensumColors(relPensumPath) {
+    if (!relPensumPath) return;
+    try {
+        const fileName = relPensumPath.split('/').pop(); // e.g. "ciencias_y_sistemas_22.json"
+        // Remover sufijo de año como _22 o _25 si existe
+        const base = fileName.replace(/\.json$/i, '').replace(/_\d{2,4}$/, '');
+        const colorRel = `../pensum_color/${base}_color.json`;
+        const url = new URL(colorRel, import.meta.url).href;
+
+        const res = await fetch(url);
+        if (!res.ok) {
+            console.debug(`Archivo de color no encontrado: ${colorRel} (${res.status})`);
+            return;
+        }
+
+        const colorJson = await res.json();
+        const primary = colorJson.color1 || colorJson.primary || null;
+        const secondary = colorJson.color2 || colorJson.secondary || null;
+        const accent = colorJson.color3 || primary;
+
+        if (!primary && !secondary) {
+            console.debug('Archivo de color sin campos útiles:', colorRel, colorJson);
+            return false;
+        }
+
+        const textForSecondary = pickTextColor(secondary || primary);
+
+        // Aplicar a todos los cursos solo si no tienen overrides explícitos
+        cursos.forEach(c => {
+            c.colors = c.colors || {};
+            c.colors.leftTop = c.colors.leftTop || { fill: primary };
+            c.colors.right = c.colors.right || { fill: primary };
+            c.colors.leftBottom = c.colors.leftBottom || { fill: secondary || primary };
+            c.colors.center = c.colors.center || { fill: secondary || primary };
+            c.colors.text = c.colors.text || { fill: textForSecondary };
+        });
+
+        console.log(`🎨 Colores aplicados desde ${colorRel}: primary=${primary}, secondary=${secondary}, text=${textForSecondary}`);
+        // Loguear el primer curso para verificar los cambios
+        if (cursos && cursos.length > 0) {
+            console.debug('Ejemplo curso[0].colors:', cursos[0].colors);
+        }
+        return true;
+    } catch (err) {
+        console.debug('Error aplicando colores del pensum:', err);
+    }
+}
+
+function hexToRgb(hex) {
+    if (!hex) return null;
+    const h = hex.replace('#','');
+    if (h.length === 3) {
+        return {
+            r: parseInt(h[0]+h[0], 16),
+            g: parseInt(h[1]+h[1], 16),
+            b: parseInt(h[2]+h[2], 16)
+        };
+    }
+    if (h.length === 6) {
+        return { r: parseInt(h.slice(0,2),16), g: parseInt(h.slice(2,4),16), b: parseInt(h.slice(4,6),16) };
+    }
+    return null;
+}
+
+function relativeLuminance({r,g,b}) {
+    // convertir a sRGB linearizado
+    const srgb = [r,g,b].map(v => {
+        const s = v / 255;
+        return s <= 0.03928 ? s / 12.92 : Math.pow((s + 0.055) / 1.055, 2.4);
+    });
+    return 0.2126 * srgb[0] + 0.7152 * srgb[1] + 0.0722 * srgb[2];
+}
+
+function pickTextColor(bgHex) {
+    const rgb = hexToRgb(bgHex);
+    if (!rgb) return '#333';
+    const lum = relativeLuminance(rgb);
+    // WCAG contrast approximation: si luminancia baja (oscuro) -> texto blanco
+    return lum < 0.5 ? '#ffffff' : '#222222';
 } 

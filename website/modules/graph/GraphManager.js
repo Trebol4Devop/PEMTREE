@@ -46,7 +46,7 @@ export class GraphManager {
         this.init();
     } 
 
-    dibujarGrafo() {
+    async dibujarGrafo() {
         const graphGroup = document.getElementById('grafica-group');
         if (!graphGroup) return;
 
@@ -84,18 +84,18 @@ export class GraphManager {
             });
         });
 
-        // Dibujar nodos
-        this.cursos.forEach(curso => {
-            if (!this.showOptional && !curso.obligatorio) return;
-            
-            this.nodeRenderer.dibujarNodo(
+        // Dibujar nodos en paralelo
+        const nodePromises = this.cursos
+            .filter(curso => this.showOptional || curso.obligatorio)
+            .map(curso => this.nodeRenderer.dibujarNodo(
                 graphGroup,
                 curso,
                 this.showCriticalPath,
                 this.temaOscuro,
-                (curso) => this.onNodeClick(curso, graphGroup)
-            );
-        });
+                (c) => this.onNodeClick(c, graphGroup)
+            ));
+
+        await Promise.all(nodePromises);
 
         // Contar nodos dibujados (compatibilidad con distintos renderers)
         const nodeCount = graphGroup.querySelectorAll('.node-rect, .node-group, .node-composite').length;
