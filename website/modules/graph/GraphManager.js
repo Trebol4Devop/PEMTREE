@@ -22,6 +22,10 @@ export class GraphManager {
         this.edgeRenderer = new EdgeRenderer();
         this.criticalPathAnalyzer = new CriticalPathAnalyzer(cursos, cursoMap);
         
+        // Managers que se asignan después (en UIController)
+        this.storageManager = null;
+        this.infoCardManager = null;
+        
         // Inicializar análisis
         this.init();
     }
@@ -92,7 +96,8 @@ export class GraphManager {
                 curso,
                 this.showCriticalPath,
                 this.temaOscuro,
-                (c) => this.onNodeClick(c, graphGroup)
+                (c) => this.onNodeClick(c, graphGroup),
+                (c) => this.onNodeDoubleClick(c, graphGroup)
             ));
 
         await Promise.all(nodePromises);
@@ -150,6 +155,17 @@ export class GraphManager {
 
     onNodeClick(curso, graphGroup) {
         return this.seleccionarNodo(curso, graphGroup);
+    }
+
+    onNodeDoubleClick(curso, graphGroup) {
+        // Usar toggleCompletado del storageManager si está disponible
+        if (this.storageManager) {
+            this.storageManager.toggleCompletado(curso.id, this, this.infoCardManager);
+        } else {
+            // Fallback: alternar el estado directamente
+            curso.completado = !curso.completado;
+            this.dibujarGrafo();
+        }
     }
 
     desseleccionarNodo() {

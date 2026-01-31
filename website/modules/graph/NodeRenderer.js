@@ -22,7 +22,7 @@ export class NodeRenderer {
         };
     }
 
-    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback) {
+    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback) {
         const dims = this.getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
@@ -41,6 +41,12 @@ export class NodeRenderer {
         group.addEventListener("click", (e) => {
             e.stopPropagation();
             if (onClickCallback) onClickCallback(curso);
+        });
+
+        // Doble clic para marcar/desmarcar como cursado
+        group.addEventListener("dblclick", (e) => {
+            e.stopPropagation();
+            if (onDoubleClickCallback) onDoubleClickCallback(curso);
         });
 
         // Si está seleccionado, aplicar clase para aumentar tamaño y sombra
