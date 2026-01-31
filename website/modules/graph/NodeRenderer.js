@@ -7,12 +7,18 @@ export class NodeRenderer {
     constructor() {
         this.svgNS = "http://www.w3.org/2000/svg";
         this.pensumColorCache = {};
+        this.lastClickData = {
+            cursoId: null,
+            time: 0
+        };
+        this.clickThreshold = 300; // milisegundos
+        this.clickTimeout = null;
     }
 
     getNodeDimensions() {
         const isMobile = window.innerWidth <= 768;
-        // Base original (antes reducción): 48 (móvil) / 90 (desktop)
-        const baseHeight = isMobile ? 48 : 90;
+        // Base original (antes reducción): 60 (móvil) / 90 (desktop)
+        const baseHeight = isMobile ? 60 : 90;
         // Reducir tamaño en 40% -> mantener 60% del original
         const height = Math.round(baseHeight * 0.6);
         const width = height * 5; // formato 5:1
@@ -37,16 +43,40 @@ export class NodeRenderer {
         // Dibujar las 5 partes (izq arriba, izq abajo, centro, der arriba, der abajo)
         const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
 
-        // Click en todo el nodo
+        // Sistema de click y doble-click basado en tiempo
         group.addEventListener("click", (e) => {
             e.stopPropagation();
-            if (onClickCallback) onClickCallback(curso);
-        });
+            const now = Date.now();
+            const timeDiff = now - this.lastClickData.time;
+            
+            console.log(`[NodeRenderer] Click en ${curso.codigo}, timeDiff: ${timeDiff}ms, lastCursoId: ${this.lastClickData.cursoId}`);
 
-        // Doble clic para marcar/desmarcar como cursado
-        group.addEventListener("dblclick", (e) => {
-            e.stopPropagation();
-            if (onDoubleClickCallback) onDoubleClickCallback(curso);
+            // Limpiar timeout anterior si existe
+            if (this.clickTimeout) {
+                clearTimeout(this.clickTimeout);
+                this.clickTimeout = null;
+            }
+
+            if (this.lastClickData.cursoId === curso.id && timeDiff < this.clickThreshold) {
+                // Es un doble clic
+                console.log(`[NodeRenderer] ✓ DOBLE CLIC detectado en ${curso.codigo}`);
+                if (onDoubleClickCallback) {
+                    onDoubleClickCallback(curso);
+                }
+                this.lastClickData = { cursoId: null, time: 0 }; // Reset para evitar triple-clic
+            } else {
+                // Es un clic simple - diferir la ejecución para permitir otro click
+                this.lastClickData = { cursoId: curso.id, time: now };
+                console.log(`[NodeRenderer] Clic simple en ${curso.codigo}, esperando segundo click...`);
+                
+                this.clickTimeout = setTimeout(() => {
+                    console.log(`[NodeRenderer] Timeout excedido, ejecutando clic simple`);
+                    if (onClickCallback) {
+                        onClickCallback(curso);
+                    }
+                    this.clickTimeout = null;
+                }, this.clickThreshold);
+            }
         });
 
         // Si está seleccionado, aplicar clase para aumentar tamaño y sombra
@@ -228,7 +258,7 @@ export class NodeRenderer {
         const centerW = nodeWidth - (2 * lateralWidth);
         const rightX = centerX + centerW;
 
-        console.debug(`[crearNodoCompuesto] Curso: ${curso.codigo}, sectionColors:`, sectionColors);
+        //console.debug(`[crearNodoCompuesto] Curso: ${curso.codigo}, sectionColors:`, sectionColors);
 
         // Izquierda - arriba
         const leftTop = document.createElementNS(this.svgNS, "rect");

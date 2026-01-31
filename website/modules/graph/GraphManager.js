@@ -159,10 +159,12 @@ export class GraphManager {
 
     onNodeDoubleClick(curso, graphGroup) {
         // Usar toggleCompletado del storageManager si está disponible
+        console.log(`[DEBUG] Doble clic detectado en curso: ${curso.codigo}`);
         if (this.storageManager) {
             this.storageManager.toggleCompletado(curso.id, this, this.infoCardManager);
         } else {
             // Fallback: alternar el estado directamente
+            console.warn('[DEBUG] storageManager no disponible, usando fallback');
             curso.completado = !curso.completado;
             this.dibujarGrafo();
         }

@@ -36,11 +36,7 @@ export class LayoutCalculator {
         
         const gapX = isMobile ? (isVertical ? 50 : 180) : (isVertical ? 80 : 300);
         let gapY = isMobile ? (isVertical ? 70 : 15) : (isVertical ? 100 : 20);
-
-        // Si la vista es por semestres, separar más para evitar traslapes
-        if (viewMode === 'semester') {
-            gapY = Math.round(gapY * 3);
-        }
+        gapY = Math.round(gapY * 3);
 
         niveles.forEach((nivel, levelIndex) => {
             const nodesInLevel = nivel.length;
