@@ -1,14 +1,13 @@
 [build]
-  # Carpeta que contiene el código ofuscado final
+  # Publicar la carpeta 'dist' que genera Parcel
   publish = "dist"
-  # Comando para ofuscar y construir
+  # Ejecutar el comando de build que pusimos en package.json
   command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
 
-# Elimina la sección [dev] y [[redirects]] si no tienes lógica compleja, 
-# Parcel manejará los paths, pero si necesitas el redirect 404:
+# Esta parte es vital para que las recargas de página funcionen
 [[redirects]]
   from = "/*"
   to = "/index.html"
