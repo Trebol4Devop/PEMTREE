@@ -1,15 +1,14 @@
 [build]
-  publish = "."
-  command = "echo 'No build step required'"
+  # Carpeta que contiene el código ofuscado final
+  publish = "dist"
+  # Comando para ofuscar y construir
+  command = "npm run build"
 
 [build.environment]
   NODE_VERSION = "18"
 
-[dev]
-  publish = "."
-  port = 8888
-  target = "static"
-
+# Elimina la sección [dev] y [[redirects]] si no tienes lógica compleja, 
+# Parcel manejará los paths, pero si necesitas el redirect 404:
 [[redirects]]
   from = "/*"
   to = "/index.html"
