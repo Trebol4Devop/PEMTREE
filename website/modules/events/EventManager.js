@@ -145,6 +145,8 @@ export class EventManager {
                 
                 setTimeout(() => {
                     contenedorApp.style.display = 'none';
+                    const rutasVista = document.getElementById('rutas-vista');
+                    if (rutasVista) rutasVista.style.display = '';
                 }, 200);
             });
         }
@@ -170,7 +172,7 @@ export class EventManager {
         // Resetear vistas
         this.graphManager.setShowOptional(true);
         this.graphManager.setShowCriticalPath(false);
-        this.graphManager.setViewMode('topological');
+        this.graphManager.setViewMode('semester');
         this.graphManager.setCurrentLayout('horizontal');
         
         // Actualizar botones

@@ -12,7 +12,7 @@ export class GraphManager {
         this.selectedNode = null;
         this.showOptional = true;
         this.currentLayout = 'horizontal';
-        this.viewMode = 'topological';
+        this.viewMode = 'semester';
         this.showCriticalPath = false;
         this.temaOscuro = false;
         

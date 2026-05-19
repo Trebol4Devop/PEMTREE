@@ -32,6 +32,16 @@ class PemtreeApp {
         // Configurar eventos
         this.eventManager.init();
 
+        // Entrar directo al visualizador en pantalla completa
+        const rutasVista = document.getElementById('rutas-vista');
+        const contenedorApp = document.getElementById('contenedorApp');
+        if (rutasVista) rutasVista.style.display = 'none';
+        if (contenedorApp) {
+            contenedorApp.style.display = 'flex';
+            contenedorApp.classList.add('pantalla-completa');
+            document.body.classList.add('no-scroll');
+        }
+
         // Dibujar gráfica inicial
         this.graphManager.dibujarGrafo();
     }
