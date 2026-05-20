@@ -76,6 +76,9 @@ export class EventManager {
         // Vista por semestres
         const btnVistaSemestre = document.getElementById('btnVistaSemestre');
         if (btnVistaSemestre) {
+            if (this.graphManager.viewMode === 'semester') {
+                btnVistaSemestre.classList.add('active');
+            }
             btnVistaSemestre.addEventListener('click', (e) => {
                 const nuevoModo = this.graphManager.viewMode === 'topological' ? 'semester' : 'topological';
                 this.graphManager.setViewMode(nuevoModo);

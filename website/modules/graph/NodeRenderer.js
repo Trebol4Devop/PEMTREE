@@ -190,19 +190,44 @@ export class NodeRenderer {
     async getPensumColors(curso) {
         // Mapeo de carreras a archivos de color del pensum
         const carreraMap = {
+            'ingeniería ambiental': 'ambiental_color',
+            'ingenieria ambiental': 'ambiental_color',
             'ambiental': 'ambiental_color',
-            'ciencias y sistemas': 'ciencias_y_sistemas_color', // Corregido
+            'ingeniería en ciencias y sistemas': 'ciencias_y_sistemas_color',
+            'ingenieria en ciencias y sistemas': 'ciencias_y_sistemas_color',
+            'ciencias y sistemas': 'ciencias_y_sistemas_color',
+            'ingeniería civil': 'civil_color',
+            'ingenieria civil': 'civil_color',
             'civil': 'civil_color',
+            'ingeniería eléctrica': 'electrica_color',
+            'ingenieria electrica': 'electrica_color',
             'electrica': 'electrica_color',
+            'ingeniería electrónica': 'electronica_color',
+            'ingenieria electronica': 'electronica_color',
             'electronica': 'electronica_color',
+            'ingeniería industrial': 'industrial_color',
+            'ingenieria industrial': 'industrial_color',
             'industrial': 'industrial_color',
+            'ingeniería mecánica': 'mecanica_color',
+            'ingenieria mecanica': 'mecanica_color',
             'mecanica': 'mecanica_color',
+            'ingeniería mecánica eléctrica': 'mecanica_electrica_color',
+            'ingenieria mecanica electrica': 'mecanica_electrica_color',
             'mecanica electrica': 'mecanica_electrica_color',
+            'ingeniería mecánica industrial': 'mecanica_industrial_color',
+            'ingenieria mecanica industrial': 'mecanica_industrial_color',
             'mecanica industrial': 'mecanica_industrial_color',
+            'ingeniería química': 'quimica_color',
+            'ingenieria quimica': 'quimica_color',
             'quimica': 'quimica_color'
         };
 
-        const carrera = curso.carrera?.toLowerCase() || '';
+        const carreraRaw = curso.carrera || '';
+        // Normalizar: lowercase, sin tildes
+        const carrera = carreraRaw.toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
+
         const filename = carreraMap[carrera];
 
         console.debug(`[getPensumColors] Carrera: "${curso.carrera}" -> "${carrera}"`);

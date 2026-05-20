@@ -422,7 +422,9 @@ export async function applyPensumColors(relPensumPath) {
         root.style.setProperty('--border', secondary || primary);   // borde usa el color secundario
 
         // Aplicar a todos los cursos solo si no tienen overrides explícitos
+        const carrera = colorJson.carrera || '';
         cursos.forEach(c => {
+            if (!c.carrera) c.carrera = carrera;
             c.colors = c.colors || {};
             c.colors.leftTop = c.colors.leftTop || { fill: primary };
             c.colors.right = c.colors.right || { fill: primary };

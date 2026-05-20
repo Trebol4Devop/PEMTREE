@@ -50,6 +50,7 @@ class PemtreeApp {
 // Inicializar aplicación cuando el DOM esté listo
 document.addEventListener('DOMContentLoaded', () => {
     const app = new PemtreeApp();
+    window.app = app;
     app.init();
 });
 

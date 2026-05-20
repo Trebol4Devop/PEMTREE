@@ -527,60 +527,24 @@ button#zoomReset:hover {
     background: rgba(239,68,68,0.12);
 }
 
-.boton-tema-flotante {
-    position: absolute;
-    top: 20px;
-    right: 20px;
-    z-index: 2100;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    color: #475569;
-    border: 1px solid rgba(0,0,0,0.08);
-    padding: 12px;
-    border-radius: 50%;
-    cursor: pointer;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
-    transition: all 0.2s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 44px;
-    height: 44px;
+#toggleTema {
+    padding: 6px;
+    min-height: 32px;
+    width: 32px;
 }
 
-.boton-tema-flotante:hover {
-    background: #fff;
-    border-color: rgba(0,0,0,0.12);
-    transform: scale(1.05);
-    box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-}
-
-.boton-tema-flotante.active {
-    background: #fbbf24;
-    color: #1e293b;
-    border-color: #f59e0b;
-}
-
-.tema-oscuro .boton-tema-flotante {
-    background: rgba(30,41,59,0.92);
-    backdrop-filter: blur(8px);
-    color: #e2e8f0;
-    border-color: rgba(255,255,255,0.08);
-}
-
-.tema-oscuro .boton-tema-flotante:hover {
-    background: rgba(51,65,85,0.92);
-    border-color: rgba(255,255,255,0.15);
-}
-
-.tema-oscuro .boton-tema-flotante.active {
+#toggleTema.active {
     background: #fbbf24;
     color: #1e293b;
 }
 
-.boton-tema-flotante.active:hover {
-    background-color: #f1c40f;
+.tema-oscuro #toggleTema.active {
+    background: #fbbf24;
+    color: #1e293b;
+}
+
+#toggleTema.active:hover {
+    background: #f1c40f;
 }
 
 /* Estilo gráfica */
@@ -1317,14 +1281,6 @@ footer {
         padding: 8px 12px;
     }
 
-    .boton-tema-flotante {
-        top: 15px;
-        right: 15px;
-        width: 45px;
-        height: 45px;
-        padding: 10px;
-    }
-
     .contenido-vista {
         width: 90%;
         padding: 1rem;
@@ -1396,12 +1352,6 @@ footer {
     .boton-salir {
         font-size: 0.8rem;
         padding: 6px 10px;
-    }
-
-    .boton-tema-flotante {
-        width: 40px;
-        height: 40px;
-        padding: 8px;
     }
 
     .floating-card {
