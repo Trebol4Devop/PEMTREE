@@ -13,6 +13,10 @@ export class NodeRenderer {
         };
         this.clickThreshold = 300; // milisegundos
         this.clickTimeout = null;
+        this.longPressTimer = null;
+        this.longPressThreshold = 500; // ms
+        this.touchHandled = false;
+        this.touchStartPos = null;
     }
 
     getNodeDimensions() {
@@ -28,7 +32,7 @@ export class NodeRenderer {
         };
     }
 
-    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback) {
+    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback, onLongPressCallback) {
         const dims = this.getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
@@ -43,13 +47,54 @@ export class NodeRenderer {
         // Dibujar las 5 partes (izq arriba, izq abajo, centro, der arriba, der abajo)
         const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
 
+        const isMobile = window.innerWidth <= 768;
+
+        // Pulsado largo en móviles para mostrar info card
+        if (isMobile && onLongPressCallback) {
+            group.addEventListener('touchstart', (e) => {
+                e.stopPropagation();
+                this.touchHandled = false;
+                this.touchStartPos = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+                this.longPressTimer = setTimeout(() => {
+                    this.touchHandled = true;
+                    onLongPressCallback(curso);
+                    if (navigator.vibrate) navigator.vibrate(15);
+                }, this.longPressThreshold);
+            }, { passive: true });
+
+            group.addEventListener('touchmove', (e) => {
+                if (!this.touchStartPos || !this.longPressTimer) return;
+                const dx = e.touches[0].clientX - this.touchStartPos.x;
+                const dy = e.touches[0].clientY - this.touchStartPos.y;
+                if (Math.abs(dx) > 10 || Math.abs(dy) > 10) {
+                    clearTimeout(this.longPressTimer);
+                    this.longPressTimer = null;
+                }
+            }, { passive: true });
+
+            group.addEventListener('touchend', () => {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            });
+
+            group.addEventListener('touchcancel', () => {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            });
+        }
+
         // Sistema de click y doble-click basado en tiempo
         group.addEventListener("click", (e) => {
             e.stopPropagation();
+
+            // Si ya se manejó con pulsado largo, ignorar el click
+            if (this.touchHandled) {
+                this.touchHandled = false;
+                return;
+            }
+
             const now = Date.now();
             const timeDiff = now - this.lastClickData.time;
-            
-            console.log(`[NodeRenderer] Click en ${curso.codigo}, timeDiff: ${timeDiff}ms, lastCursoId: ${this.lastClickData.cursoId}`);
 
             // Limpiar timeout anterior si existe
             if (this.clickTimeout) {
@@ -59,7 +104,6 @@ export class NodeRenderer {
 
             if (this.lastClickData.cursoId === curso.id && timeDiff < this.clickThreshold) {
                 // Es un doble clic
-                console.log(`[NodeRenderer] ✓ DOBLE CLIC detectado en ${curso.codigo}`);
                 if (onDoubleClickCallback) {
                     onDoubleClickCallback(curso);
                 }
@@ -67,10 +111,8 @@ export class NodeRenderer {
             } else {
                 // Es un clic simple - diferir la ejecución para permitir otro click
                 this.lastClickData = { cursoId: curso.id, time: now };
-                console.log(`[NodeRenderer] Clic simple en ${curso.codigo}, esperando segundo click...`);
-                
+
                 this.clickTimeout = setTimeout(() => {
-                    console.log(`[NodeRenderer] Timeout excedido, ejecutando clic simple`);
                     if (onClickCallback) {
                         onClickCallback(curso);
                     }

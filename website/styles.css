@@ -252,8 +252,8 @@ body.no-scroll {
 }
 
 .barraHerramienta.tema-oscuro {
-    background: #1e2a36;
-    border-bottom: 1px solid #2c3e50;
+    background: var(--dark-surface, #1e2a36);
+    border-bottom: 1px solid var(--dark-border, #2c3e50);
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
 }
 
@@ -316,7 +316,7 @@ body.no-scroll {
 }
 
 .tema-oscuro .barraHerramienta button:hover {
-    background: #334155;
+    background: var(--dark-hover, #334155);
     color: #f1f5f9;
 }
 
@@ -335,7 +335,7 @@ body.no-scroll {
 }
 
 .tema-oscuro .barraHerramienta button.boton-Ruta:hover {
-    background: #334155;
+    background: var(--dark-hover, #334155);
 }
 
 .barraHerramienta button.active {
@@ -387,7 +387,7 @@ body.no-scroll {
 
 .tema-oscuro .select-pensum:hover,
 .tema-oscuro .select-pensum:focus {
-    background-color: #334155;
+    background-color: var(--dark-hover, #334155);
 }
 
 .input-buscador {
@@ -414,8 +414,8 @@ body.no-scroll {
 }
 
 .tema-oscuro .input-buscador {
-    background-color: #1e293b;
-    border: 1px solid #334155;
+    background-color: var(--dark-surface, #1e293b);
+    border: 1px solid var(--dark-border, #334155);
     color: #e2e8f0;
 }
 
@@ -425,7 +425,7 @@ body.no-scroll {
 
 .tema-oscuro .input-buscador:focus {
     border-color: var(--primary);
-    background-color: #0f172a;
+    background-color: var(--dark-bg, #0f172a);
     box-shadow: 0 0 0 2px rgba(247,150,69,0.15);
 }
 
@@ -499,7 +499,7 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .boton-salir {
-    background: rgba(30,41,59,0.92);
+    background: var(--dark-surface, rgba(30,41,59,0.92));
     backdrop-filter: blur(8px);
     border-color: rgba(239,68,68,0.25);
     color: #f87171;
@@ -544,7 +544,7 @@ button#zoomReset:hover {
 }
 
 .contenedor-grafica.tema-oscuro {
-    background-color: #1a1a1a;
+    background-color: var(--dark-bg, #1a1a1a);
 }
 
 .contenedor-grafica:active {
@@ -587,7 +587,7 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .marcaAgua span {
-    color: #4db8ab;
+    color: var(--primary, #4db8ab);
     text-shadow: 0 0 2px #000;
 }
 
@@ -616,8 +616,8 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .floating-card {
-    background: rgba(30,41,59,0.96);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--dark-surface, rgba(30,41,59,0.96));
+    border: 1px solid var(--dark-border, rgba(255,255,255,0.06));
     box-shadow: 0 8px 32px rgba(0,0,0,0.4);
 }
 
@@ -652,12 +652,12 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .close-card {
-    background: #334155;
+    background: var(--dark-surface2, #334155);
     color: #94a3b8;
 }
 
 .tema-oscuro .close-card:hover {
-    background: #475569;
+    background: var(--dark-hover, #475569);
     color: #e2e8f0;
 }
 
@@ -670,8 +670,8 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .node-details-content h3 {
-    color: #3498db;
-    border-bottom: 2px solid #3498db;
+    color: var(--primary, #3498db);
+    border-bottom: 2px solid var(--primary, #3498db);
 }
 
 .tema-oscuro .node-details-content {
@@ -707,8 +707,8 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .badge {
-    background: #1a4d4d;
-    color: #4db8ab;
+    background: var(--dark-surface2, #1a4d4d);
+    color: var(--primary, #4db8ab);
 }
 
 .alert-critical {
@@ -751,9 +751,9 @@ button#zoomReset:hover {
 }
 
 .tema-oscuro .btn-completar.no-completado {
-    background-color: #34495e;
+    background-color: var(--dark-surface2, #34495e);
     color: #95a5a6;
-    border: 1px solid #4a5f7f;
+    border: 1px solid var(--dark-border, #4a5f7f);
 }
 
 .tema-oscuro .btn-completar.completado {
@@ -1022,8 +1022,8 @@ footer {
     }
 
     .tema-oscuro .nav-links {
-        background: #1e2a36;
-        border-top-color: #334155;
+        background: var(--dark-surface, #1e2a36);
+        border-top-color: var(--dark-border, #334155);
     }
 
     .tema-oscuro .nav-links a {
@@ -1070,7 +1070,7 @@ footer {
     }
 
     .tema-oscuro .barraHerramienta {
-        background: #1e2a36;
+        background: var(--dark-surface, #1e2a36);
     }
 
     .close-tools-btn {
@@ -1098,7 +1098,7 @@ footer {
     }
 
     .tema-oscuro .barraHerramienta-grupo {
-        border-bottom-color: #334155;
+        border-bottom-color: var(--dark-border, #334155);
     }
 
     .barraHerramienta button {
@@ -1117,13 +1117,13 @@ footer {
     }
 
     .tema-oscuro .barraHerramienta button {
-        background: #1e293b;
+        background: var(--dark-surface, #1e293b);
         color: #cbd5e1;
-        border-color: #334155;
+        border-color: var(--dark-border, #334155);
     }
 
     .tema-oscuro .barraHerramienta button:hover {
-        background: #334155;
+        background: var(--dark-hover, #334155);
     }
 
     .barraHerramienta .select-pensum {
@@ -1136,9 +1136,9 @@ footer {
     }
 
     .tema-oscuro .barraHerramienta .select-pensum {
-        background: #1e293b;
+        background: var(--dark-surface, #1e293b);
         color: #cbd5e1;
-        border-color: #334155;
+        border-color: var(--dark-border, #334155);
     }
 
     /* Buscador flotante fuera del menú */
@@ -1161,7 +1161,7 @@ footer {
     }
 
     .tema-oscuro #buscador {
-        background: rgba(30,41,59,0.95);
+        background: var(--dark-surface, rgba(30,41,59,0.95));
     }
 
     #buscador .grupo-etiqueta {
@@ -1192,7 +1192,7 @@ footer {
     }
 
     .tema-oscuro .creditos-counter {
-        background: rgba(30,41,59,0.95) !important;
+        background: var(--dark-surface, rgba(30,41,59,0.95)) !important;
         color: #e2e8f0 !important;
     }
 

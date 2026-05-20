@@ -97,7 +97,8 @@ export class GraphManager {
                 this.showCriticalPath,
                 this.temaOscuro,
                 (c) => this.onNodeClick(c, graphGroup),
-                (c) => this.onNodeDoubleClick(c, graphGroup)
+                (c) => this.onNodeDoubleClick(c, graphGroup),
+                (c) => this.onNodeLongPress(c, graphGroup)
             ));
 
         await Promise.all(nodePromises);
@@ -136,11 +137,6 @@ export class GraphManager {
 
         this.dibujarGrafo();
 
-        // Mostrar info card
-        if (this.infoCardManager) {
-            this.infoCardManager.mostrar(curso);
-        }
-
         return curso;
     }
 
@@ -166,7 +162,28 @@ export class GraphManager {
     }
 
     onNodeClick(curso, graphGroup) {
-        return this.seleccionarNodo(curso, graphGroup);
+        const result = this.seleccionarNodo(curso, graphGroup);
+        // En escritorio: mostrar info card al seleccionar
+        if (result && window.innerWidth > 768 && this.infoCardManager) {
+            this.infoCardManager.mostrar(curso);
+        }
+        return result;
+    }
+
+    onNodeLongPress(curso, graphGroup) {
+        // Pulsado largo en móvil: seleccionar y mostrar info card
+        if (this.selectedNode && this.selectedNode.id === curso.id) {
+            // Ya está seleccionado, solo refrescar info card
+            if (this.infoCardManager) {
+                this.infoCardManager.mostrar(curso);
+            }
+            return curso;
+        }
+        const result = this.seleccionarNodo(curso, graphGroup);
+        if (result && this.infoCardManager) {
+            this.infoCardManager.mostrar(curso);
+        }
+        return result;
     }
 
     onNodeDoubleClick(curso, graphGroup) {

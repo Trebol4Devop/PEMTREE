@@ -382,6 +382,47 @@ export async function loadPensum(relPath) {
     }
 }
 
+function hexToHSL(hex) {
+    let r, g, b;
+    const h = hex.replace('#', '');
+    if (h.length === 3) {
+        r = parseInt(h[0] + h[0], 16) / 255;
+        g = parseInt(h[1] + h[1], 16) / 255;
+        b = parseInt(h[2] + h[2], 16) / 255;
+    } else {
+        r = parseInt(h.slice(0, 2), 16) / 255;
+        g = parseInt(h.slice(2, 4), 16) / 255;
+        b = parseInt(h.slice(4, 6), 16) / 255;
+    }
+    const max = Math.max(r, g, b), min = Math.min(r, g, b);
+    let hDeg = 0, s = 0, l = (max + min) / 2;
+    if (max !== min) {
+        const d = max - min;
+        s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+        switch (max) {
+            case r: hDeg = ((g - b) / d + (g < b ? 6 : 0)) * 60; break;
+            case g: hDeg = ((b - r) / d + 2) * 60; break;
+            case b: hDeg = ((r - g) / d + 4) * 60; break;
+        }
+    }
+    return { h: Math.round(hDeg), s: Math.round(s * 100), l: Math.round(l * 100) };
+}
+
+function generateDarkPalette(primaryHex) {
+    const hsl = hexToHSL(primaryHex);
+    if (!hsl) return {};
+    const h = hsl.h;
+    const tint = Math.min(hsl.s * 0.28, 18);
+    const tintBorder = Math.min(hsl.s * 0.22, 14);
+    return {
+        '--dark-bg': `hsl(${h}, ${Math.round(tint * 0.55)}%, 7%)`,
+        '--dark-surface': `hsl(${h}, ${Math.round(tint * 0.65)}%, 13%)`,
+        '--dark-surface2': `hsl(${h}, ${Math.round(tint * 0.7)}%, 20%)`,
+        '--dark-border': `hsl(${h}, ${Math.round(tintBorder)}%, 24%)`,
+        '--dark-hover': `hsl(${h}, ${Math.round(tint * 0.8)}%, 27%)`,
+    };
+}
+
 /**
  * Intenta encontrar y aplicar un archivo de colores asociado al pensum cargado.
  * El archivo esperado se encuentra en `modules/pensum_color/<pensum>_color.json`.
@@ -419,7 +460,12 @@ export async function applyPensumColors(relPensumPath) {
         const root = document.documentElement;
         root.style.setProperty('--primary', primary);
         root.style.setProperty('--accent', accent || primary);
-        root.style.setProperty('--border', secondary || primary);   // borde usa el color secundario
+        root.style.setProperty('--border', secondary || primary);
+
+        const darkPalette = generateDarkPalette(primary);
+        Object.entries(darkPalette).forEach(([prop, value]) => {
+            root.style.setProperty(prop, value);
+        });
 
         // Aplicar a todos los cursos solo si no tienen overrides explícitos
         const carrera = colorJson.carrera || '';
