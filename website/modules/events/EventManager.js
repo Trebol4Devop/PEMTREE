@@ -26,13 +26,7 @@ export class EventManager {
             divCreditos.id = 'creditos-display';
             divCreditos.className = 'creditos-counter';
             divCreditos.innerHTML = '<span>Créditos: 0</span>';
-            
-            const zoomGroup = barra.querySelector('.zoom-group');
-            if(zoomGroup) {
-                barra.insertBefore(divCreditos, zoomGroup);
-            } else {
-                barra.appendChild(divCreditos);
-            }
+            barra.appendChild(divCreditos);
         }
     }
 

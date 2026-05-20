@@ -12,6 +12,9 @@ export class InfoCardManager {
         
         const content = this.infoCard.querySelector('.node-details-content');
         this.infoCard.classList.remove('hidden');
+
+        const zoomBar = document.getElementById('zoomBar');
+        if (zoomBar) zoomBar.classList.add('shifted');
         
         const cursoMap = this.graphManager.cursoMap;
         
@@ -86,5 +89,7 @@ export class InfoCardManager {
         if (!this.infoCard) return;
         this.infoCard.classList.add('hidden');
         this.graphManager.desseleccionarNodo();
+        const zoomBar = document.getElementById('zoomBar');
+        if (zoomBar) zoomBar.classList.remove('shifted');
     }
 }
