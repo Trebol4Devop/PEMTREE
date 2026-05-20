@@ -23,9 +23,10 @@
 - All JS import paths are **relative to `website/`** (e.g., `./modules/data/cursos.js`).
 
 ## Data files
-- **Pensum JSONs:** `website/modules/json/*.json` — course data per engineering program. `index.json` lists available pensums.
-- **Color theme JSONs:** `website/modules/pensum_color/*_color.json` — per-program colors (primary, secondary, accent).
+- **Pensum JSONs:** `website/modules/json/*.json` — course data per engineering program. `index.json` is an array of `{file, name}` objects listing available pensums with their human-readable names.
+- **Color theme JSONs:** `website/modules/pensum_color/*_color.json` — per-program colors (primary, secondary, accent). On load, `applyPensumColors()` sets CSS custom properties `--primary`, `--accent`, `--border` on `:root`, which drive toolbar, navbar, and UI accent colors.
 - Default pensum loaded at startup: `ciencias_y_sistemas_22.json`. Falls back to hardcoded `DEFAULT_CURSOS` in `cursos.js`.
+- Default view mode is `semester` (not topological). Graph viewer opens in fullscreen immediately on page load.
 
 ## localStorage keys
 - `pemtree_progreso` — array of `{id, completado}` for course completion state.

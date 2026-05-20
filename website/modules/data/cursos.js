@@ -415,6 +415,12 @@ export async function applyPensumColors(relPensumPath) {
 
         const textForSecondary = pickTextColor(secondary || primary);
 
+        // Aplicar CSS custom properties al :root para que menú y toolbar hereden los colores del pensum
+        const root = document.documentElement;
+        root.style.setProperty('--primary', primary);
+        root.style.setProperty('--accent', accent || primary);
+        root.style.setProperty('--border', secondary || primary);   // borde usa el color secundario
+
         // Aplicar a todos los cursos solo si no tienen overrides explícitos
         cursos.forEach(c => {
             c.colors = c.colors || {};

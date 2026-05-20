@@ -1,4 +1,4 @@
-// modules/graph/CriticalPathAnalyzer.js - Análisis de ruta crítica
+// modules/graph/CriticalPathAnalyzer.js - Análisis de ruta crítica (CPM)
 
 export class CriticalPathAnalyzer {
     constructor(cursos, cursoMap) {
@@ -18,23 +18,57 @@ export class CriticalPathAnalyzer {
     }
 
     calcularSemestreMasTemprano() {
-        let changed = true;
-        
-        this.cursos.forEach(c => c.semestreMasTemprano = 1);
+        const cursos = this.cursos;
+        // Inicializar: 1 para los sin prerrequisitos
+        cursos.forEach(c => {
+            c.semestreMasTemprano = c.prerequisitos.length === 0 ? 1 : 0;
+        });
 
-        while(changed) {
+        let changed = true;
+        while (changed) {
             changed = false;
-            this.cursos.forEach(curso => {
+            cursos.forEach(curso => {
+                if (curso.prerequisitos.length === 0) return;
                 let maxPrereqSemestre = 0;
                 curso.prerequisitos.forEach(pid => {
                     const p = this.cursoMap.get(pid);
-                    if(p) maxPrereqSemestre = Math.max(maxPrereqSemestre, p.semestreMasTemprano);
+                    if (p && p.semestreMasTemprano > 0) {
+                        maxPrereqSemestre = Math.max(maxPrereqSemestre, p.semestreMasTemprano);
+                    }
                 });
-                
-                const nuevoSemestre = curso.prerequisitos.length > 0 ? maxPrereqSemestre + 1 : 1;
-                
-                if(nuevoSemestre > curso.semestreMasTemprano) {
+                const nuevoSemestre = maxPrereqSemestre > 0 ? maxPrereqSemestre + 1 : 0;
+                if (nuevoSemestre > 0 && nuevoSemestre !== curso.semestreMasTemprano) {
                     curso.semestreMasTemprano = nuevoSemestre;
+                    changed = true;
+                }
+            });
+        }
+    }
+
+    calcularSemestreMasTardio() {
+        const cursos = this.cursos;
+        const maxSemestre = Math.max(...cursos.map(c => c.semestreMasTemprano || 1));
+
+        // Inicializar: maxSemestre para los que no tienen posrequisitos, 0 para el resto
+        cursos.forEach(c => {
+            c.semestreMasTardio = c.posrequisitos.length === 0 ? maxSemestre : 0;
+        });
+
+        let changed = true;
+        while (changed) {
+            changed = false;
+            cursos.forEach(curso => {
+                if (curso.posrequisitos.length === 0) return;
+                let minPosreqSemestre = Infinity;
+                curso.posrequisitos.forEach(pid => {
+                    const p = this.cursoMap.get(pid);
+                    if (p && p.semestreMasTardio > 0) {
+                        minPosreqSemestre = Math.min(minPosreqSemestre, p.semestreMasTardio);
+                    }
+                });
+                const nuevoTardio = minPosreqSemestre < Infinity ? minPosreqSemestre - 1 : 0;
+                if (nuevoTardio > 0 && nuevoTardio !== curso.semestreMasTardio) {
+                    curso.semestreMasTardio = nuevoTardio;
                     changed = true;
                 }
             });
@@ -43,29 +77,15 @@ export class CriticalPathAnalyzer {
 
     calcularRutaCritica() {
         this.calcularSemestreMasTemprano();
-        
-        const maxSemestre = Math.max(...this.cursos.map(c => c.semestreMasTemprano));
-        
-        this.cursos.forEach(c => c.enRutaCritica = false);
-        
-        let nodosCandidatos = this.cursos.filter(c => c.semestreMasTemprano === maxSemestre);
-        
-        const visitados = new Set();
-        const cola = [...nodosCandidatos];
-        
-        while(cola.length > 0) {
-            const actual = cola.shift();
-            if(visitados.has(actual.id)) continue;
-            visitados.add(actual.id);
-            
-            actual.enRutaCritica = true;
-            
-            actual.prerequisitos.forEach(pid => {
-                const prereq = this.cursoMap.get(pid);
-                if(prereq && prereq.semestreMasTemprano === actual.semestreMasTemprano - 1) {
-                    cola.push(prereq);
-                }
-            });
-        }
+        this.calcularSemestreMasTardio();
+
+        // Cursos obligatorios siempre están en ruta crítica (son indispensables para graduarse).
+        // Cursos optativos solo si tienen holgura cero (CPM: semestreMasTemprano == semestreMasTardio).
+        this.cursos.forEach(c => {
+            const zeroSlack = c.semestreMasTemprano > 0 &&
+                               c.semestreMasTardio > 0 &&
+                               c.semestreMasTemprano === c.semestreMasTardio;
+            c.enRutaCritica = c.obligatorio || zeroSlack;
+        });
     }
 }
