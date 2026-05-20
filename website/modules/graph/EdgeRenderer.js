@@ -14,33 +14,42 @@ export class EdgeRenderer {
         
         const path = document.createElementNS(this.svgNS, "path");
         
-        // Calcular puntos de conexión
         const { d } = this.calcularPath(fromNode, toNode, currentLayout, nodeWidth, nodeHeight);
         path.setAttribute("d", d);
         path.setAttribute("fill", "none");
         
-        // Determinar estilo de la arista
-        const style = this.determinarEstiloArista(
-            fromNode,
-            toNode,
-            selectedNode,
-            showCriticalPath,
-            temaOscuro
-        );
+        this._aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro);
         
+        graphGroup.appendChild(path);
+        return path;
+    }
+
+    _aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro) {
+        const style = this.determinarEstiloArista(
+            fromNode, toNode, selectedNode, showCriticalPath, temaOscuro
+        );
+
         path.setAttribute("stroke", style.stroke);
         path.setAttribute("stroke-width", style.strokeWidth);
         if (style.strokeDasharray) {
             path.setAttribute("stroke-dasharray", style.strokeDasharray);
+        } else {
+            path.removeAttribute("stroke-dasharray");
         }
         if (style.markerEnd) {
             path.setAttribute("marker-end", style.markerEnd);
+        } else {
+            path.removeAttribute("marker-end");
         }
         if (style.opacity) {
             path.setAttribute("opacity", style.opacity);
+        } else {
+            path.removeAttribute("opacity");
         }
-        
-        graphGroup.appendChild(path);
+    }
+
+    actualizarArista(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro) {
+        this._aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro);
     }
 
     calcularPath(fromNode, toNode, currentLayout, nodeWidth, nodeHeight) {
