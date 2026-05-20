@@ -1325,6 +1325,19 @@ footer {
         margin-bottom: 0;
     }
 
+    .barraHerramienta.active #buscador {
+        position: relative !important;
+        top: auto !important;
+        left: auto !important;
+        right: auto !important;
+        width: 100% !important;
+        z-index: auto !important;
+        border-radius: 0 !important;
+        box-shadow: none !important;
+        backdrop-filter: none !important;
+        background: transparent !important;
+    }
+
     .tema-oscuro #buscador {
         background: var(--dark-surface, rgba(30,41,59,0.95));
     }
