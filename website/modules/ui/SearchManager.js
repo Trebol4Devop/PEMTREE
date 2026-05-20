@@ -13,34 +13,39 @@ export class SearchManager {
         const searchInput = document.getElementById('buscadorCurso');
         if (!searchInput) return;
 
+        let searchTimeout;
+
         searchInput.addEventListener('input', (e) => {
-            const term = TextUtils.normalizarTexto(e.target.value);
-            if (term.length < 2) return;
-            
-            const resultados = this.buscarCursos(term);
-            
-            if (resultados.length > 0) {
-                const mejorCoincidencia = this.ordenarResultados(resultados, term)[0];
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                const term = TextUtils.normalizarTexto(e.target.value);
+                if (term.length < 2) return;
                 
-                // Mostrar optativos si el curso encontrado es optativo
-                if (!this.graphManager.showOptional && !mejorCoincidencia.obligatorio) {
-                    this.graphManager.setShowOptional(true);
-                    const btnOptativos = document.getElementById('cursosObligatorios');
-                    if (btnOptativos) {
-                        btnOptativos.innerHTML = "Optativos";
+                const resultados = this.buscarCursos(term);
+                
+                if (resultados.length > 0) {
+                    const mejorCoincidencia = this.ordenarResultados(resultados, term)[0];
+                    
+                    // Mostrar optativos si el curso encontrado es optativo
+                    if (!this.graphManager.showOptional && !mejorCoincidencia.obligatorio) {
+                        this.graphManager.setShowOptional(true);
+                        const btnOptativos = document.getElementById('cursosObligatorios');
+                        if (btnOptativos) {
+                            btnOptativos.innerHTML = "Optativos";
+                        }
+                    }
+                    
+                    const graphGroup = document.getElementById('grafica-group');
+                    const cursoSeleccionado = this.graphManager.seleccionarNodo(mejorCoincidencia, graphGroup);
+                    this.panZoomManager.centrarEnNodo(cursoSeleccionado);
+                    
+                    // Mostrar info card
+                    const infoCardManager = window.app?.uiController?.getInfoCardManager();
+                    if (infoCardManager) {
+                        infoCardManager.mostrar(cursoSeleccionado);
                     }
                 }
-                
-                const graphGroup = document.getElementById('grafica-group');
-                const cursoSeleccionado = this.graphManager.seleccionarNodo(mejorCoincidencia, graphGroup);
-                this.panZoomManager.centrarEnNodo(cursoSeleccionado);
-                
-                // Mostrar info card
-                const infoCardManager = window.app?.uiController?.getInfoCardManager();
-                if (infoCardManager) {
-                    infoCardManager.mostrar(cursoSeleccionado);
-                }
-            }
+            }, 200);
         });
     }
 

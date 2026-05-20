@@ -1,5 +1,7 @@
 // modules/graph/LayoutCalculator.js - Cálculo de posiciones
 
+import { getNodeDimensions as _getNodeDimensions } from './dimensions.js';
+
 export class LayoutCalculator {
     constructor(cursos, cursoMap) {
         this.cursos = cursos;
@@ -7,15 +9,11 @@ export class LayoutCalculator {
     }
 
     getNodeDimensions() {
-        const isMobile = window.innerWidth <= 768;
-        const baseHeight = isMobile ? 48 : 90;
-        const height = Math.round(baseHeight * 0.6); // igual reducción que NodeRenderer
-        const width = height * 6; // formato 6:1
-        return { width, height };
+        return _getNodeDimensions();
     }
 
     calcularLayout(showOptional, currentLayout, viewMode) {
-        const dims = this.getNodeDimensions();
+        const dims = _getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
         

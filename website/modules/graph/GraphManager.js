@@ -228,30 +228,37 @@ export class GraphManager {
         svg.setAttribute("height", `${Math.max(maxY + 100, 2000)}px`);
     }
 
+    batchUpdate(fn) {
+        this._batching = true;
+        fn();
+        this._batching = false;
+        this.dibujarGrafo();
+    }
+
     // Setters para cambiar modos de vista
     setShowOptional(value) {
         this.showOptional = value;
-        this.dibujarGrafo();
+        if (!this._batching) this.dibujarGrafo();
     }
 
     setCurrentLayout(layout) {
         this.currentLayout = layout;
-        this.dibujarGrafo();
+        if (!this._batching) this.dibujarGrafo();
     }
 
     setViewMode(mode) {
         this.viewMode = mode;
-        this.dibujarGrafo();
+        if (!this._batching) this.dibujarGrafo();
     }
 
     setShowCriticalPath(value) {
         this.showCriticalPath = value;
-        this.dibujarGrafo();
+        if (!this._batching) this.dibujarGrafo();
     }
 
     setTemaOscuro(value) {
         this.temaOscuro = value;
-        this.dibujarGrafo();
+        if (!this._batching) this.dibujarGrafo();
     }
 
     getSelectedNode() {

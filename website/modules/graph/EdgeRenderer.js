@@ -1,19 +1,14 @@
 // modules/graph/EdgeRenderer.js - Renderizado de aristas
 
+import { getNodeDimensions } from './dimensions.js';
+
 export class EdgeRenderer {
     constructor() {
         this.svgNS = "http://www.w3.org/2000/svg";
     }
 
-    getNodeDimensions() {
-        const isMobile = window.innerWidth <= 768;
-        const width = isMobile ? 100 : 140;
-        const height = isMobile ? 65 : 90;
-        return { width, height };
-    }
-
     dibujarArista(graphGroup, fromNode, toNode, currentLayout, selectedNode, showCriticalPath, temaOscuro) {
-        const dims = this.getNodeDimensions();
+        const dims = getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
         

@@ -1,39 +1,26 @@
 // modules/graph/NodeRenderer.js - Renderizado de nodos
 
 import { TextUtils } from '../utils/TextUtils.js';
-import { cursoMap } from '../data/cursos.js';
+import { cursoMap, currentPensumColors } from '../data/cursos.js';
+import { getNodeDimensions } from './dimensions.js';
 
 export class NodeRenderer {
     constructor() {
         this.svgNS = "http://www.w3.org/2000/svg";
-        this.pensumColorCache = {};
         this.lastClickData = {
             cursoId: null,
             time: 0
         };
-        this.clickThreshold = 300; // milisegundos
+        this.clickThreshold = 300;
         this.clickTimeout = null;
         this.longPressTimer = null;
-        this.longPressThreshold = 500; // ms
+        this.longPressThreshold = 500;
         this.touchHandled = false;
         this.touchStartPos = null;
     }
 
-    getNodeDimensions() {
-        const isMobile = window.innerWidth <= 768;
-        // Base original (antes reducción): 60 (móvil) / 90 (desktop)
-        const baseHeight = isMobile ? 60 : 90;
-        // Reducir tamaño en 40% -> mantener 60% del original
-        const height = Math.round(baseHeight * 0.6);
-        const width = height * 5; // formato 5:1
-        return {
-            width: width,
-            height: height
-        };
-    }
-
     async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback, onLongPressCallback, selectedNode = null) {
-        const dims = this.getNodeDimensions();
+        const dims = getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
 
@@ -235,87 +222,7 @@ export class NodeRenderer {
     }
 
     async getPensumColors(curso) {
-        // Mapeo de carreras a archivos de color del pensum
-        const carreraMap = {
-            'ingeniería ambiental': 'ambiental_color',
-            'ingenieria ambiental': 'ambiental_color',
-            'ambiental': 'ambiental_color',
-            'ingeniería en ciencias y sistemas': 'ciencias_y_sistemas_color',
-            'ingenieria en ciencias y sistemas': 'ciencias_y_sistemas_color',
-            'ciencias y sistemas': 'ciencias_y_sistemas_color',
-            'ingeniería civil': 'civil_color',
-            'ingenieria civil': 'civil_color',
-            'civil': 'civil_color',
-            'ingeniería eléctrica': 'electrica_color',
-            'ingenieria electrica': 'electrica_color',
-            'electrica': 'electrica_color',
-            'ingeniería electrónica': 'electronica_color',
-            'ingenieria electronica': 'electronica_color',
-            'electronica': 'electronica_color',
-            'ingeniería industrial': 'industrial_color',
-            'ingenieria industrial': 'industrial_color',
-            'industrial': 'industrial_color',
-            'ingeniería mecánica': 'mecanica_color',
-            'ingenieria mecanica': 'mecanica_color',
-            'mecanica': 'mecanica_color',
-            'ingeniería mecánica eléctrica': 'mecanica_electrica_color',
-            'ingenieria mecanica electrica': 'mecanica_electrica_color',
-            'mecanica electrica': 'mecanica_electrica_color',
-            'ingeniería mecánica industrial': 'mecanica_industrial_color',
-            'ingenieria mecanica industrial': 'mecanica_industrial_color',
-            'mecanica industrial': 'mecanica_industrial_color',
-            'ingeniería química': 'quimica_color',
-            'ingenieria quimica': 'quimica_color',
-            'quimica': 'quimica_color'
-        };
-
-        const carreraRaw = curso.carrera || '';
-        // Normalizar: lowercase, sin tildes
-        const carrera = carreraRaw.toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '');
-
-        const filename = carreraMap[carrera];
-
-        console.debug(`[getPensumColors] Carrera: "${curso.carrera}" -> "${carrera}"`);
-        console.debug(`[getPensumColors] Filename mapeado: "${filename}"`);
-
-        if (!filename) {
-            console.warn(`[getPensumColors] No se encontró mapeo para carrera: "${carrera}". Usando colores por defecto.`);
-            return { primary: '#fc904f', secondary: '#ffd0b6' };
-        }
-
-        // Si no está en caché, buscar y almacenar
-        if (!this.pensumColorCache[filename]) {
-            try {
-                const response = await fetch(`modules/pensum_color/${filename}.json`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                // Almacenar el primer objeto del array de colores
-                this.pensumColorCache[filename] = data[0]; 
-                console.debug(`[getPensumColors] Colores para "${filename}" cargados y cacheados:`, data[0]);
-
-            } catch (e) {
-                console.error(`[getPensumColors] Error al cargar colores para ${filename}:`, e.message);
-                // Usar colores por defecto en caso de error
-                return { primary: '#fc904f', secondary: '#ffd0b6' };
-            }
-        }
-
-        const colorData = this.pensumColorCache[filename];
-        if (colorData) {
-            const colors = {
-                primary: colorData.color1 || '#fc904f',
-                secondary: colorData.color2 || '#ffd0b6'
-            };
-            console.debug(`[getPensumColors] Colores extraídos de caché:`, colors);
-            return colors;
-        }
-
-        console.debug(`[getPensumColors] Usando colores por defecto para "${carrera}"`);
-        return { primary: '#fc904f', secondary: '#ffd0b6' };
+        return currentPensumColors;
     }
 
     // Crea el conjunto de rects que conforman el nodo

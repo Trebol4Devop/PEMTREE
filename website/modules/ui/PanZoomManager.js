@@ -1,5 +1,7 @@
 // modules/ui/PanZoomManager.js - Gestión de pan y zoom
 
+import { getNodeDimensions } from '../graph/dimensions.js';
+
 export class PanZoomManager {
     constructor(svg) {
         this.svg = svg;
@@ -15,7 +17,14 @@ export class PanZoomManager {
         const container = document.querySelector('.contenedor-grafica');
         if (!container) return;
 
-        // Pan con mouse
+        this._onMouseMove = (e) => {
+            if (!this.isDragging) return;
+            e.preventDefault();
+            this.translateX = e.clientX - this.startX;
+            this.translateY = e.clientY - this.startY;
+            this.actualizarTransform();
+        };
+
         container.addEventListener('mousedown', (e) => {
             if(e.target.closest('.floating-card')) return;
             if(e.target.tagName === 'rect' || e.target.tagName === 'text') return;
@@ -25,19 +34,15 @@ export class PanZoomManager {
             this.startX = e.clientX - this.translateX;
             this.startY = e.clientY - this.translateY;
             container.style.cursor = 'grabbing';
+            window.addEventListener('mousemove', this._onMouseMove);
         });
 
         window.addEventListener('mouseup', () => {
-            this.isDragging = false;
-            container.style.cursor = 'grab';
-        });
-
-        window.addEventListener('mousemove', (e) => {
-            if (!this.isDragging) return;
-            e.preventDefault();
-            this.translateX = e.clientX - this.startX;
-            this.translateY = e.clientY - this.startY;
-            this.actualizarTransform();
+            if (this.isDragging) {
+                this.isDragging = false;
+                container.style.cursor = 'grab';
+                window.removeEventListener('mousemove', this._onMouseMove);
+            }
         });
     }
 
@@ -79,8 +84,9 @@ export class PanZoomManager {
         
         this.scale = 1.2;
         
-        const nodeWidth = window.innerWidth <= 768 ? 100 : 140;
-        const nodeHeight = window.innerWidth <= 768 ? 65 : 90;
+        const dims = getNodeDimensions();
+        const nodeWidth = dims.width;
+        const nodeHeight = dims.height;
         
         const nodeCenterX = curso.x + nodeWidth / 2;
         const nodeCenterY = curso.y + nodeHeight / 2;
