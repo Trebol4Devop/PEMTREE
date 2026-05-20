@@ -81,7 +81,7 @@ nav h1 {
 #inicio {
     height: 100vh;
     width: 100%;
-    background-image: url("./images/fiusac.jpg");
+    background-image: url("./images/fiusac.webp");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -143,7 +143,7 @@ section#rutas {
 .rutas-vista {
     width: 100%;
     height: 100%;
-    background-image: url('./images/app_decoracion.png'); 
+    background-image: url('./images/app_decoracion.webp'); 
     background-size: cover;
     background-position: center;
     position: relative;
@@ -443,6 +443,18 @@ body.no-scroll {
     transition: bottom 0.25s ease;
 }
 
+.zoom-bar #btnGuia {
+    width: 36px;
+    height: 36px;
+    min-height: 0;
+    padding: 0;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 50%;
+    color: var(--primary);
+    margin-left: 4px;
+}
+
 .zoom-bar button {
     background: rgba(255,255,255,0.85);
     backdrop-filter: blur(6px);
@@ -517,6 +529,109 @@ body.no-scroll {
 .tema-oscuro #zoomLevel {
     color: #94a3b8;
     background: var(--dark-surface, rgba(30,41,59,0.85));
+}
+
+/* Modal de guía de uso */
+.guia-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(4px);
+    z-index: 5000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.25s ease;
+}
+
+.guia-modal.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.guia-modal-content {
+    background: white;
+    border-radius: 16px;
+    padding: 32px;
+    max-width: 640px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 16px 48px rgba(0,0,0,0.2);
+}
+
+.tema-oscuro .guia-modal-content {
+    background: var(--dark-surface, #1e293b);
+    color: #e2e8f0;
+}
+
+.guia-modal-content h2 {
+    margin: 0 0 12px 0;
+    color: var(--primary);
+    font-size: 1.4rem;
+}
+
+.guia-modal-content p {
+    margin: 0 0 16px 0;
+    color: #64748b;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.tema-oscuro .guia-modal-content p {
+    color: #94a3b8;
+}
+
+.guia-imagen {
+    width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+    display: block;
+}
+
+.guia-modal-close {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    color: #94a3b8;
+    cursor: pointer;
+    line-height: 1;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: background 0.15s ease;
+}
+
+.guia-modal-close:hover {
+    background: #f1f5f9;
+    color: #475569;
+}
+
+.tema-oscuro .guia-modal-close:hover {
+    background: var(--dark-hover, #334155);
+    color: #e2e8f0;
+}
+
+@media (max-width: 768px) {
+    .guia-modal-content {
+        padding: 24px 20px;
+        width: 94%;
+    }
+    .guia-modal-content h2 {
+        font-size: 1.2rem;
+    }
+    .zoom-bar #btnGuia {
+        width: 40px;
+        height: 40px;
+        font-size: 1.2rem;
+    }
 }
 
 .boton-salir {

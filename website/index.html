@@ -8,14 +8,14 @@
         <meta name="keywords" content="PEMTREE, rutas académicas, PENSUM CLAR 2022, visualizador, planificación de estudios, ingeniería en ciencias y sistemas, USAC, FIUSAC, pemsum ingeniería, USAC, cursos ingeniería sistemas">
         <meta name="author" content="Trebol4Devop">
         <meta name="robots" content="index, follow">
-        <link rel="icon" type="image/jpeg" href="./images/logo_trebol.jpg">
+        <link rel="icon" type="image/webp" href="./images/logo_trebol.webp">
         <link rel="stylesheet" href="styles.css">
     </head>
     <body>
         <header>
             <nav>
                 <div class="logo-container">
-                    <img src="./images/logo_trebol.jpg" alt="Trebol4Asociados" class="logo">
+                    <img src="./images/logo_trebol.webp" alt="Trebol4Asociados" class="logo">
                     <h1>PEMTREE</h1>
                 </div>
                 
@@ -76,7 +76,6 @@
                             <span class="grupo-etiqueta">Vista</span>
                             <button id="vistaRecetear">Limpiar</button>
                             <button id="cursosObligatorios">Optativos</button>
-                            <button id="resetearCreditos" title="Marcar todos los cursos como no completados">Resetear créditos</button>
                         </div>
 
                         <div class="barraHerramienta-grupo">
@@ -114,6 +113,7 @@
                         <span id="zoomLevel">100%</span>
                         <button id="zoomIn" title="Acercar">+</button>
                         <button id="zoomReset" title="Restablecer zoom">↺</button>
+                        <button id="btnGuia" title="Guía de uso">?</button>
                     </div>
 
                     <div class="contenedor-grafica">
@@ -128,7 +128,16 @@
                         
                         <div class="marcaAgua">
                             <span>by Trebol4Devop</span>
-                            <img src="./images/logo_trebol.jpg" alt="Logo Pequeño">
+                            <img src="./images/logo_trebol.webp" alt="Logo Pequeño">
+                        </div>
+                    </div>
+
+                    <div id="guiaModal" class="guia-modal hidden">
+                        <div class="guia-modal-content">
+                            <button class="guia-modal-close" id="guiaModalClose">×</button>
+                            <h2>¡Bienvenido!</h2>
+                            <p>Haz doble clic en un curso para marcarlo como completado. Usa los botones de zoom y el menú para explorar las rutas académicas.</p>
+                            <img src="./images/Guia_de_uso.webp" alt="Guía de uso" class="guia-imagen">
                         </div>
                     </div>
                 </div>

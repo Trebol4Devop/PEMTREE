@@ -15,6 +15,7 @@ export class EventManager {
         this.setupFullscreenControls();
         this.setupCreditsCounter();
         this.setupCloseInfoCard();
+        this.setupGuiaModal();
     }
 
     setupCreditsCounter() {
@@ -52,15 +53,6 @@ export class EventManager {
                 const nuevoEstado = !this.graphManager.showOptional;
                 this.graphManager.setShowOptional(nuevoEstado);
                 e.target.innerHTML = nuevoEstado ? "Optativos" : "Optativos (Ocultos)";
-            });
-        }
-
-        // Resetear créditos
-        const btnResetCreditos = document.getElementById('resetearCreditos');
-        if (btnResetCreditos) {
-            btnResetCreditos.addEventListener('click', () => {
-                this.storageManager.limpiarProgreso(this.graphManager.cursos);
-                this.graphManager.dibujarGrafo();
             });
         }
     }
@@ -163,6 +155,42 @@ export class EventManager {
         window.cerrarInfo = () => {
             this.uiController.getInfoCardManager().ocultar();
         };
+    }
+
+    setupGuiaModal() {
+        const modal = document.getElementById('guiaModal');
+        const btnGuia = document.getElementById('btnGuia');
+        const btnClose = document.getElementById('guiaModalClose');
+
+        if (!modal) return;
+
+        const abrir = () => {
+            modal.classList.remove('hidden');
+        };
+
+        const cerrar = () => {
+            modal.classList.add('hidden');
+        };
+
+        if (btnGuia) btnGuia.addEventListener('click', abrir);
+        if (btnClose) btnClose.addEventListener('click', cerrar);
+
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) cerrar();
+        });
+
+        // Auto-mostrar en la primera visita
+        if (!localStorage.getItem('pemtree_guia_visto')) {
+            // Esperar a que la app entre a pantalla completa
+            const checkApp = setInterval(() => {
+                const app = document.getElementById('contenedorApp');
+                if (app && app.classList.contains('pantalla-completa')) {
+                    clearInterval(checkApp);
+                    setTimeout(abrir, 500);
+                    localStorage.setItem('pemtree_guia_visto', 'true');
+                }
+            }, 200);
+        }
     }
 
     limpiarVista() {

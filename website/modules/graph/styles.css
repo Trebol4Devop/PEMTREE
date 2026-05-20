@@ -81,7 +81,7 @@ nav h1 {
 #inicio {
     height: 100vh;
     width: 100%;
-    background-image: url("./images/fiusac.jpg");
+    background-image: url("../../images/fiusac.webp");
     background-size: cover;
     background-position: center;
     background-attachment: fixed;
@@ -143,7 +143,7 @@ section#rutas {
 .rutas-vista {
     width: 100%;
     height: 100%;
-    background-image: url('./images/app_decoracion.png'); 
+    background-image: url('../../images/app_decoracion.webp'); 
     background-size: cover;
     background-position: center;
     position: relative;

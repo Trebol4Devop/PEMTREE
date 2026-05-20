@@ -22,6 +22,25 @@ export function importarCursosDesdeJSON(jsonData) {
         return [];
     };
 
+    // Helper: convierte nombre de semestre español a número (UNDÉCIMO=11, DUODÉCIMO=12, etc.)
+    const parseSemester = (raw) => {
+        if (raw === null || raw === undefined) return 0;
+        const cleaned = String(raw).replace(/\n/g, ' ').replace(/\s+/g, ' ').trim().toUpperCase();
+        const num = Number(cleaned);
+        if (!isNaN(num)) return num;
+        const ordinals = {
+            'PRIMERO': 1, 'SEGUNDO': 2, 'TERCERO': 3, 'CUARTO': 4, 'QUINTO': 5,
+            'SEXTO': 6, 'SÉPTIMO': 7, 'OCTAVO': 8, 'NOVENO': 9, 'DÉCIMO': 10,
+            'UNDÉCIMO': 11, 'DUODÉCIMO': 12
+        };
+        // Buscar por orden de largo descendente para evitar que DÉCIMO matchee dentro de UNDÉCIMO
+        const sorted = Object.entries(ordinals).sort((a,b) => b[0].length - a[0].length);
+        for (const [word, value] of sorted) {
+            if (cleaned.includes(word)) return value;
+        }
+        return 0;
+    };
+
     // Crear instancias de NodoCurso en una primera pasada, guardando códigos de prerequisitos temporalmente
     const codeToCurso = new Map();
     const cursosConvertidos = [];
@@ -32,7 +51,7 @@ export function importarCursosDesdeJSON(jsonData) {
         const nombre = item.nombre ? String(item.nombre).trim() : '';
         const creditos = Number(item.creditos) || 0;
         const obligatorio = String(item.tipo || '').toLowerCase() === 'obligatorio';
-        const semestre = item.semestre ? Number(item.semestre) || 0 : 0;
+        const semestre = parseSemester(item.semestre);
         // Use provided id if present, otherwise generate one
         const id = (typeof item.id === 'number' && item.id > 0) ? item.id : idCounter++;
 
