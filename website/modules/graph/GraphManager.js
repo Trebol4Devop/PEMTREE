@@ -111,6 +111,12 @@ export class GraphManager {
     }
 
     seleccionarNodo(curso, graphGroup) {
+        // Toggle: si es el mismo nodo, desseleccionar
+        if (this.selectedNode && this.selectedNode.id === curso.id) {
+            this.desseleccionarNodo();
+            return null;
+        }
+
         if (this.selectedNode) {
             this.selectedNode.selected = false;
         }
@@ -129,6 +135,12 @@ export class GraphManager {
         });
 
         this.dibujarGrafo();
+
+        // Mostrar info card
+        if (this.infoCardManager) {
+            this.infoCardManager.mostrar(curso);
+        }
+
         return curso;
     }
 
@@ -177,6 +189,8 @@ export class GraphManager {
             this.cursos.forEach(c => c.highlighted = false);
             this.dibujarGrafo();
         }
+        const infoCard = document.getElementById('infoCard');
+        if (infoCard) infoCard.classList.add('hidden');
     }
 
     ajustarTamanioSVG() {

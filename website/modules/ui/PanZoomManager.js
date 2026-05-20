@@ -15,16 +15,6 @@ export class PanZoomManager {
         const container = document.querySelector('.contenedor-grafica');
         if (!container) return;
 
-        // Click en área vacía para cerrar info
-        container.addEventListener('click', (e) => {
-            if(e.target.tagName !== 'rect' && e.target.tagName !== 'text' && !e.target.closest('.floating-card')) {
-                const infoCard = document.getElementById('infoCard');
-                if (infoCard) {
-                    window.cerrarInfo();
-                }
-            }
-        });
-
         // Pan con mouse
         container.addEventListener('mousedown', (e) => {
             if(e.target.closest('.floating-card')) return;
