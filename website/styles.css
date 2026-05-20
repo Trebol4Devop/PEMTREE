@@ -161,7 +161,7 @@ section#rutas {
     text-align: center;
     padding: 2rem;
     border-radius: 12px;
-    background: #4c9b98;
+    background: #e6e6e6;
     box-shadow: 0 1px 5px rgb(161, 161, 161);
 }
 
@@ -181,7 +181,7 @@ section#rutas {
 
 .contenido-vista p {
     margin-bottom: 15px;
-    color: #ffffff;
+    color: #5f5f5f;
 }
 
 .boton-vista {

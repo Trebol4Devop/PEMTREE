@@ -238,6 +238,7 @@ export class UIController {
             if (!relPath) return;
 
             try {
+                localStorage.setItem('pemtree_last_pensum', relPath.split('/').pop());
                 await loadPensum(relPath);
 
                 // Aplicar colores asociados al pensum (si existe)

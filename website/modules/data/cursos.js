@@ -118,6 +118,8 @@ export let currentPensumColors = { primary: '#fc904f', secondary: '#ffd0b6' };
 const JSON_FILES = [];
 const JSON_INDEX_URL = new URL('../json/index.json', import.meta.url).href;
 
+const LS_LAST_PENSUM = 'pemtree_last_pensum';
+
 // Nombre del pensum que debe cargarse al iniciar
 const DEFAULT_STARTUP_FILENAME = 'ciencias_y_sistemas_22.json';
 const DEFAULT_STARTUP_REL = `../json/${DEFAULT_STARTUP_FILENAME}`;
@@ -178,21 +180,22 @@ export async function initializeCursos() {
             }
         }
 
-        // Preferir cargar solo el pensum por defecto al iniciar (ciencias_y_sistemas_22)
+        // Elegir pensum a cargar: último seleccionado o por defecto
         try {
-            const preferredSuffix = DEFAULT_STARTUP_FILENAME.toLowerCase();
-            const foundPreferred = pensumFiles.find(p => p.toLowerCase().endsWith(preferredSuffix));
-            if (foundPreferred) {
-                pensumFiles = [foundPreferred];
-                console.debug(`Inicializando solo con el pensum por defecto: ${foundPreferred}`);
+            const savedPensum = localStorage.getItem(LS_LAST_PENSUM);
+            const targetFile = savedPensum || DEFAULT_STARTUP_FILENAME;
+            const targetSuffix = targetFile.toLowerCase();
+            const found = pensumFiles.find(p => p.toLowerCase().endsWith(targetSuffix));
+            if (found) {
+                pensumFiles = [found];
+                console.debug(`Inicializando con pensum: ${found}`);
             } else if (pensumFiles.length === 0) {
-                // Si la lista está vacía, comprobar si el archivo por defecto existe y usarlo
                 try {
                     const testUrl = new URL(DEFAULT_STARTUP_REL, import.meta.url).href;
                     const headRes = await fetch(testUrl, { method: 'HEAD' });
                     if (headRes.ok) {
                         pensumFiles = [DEFAULT_STARTUP_REL];
-                        console.debug(`Archivo por defecto encontrado: ${DEFAULT_STARTUP_REL}, cargando solo este.`);
+                        console.debug(`Archivo por defecto encontrado: ${DEFAULT_STARTUP_REL}`);
                     }
                 } catch (e) {
                     // ignorar errores al probar existencia
