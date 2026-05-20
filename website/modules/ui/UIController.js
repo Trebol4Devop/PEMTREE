@@ -145,6 +145,12 @@ export class UIController {
         
         let isDragging = false;
         let startX, startY;
+        let lastPinchDist = 0;
+        let pinchStartScale = 1;
+        let pinchStartTX = 0;
+        let pinchStartTY = 0;
+        let pinchStartMidX = 0;
+        let pinchStartMidY = 0;
         
         container.addEventListener('touchstart', (e) => {
             if(e.target.closest('.floating-card')) return;
@@ -155,12 +161,42 @@ export class UIController {
                 const currentTranslate = this.panZoomManager.getTranslate();
                 startX = e.touches[0].clientX - currentTranslate.x;
                 startY = e.touches[0].clientY - currentTranslate.y;
+            } else if (e.touches.length === 2) {
+                isDragging = false;
+                const t = this.panZoomManager.getTranslate();
+                pinchStartTX = t.x;
+                pinchStartTY = t.y;
+                pinchStartScale = this.panZoomManager.getScale();
+                pinchStartMidX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                pinchStartMidY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                lastPinchDist = Math.sqrt(dx * dx + dy * dy);
             }
         }, { passive: false });
 
         window.addEventListener('touchmove', (e) => {
+            if (e.touches.length === 2) {
+                if (e.cancelable) e.preventDefault();
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                if (lastPinchDist > 0) {
+                    const newScale = pinchStartScale * (dist / lastPinchDist);
+                    const clampedScale = Math.min(Math.max(newScale, 0.3), 3.0);
+                    const factor = clampedScale / pinchStartScale;
+                    const midX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                    const midY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+                    const tx = midX - (pinchStartMidX - pinchStartTX) * factor;
+                    const ty = midY - (pinchStartMidY - pinchStartTY) * factor;
+                    this.panZoomManager.setScale(clampedScale);
+                    this.panZoomManager.setTranslate(tx, ty);
+                    this.panZoomManager.actualizarTransform();
+                }
+                return;
+            }
+
             if (!isDragging) return;
-            
             if (e.cancelable) e.preventDefault();
             
             const translateX = e.touches[0].clientX - startX;
@@ -171,6 +207,7 @@ export class UIController {
 
         window.addEventListener('touchend', () => {
             isDragging = false;
+            lastPinchDist = 0;
         });
     }
 
