@@ -98,7 +98,8 @@ export class GraphManager {
                 this.temaOscuro,
                 (c) => this.onNodeClick(c, graphGroup),
                 (c) => this.onNodeDoubleClick(c, graphGroup),
-                (c) => this.onNodeLongPress(c, graphGroup)
+                (c) => this.onNodeLongPress(c, graphGroup),
+                this.selectedNode
             ));
 
         await Promise.all(nodePromises);

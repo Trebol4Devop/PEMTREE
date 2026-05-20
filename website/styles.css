@@ -217,6 +217,8 @@ section#rutas {
 .node-section { shape-rendering: crispEdges; }
 .node-group { transition: transform 0.12s ease, filter 0.12s ease; transform-box: fill-box; transform-origin: center; }
 .node-group.node-selected { transform: scale(1.06); filter: drop-shadow(0 6px 12px rgba(0,0,0,0.22)); }
+.node-group.node-dimmed { filter: grayscale(100%) opacity(0.45); pointer-events: none; }
+.node-group.node-dimmed:hover { transform: none; filter: grayscale(100%) opacity(0.55); }
 .node-group:hover { transform: scale(1.02); filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12)); }
 
 

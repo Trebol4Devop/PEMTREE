@@ -34,9 +34,8 @@ export class LayoutCalculator {
         const isVertical = currentLayout === 'vertical';
         const isMobile = window.innerWidth <= 768;
         
-        const gapX = isMobile ? (isVertical ? 50 : 180) : (isVertical ? 80 : 300);
-        let gapY = isMobile ? (isVertical ? 70 : 15) : (isVertical ? 100 : 20);
-        gapY = Math.round(gapY * 3);
+        const gapX = isMobile ? (isVertical ? 20 : 70) : (isVertical ? 35 : 120);
+        const gapY = isMobile ? (isVertical ? 25 : 20) : (isVertical ? 30 : 12);
 
         niveles.forEach((nivel, levelIndex) => {
             const nodesInLevel = nivel.length;

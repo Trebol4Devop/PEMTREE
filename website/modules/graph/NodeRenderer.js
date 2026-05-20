@@ -32,7 +32,7 @@ export class NodeRenderer {
         };
     }
 
-    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback, onLongPressCallback) {
+    async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback, onLongPressCallback, selectedNode = null) {
         const dims = this.getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
@@ -124,6 +124,11 @@ export class NodeRenderer {
         // Si está seleccionado, aplicar clase para aumentar tamaño y sombra
         if (curso.selected) {
             group.classList.add('node-selected');
+        }
+        
+        // Si hay nodo seleccionado y este no está en la ruta, atenuarlo
+        if (selectedNode && !curso.selected && !curso.highlighted) {
+            group.classList.add('node-dimmed');
         }
 
         group.appendChild(parts);
