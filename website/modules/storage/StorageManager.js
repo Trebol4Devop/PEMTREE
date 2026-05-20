@@ -1,8 +1,15 @@
 // modules/storage/StorageManager.js - Gestión de almacenamiento
 
+import { getPensumKey } from '../data/cursos.js';
+
 export class StorageManager {
     constructor() {
-        this.storageKey = 'pemtree_progreso';
+        this._baseKey = 'pemtree_progreso';
+    }
+
+    get storageKey() {
+        const pensumKey = getPensumKey();
+        return pensumKey ? `${this._baseKey}_${pensumKey}` : this._baseKey;
     }
 
     guardarProgreso(cursos) {
@@ -85,12 +92,7 @@ export class StorageManager {
         
         const counter = document.getElementById('creditos-display');
         if (counter) {
-            counter.innerHTML = `
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 12h-4l-3 9L9 3l-3 9H2"/>
-                </svg>
-                <span>Créditos: ${total}</span>
-            `;
+            counter.innerHTML = `<span>Créditos: ${total}</span>`;
         }
     }
 

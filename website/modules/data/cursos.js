@@ -122,6 +122,12 @@ const DEFAULT_STARTUP_REL = `../json/${DEFAULT_STARTUP_FILENAME}`;
 // Exporta el pensum cargado al iniciar (para sincronizar la UI)
 export let STARTUP_LOADED_PENSUM = '';
 
+export function getPensumKey() {
+    if (!STARTUP_LOADED_PENSUM) return null;
+    const fileName = STARTUP_LOADED_PENSUM.split('/').pop();
+    return fileName.replace(/\.json$/i, '');
+}
+
 // Rutas candidatas (intentar varias formas en caso de diferencias en el servidor o base path)"
 const INDEX_CANDIDATES = [
     '../json/index.json',

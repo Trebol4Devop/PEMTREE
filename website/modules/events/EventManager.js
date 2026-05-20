@@ -60,6 +60,15 @@ export class EventManager {
                 e.target.innerHTML = nuevoEstado ? "Optativos" : "Optativos (Ocultos)";
             });
         }
+
+        // Resetear créditos
+        const btnResetCreditos = document.getElementById('resetearCreditos');
+        if (btnResetCreditos) {
+            btnResetCreditos.addEventListener('click', () => {
+                this.storageManager.limpiarProgreso(this.graphManager.cursos);
+                this.graphManager.dibujarGrafo();
+            });
+        }
     }
 
     setupViewModeControls() {
