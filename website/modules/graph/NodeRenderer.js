@@ -1,55 +1,39 @@
 // modules/graph/NodeRenderer.js - Renderizado de nodos
 
 import { TextUtils } from '../utils/TextUtils.js';
-import { cursoMap } from '../data/cursos.js';
+import { cursoMap, currentPensumColors } from '../data/cursos.js';
+import { getNodeDimensions } from './dimensions.js';
 
 export class NodeRenderer {
     constructor() {
         this.svgNS = "http://www.w3.org/2000/svg";
-        this.pensumColorCache = {};
         this.lastClickData = {
             cursoId: null,
             time: 0
         };
-        this.clickThreshold = 300; // milisegundos
+        this.clickThreshold = 300;
         this.clickTimeout = null;
         this.longPressTimer = null;
-        this.longPressThreshold = 500; // ms
+        this.longPressThreshold = 500;
         this.touchHandled = false;
         this.touchStartPos = null;
     }
 
-    getNodeDimensions() {
-        const isMobile = window.innerWidth <= 768;
-        // Base original (antes reducción): 60 (móvil) / 90 (desktop)
-        const baseHeight = isMobile ? 60 : 90;
-        // Reducir tamaño en 40% -> mantener 60% del original
-        const height = Math.round(baseHeight * 0.6);
-        const width = height * 5; // formato 5:1
-        return {
-            width: width,
-            height: height
-        };
-    }
-
     async dibujarNodo(graphGroup, curso, showCriticalPath, temaOscuro, onClickCallback, onDoubleClickCallback, onLongPressCallback, selectedNode = null) {
-        const dims = this.getNodeDimensions();
+        const dims = getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
 
         const group = document.createElementNS(this.svgNS, "g");
         group.setAttribute("class", "node-group");
 
-        // Determinar colores base y por secciones (modulares)
         const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
-        const sectionColors = await this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
+        const sectionColors = this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
 
-        // Dibujar las 5 partes (izq arriba, izq abajo, centro, der arriba, der abajo)
         const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
 
         const isMobile = window.innerWidth <= 768;
 
-        // Pulsado largo en móviles para mostrar info card
         if (isMobile && onLongPressCallback) {
             group.addEventListener('touchstart', (e) => {
                 e.stopPropagation();
@@ -83,11 +67,9 @@ export class NodeRenderer {
             });
         }
 
-        // Sistema de click y doble-click basado en tiempo
         group.addEventListener("click", (e) => {
             e.stopPropagation();
 
-            // Si ya se manejó con pulsado largo, ignorar el click
             if (this.touchHandled) {
                 this.touchHandled = false;
                 return;
@@ -96,20 +78,17 @@ export class NodeRenderer {
             const now = Date.now();
             const timeDiff = now - this.lastClickData.time;
 
-            // Limpiar timeout anterior si existe
             if (this.clickTimeout) {
                 clearTimeout(this.clickTimeout);
                 this.clickTimeout = null;
             }
 
             if (this.lastClickData.cursoId === curso.id && timeDiff < this.clickThreshold) {
-                // Es un doble clic
                 if (onDoubleClickCallback) {
                     onDoubleClickCallback(curso);
                 }
-                this.lastClickData = { cursoId: null, time: 0 }; // Reset para evitar triple-clic
+                this.lastClickData = { cursoId: null, time: 0 };
             } else {
-                // Es un clic simple - diferir la ejecución para permitir otro click
                 this.lastClickData = { cursoId: curso.id, time: now };
 
                 this.clickTimeout = setTimeout(() => {
@@ -121,27 +100,83 @@ export class NodeRenderer {
             }
         });
 
-        // Si está seleccionado, aplicar clase para aumentar tamaño y sombra
         if (curso.selected) {
             group.classList.add('node-selected');
         }
-        
-        // Si hay nodo seleccionado y este no está en la ruta, atenuarlo
+
         if (selectedNode && !curso.selected && !curso.highlighted) {
             group.classList.add('node-dimmed');
         }
 
         group.appendChild(parts);
 
-        // Dibujar textos en sus secciones
         this.dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro, sectionColors);
 
-        // Dibujar advertencia si es curso crítico
         if (showCriticalPath && curso.enRutaCritica && !curso.completado) {
             this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
         }
 
         graphGroup.appendChild(group);
+        return group;
+    }
+
+    actualizarNodo(group, curso, showCriticalPath, temaOscuro, selectedNode) {
+        const dims = getNodeDimensions();
+        const nodeWidth = dims.width;
+        const nodeHeight = dims.height;
+
+        const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
+        const sectionColors = this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
+
+        this._actualizarRects(group, curso, nodeWidth, nodeHeight, sectionColors);
+        this._actualizarTextos(group, curso, temaOscuro, sectionColors);
+
+        group.classList.toggle('node-selected', !!curso.selected);
+        const isDimmed = !!selectedNode && !curso.selected && !curso.highlighted;
+        group.classList.toggle('node-dimmed', isDimmed);
+
+        const showWarning = showCriticalPath && curso.enRutaCritica && !curso.completado;
+        const warningEl = group.querySelector('[data-tipo="warning"]');
+        if (showWarning && !warningEl) {
+            this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
+        } else if (!showWarning && warningEl) {
+            warningEl.remove();
+        }
+    }
+
+    _actualizarRects(group, curso, nodeWidth, nodeHeight, sectionColors) {
+        const leftTop = group.querySelector('.left-top');
+        if (leftTop) leftTop.setAttribute('fill', sectionColors.leftTop.fill);
+
+        const leftBottom = group.querySelector('.left-bottom');
+        if (leftBottom) leftBottom.setAttribute('fill', sectionColors.leftBottom.fill);
+
+        const center = group.querySelector('.center');
+        if (center) center.setAttribute('fill', sectionColors.center.fill);
+
+        const right = group.querySelector('.right');
+        if (right) right.setAttribute('fill', sectionColors.right.fill);
+    }
+
+    _actualizarTextos(group, curso, temaOscuro, sectionColors) {
+        const codeText = group.querySelector('[data-tipo="codigo"]');
+        if (codeText) {
+            codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
+            codeText.setAttribute('fill', curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : sectionColors.text);
+        }
+
+        const creditsText = group.querySelector('[data-tipo="creditos"]');
+        if (creditsText) {
+            creditsText.setAttribute('fill', sectionColors.text);
+        }
+
+        group.querySelectorAll('[data-tipo="nombre"]').forEach(t => {
+            t.setAttribute('fill', sectionColors.text);
+        });
+
+        group.querySelectorAll('[data-tipo="prereq"]').forEach(t => {
+            t.setAttribute('fill', sectionColors.text);
+        });
     }
 
     determinarColores(curso, showCriticalPath, temaOscuro) {
@@ -204,14 +239,13 @@ export class NodeRenderer {
         };
     }
 
-    async getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight) {
+    getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight) {
         const defaultText = temaOscuro ? '#ecf0f1' : '#333';
         const s = curso.colors || {};
         const stroke = 'none';
         const strokeWidth = '0';
 
-        // Obtener colores del pensum según la carrera del curso
-        const pensumColors = await this.getPensumColors(curso);
+        const pensumColors = this.getPensumColors(curso);
 
         return {
             leftTop: {
@@ -234,88 +268,8 @@ export class NodeRenderer {
         };
     }
 
-    async getPensumColors(curso) {
-        // Mapeo de carreras a archivos de color del pensum
-        const carreraMap = {
-            'ingeniería ambiental': 'ambiental_color',
-            'ingenieria ambiental': 'ambiental_color',
-            'ambiental': 'ambiental_color',
-            'ingeniería en ciencias y sistemas': 'ciencias_y_sistemas_color',
-            'ingenieria en ciencias y sistemas': 'ciencias_y_sistemas_color',
-            'ciencias y sistemas': 'ciencias_y_sistemas_color',
-            'ingeniería civil': 'civil_color',
-            'ingenieria civil': 'civil_color',
-            'civil': 'civil_color',
-            'ingeniería eléctrica': 'electrica_color',
-            'ingenieria electrica': 'electrica_color',
-            'electrica': 'electrica_color',
-            'ingeniería electrónica': 'electronica_color',
-            'ingenieria electronica': 'electronica_color',
-            'electronica': 'electronica_color',
-            'ingeniería industrial': 'industrial_color',
-            'ingenieria industrial': 'industrial_color',
-            'industrial': 'industrial_color',
-            'ingeniería mecánica': 'mecanica_color',
-            'ingenieria mecanica': 'mecanica_color',
-            'mecanica': 'mecanica_color',
-            'ingeniería mecánica eléctrica': 'mecanica_electrica_color',
-            'ingenieria mecanica electrica': 'mecanica_electrica_color',
-            'mecanica electrica': 'mecanica_electrica_color',
-            'ingeniería mecánica industrial': 'mecanica_industrial_color',
-            'ingenieria mecanica industrial': 'mecanica_industrial_color',
-            'mecanica industrial': 'mecanica_industrial_color',
-            'ingeniería química': 'quimica_color',
-            'ingenieria quimica': 'quimica_color',
-            'quimica': 'quimica_color'
-        };
-
-        const carreraRaw = curso.carrera || '';
-        // Normalizar: lowercase, sin tildes
-        const carrera = carreraRaw.toLowerCase()
-            .normalize('NFD')
-            .replace(/[\u0300-\u036f]/g, '');
-
-        const filename = carreraMap[carrera];
-
-        console.debug(`[getPensumColors] Carrera: "${curso.carrera}" -> "${carrera}"`);
-        console.debug(`[getPensumColors] Filename mapeado: "${filename}"`);
-
-        if (!filename) {
-            console.warn(`[getPensumColors] No se encontró mapeo para carrera: "${carrera}". Usando colores por defecto.`);
-            return { primary: '#fc904f', secondary: '#ffd0b6' };
-        }
-
-        // Si no está en caché, buscar y almacenar
-        if (!this.pensumColorCache[filename]) {
-            try {
-                const response = await fetch(`modules/pensum_color/${filename}.json`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                // Almacenar el primer objeto del array de colores
-                this.pensumColorCache[filename] = data[0]; 
-                console.debug(`[getPensumColors] Colores para "${filename}" cargados y cacheados:`, data[0]);
-
-            } catch (e) {
-                console.error(`[getPensumColors] Error al cargar colores para ${filename}:`, e.message);
-                // Usar colores por defecto en caso de error
-                return { primary: '#fc904f', secondary: '#ffd0b6' };
-            }
-        }
-
-        const colorData = this.pensumColorCache[filename];
-        if (colorData) {
-            const colors = {
-                primary: colorData.color1 || '#fc904f',
-                secondary: colorData.color2 || '#ffd0b6'
-            };
-            console.debug(`[getPensumColors] Colores extraídos de caché:`, colors);
-            return colors;
-        }
-
-        console.debug(`[getPensumColors] Usando colores por defecto para "${carrera}"`);
-        return { primary: '#fc904f', secondary: '#ffd0b6' };
+    getPensumColors(curso) {
+        return currentPensumColors;
     }
 
     // Crea el conjunto de rects que conforman el nodo
@@ -395,8 +349,8 @@ export class NodeRenderer {
         const centerW = nodeWidth - (2 * lateralWidth);
         const rightX = centerX + centerW;
 
-        // Texto en izquierda superior: código (centrado dentro del rectángulo ancho = lateralWidth)
         const codeText = document.createElementNS(this.svgNS, "text");
+        codeText.setAttribute("data-tipo", "codigo");
         codeText.setAttribute("x", leftX + lateralWidth / 2);
         codeText.setAttribute("y", curso.y + halfH / 2 + (isMobile ? 3 : 5));
         codeText.setAttribute("font-family", "Segoe UI, Arial");
@@ -407,8 +361,8 @@ export class NodeRenderer {
         codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
         group.appendChild(codeText);
 
-        // Texto en izquierda inferior: créditos
         const creditsText = document.createElementNS(this.svgNS, "text");
+        creditsText.setAttribute("data-tipo", "creditos");
         creditsText.setAttribute("x", leftX + lateralWidth / 2);
         creditsText.setAttribute("y", curso.y + halfH + halfH / 2 + (isMobile ? 3 : 5));
         creditsText.setAttribute("font-family", "Segoe UI, Arial");
@@ -429,6 +383,7 @@ export class NodeRenderer {
 
         nombreLines.forEach((line, index) => {
             const ln = document.createElementNS(this.svgNS, "text");
+            ln.setAttribute("data-tipo", "nombre");
             ln.setAttribute("x", centerX + centerW / 2);
             ln.setAttribute("y", startY + (index * lineHeight));
             ln.setAttribute("font-family", "Segoe UI, Arial");
@@ -463,6 +418,7 @@ export class NodeRenderer {
             const startYReq = curso.y + (nodeHeight / 2) - ((prereqCodes.length - 1) * lineHeightReq / 2) + (isMobile ? 3 : 5);
             prereqCodes.forEach((code, idx) => {
                 const t = document.createElementNS(this.svgNS, "text");
+                t.setAttribute("data-tipo", "prereq");
                 t.setAttribute("x", rightX + lateralWidth / 2);
                 t.setAttribute("y", startYReq + idx * lineHeightReq);
                 t.setAttribute("font-family", "Segoe UI, Arial");
@@ -482,6 +438,7 @@ export class NodeRenderer {
         const centerW = nodeWidth - (2 * squareSize);
 
         const warning = document.createElementNS(this.svgNS, "text");
+        warning.setAttribute("data-tipo", "warning");
         warning.setAttribute("x", centerX + centerW - (isMobile ? 12 : 16));
         warning.setAttribute("y", curso.y + (isMobile ? 12 : 16));
         warning.setAttribute("fill", "#e74c3c");

@@ -112,6 +112,9 @@ export let cursos = [];
 // Mapa de cursos (se actualiza en initializeCursos)
 export const cursoMap = new Map();
 
+// Caché compartido de colores del pensum activo (evita re-fetches desde NodeRenderer)
+export let currentPensumColors = { primary: '#fc904f', secondary: '#ffd0b6' };
+
 const JSON_FILES = [];
 const JSON_INDEX_URL = new URL('../json/index.json', import.meta.url).href;
 
@@ -486,6 +489,8 @@ export async function applyPensumColors(relPensumPath) {
         });
 
         console.log(`🎨 Colores aplicados desde ${colorRel}: primary=${primary}, secondary=${secondary}, text=${textForSecondary}`);
+        // Actualizar caché compartido para NodeRenderer
+        currentPensumColors = { primary, secondary };
         // Loguear el primer curso para verificar los cambios
         if (cursos && cursos.length > 0) {
             console.debug('Ejemplo curso[0].colors:', cursos[0].colors);

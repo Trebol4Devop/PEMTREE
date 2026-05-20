@@ -1394,7 +1394,7 @@ footer {
     }
 
     .zoom-bar.shifted {
-        bottom: calc(50vh + 12px);
+        bottom: calc(30vh + 12px);
     }
 
     .zoom-bar button {

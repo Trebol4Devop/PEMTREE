@@ -198,16 +198,16 @@ export class EventManager {
             return;
         }
 
-        this.storageManager.limpiarProgreso(this.graphManager.cursos);
-        
-        // Cerrar info card
         this.uiController.getInfoCardManager().ocultar();
         
-        // Resetear vistas
-        this.graphManager.setShowOptional(true);
-        this.graphManager.setShowCriticalPath(false);
-        this.graphManager.setViewMode('semester');
-        this.graphManager.setCurrentLayout('horizontal');
+        // Resetear vistas en un solo redibujo (batch)
+        this.graphManager.batchUpdate(() => {
+            this.storageManager.limpiarProgreso(this.graphManager.cursos);
+            this.graphManager.setShowOptional(true);
+            this.graphManager.setShowCriticalPath(false);
+            this.graphManager.setViewMode('semester');
+            this.graphManager.setCurrentLayout('horizontal');
+        });
         
         // Actualizar botones
         const btnOptativos = document.getElementById('cursosObligatorios');
