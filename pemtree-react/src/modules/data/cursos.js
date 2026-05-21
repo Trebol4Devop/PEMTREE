@@ -116,11 +116,11 @@ export const cursoMap = new Map();
 export let currentPensumColors = { primary: '#fc904f', secondary: '#ffd0b6' };
 
 const JSON_FILES = [];
-const JSON_INDEX_URL = new URL('../json/index.json', import.meta.url).href;
+const JSON_INDEX_URL = new URL('/json/index.json', import.meta.url).href;
 
 // Nombre del pensum que debe cargarse al iniciar
 const DEFAULT_STARTUP_FILENAME = 'ciencias_y_sistemas_22.json';
-const DEFAULT_STARTUP_REL = `../json/${DEFAULT_STARTUP_FILENAME}`;
+const DEFAULT_STARTUP_REL = `/json/${DEFAULT_STARTUP_FILENAME}`;
 
 // Exporta el pensum cargado al iniciar (para sincronizar la UI)
 export let STARTUP_LOADED_PENSUM = '';
@@ -133,13 +133,8 @@ export function getPensumKey() {
 
 // Rutas candidatas (intentar varias formas en caso de diferencias en el servidor o base path)"
 const INDEX_CANDIDATES = [
-    '../json/index.json',
-    './modules/json/index.json',
-    '/modules/json/index.json',
-    './json/index.json'
-].map(p => ({ rel: p, url: (() => {
-    try { return new URL(p, import.meta.url).href; } catch { return p; }
-})() }));
+    '/json/index.json'
+].map(p => ({ rel: p, url: p }));
 
 /**
  * Inicializa `cursos` cargando archivos JSON desde `modules/json`.
@@ -173,7 +168,7 @@ export async function initializeCursos() {
             }
 
             if (Array.isArray(indexList)) {
-                pensumFiles = indexList.map(entry => typeof entry === 'string' ? `../json/${entry}` : (entry.file ? `../json/${entry.file}` : ''))
+                pensumFiles = indexList.map(entry => typeof entry === 'string' ? `/json/${entry}` : (entry.file ? `/json/${entry.file}` : ''))
                                      .filter(Boolean);
             }
         }
@@ -188,8 +183,7 @@ export async function initializeCursos() {
             } else if (pensumFiles.length === 0) {
                 // Si la lista está vacía, comprobar si el archivo por defecto existe y usarlo
                 try {
-                    const testUrl = new URL(DEFAULT_STARTUP_REL, import.meta.url).href;
-                    const headRes = await fetch(testUrl, { method: 'HEAD' });
+                    const headRes = await fetch(DEFAULT_STARTUP_REL, { method: 'HEAD' });
                     if (headRes.ok) {
                         pensumFiles = [DEFAULT_STARTUP_REL];
                         console.debug(`Archivo por defecto encontrado: ${DEFAULT_STARTUP_REL}, cargando solo este.`);
@@ -205,8 +199,7 @@ export async function initializeCursos() {
 
         for (const relPath of pensumFiles) {
             try {
-                const url = new URL(relPath, import.meta.url).href;
-                const res = await fetch(url);
+                const res = await fetch(relPath);
                 if (!res.ok) {
                     console.warn(`No se pudo cargar ${relPath}: ${res.status}`);
                     continue;
@@ -287,12 +280,12 @@ export async function listAvailablePensums() {
     if (Array.isArray(indexList)) {
         const pensums = indexList.map(entry => {
             if (typeof entry === 'string') {
-                const file = `../json/${entry}`;
+                const file = `/json/${entry}`;
                 const id = entry.replace('.json', '');
                 const name = id.replace(/_/g, ' ');
                 return { file, id, name };
             } else if (typeof entry === 'object' && entry.file) {
-                const file = `../json/${entry.file}`;
+                const file = `/json/${entry.file}`;
                 const id = entry.id || entry.file.replace('.json','');
                 const name = entry.name || id.replace(/_/g, ' ');
                 return { file, id, name };
@@ -322,10 +315,9 @@ export async function listAvailablePensums() {
 
     const detectedPensums = [];
     for (const fileName of KNOWN_FILES) {
-        const rel = `../json/${fileName}`;
+        const rel = `/json/${fileName}`;
         try {
-            const url = new URL(rel, import.meta.url).href;
-            const res = await fetch(url, { method: 'HEAD' });
+            const res = await fetch(rel, { method: 'HEAD' });
             if (res.ok) {
                 const id = fileName.replace('.json','');
                 detectedPensums.push({ file: rel, id, name: id.replace(/_/g,' ') });
@@ -360,8 +352,7 @@ export async function listAvailablePensums() {
  */
 export async function loadPensum(relPath) {
     try {
-        const url = new URL(relPath, import.meta.url).href;
-        const res = await fetch(url);
+        const res = await fetch(relPath);
         if (!res.ok) throw new Error(`HTTP error ${res.status}`);
         const json = await res.json();
         if (!Array.isArray(json)) throw new Error('Formato de JSON inválido');
@@ -444,10 +435,9 @@ export async function applyPensumColors(relPensumPath) {
         const fileName = relPensumPath.split('/').pop(); // e.g. "ciencias_y_sistemas_22.json"
         // Remover sufijo de año como _22 o _25 si existe
         const base = fileName.replace(/\.json$/i, '').replace(/_\d{2,4}$/, '');
-        const colorRel = `../pensum_color/${base}_color.json`;
-        const url = new URL(colorRel, import.meta.url).href;
+        const colorRel = `/pensum_color/${base}_color.json`;
 
-        const res = await fetch(url);
+        const res = await fetch(colorRel);
         if (!res.ok) {
             console.debug(`Archivo de color no encontrado: ${colorRel} (${res.status})`);
             return;
