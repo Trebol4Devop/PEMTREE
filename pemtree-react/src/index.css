@@ -1,0 +1,139 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@keyframes animacion-inicio {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-inicio {
+    animation: animacion-inicio 1s ease forwards 0.3s;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+}
+
+html.dark {
+    background-color: #0E1624;
+    color: #F8FAFC;
+}
+
+.logo-trebol {
+    filter: brightness(0) invert(1);
+}
+
+.logo-trebol-blue {
+    filter: brightness(0) saturate(100%) invert(18%) sepia(84%) saturate(2710%) hue-rotate(209deg) brightness(85%) contrast(104%);
+}
+
+html.dark .logo-trebol-blue {
+    filter: brightness(0) invert(1);
+}
+
+#svg-grafica {
+    min-width: 100%;
+    min-height: 100%;
+}
+
+.contenedor-grafica {
+    cursor: grab;
+}
+
+.contenedor-grafica:active {
+    cursor: grabbing;
+}
+
+#grafica-group text {
+    pointer-events: none;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    cursor: default;
+}
+
+.node-composite rect { 
+    stroke: none; 
+    stroke-width: 0; 
+}
+
+.node-section { 
+    shape-rendering: crispEdges; 
+}
+
+.node-group { 
+    transition: transform 0.12s ease, filter 0.12s ease; 
+    transform-box: fill-box; 
+    transform-origin: center; 
+    cursor: pointer;
+}
+
+.node-group.node-selected { 
+    transform: scale(1.06); 
+    filter: drop-shadow(0 6px 12px rgba(0,0,0,0.22)); 
+}
+
+.node-group.node-dimmed { 
+    filter: grayscale(100%) opacity(0.45) !important; 
+    pointer-events: none; 
+}
+
+.node-group.node-dimmed:hover { 
+    transform: none; 
+    filter: grayscale(100%) opacity(0.55) !important; 
+}
+
+.node-group:hover { 
+    transform: scale(1.02); 
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12)); 
+}
+
+#curso-tooltip {
+    position: fixed;
+    background: rgba(23, 43, 77, 0.95);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    pointer-events: none;
+    z-index: 3000;
+    display: none;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    max-width: 250px;
+    text-align: center;
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+html.dark #curso-tooltip {
+    background: rgba(28, 38, 54, 0.95);
+    border: 1px solid rgba(255,255,255,0.05);
+}
+
+.fade-in {
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px) scale(0.98); }
+    to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+.hide-scrollbar::-webkit-scrollbar { 
+    width: 6px; 
+    height: 6px; 
+}
+.hide-scrollbar::-webkit-scrollbar-track { 
+    background: transparent; 
+}
+.hide-scrollbar::-webkit-scrollbar-thumb { 
+    background-color: #DFE1E6; 
+    border-radius: 10px; 
+}
+html.dark .hide-scrollbar::-webkit-scrollbar-thumb { 
+    background-color: #3E4C5E; 
+}

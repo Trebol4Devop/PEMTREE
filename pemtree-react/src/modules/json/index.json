@@ -1,0 +1,13 @@
+[
+  {"file": "ambiental_25.json",          "name": "Ingeniería Ambiental (2025)"},
+  {"file": "ciencias_y_sistemas_22.json","name": "Ingeniería en Ciencias y Sistemas (2022)"},
+  {"file": "ciencias_y_sistemas_25.json","name": "Ingeniería en Ciencias y Sistemas (2025)"},
+  {"file": "civil_22.json",              "name": "Ingeniería Civil (2022)"},
+  {"file": "electrica_22.json",          "name": "Ingeniería Eléctrica (2022)"},
+  {"file": "electronica_22.json",        "name": "Ingeniería Electrónica (2022)"},
+  {"file": "industrial_22.json",         "name": "Ingeniería Industrial (2022)"},
+  {"file": "mecanica_22.json",           "name": "Ingeniería Mecánica (2022)"},
+  {"file": "mecanica_electrica_22.json", "name": "Ingeniería Mecánica Eléctrica (2022)"},
+  {"file": "mecanica_industrial_22.json","name": "Ingeniería Mecánica Industrial (2022)"},
+  {"file": "quimica_22.json",            "name": "Ingeniería Química (2022)"}
+]

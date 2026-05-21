@@ -1,0 +1,286 @@
+import { LayoutCalculator } from './LayoutCalculator.js';
+import { NodeRenderer } from './NodeRenderer.js';
+import { EdgeRenderer } from './EdgeRenderer.js';
+import { CriticalPathAnalyzer } from './CriticalPathAnalyzer.js';
+
+export class GraphManager {
+    constructor(cursos, cursoMap) {
+        this.cursos = cursos;
+        this.cursoMap = cursoMap;
+        this.selectedNode = null;
+        this.showOptional = true;
+        this.currentLayout = 'horizontal';
+        this.viewMode = 'semester';
+        this.showCriticalPath = false;
+        this.temaOscuro = false;
+
+        // Tracking de elementos DOM para mutación selectiva
+        this.nodeElements = new Map();
+        this.edgeElements = new Map();
+        this.needsFullRebuild = true;
+
+        // Componentes
+        this.layoutCalculator = new LayoutCalculator(cursos, cursoMap);
+        this.nodeRenderer = new NodeRenderer();
+        this.edgeRenderer = new EdgeRenderer();
+        this.criticalPathAnalyzer = new CriticalPathAnalyzer(cursos, cursoMap);
+
+        // Managers que se asignan después (en UIController)
+        this.storageManager = null;
+        this.infoCardManager = null;
+        this.onCreditsChange = null;
+
+        // Inicializar análisis
+        this.init();
+    }
+
+    init() {
+        this.criticalPathAnalyzer.calcularPosrequisitos();
+        this.criticalPathAnalyzer.calcularRutaCritica();
+    }
+
+    updateCursos(nuevosCursos, nuevoMapa) {
+        this.cursos = nuevosCursos;
+        this.cursoMap = nuevoMapa;
+        this.layoutCalculator = new LayoutCalculator(this.cursos, this.cursoMap);
+        this.criticalPathAnalyzer = new CriticalPathAnalyzer(this.cursos, this.cursoMap);
+        this.selectedNode = null;
+        this.nodeElements.clear();
+        this.edgeElements.clear();
+        this.needsFullRebuild = true;
+        this.init();
+    }
+
+    async dibujarGrafo() {
+        const graphGroup = document.getElementById('grafica-group');
+        if (!graphGroup) return;
+
+        if (this.needsFullRebuild) {
+            this.layoutCalculator.calcularLayout(
+                this.showOptional,
+                this.currentLayout,
+                this.viewMode
+            );
+            while (graphGroup.firstChild) {
+                graphGroup.removeChild(graphGroup.firstChild);
+            }
+            this.nodeElements.clear();
+            this.edgeElements.clear();
+
+            await this._fullRebuild(graphGroup);
+            this.needsFullRebuild = false;
+            this.ajustarTamanioSVG();
+        } else {
+            this._updateVisualState(graphGroup);
+        }
+    }
+
+    async _fullRebuild(graphGroup) {
+        const visibleCursos = this.cursos.filter(c => this.showOptional || c.obligatorio);
+
+        visibleCursos.forEach(curso => {
+            curso.posrequisitos.forEach(posreqId => {
+                const posreq = this.cursoMap.get(posreqId);
+                if (!posreq || (!this.showOptional && !posreq.obligatorio)) return;
+
+                const path = this.edgeRenderer.dibujarArista(
+                    graphGroup, curso, posreq, this.currentLayout,
+                    this.selectedNode, this.showCriticalPath, this.temaOscuro
+                );
+                this.edgeElements.set(path, `${curso.id}->${posreqId}`);
+            });
+        });
+
+        const nodePromises = visibleCursos.map(curso =>
+            this.nodeRenderer.dibujarNodo(
+                graphGroup, curso, this.showCriticalPath, this.temaOscuro,
+                (c) => this.onNodeClick(c, graphGroup),
+                (c) => this.onNodeDoubleClick(c, graphGroup),
+                (c) => this.onNodeLongPress(c, graphGroup),
+                this.selectedNode
+            ).then(group => {
+                this.nodeElements.set(curso.id, group);
+            })
+        );
+
+        await Promise.all(nodePromises);
+
+        // Construir índice reverso: key -> path element
+        this._edgeKeyToPath = new Map();
+        this.edgeElements.forEach((key, path) => {
+            this._edgeKeyToPath.set(key, path);
+        });
+    }
+
+    _updateVisualState(graphGroup) {
+        const visibleCursos = this.cursos.filter(c => this.showOptional || c.obligatorio);
+
+        visibleCursos.forEach(curso => {
+            const group = this.nodeElements.get(curso.id);
+            if (group) {
+                this.nodeRenderer.actualizarNodo(
+                    group, curso, this.showCriticalPath, this.temaOscuro, this.selectedNode
+                );
+            }
+
+            curso.posrequisitos.forEach(posreqId => {
+                const posreq = this.cursoMap.get(posreqId);
+                if (!posreq || (!this.showOptional && !posreq.obligatorio)) return;
+                const key = `${curso.id}->${posreqId}`;
+                const path = this._edgeKeyToPath.get(key);
+                if (path) {
+                    this.edgeRenderer.actualizarArista(
+                        path, curso, posreq, this.selectedNode,
+                        this.showCriticalPath, this.temaOscuro
+                    );
+                }
+            });
+        });
+    }
+
+    seleccionarNodo(curso, graphGroup) {
+        if (this.selectedNode && this.selectedNode.id === curso.id) {
+            this.desseleccionarNodo();
+            return null;
+        }
+
+        if (this.selectedNode) {
+            this.selectedNode.selected = false;
+        }
+
+        curso.selected = true;
+        this.selectedNode = curso;
+
+        this.cursos.forEach(c => c.highlighted = false);
+
+        const ruta = this.encontrarRutaHastaCurso(curso);
+        ruta.forEach(id => {
+            const c = this.cursoMap.get(id);
+            if (c) c.highlighted = true;
+        });
+
+        this.dibujarGrafo();
+
+        return curso;
+    }
+
+    encontrarRutaHastaCurso(cursoObjetivo) {
+        const visitados = new Set();
+        const ruta = new Set();
+
+        const buscarPrerequisitos = (curso) => {
+            if (visitados.has(curso.id)) return;
+            visitados.add(curso.id);
+            ruta.add(curso.id);
+
+            curso.prerequisitos.forEach(prereqId => {
+                const prereq = this.cursoMap.get(prereqId);
+                if (prereq) {
+                    buscarPrerequisitos(prereq);
+                }
+            });
+        };
+
+        buscarPrerequisitos(cursoObjetivo);
+        return ruta;
+    }
+
+    onNodeClick(curso, graphGroup) {
+        const result = this.seleccionarNodo(curso, graphGroup);
+        if (result && window.innerWidth > 768 && this.infoCardManager) {
+            this.infoCardManager.mostrar(curso);
+        }
+        return result;
+    }
+
+    onNodeLongPress(curso, graphGroup) {
+        if (this.selectedNode && this.selectedNode.id === curso.id) {
+            if (this.infoCardManager) {
+                this.infoCardManager.mostrar(curso);
+            }
+            return curso;
+        }
+        const result = this.seleccionarNodo(curso, graphGroup);
+        if (result && this.infoCardManager) {
+            this.infoCardManager.mostrar(curso);
+        }
+        return result;
+    }
+
+    onNodeDoubleClick(curso, graphGroup) {
+        if (this.storageManager) {
+            this.storageManager.toggleCompletado(curso.id, this, this.infoCardManager);
+            if (this.onCreditsChange) this.onCreditsChange();
+        } else {
+            curso.completado = !curso.completado;
+            this.dibujarGrafo();
+            if (this.onCreditsChange) this.onCreditsChange();
+        }
+    }
+
+    desseleccionarNodo() {
+        if (this.selectedNode) {
+            this.selectedNode.selected = false;
+            this.selectedNode = null;
+            this.cursos.forEach(c => c.highlighted = false);
+            this.dibujarGrafo();
+        }
+        const infoCard = document.getElementById('infoCard');
+        if (infoCard) infoCard.classList.add('hidden');
+    }
+
+    ajustarTamanioSVG() {
+        const svg = document.getElementById('svg-grafica');
+        if (!svg) return;
+
+        let maxX = 0, maxY = 0;
+        this.cursos.forEach(c => {
+            if (!this.showOptional && !c.obligatorio) return;
+            const dims = this.layoutCalculator.getNodeDimensions();
+            maxX = Math.max(maxX, c.x + dims.width);
+            maxY = Math.max(maxY, c.y + dims.height);
+        });
+
+        svg.setAttribute("width", `${Math.max(maxX + 100, 2000)}px`);
+        svg.setAttribute("height", `${Math.max(maxY + 100, 2000)}px`);
+    }
+
+    batchUpdate(fn) {
+        this._batching = true;
+        fn();
+        this._batching = false;
+        this.dibujarGrafo();
+    }
+
+    setShowOptional(value) {
+        this.showOptional = value;
+        this.needsFullRebuild = true;
+        if (!this._batching) this.dibujarGrafo();
+    }
+
+    setCurrentLayout(layout) {
+        this.currentLayout = layout;
+        this.needsFullRebuild = true;
+        if (!this._batching) this.dibujarGrafo();
+    }
+
+    setViewMode(mode) {
+        this.viewMode = mode;
+        this.needsFullRebuild = true;
+        if (!this._batching) this.dibujarGrafo();
+    }
+
+    setShowCriticalPath(value) {
+        this.showCriticalPath = value;
+        if (!this._batching) this.dibujarGrafo();
+    }
+
+    setTemaOscuro(value) {
+        this.temaOscuro = value;
+        if (!this._batching) this.dibujarGrafo();
+    }
+
+    getSelectedNode() {
+        return this.selectedNode;
+    }
+}

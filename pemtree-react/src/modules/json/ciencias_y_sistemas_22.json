@@ -1,0 +1,677 @@
+[
+  {
+    "codigo": "0005",
+    "semestre": "1",
+    "nombre": "TÉCNICAS DE ESTUDIO E INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0017",
+    "semestre": "1",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA SOCIAL HUMANÍSTICA 2"
+  },
+  {
+    "codigo": "0101",
+    "semestre": "1",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA MATEMÁTICA BÁSICA 2, FÍSICA BÁSICA, MATEMÁTICA PARA COMPUTACIÓN 1"
+  },
+  {
+    "codigo": "0006",
+    "semestre": "1",
+    "nombre": "IDIOMA TÉCNICO 1",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "IDIOMA TÉCNICO 2"
+  },
+  {
+    "codigo": "0039",
+    "semestre": "1",
+    "nombre": "DEPORTES 1",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DEPORTES 2"
+  },
+  {
+    "codigo": "0019",
+    "semestre": "2",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0017",
+    "post_requisitos": "ÉTICA PROFESIONAL, LÓGICA, FILOSOFÍA DE LA CIENCIA"
+  },
+  {
+    "codigo": "0103",
+    "semestre": "2",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 2",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 1, FÍSICA 1, INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 1, LÓGICA DE SISTEMAS, MATEMÁTICA PARA COMPUTACIÓN 2, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0147",
+    "semestre": "2",
+    "nombre": "FÍSICA BÁSICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "FÍSICA 1, INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 1, LÓGICA DE SISTEMAS, MATEMÁTICA PARA COMPUTACIÓN 2"
+  },
+  {
+    "codigo": "0960",
+    "semestre": "2",
+    "nombre": "MATEMÁTICA PARA COMPUTACIÓN 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 1, LÓGICA DE SISTEMAS, MATEMÁTICA PARA COMPUTACIÓN 2, INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 2, LENGUAJES FORMALES Y DE PROGRAMACIÓN"
+  },
+  {
+    "codigo": "0008",
+    "semestre": "2",
+    "nombre": "IDIOMA TÉCNICO 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0006",
+    "post_requisitos": "IDIOMA TÉCNICO 3"
+  },
+  {
+    "codigo": "0040",
+    "semestre": "2",
+    "nombre": "DEPORTES 2",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0039",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0107",
+    "semestre": "3",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 2, ÁREA MATEMÁTICA INTERMEDIA 3, FÍSICA 2, INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 2, ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0150",
+    "semestre": "3",
+    "nombre": "FÍSICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147",
+    "post_requisitos": "FÍSICA 2"
+  },
+  {
+    "codigo": "0770",
+    "semestre": "3",
+    "nombre": "INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147, 0960",
+    "post_requisitos": "INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 2, LENGUAJES FORMALES Y DE PROGRAMACIÓN, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0795",
+    "semestre": "3",
+    "nombre": "LÓGICA DE SISTEMAS",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147, 0960",
+    "post_requisitos": "INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 2, LENGUAJES FORMALES Y DE PROGRAMACIÓN"
+  },
+  {
+    "codigo": "0962",
+    "semestre": "3",
+    "nombre": "MATEMÁTICA PARA COMPUTACIÓN 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147, 0960",
+    "post_requisitos": "ESTRUCTURAS DE DATOS, ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 1, ORGANIZACIÓN COMPUTACIONAL"
+  },
+  {
+    "codigo": "0001",
+    "semestre": "3",
+    "nombre": "ÉTICA PROFESIONAL",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0009",
+    "semestre": "3",
+    "nombre": "IDIOMA TÉCNICO 3",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0008",
+    "post_requisitos": "IDIOMA TÉCNICO 4"
+  },
+  {
+    "codigo": "0112",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 3, MATEMÁTICA APLICADA 1"
+  },
+  {
+    "codigo": "0114",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 3, MATEMÁTICA APLICADA 1, INGENIERÍA ELÉCTRICA 1"
+  },
+  {
+    "codigo": "0152",
+    "semestre": "4",
+    "nombre": "FÍSICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "ORGANIZACIÓN COMPUTACIONAL, INGENIERÍA ELÉCTRICA 1"
+  },
+  {
+    "codigo": "0771",
+    "semestre": "4",
+    "nombre": "INTRODUCCIÓN A LA PROGRAMACIÓN Y COMPUTACIÓN 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0770, 0795, 0960",
+    "post_requisitos": "ESTRUCTURAS DE DATOS, ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 1, ORGANIZACIÓN COMPUTACIONAL, INVESTIGACIÓN DE OPERACIONES I"
+  },
+  {
+    "codigo": "0796",
+    "semestre": "4",
+    "nombre": "LENGUAJES FORMALES Y DE PROGRAMACIÓN",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0770, 0795, 0960",
+    "post_requisitos": "ESTRUCTURAS DE DATOS, ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 1, MANEJO E IMPLEMENTACIÓN DE ARCHIVOS, ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 1"
+  },
+  {
+    "codigo": "2025",
+    "semestre": "4",
+    "nombre": "PRÁCTICAS INICIALES",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0770",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0010",
+    "semestre": "4",
+    "nombre": "LÓGICA",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0011",
+    "semestre": "4",
+    "nombre": "IDIOMA TÉCNICO 4",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0009",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0116",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 3",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "TEORÍA DE SISTEMAS 1"
+  },
+  {
+    "codigo": "0118",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "TEORÍA DE SISTEMAS 1, MATEMÁTICA APLICADA 2, MATEMÁTICA APLICADA 4"
+  },
+  {
+    "codigo": "0732",
+    "semestre": "5",
+    "nombre": "ESTADÍSTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0005",
+    "post_requisitos": "ECONOMÍA, INVESTIGACIÓN DE OPERACIONES I, TEORÍA DE SISTEMAS 1, ESTADÍSTICA 2, INGENIERÍA ECONÓMICA 1"
+  },
+  {
+    "codigo": "0772",
+    "semestre": "5",
+    "nombre": "ESTRUCTURAS DE DATOS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0771, 0796, 0962",
+    "post_requisitos": "TEORÍA DE SISTEMAS 1, MANEJO E IMPLEMENTACIÓN DE ARCHIVOS, ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 2"
+  },
+  {
+    "codigo": "0777",
+    "semestre": "5",
+    "nombre": "ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0771, 0796, 0962",
+    "post_requisitos": "ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 2, PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0964",
+    "semestre": "5",
+    "nombre": "ORGANIZACIÓN COMPUTACIONAL",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0152, 0771, 0962",
+    "post_requisitos": "ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 1"
+  },
+  {
+    "codigo": "0018",
+    "semestre": "5",
+    "nombre": "FILOSOFÍA DE LA CIENCIA",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0014",
+    "semestre": "6",
+    "nombre": "ECONOMÍA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0601",
+    "semestre": "6",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES I",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732, 0771",
+    "post_requisitos": "INVESTIGACIÓN DE OPERACIONES II, TEORÍA DE SISTEMAS 2"
+  },
+  {
+    "codigo": "0722",
+    "semestre": "6",
+    "nombre": "TEORÍA DE SISTEMAS 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0116, 0118, 0732, 0772",
+    "post_requisitos": "TEORÍA DE SISTEMAS 2, SISTEMAS ORGANIZACIONALES Y GERENCIALES 1"
+  },
+  {
+    "codigo": "0773",
+    "semestre": "6",
+    "nombre": "MANEJO E IMPLEMENTACIÓN DE ARCHIVOS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0772, 0796",
+    "post_requisitos": "SISTEMAS DE BASES DE DATOS 1, REDES DE COMPUTADORAS 1, PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0778",
+    "semestre": "6",
+    "nombre": "ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0796, 0964",
+    "post_requisitos": "SISTEMAS OPERATIVOS 1, ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 2, REDES DE COMPUTADORAS 1, PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0781",
+    "semestre": "6",
+    "nombre": "ORGANIZACIÓN DE LENGUAJES Y COMPILADORES 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0772, 0777",
+    "post_requisitos": "SISTEMAS OPERATIVOS 1, INTELIGENCIA ARTIFICIAL 1"
+  },
+  {
+    "codigo": "0120",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0122",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 4",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0200",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ELÉCTRICA 1",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0114, 0152",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0281",
+    "semestre": "7",
+    "nombre": "SISTEMAS OPERATIVOS 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0778, 0781",
+    "post_requisitos": "SISTEMAS OPERATIVOS 2, SISTEMAS DE BASES DE DATOS 2, SEMINARIO DE SISTEMAS I"
+  },
+  {
+    "codigo": "0603",
+    "semestre": "7",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES II",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0601",
+    "post_requisitos": "MODELACIÓN Y SIMULACIÓN 1"
+  },
+  {
+    "codigo": "0724",
+    "semestre": "7",
+    "nombre": "TEORÍA DE SISTEMAS 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0601, 0722",
+    "post_requisitos": "SEMINARIO DE SISTEMAS I, MODELACIÓN Y SIMULACIÓN 1, INTELIGENCIA ARTIFICIAL 1"
+  },
+  {
+    "codigo": "0774",
+    "semestre": "7",
+    "nombre": "SISTEMAS DE BASES DE DATOS 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0773",
+    "post_requisitos": "ANÁLISIS Y DISEÑO DE SISTEMAS 1, SISTEMAS DE BASES DE DATOS 2, SEMINARIO DE SISTEMAS I"
+  },
+  {
+    "codigo": "0779",
+    "semestre": "7",
+    "nombre": "ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0778",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0970",
+    "semestre": "7",
+    "nombre": "REDES DE COMPUTADORAS 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0773, 0778",
+    "post_requisitos": "REDES DE COMPUTADORAS 2"
+  },
+  {
+    "codigo": "2036",
+    "semestre": "7",
+    "nombre": "PRÁCTICAS INTERMEDIAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0773, 0777, 0778, 2025",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA CIENCIAS Y SISTEMAS"
+  },
+  {
+    "codigo": "0734",
+    "semestre": "7",
+    "nombre": "ESTADÍSTICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0283",
+    "semestre": "8",
+    "nombre": "ANÁLISIS Y DISEÑO DE SISTEMAS 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0774",
+    "post_requisitos": "ANÁLISIS Y DISEÑO DE SISTEMAS 2, SISTEMAS ORGANIZACIONALES Y GERENCIALES 1, PRÁCTICAS FINALES INGENIERÍA CIENCIAS Y SISTEMAS, SISTEMAS APLICADOS 1"
+  },
+  {
+    "codigo": "0285",
+    "semestre": "8",
+    "nombre": "SISTEMAS OPERATIVOS 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0281",
+    "post_requisitos": "SEMINARIO DE SISTEMAS 2, PRÁCTICAS FINALES INGENIERÍA CIENCIAS Y SISTEMAS"
+  },
+  {
+    "codigo": "0775",
+    "semestre": "8",
+    "nombre": "SISTEMAS DE BASES DE DATOS 2",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0281, 0774",
+    "post_requisitos": "SEMINARIO DE SISTEMAS 2, INTELIGENCIA ARTIFICIAL 1, BASES DE DATOS AVANZADAS"
+  },
+  {
+    "codigo": "0797",
+    "semestre": "8",
+    "nombre": "SEMINARIO DE SISTEMAS I",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0281, 0724, 0774",
+    "post_requisitos": "SEMINARIO DE SISTEMAS 2"
+  },
+  {
+    "codigo": "0975",
+    "semestre": "8",
+    "nombre": "REDES DE COMPUTADORAS 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0970",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA CIENCIAS Y SISTEMAS, SEGURIDAD Y AUDITORÍA DE REDES DE COMPUTADORAS, REDES DE NUEVA GENERACIÓN"
+  },
+  {
+    "codigo": "0700",
+    "semestre": "8",
+    "nombre": "INGENIERÍA ECONÓMICA 1",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0729",
+    "semestre": "9",
+    "nombre": "MODELACIÓN Y SIMULACIÓN 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0603, 0724",
+    "post_requisitos": "MODELACIÓN Y SIMULACIÓN 2"
+  },
+  {
+    "codigo": "0785",
+    "semestre": "9",
+    "nombre": "ANÁLISIS Y DISEÑO DE SISTEMAS 2",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0283",
+    "post_requisitos": "SOFTWARE AVANZADO, SEMINARIO DE INVESTIGACIÓN, AUDITORÍA DE PROYECTOS DE SOFTWARE, SISTEMAS APLICADOS 2, SEMINARIO DE INVESTIGACIÓN E.P.S. SISTEMAS"
+  },
+  {
+    "codigo": "0786",
+    "semestre": "9",
+    "nombre": "SISTEMAS ORGANIZACIONALES Y GERENCIALES 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0283, 0722",
+    "post_requisitos": "SISTEMAS ORGANIZACIONALES Y GERENCIALES 2, SEMINARIO DE INVESTIGACIÓN, EMPRENDEDORES DE NEGOCIOS INFORMÁTICOS, SEMINARIO DE INVESTIGACIÓN E.P.S. SISTEMAS"
+  },
+  {
+    "codigo": "0798",
+    "semestre": "9",
+    "nombre": "SEMINARIO DE SISTEMAS 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0285, 0775, 0797",
+    "post_requisitos": "SEMINARIO DE INVESTIGACIÓN, SEMINARIO DE INVESTIGACIÓN E.P.S. SISTEMAS"
+  },
+  {
+    "codigo": "0972",
+    "semestre": "9",
+    "nombre": "INTELIGENCIA ARTIFICIAL 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0724, 0775, 0781",
+    "post_requisitos": "INTELIGENCIA ARTIFICIAL 2"
+  },
+  {
+    "codigo": "2009",
+    "semestre": "9",
+    "nombre": "PRÁCTICAS FINALES INGENIERÍA CIENCIAS Y SISTEMAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0283, 0285, 0975, 2036",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0776",
+    "semestre": "9",
+    "nombre": "BASES DE DATOS AVANZADAS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0775",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0788",
+    "semestre": "9",
+    "nombre": "SISTEMAS APLICADOS 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0283",
+    "post_requisitos": "SISTEMAS APLICADOS 2"
+  },
+  {
+    "codigo": "0966",
+    "semestre": "9",
+    "nombre": "SEGURIDAD Y AUDITORÍA DE REDES DE COMPUTADORAS",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0975",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0720",
+    "semestre": "10",
+    "nombre": "MODELACIÓN Y SIMULACIÓN 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0729",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0780",
+    "semestre": "10",
+    "nombre": "SOFTWARE AVANZADO",
+    "creditos": 8,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0785",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0787",
+    "semestre": "10",
+    "nombre": "SISTEMAS ORGANIZACIONALES Y GERENCIALES 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0786",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0799",
+    "semestre": "10",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0785, 0786, 0798",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0735",
+    "semestre": "10",
+    "nombre": "AUDITORÍA DE PROYECTOS DE SOFTWARE",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0785",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0789",
+    "semestre": "10",
+    "nombre": "SISTEMAS APLICADOS 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0785, 0788",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0790",
+    "semestre": "10",
+    "nombre": "EMPRENDEDORES DE NEGOCIOS INFORMÁTICOS",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0786",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0968",
+    "semestre": "10",
+    "nombre": "INTELIGENCIA ARTIFICIAL 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0972",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0974",
+    "semestre": "10",
+    "nombre": "REDES DE NUEVA GENERACIÓN",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0975",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7999",
+    "semestre": "10",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. SISTEMAS",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0785, 0786, 0798",
+    "post_requisitos": "Ninguno"
+  }
+]
