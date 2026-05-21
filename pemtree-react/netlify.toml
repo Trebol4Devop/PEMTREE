@@ -1,19 +1,29 @@
 [build]
-  # Utilizamos pnpm para ejecutar el script de construcción.
   command = "pnpm run build"
-
-  # El directorio generado tras la compilación.
-  # (Suele ser "dist" para Vite/Vue/Angular o "build" para Create React App/Next.js).
   publish = "dist"
 
-# Opcional pero muy recomendado: Variables de entorno para fijar las versiones.
 [build.environment]
-  # Descomenta estas líneas y ajusta las versiones si quieres asegurar 
-  # que Netlify use exactamente las mismas que tienes en tu computadora.
-  # NODE_VERSION = "20"
-  # PNPM_VERSION = "8"
+  NODE_VERSION = "20"
+  PNPM_VERSION = "9"
 
-# Redirección necesaria si tu proyecto es una SPA (Single Page Application).
+[[headers]]
+  for = "/json/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/pensum_color/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
