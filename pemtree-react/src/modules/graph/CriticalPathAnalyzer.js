@@ -79,13 +79,13 @@ export class CriticalPathAnalyzer {
         this.calcularSemestreMasTemprano();
         this.calcularSemestreMasTardio();
 
-        // Cursos obligatorios siempre están en ruta crítica (son indispensables para graduarse).
-        // Cursos optativos solo si tienen holgura cero (CPM: semestreMasTemprano == semestreMasTardio).
+        // Solo cursos obligatorios pueden ser parte de la ruta crítica.
+        // Deben tener holgura cero (CPM: semestreMasTemprano == semestreMasTardio).
         this.cursos.forEach(c => {
             const zeroSlack = c.semestreMasTemprano > 0 &&
                                c.semestreMasTardio > 0 &&
                                c.semestreMasTemprano === c.semestreMasTardio;
-            c.enRutaCritica = c.obligatorio || zeroSlack;
+            c.enRutaCritica = c.obligatorio && zeroSlack;
         });
     }
 }

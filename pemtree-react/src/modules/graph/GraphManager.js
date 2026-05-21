@@ -28,6 +28,7 @@ export class GraphManager {
         // Managers que se asignan después (en UIController)
         this.storageManager = null;
         this.infoCardManager = null;
+        this.onCreditsChange = null;
 
         // Inicializar análisis
         this.init();
@@ -209,9 +210,11 @@ export class GraphManager {
     onNodeDoubleClick(curso, graphGroup) {
         if (this.storageManager) {
             this.storageManager.toggleCompletado(curso.id, this, this.infoCardManager);
+            if (this.onCreditsChange) this.onCreditsChange();
         } else {
             curso.completado = !curso.completado;
             this.dibujarGrafo();
+            if (this.onCreditsChange) this.onCreditsChange();
         }
     }
 

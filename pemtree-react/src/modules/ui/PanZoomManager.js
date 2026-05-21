@@ -1,5 +1,3 @@
-// modules/ui/PanZoomManager.js - Gestión de pan y zoom
-
 import { getNodeDimensions } from '../graph/dimensions.js';
 
 export class PanZoomManager {
@@ -11,11 +9,13 @@ export class PanZoomManager {
         this.isDragging = false;
         this.startX = 0;
         this.startY = 0;
+        this.onZoomChange = null; // Callback para React
     }
 
-    init() {
-        const container = document.querySelector('.contenedor-grafica');
+    // Ahora recibe el contenedor y la función callback
+    init(container, onZoomChangeCallback) {
         if (!container) return;
+        this.onZoomChange = onZoomChangeCallback;
 
         this._onMouseMove = (e) => {
             if (!this.isDragging) return;
@@ -26,21 +26,19 @@ export class PanZoomManager {
         };
 
         container.addEventListener('mousedown', (e) => {
-            if(e.target.closest('.floating-card')) return;
+            if(e.target.closest('.floating-card') || e.target.closest('.fade-in')) return;
             if(e.target.tagName === 'rect' || e.target.tagName === 'text') return;
             
             e.preventDefault();
             this.isDragging = true;
             this.startX = e.clientX - this.translateX;
             this.startY = e.clientY - this.translateY;
-            container.style.cursor = 'grabbing';
             window.addEventListener('mousemove', this._onMouseMove);
         });
 
         window.addEventListener('mouseup', () => {
             if (this.isDragging) {
                 this.isDragging = false;
-                container.style.cursor = 'grab';
                 window.removeEventListener('mousemove', this._onMouseMove);
             }
         });
@@ -51,9 +49,10 @@ export class PanZoomManager {
         if(graphGroup) {
             graphGroup.setAttribute('transform', `translate(${this.translateX}, ${this.translateY}) scale(${this.scale})`);
         }
-        const zoomLevel = document.getElementById('zoomLevel');
-        if (zoomLevel) {
-            zoomLevel.textContent = `${Math.round(this.scale * 100)}%`;
+        
+        // Enviamos el nuevo valor a React en lugar de buscar #zoomLevel en el DOM
+        if (this.onZoomChange) {
+            this.onZoomChange(Math.round(this.scale * 100));
         }
     }
 
@@ -76,7 +75,7 @@ export class PanZoomManager {
     }
 
     centrarEnNodo(curso) {
-        const container = document.querySelector('.contenedor-grafica');
+        const container = document.querySelector('.contenedor-grafica'); // fallback
         if (!container) return;
         
         const width = container.clientWidth;
@@ -97,20 +96,8 @@ export class PanZoomManager {
         this.actualizarTransform();
     }
 
-    setScale(value) {
-        this.scale = value;
-    }
-
-    setTranslate(x, y) {
-        this.translateX = x;
-        this.translateY = y;
-    }
-
-    getTranslate() {
-        return { x: this.translateX, y: this.translateY };
-    }
-
-    getScale() {
-        return this.scale;
-    }
+    setScale(value) { this.scale = value; }
+    setTranslate(x, y) { this.translateX = x; this.translateY = y; }
+    getTranslate() { return { x: this.translateX, y: this.translateY }; }
+    getScale() { return this.scale; }
 }
