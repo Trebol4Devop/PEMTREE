@@ -15,6 +15,7 @@ html, body {
     padding: 0;
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 
 html.dark {
@@ -37,10 +38,14 @@ html.dark .logo-trebol-blue {
 #svg-grafica {
     min-width: 100%;
     min-height: 100%;
+    touch-action: none;
+    will-change: transform;
 }
 
 .contenedor-grafica {
     cursor: grab;
+    touch-action: none;
+    overscroll-behavior: none;
 }
 
 .contenedor-grafica:active {
@@ -68,8 +73,50 @@ html.dark .logo-trebol-blue {
 .node-group { 
     transition: transform 0.12s ease, filter 0.12s ease; 
     transform-box: fill-box; 
-    transform-origin: center; 
+    transform-origin: center center; 
     cursor: pointer;
+    will-change: transform, filter;
+}
+
+.node-group:hover {
+    transform: scale(1.008);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
+}
+
+#grafica-group {
+    will-change: transform;
+}
+
+.contenedor-grafica.is-panning .node-group,
+.contenedor-grafica.is-panning .node-group:hover {
+    transition: none;
+    filter: none;
+    transform: none;
+}
+
+@media (max-width: 768px) {
+    .node-group,
+    .node-group:hover {
+        transition: none;
+        filter: none;
+    }
+
+    .node-group.node-selected {
+        filter: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .node-group,
+    .node-group:hover {
+        transition: none;
+        filter: none;
+        transform: none;
+    }
+
+    .fade-in {
+        animation: none;
+    }
 }
 
 .node-group.node-selected { 
@@ -82,14 +129,31 @@ html.dark .logo-trebol-blue {
     pointer-events: none; 
 }
 
+.node-group.node-locked {
+    opacity: 0.55;
+}
+
 .node-group.node-dimmed:hover { 
     transform: none; 
     filter: grayscale(100%) opacity(0.55) !important; 
 }
 
 .node-group:hover { 
-    transform: scale(1.02); 
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12)); 
+}
+
+.semester-label {
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    pointer-events: none;
+    user-select: none;
+    fill: #42526E;
+    opacity: 1;
+}
+
+html.dark .semester-label {
+    fill: #ffffff;
 }
 
 #curso-tooltip {

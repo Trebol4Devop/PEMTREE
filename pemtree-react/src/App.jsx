@@ -7,8 +7,7 @@ import Visualizer from './pages/Visualizer';
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(() => {
     const saved = localStorage.getItem('pemtree_theme');
-    if (saved) return saved === 'dark';
-    return window.matchMedia?.('(prefers-color-scheme: dark)').matches ?? false;
+    return saved === 'dark';
   });
 
   useEffect(() => {

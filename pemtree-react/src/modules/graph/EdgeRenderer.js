@@ -13,6 +13,7 @@ export class EdgeRenderer {
         const nodeHeight = dims.height;
         
         const path = document.createElementNS(this.svgNS, "path");
+        path.setAttribute("class", "edge-path");
         
         const { d } = this.calcularPath(fromNode, toNode, currentLayout, nodeWidth, nodeHeight);
         path.setAttribute("d", d);
@@ -99,9 +100,9 @@ export class EdgeRenderer {
             style.markerEnd = "url(#arrowhead-yellow)";
             style.opacity = null;
         } else if (selectedNode && aristaEnRutaActiva) {
-            style.stroke = temaOscuro ? "#95a5a6" : "#2c3e50";
+            style.stroke = temaOscuro ? "#0747A6" : "#2c3e50";
             style.strokeWidth = "2";
-            style.markerEnd = "url(#arrowhead)";
+            style.markerEnd = temaOscuro ? "url(#arrowhead-blue)" : "url(#arrowhead)";
             style.opacity = null;
         } else if (aristaCritica) {
             style.stroke = "#e74c3c";
@@ -143,9 +144,24 @@ export class EdgeRenderer {
         polygonYellow.setAttribute("points", "0 0, 10 3.5, 0 7");
         polygonYellow.setAttribute("fill", "#f39c12");
         markerYellow.appendChild(polygonYellow);
+
+        // Flecha blanca
+        const markerBlue = document.createElementNS(this.svgNS, "marker");
+        markerBlue.setAttribute("id", "arrowhead-blue");
+        markerBlue.setAttribute("markerWidth", "10");
+        markerBlue.setAttribute("markerHeight", "7");
+        markerBlue.setAttribute("refX", "9");
+        markerBlue.setAttribute("refY", "3.5");
+        markerBlue.setAttribute("orient", "auto");
+
+        const polygonBlue = document.createElementNS(this.svgNS, "polygon");
+        polygonBlue.setAttribute("points", "0 0, 10 3.5, 0 7");
+        polygonBlue.setAttribute("fill", "#0747A6");
+        markerBlue.appendChild(polygonBlue);
         
         defs.appendChild(marker);
         defs.appendChild(markerYellow);
+        defs.appendChild(markerBlue);
         svg.appendChild(defs);
     }
 }
