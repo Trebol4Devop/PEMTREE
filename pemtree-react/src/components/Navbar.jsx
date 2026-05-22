@@ -9,7 +9,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
     const currentView = location.pathname === '/visualizador' ? 'board' : 'home';
 
     return (
-        <nav className="h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-4 flex items-center justify-between transition-colors duration-300 shrink-0">
+        <nav className="h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-4 flex items-center justify-between transition-colors duration-300 shrink-0 select-none">
             <div className="flex items-center space-x-6">
                 <Link to="/" className="flex items-center space-x-2 font-bold text-[19px] tracking-tight hover:opacity-85 transition bg-transparent border-none cursor-pointer no-underline">
                     <span className="w-9 h-9 rounded-full flex items-center justify-center">

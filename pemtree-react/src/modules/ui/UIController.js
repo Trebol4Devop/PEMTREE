@@ -61,7 +61,7 @@ export class UIController {
         
         // Zoom inicial para móviles
         if (window.innerWidth <= 768) {
-            this.panZoomManager.setScale(0.5);
+            this.panZoomManager.setScale(0.58);
             this.panZoomManager.setTranslate(50, 50);
             this.panZoomManager.actualizarTransform();
         }
@@ -82,7 +82,7 @@ export class UIController {
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 if (window.innerWidth <= 768) {
-                    this.panZoomManager.setScale(0.5);
+                    this.panZoomManager.setScale(0.58);
                     this.panZoomManager.setTranslate(50, 50);
                     this.panZoomManager.actualizarTransform();
                 }

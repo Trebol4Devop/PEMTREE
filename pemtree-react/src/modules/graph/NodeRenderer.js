@@ -32,9 +32,7 @@ export class NodeRenderer {
 
         const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
 
-        const isMobile = window.innerWidth <= 768;
-
-        if (isMobile && onLongPressCallback) {
+        if (onLongPressCallback) {
             group.addEventListener('touchstart', (e) => {
                 e.stopPropagation();
                 this.touchHandled = false;
@@ -62,6 +60,36 @@ export class NodeRenderer {
             });
 
             group.addEventListener('touchcancel', () => {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            });
+
+            group.addEventListener('mousedown', (e) => {
+                e.stopPropagation();
+                this.touchHandled = false;
+                this.touchStartPos = { x: e.clientX, y: e.clientY };
+                this.longPressTimer = setTimeout(() => {
+                    this.touchHandled = true;
+                    onLongPressCallback(curso);
+                }, this.longPressThreshold);
+            });
+
+            group.addEventListener('mousemove', (e) => {
+                if (!this.touchStartPos || !this.longPressTimer) return;
+                const dx = e.clientX - this.touchStartPos.x;
+                const dy = e.clientY - this.touchStartPos.y;
+                if (Math.abs(dx) > 6 || Math.abs(dy) > 6) {
+                    clearTimeout(this.longPressTimer);
+                    this.longPressTimer = null;
+                }
+            });
+
+            group.addEventListener('mouseup', () => {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            });
+
+            group.addEventListener('mouseleave', () => {
                 clearTimeout(this.longPressTimer);
                 this.longPressTimer = null;
             });
@@ -108,6 +136,10 @@ export class NodeRenderer {
             group.classList.add('node-dimmed');
         }
 
+        if (!curso.disponible && !curso.completado && !curso.selected) {
+            group.classList.add('node-locked');
+        }
+
         group.appendChild(parts);
 
         this.dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro, sectionColors);
@@ -134,6 +166,8 @@ export class NodeRenderer {
         group.classList.toggle('node-selected', !!curso.selected);
         const isDimmed = !!selectedNode && !curso.selected && !curso.highlighted;
         group.classList.toggle('node-dimmed', isDimmed);
+        const isLocked = !curso.disponible && !curso.completado && !curso.selected;
+        group.classList.toggle('node-locked', isLocked);
 
         const showWarning = showCriticalPath && curso.enRutaCritica && !curso.completado;
         const warningEl = group.querySelector('[data-tipo="warning"]');

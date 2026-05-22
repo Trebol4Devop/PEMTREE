@@ -61,9 +61,7 @@ export class GraphManager {
                 this.currentLayout,
                 this.viewMode
             );
-            while (graphGroup.firstChild) {
-                graphGroup.removeChild(graphGroup.firstChild);
-            }
+            graphGroup.replaceChildren();
             this.nodeElements.clear();
             this.edgeElements.clear();
 
@@ -78,13 +76,20 @@ export class GraphManager {
     async _fullRebuild(graphGroup) {
         const visibleCursos = this.cursos.filter(c => this.showOptional || c.obligatorio);
 
+        if (this.viewMode === 'semester') {
+            this._dibujarEncabezadosSemestre(graphGroup, visibleCursos);
+        }
+
+        const edgesFragment = document.createDocumentFragment();
+        const nodesFragment = document.createDocumentFragment();
+
         visibleCursos.forEach(curso => {
             curso.posrequisitos.forEach(posreqId => {
                 const posreq = this.cursoMap.get(posreqId);
                 if (!posreq || (!this.showOptional && !posreq.obligatorio)) return;
 
                 const path = this.edgeRenderer.dibujarArista(
-                    graphGroup, curso, posreq, this.currentLayout,
+                    edgesFragment, curso, posreq, this.currentLayout,
                     this.selectedNode, this.showCriticalPath, this.temaOscuro
                 );
                 this.edgeElements.set(path, `${curso.id}->${posreqId}`);
@@ -93,7 +98,7 @@ export class GraphManager {
 
         const nodePromises = visibleCursos.map(curso =>
             this.nodeRenderer.dibujarNodo(
-                graphGroup, curso, this.showCriticalPath, this.temaOscuro,
+                nodesFragment, curso, this.showCriticalPath, this.temaOscuro,
                 (c) => this.onNodeClick(c, graphGroup),
                 (c) => this.onNodeDoubleClick(c, graphGroup),
                 (c) => this.onNodeLongPress(c, graphGroup),
@@ -105,10 +110,64 @@ export class GraphManager {
 
         await Promise.all(nodePromises);
 
+        graphGroup.appendChild(edgesFragment);
+        graphGroup.appendChild(nodesFragment);
+
         // Construir índice reverso: key -> path element
         this._edgeKeyToPath = new Map();
         this.edgeElements.forEach((key, path) => {
             this._edgeKeyToPath.set(key, path);
+        });
+    }
+
+    _dibujarEncabezadosSemestre(graphGroup, visibleCursos) {
+        const dims = this.layoutCalculator.getNodeDimensions();
+        const nodeWidth = dims.width;
+        const nodeHeight = dims.height;
+        const isVertical = this.currentLayout === 'vertical';
+        const semestres = new Map();
+
+        visibleCursos.forEach(curso => {
+            const sem = curso.semestre;
+            if (!semestres.has(sem)) semestres.set(sem, []);
+            semestres.get(sem).push(curso);
+        });
+
+        Array.from(semestres.entries()).sort(([a], [b]) => a - b).forEach(([sem, cursos]) => {
+            let minX = Infinity;
+            let maxX = -Infinity;
+            let minY = Infinity;
+            let maxY = -Infinity;
+
+            cursos.forEach(curso => {
+                minX = Math.min(minX, curso.x);
+                maxX = Math.max(maxX, curso.x + nodeWidth);
+                minY = Math.min(minY, curso.y);
+                maxY = Math.max(maxY, curso.y + nodeHeight);
+            });
+
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('class', 'semester-label');
+            label.textContent = `Semestre ${sem}`;
+
+            if (isVertical) {
+                const x = Math.max(minX - 16, 10);
+                const y = minY + (maxY - minY) / 2;
+                label.setAttribute('x', x.toString());
+                label.setAttribute('y', y.toString());
+                label.setAttribute('text-anchor', 'end');
+                label.setAttribute('dominant-baseline', 'middle');
+            } else {
+                const x = minX + (maxX - minX) / 2;
+                const y = Math.max(minY - 14, 16);
+                label.setAttribute('x', x.toString());
+                label.setAttribute('y', y.toString());
+                label.setAttribute('text-anchor', 'middle');
+                label.setAttribute('dominant-baseline', 'alphabetic');
+            }
+
+            label.setAttribute('fill', this.temaOscuro ? '#ffffff' : '#42526E');
+            graphGroup.appendChild(label);
         });
     }
 
@@ -141,6 +200,9 @@ export class GraphManager {
     seleccionarNodo(curso, graphGroup) {
         if (this.selectedNode && this.selectedNode.id === curso.id) {
             this.desseleccionarNodo();
+            if (this.infoCardManager) {
+                this.infoCardManager.ocultar?.();
+            }
             return null;
         }
 
@@ -187,9 +249,6 @@ export class GraphManager {
 
     onNodeClick(curso, graphGroup) {
         const result = this.seleccionarNodo(curso, graphGroup);
-        if (result && window.innerWidth > 768 && this.infoCardManager) {
-            this.infoCardManager.mostrar(curso);
-        }
         return result;
     }
 
@@ -215,6 +274,10 @@ export class GraphManager {
             curso.completado = !curso.completado;
             this.dibujarGrafo();
             if (this.onCreditsChange) this.onCreditsChange();
+        }
+
+        if (window.innerWidth <= 768 && this.infoCardManager) {
+            this.infoCardManager.ocultar?.();
         }
     }
 
