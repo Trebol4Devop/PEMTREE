@@ -121,7 +121,21 @@ export default function Visualizer() {
 
         const initApp = async () => {
             try {
+                // Crear StorageManager y cargar pensum guardado
+                const storageManager = new StorageManager();
+                const pensumGuardado = storageManager.cargarPensumGuardado();
+
                 await initializeCursos();
+
+                // Si hay un pensum guardado, cargarlo
+                if (pensumGuardado) {
+                    try {
+                        await loadPensum(pensumGuardado);
+                    } catch (error) {
+                        console.warn(`No se pudo cargar el pensum guardado (${pensumGuardado}), usando el por defecto:`, error);
+                    }
+                }
+
                 const availablePensums = await listAvailablePensums();
 
                 if (!isMounted) return;
@@ -141,7 +155,6 @@ export default function Visualizer() {
                 graphGroup.setAttribute("id", "grafica-group");
                 svg.appendChild(graphGroup);
 
-                const storageManager = new StorageManager();
                 storageManager.cargarProgreso(cursos, cursoMap);
                 actualizarCreditos();
 
@@ -255,7 +268,9 @@ export default function Visualizer() {
         if (!relPath || !gm) return;
         try {
             await loadPensum(relPath);
+            // Guardar el pensum seleccionado
             if (gm.storageManager) {
+                gm.storageManager.guardarPensumActual(relPath);
                 gm.storageManager.cargarProgreso(cursos, cursoMap);
             }
             actualizarCreditos();
@@ -559,8 +574,8 @@ export default function Visualizer() {
                         onClick={() => handleToggleCompletado(selectedCourse.id)}
                         className={`w-full p-[10px] mt-[5px] rounded-[6px] font-bold cursor-pointer transition-all flex items-center justify-center gap-[8px] border-none shadow-sm
                         ${selectedCourse.completado 
-                            ? 'bg-[#36B37E] hover:bg-[#22A06B] text-white' 
-                            : (isDarkMode ? 'bg-[#4C9AFF] hover:bg-[#2684FF] text-[#0E1624]' : 'bg-[#0052CC] hover:bg-[#0747A6] text-white')}`}
+                            ? 'bg-[#10b981] hover:bg-[#059669] text-white' 
+                            : (isDarkMode ? 'bg-[#60a5fa] hover:bg-[#3b82f6] text-white' : 'bg-[#0052CC] hover:bg-[#0747A6] text-white')}`}
                     >
                         {selectedCourse.completado ? (
                             <><CheckCircle2 size={16} /> Quitar Aprobación</>

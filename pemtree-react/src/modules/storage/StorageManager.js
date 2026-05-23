@@ -5,6 +5,7 @@ import { getPensumKey } from '../data/cursos.js';
 export class StorageManager {
     constructor() {
         this._baseKey = 'pemtree_progreso';
+        this._pensumKey = 'pemtree_pensum_actual';
     }
 
     get storageKey() {
@@ -101,5 +102,20 @@ export class StorageManager {
         localStorage.removeItem(this.storageKey);
         this.actualizarDisponibilidad(cursos, new Map(cursos.map(c => [c.id, c])));
         this.actualizarContadorCreditos(cursos);
+    }
+
+    // Métodos para guardar y cargar el pensum actual
+    guardarPensumActual(pensumFile) {
+        if (pensumFile) {
+            localStorage.setItem(this._pensumKey, pensumFile);
+        }
+    }
+
+    cargarPensumGuardado() {
+        return localStorage.getItem(this._pensumKey);
+    }
+
+    limpiarPensumGuardado() {
+        localStorage.removeItem(this._pensumKey);
     }
 }

@@ -195,8 +195,16 @@ export class NodeRenderer {
     _actualizarTextos(group, curso, temaOscuro, sectionColors) {
         const codeText = group.querySelector('[data-tipo="codigo"]');
         if (codeText) {
+            let codeTextColor;
+            if (curso.completado) {
+                // Usar color complementario del color principal del pensum
+                const pensumPrimary = sectionColors.leftTop.fill;
+                codeTextColor = this.getComplementaryColor(pensumPrimary);
+            } else {
+                codeTextColor = sectionColors.text;
+            }
             codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
-            codeText.setAttribute('fill', curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : sectionColors.text);
+            codeText.setAttribute('fill', codeTextColor);
         }
 
         const creditsText = group.querySelector('[data-tipo="creditos"]');
@@ -220,28 +228,28 @@ export class NodeRenderer {
         let fillColor, strokeColor, strokeWidth, strokeDasharray = null;
 
         if (curso.selected) {
-            fillColor = temaOscuro ? "#34495e" : "#fff";
+            fillColor = temaOscuro ? "#2d3748" : "#fff";
             strokeColor = baseColors.selected;
             strokeWidth = "3";
         } else if (curso.completado) {
-            fillColor = temaOscuro ? "#1e4d40" : "#d4efdf";
+            fillColor = temaOscuro ? "#064e3b" : "#d4efdf";
             strokeColor = baseColors.completado;
             strokeWidth = "2";
         } else if (curso.disponible) {
-            fillColor = temaOscuro ? "#2c3e50" : "#fff";
+            fillColor = temaOscuro ? "#1e3a8a" : "#fff";
             strokeColor = baseColors.highlighted;
             strokeWidth = "3";
             strokeDasharray = "5,2";
         } else if (curso.highlighted) {
-            fillColor = temaOscuro ? "#2c4f4a" : "#e8f6f3";
-            strokeColor = temaOscuro ? "#3fa688" : "#14ab85";
+            fillColor = temaOscuro ? "#1f3c7a" : "#e8f6f3";
+            strokeColor = temaOscuro ? "#60a5fa" : "#14ab85";
             strokeWidth = "2";
         } else if (isCriticalView) {
-            fillColor = temaOscuro ? "#4a2626" : "#fdedec";
+            fillColor = temaOscuro ? "#7f1d1d" : "#fdedec";
             strokeColor = baseColors.critical;
             strokeWidth = "2";
         } else {
-            fillColor = temaOscuro ? "#34495e" : "#f4f6f7";
+            fillColor = temaOscuro ? "#1f2937" : "#f4f6f7";
             strokeColor = baseColors.bloqueado;
             strokeWidth = "1";
         }
@@ -251,20 +259,20 @@ export class NodeRenderer {
 
     getBaseColors(temaOscuro) {
         return temaOscuro ? {
-            fill: '#2c3e50',
-            stroke: '#34495e',
-            text: '#ecf0f1',
-            completado: '#27ae60',
-            disponible: '#3498db',
-            bloqueado: '#7f8c8d',
-            selected: '#e67e22',
-            highlighted: '#f39c12',
-            critical: '#e74c3c'
+            fill: '#1a1f2e',
+            stroke: '#2c3e50',
+            text: '#f5f7fa',
+            completado: '#10b981',
+            disponible: '#3b82f6',
+            bloqueado: '#9ca3af',
+            selected: '#f59e0b',
+            highlighted: '#fbbf24',
+            critical: '#ef4444'
         } : {
             fill: 'white',
             stroke: '#ccc',
-            text: '#555',
-            completado: '#1e8449',
+            text: '#333',
+            completado: '#059669',
             disponible: '#3498db',
             bloqueado: '#bdc3c7',
             selected: '#e67e22',
@@ -304,6 +312,87 @@ export class NodeRenderer {
 
     getPensumColors(curso) {
         return currentPensumColors;
+    }
+
+    // Convierte hex a RGB
+    hexToRgb(hex) {
+        const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16) / 255,
+            g: parseInt(result[2], 16) / 255,
+            b: parseInt(result[3], 16) / 255
+        } : { r: 0, g: 0, b: 0 };
+    }
+
+    // Convierte RGB a hex
+    rgbToHex(r, g, b) {
+        return "#" + [r, g, b].map(x => {
+            const hex = Math.round(x * 255).toString(16);
+            return hex.length === 1 ? "0" + hex : hex;
+        }).join('');
+    }
+
+    // Convierte RGB a HSL
+    rgbToHsl(r, g, b) {
+        const max = Math.max(r, g, b), min = Math.min(r, g, b);
+        let h, s, l = (max + min) / 2;
+
+        if (max === min) {
+            h = s = 0;
+        } else {
+            const d = max - min;
+            s = l > 0.5 ? d / (2 - max - min) : d / (max + min);
+            switch (max) {
+                case r: h = (g - b) / d + (g < b ? 6 : 0); break;
+                case g: h = (b - r) / d + 2; break;
+                case b: h = (r - g) / d + 4; break;
+            }
+            h /= 6;
+        }
+
+        return { h, s, l };
+    }
+
+    // Convierte HSL a RGB
+    hslToRgb(h, s, l) {
+        let r, g, b;
+
+        if (s === 0) {
+            r = g = b = l;
+        } else {
+            const hue2rgb = (p, q, t) => {
+                if (t < 0) t += 1;
+                if (t > 1) t -= 1;
+                if (t < 1/6) return p + (q - p) * 6 * t;
+                if (t < 1/2) return q;
+                if (t < 2/3) return p + (q - p) * (2/3 - t) * 6;
+                return p;
+            };
+
+            const q = l < 0.5 ? l * (1 + s) : l + s - l * s;
+            const p = 2 * l - q;
+            r = hue2rgb(p, q, h + 1/3);
+            g = hue2rgb(p, q, h);
+            b = hue2rgb(p, q, h - 1/3);
+        }
+
+        return { r, g, b };
+    }
+
+    // Calcula el color complementario (rotación de 180° en el círculo de matices)
+    getComplementaryColor(hexColor) {
+        const rgb = this.hexToRgb(hexColor);
+        const hsl = this.rgbToHsl(rgb.r, rgb.g, rgb.b);
+        
+        // Rotar 180 grados en el círculo de matices
+        hsl.h = (hsl.h + 0.5) % 1;
+        
+        // Aumentar saturación y ajustar luminosidad para mejor visibilidad
+        hsl.s = Math.min(1, hsl.s + 0.2);
+        hsl.l = hsl.l < 0.5 ? Math.min(1, hsl.l + 0.3) : Math.max(0, hsl.l - 0.2);
+        
+        const rgbComp = this.hslToRgb(hsl.h, hsl.s, hsl.l);
+        return this.rgbToHex(rgbComp.r, rgbComp.g, rgbComp.b);
     }
 
     // Crea el conjunto de rects que conforman el nodo
@@ -383,6 +472,16 @@ export class NodeRenderer {
         const centerW = nodeWidth - (2 * lateralWidth);
         const rightX = centerX + centerW;
 
+        // Calcular color complementario para el código cuando está completado
+        let codeTextColor;
+        if (curso.completado) {
+            // Usar color complementario del color principal del pensum
+            const pensumPrimary = sectionColors.leftTop.fill;
+            codeTextColor = this.getComplementaryColor(pensumPrimary);
+        } else {
+            codeTextColor = sectionColors.text;
+        }
+
         const codeText = document.createElementNS(this.svgNS, "text");
         codeText.setAttribute("data-tipo", "codigo");
         codeText.setAttribute("x", leftX + lateralWidth / 2);
@@ -391,7 +490,7 @@ export class NodeRenderer {
         codeText.setAttribute("font-size", isMobile ? "8" : "10");
         codeText.setAttribute("text-anchor", "middle");
         codeText.setAttribute("font-weight", "bold");
-        codeText.setAttribute("fill", curso.completado ? (temaOscuro ? "#2ecc71" : "#1e8449") : sectionColors.text);
+        codeText.setAttribute("fill", codeTextColor);
         codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
         group.appendChild(codeText);
 

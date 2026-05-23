@@ -19,8 +19,8 @@ html, body {
 }
 
 html.dark {
-    background-color: #0E1624;
-    color: #F8FAFC;
+    background-color: #0f172a;
+    color: #f1f5f9;
 }
 
 .logo-trebol {
@@ -200,4 +200,59 @@ html.dark #curso-tooltip {
 }
 html.dark .hide-scrollbar::-webkit-scrollbar-thumb { 
     background-color: #3E4C5E; 
+}
+
+/* Mejoras de contraste en modo oscuro */
+html.dark {
+    --bg-elevated: #1c2636;
+    --bg-overlay: #121924;
+    --text-primary: #f1f5f9;
+    --text-secondary: #cbd5e1;
+    --border-subtle: #334155;
+    --border-focus: #60a5fa;
+}
+
+/* Mejorar visibilidad del select y inputs en dark mode */
+html.dark select,
+html.dark input {
+    background-color: #0f172a !important;
+    color: #f1f5f9 !important;
+}
+
+html.dark select option {
+    background-color: #1c2636;
+    color: #f1f5f9;
+}
+
+/* Mejorar estado de badges y spans */
+html.dark .estado-badge {
+    text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+}
+
+/* Mejorar contraste de los badges de prerequisitos */
+html.dark .badge {
+    background-color: rgba(255,255,255,0.05) !important;
+    border: 1px solid rgba(255,255,255,0.1) !important;
+}
+
+/* Mejorar botón de completar en tarjeta de info */
+html.dark .btn-completar {
+    font-weight: 600;
+    transition: all 0.2s ease;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+html.dark .btn-completar:hover {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Mejoras generales para mejor legibilidad en dark mode */
+html.dark {
+    --tw-text-opacity: 1;
+}
+
+html.dark button, 
+html.dark select, 
+html.dark input {
+    font-weight: 500;
 }
