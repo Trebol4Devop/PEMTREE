@@ -418,82 +418,83 @@ export default function Visualizer() {
     return (
         <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300">
             
-            <div className="flex flex-col md:flex-row items-center justify-between p-3 max-md:p-2 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-3 max-md:gap-2 select-none">
+            <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto">
                 
-                <div className="flex items-stretch sm:items-center gap-2 max-md:gap-1 bg-black/5 dark:bg-white/5 p-1 max-md:p-0.5 rounded-lg w-full md:w-auto overflow-x-auto hide-scrollbar">
-                    <button onClick={handleCambiarVista} className={`flex items-center justify-center space-x-1.5 px-3 py-1.5 max-md:py-1 text-xs max-md:text-[0.7rem] font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap w-auto shrink-0 ${viewMode === 'semester' ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
-                        <Grid size={14} /> <span>Semestral</span>
+                {/* Botones de vista y opciones */}
+                <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
+                    <button onClick={handleCambiarVista} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${viewMode === 'semester' ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
+                        <Grid size={12} className="max-sm:hidden" /> <Grid size={10} className="sm:hidden" /> <span className="max-sm:hidden">Semestral</span><span className="sm:hidden">S.</span>
                     </button>
-                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center space-x-1.5 px-3 py-1.5 max-md:py-1 text-xs max-md:text-[0.7rem] font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap w-auto shrink-0 ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
-                        <Compass size={14} /> <span>Ruta Crítica</span>
+                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
+                        <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
-                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center space-x-1.5 px-3 py-1.5 max-md:py-1 text-xs max-md:text-[0.7rem] font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap w-auto shrink-0 ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
-                        <Layers size={14} /> <span>Optativos</span>
+                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
+                        <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
-                    <button onClick={handleLayoutChange} className={`flex items-center justify-center space-x-1.5 px-3 py-1.5 max-md:py-1 text-xs max-md:text-[0.7rem] font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap w-auto shrink-0 text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent`}>
-                        <LayoutTemplate size={14} /> <span>{layout === 'vertical' ? 'Vertical' : 'Horizontal'}</span>
+                    <button onClick={handleLayoutChange} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent`}>
+                        <LayoutTemplate size={12} className="max-sm:hidden" /> <LayoutTemplate size={10} className="sm:hidden" /> <span className="max-lg:hidden">{layout === 'vertical' ? 'Vertical' : 'Horizontal'}</span><span className="lg:hidden">{layout === 'vertical' ? 'V' : 'H'}</span>
                     </button>
                 </div>
 
-                <div className="flex flex-col md:flex-row items-stretch md:items-center justify-center md:justify-end gap-2 md:gap-3 w-full md:w-auto shrink-0">
-                    <div className="grid grid-cols-2 gap-2 max-md:gap-1 w-full md:contents">
-                        <select
-                            onChange={handlePensumChange}
-                            className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2.5 py-1.5 max-md:py-1 text-xs max-md:text-[0.7rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full truncate"
-                        >
-                            <option value="">Seleccione Pensum...</option>
-                            {pensums.map(p => (
-                                <option key={p.id} value={p.file}>{p.name}</option>
-                            ))}
-                        </select>
+                {/* Selectors y búsqueda */}
+                <div className="flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0">
+                    <select
+                        onChange={handlePensumChange}
+                        className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-xs max-lg:text-[0.65rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer min-w-0"
+                    >
+                        <option value="">Seleccione Pensum...</option>
+                        {pensums.map(p => (
+                            <option key={p.id} value={p.file}>{p.name}</option>
+                        ))}
+                    </select>
 
-                        <div className="relative w-full">
-                            <Search size={14} className="absolute inset-y-0 left-2.5 top-1.5 flex items-center pointer-events-none text-[#5E6C84] dark:text-slate-400" />
-                            <input
-                                type="text"
-                                placeholder="Buscar curso..."
-                                value={searchTerm}
-                                onChange={handleSearchChange}
-                                className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2.5 py-1 max-md:py-1 pl-8 text-xs max-md:text-[0.7rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] w-full transition-all"
-                            />
-                            {searchResults.length > 0 && (
-                                <div className="absolute top-[100%] right-0 sm:left-0 w-full sm:w-48 mt-[4px] shadow-lg rounded-md overflow-hidden z-[5000] bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E]">
-                                    {searchResults.map(curso => (
-                                        <button
-                                            key={curso.id}
-                                            onClick={() => handleSelectSearch(curso)}
-                                            className="w-full text-left px-[10px] py-[8px] text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
-                                        >
-                                            <span className="font-bold mr-[5px] text-xs">{curso.codigo}</span>
-                                            <span className="text-xs">{curso.nombre}</span>
-                                        </button>
-                                    ))}
-                                </div>
-                            )}
-                        </div>
+                    <div className="relative min-w-0 sm:flex-1 lg:w-48">
+                        <Search size={12} className="absolute inset-y-0 left-2 sm:left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#5E6C84] dark:text-slate-400" />
+                        <input
+                            type="text"
+                            placeholder="Buscar..."
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                            className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 pl-7 text-[0.65rem] sm:text-xs max-lg:text-[0.65rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] w-full transition-all"
+                        />
+                        {searchResults.length > 0 && (
+                            <div className="absolute top-[calc(100%+4px)] left-0 right-0 w-full sm:w-56 shadow-lg rounded-md overflow-hidden z-[5000] bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E]">
+                                {searchResults.map(curso => (
+                                    <button
+                                        key={curso.id}
+                                        onClick={() => handleSelectSearch(curso)}
+                                        className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
+                                    >
+                                        <span className="font-bold mr-[5px] text-[0.65rem] sm:text-xs">{curso.codigo}</span>
+                                        <span className="text-[0.65rem] sm:text-xs">{curso.nombre}</span>
+                                    </button>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+                </div>
+
+                {/* Botones de ayuda, créditos y reiniciar */}
+                <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0">
+                    <button
+                        type="button"
+                        onClick={() => setShowGuia(true)}
+                        className="w-7 h-7 sm:w-8 sm:h-8 min-w-[28px] sm:min-w-[32px] min-h-[28px] sm:min-h-[32px] p-0 flex-none rounded-full border border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] font-extrabold text-xs sm:text-sm flex items-center justify-center hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] transition"
+                        aria-label="Ayuda"
+                        title="Ayuda"
+                    >
+                        ?
+                    </button>
+
+                    <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 bg-[#DEEBFF] dark:bg-[#0C295E] px-1.5 sm:px-2 py-1 max-sm:py-0.5 rounded border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 shadow-sm">
+                        <span className="text-[0.6rem] sm:text-[10px] lg:text-[10px] font-bold text-[#0052CC] dark:text-[#4C9AFF] uppercase tracking-wider whitespace-nowrap">Créditos:</span>
+                        <span className="text-[0.65rem] sm:text-xs lg:text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">{creditosAprobados}</span>
                     </div>
 
-                    <div className="grid grid-cols-[auto,1fr,1fr] gap-2 max-md:gap-1 w-full items-center md:contents">
-                        <button
-                            type="button"
-                            onClick={() => setShowGuia(true)}
-                            className="w-8 h-8 min-w-[32px] min-h-[32px] p-0 flex-none rounded-full border border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] font-extrabold text-sm flex items-center justify-center hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] transition"
-                            aria-label="Ayuda"
-                            title="Ayuda"
-                        >
-                            ?
-                        </button>
-
-                        <div className="flex items-center justify-center space-x-1.5 bg-[#DEEBFF] dark:bg-[#0C295E] px-2 py-1 max-md:py-0.5 rounded border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 shadow-sm">
-                            <span className="text-[10px] max-md:text-[0.6rem] font-bold text-[#0052CC] dark:text-[#4C9AFF] uppercase tracking-wider">Créditos:</span>
-                            <span className="text-xs max-md:text-[0.7rem] font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">{creditosAprobados}</span>
-                        </div>
-
-                        <button onClick={handleLimpiar} className="flex items-center justify-center gap-2 px-3 py-1.5 max-md:py-1 rounded bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-[#BF2600] dark:text-red-400 transition border-none cursor-pointer text-xs max-md:text-[0.7rem] font-bold" title="Limpiar Selección">
-                            <RotateCcw size={14} />
-                            Reiniciar
-                        </button>
-                    </div>
+                    <button onClick={handleLimpiar} className="flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 rounded bg-red-50 hover:bg-red-100 dark:bg-red-900/30 dark:hover:bg-red-900/50 text-[#BF2600] dark:text-red-400 transition border-none cursor-pointer text-[0.65rem] sm:text-xs lg:text-xs font-bold whitespace-nowrap" title="Limpiar Selección">
+                        <RotateCcw size={12} className="max-sm:hidden" /> <RotateCcw size={11} className="sm:hidden" />
+                        <span className="max-sm:hidden">Reiniciar</span><span className="sm:hidden">Reset</span>
+                    </button>
                 </div>
             </div>
 
@@ -507,17 +508,17 @@ export default function Visualizer() {
             ></div>
 
 
-            <div className="flex justify-center items-center gap-[6px] absolute bottom-[24px] right-[24px] z-[2100] max-md:top-auto max-md:bottom-[calc(78px+env(safe-area-inset-bottom))] max-md:right-[12px] max-md:z-[700] select-none">
-                <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-[8px] font-semibold text-[1rem] transition-all flex items-center justify-center shadow-sm w-[36px] h-[36px] p-0 active:scale-[0.95] border cursor-pointer ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+            <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:bottom-[calc(80px+env(safe-area-inset-bottom))] max-sm:z-[700] select-none">
+                <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
                     −
                 </button>
-                <span className={`text-[0.82rem] font-semibold w-[44px] text-center backdrop-blur-md py-[7px] rounded-[8px] shadow-sm select-none border ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300' : 'bg-white/90 border-[#DFE1E6] text-[#42526E]'}`}>
+                <span className={`text-[0.75rem] sm:text-sm font-semibold w-10 sm:w-11 text-center backdrop-blur-md py-1 sm:py-1.5 rounded-lg shadow-sm select-none border ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300' : 'bg-white/90 border-[#DFE1E6] text-[#42526E]'}`}>
                     {zoom}%
                 </span>
-                <button onClick={handleZoomIn} className={`backdrop-blur-md rounded-[8px] font-semibold text-[1rem] transition-all flex items-center justify-center shadow-sm w-[36px] h-[36px] p-0 active:scale-[0.95] border cursor-pointer ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                <button onClick={handleZoomIn} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
                     +
                 </button>
-                <button onClick={handleZoomReset} className={`backdrop-blur-md rounded-[8px] font-semibold text-[1rem] transition-all flex items-center justify-center shadow-sm w-[36px] h-[36px] p-0 active:scale-[0.95] border cursor-pointer ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                <button onClick={handleZoomReset} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
                     ↺
                 </button>
             </div>
