@@ -228,7 +228,7 @@ export async function initializeCursos() {
         cursoMap.clear();
         cursos.forEach(curso => cursoMap.set(curso.id, curso));
 
-        console.log(`✅ Cursos inicializados (${cursos.length} cursos)`);
+        console.log(`Cursos inicializados (${cursos.length} cursos)`);
         return cursos;
     } catch (error) {
         console.error('Error inicializando cursos:', error);
@@ -286,7 +286,7 @@ export async function listAvailablePensums() {
             return null;
         }).filter(Boolean);
 
-        console.log('📋 Pensums disponibles (desde index):', pensums.length);
+        console.log(' Pensums disponibles (desde index):', pensums.length);
         pensums.forEach(p => console.log(`  - ${p.id}: ${p.name} (${p.file})`));
         return pensums;
     }
@@ -319,7 +319,7 @@ export async function listAvailablePensums() {
     }
 
     if (detectedPensums.length > 0) {
-        console.log('📋 Pensums detectados (probe):', detectedPensums.length);
+        console.log(' Pensums detectados (probe):', detectedPensums.length);
         return detectedPensums;
     }
 
@@ -356,7 +356,7 @@ export async function loadPensum(relPath) {
         // Registrar el pensum cargado para la UI
         STARTUP_LOADED_PENSUM = relPath;
 
-        console.log(`✅ Pensum cargado: ${relPath} (${cursos.length} cursos)`);
+        console.log(` Pensum cargado: ${relPath} (${cursos.length} cursos)`);
         return cursos;
     } catch (error) {
         console.error('Error cargando pensum:', error);

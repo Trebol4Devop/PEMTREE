@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Grid, Compass, LayoutTemplate, Layers, RotateCcw, CheckCircle2, Lock, Unlock } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock } from 'lucide-react';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
@@ -27,8 +27,6 @@ export default function Visualizer() {
     const [zoom, setZoom] = useState(100);
     const [showOptional, setShowOptional] = useState(true);
     const [showCriticalPath, setShowCriticalPath] = useState(false);
-    const [viewMode, setViewMode] = useState('semester');
-    const [layout, setLayout] = useState('horizontal');
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = localStorage.getItem('pemtree_theme');
         return saved === 'dark';
@@ -175,8 +173,7 @@ export default function Visualizer() {
                 tooltipManagerRef.current = gm.tooltipManager;
                 gm.onCreditsChange = actualizarCreditos;
                 
-                if (typeof gm.setCurrentLayout === 'function') gm.currentLayout = layout;
-                else gm.currentLayout = layout;
+                gm.currentLayout = 'horizontal';
                 
                 if (typeof gm.setTemaOscuro === 'function') gm.temaOscuro = isDarkMode;
                 else gm.temaOscuro = isDarkMode;
@@ -206,7 +203,7 @@ export default function Visualizer() {
 
         initApp();
         return () => { isMounted = false; };
-    }, [isDarkMode, layout]);
+    }, [isDarkMode]);
 
     const handleLimpiar = () => {
         const gm = graphManagerRef.current;
@@ -250,26 +247,6 @@ export default function Visualizer() {
             const newValue = !showCriticalPath;
             setShowCriticalPath(newValue);
             gm.setShowCriticalPath(newValue);
-        }
-    };
-
-    const handleCambiarVista = () => {
-        const gm = graphManagerRef.current;
-        if (gm) {
-            const newMode = viewMode === 'semester' ? 'free' : 'semester';
-            setViewMode(newMode);
-            gm.setViewMode(newMode);
-        }
-    };
-
-    const handleLayoutChange = async () => {
-        const newLayout = layout === 'vertical' ? 'horizontal' : 'vertical';
-        setLayout(newLayout);
-        const gm = graphManagerRef.current;
-        if (gm) {
-            gm.setCurrentLayout(newLayout);
-            await gm.dibujarGrafo();
-            if (panZoom) applyInitialView(panZoom, graficaRef.current);
         }
     };
 
@@ -452,21 +429,15 @@ export default function Visualizer() {
     return (
         <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300">
             
-            <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300">
                 
                 {/* Botones de vista y opciones */}
                 <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
-                    <button onClick={handleCambiarVista} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${viewMode === 'semester' ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
-                        <Grid size={12} className="max-sm:hidden" /> <Grid size={10} className="sm:hidden" /> <span className="max-sm:hidden">Semestral</span><span className="sm:hidden">S.</span>
-                    </button>
                     <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
                     <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
-                    </button>
-                    <button onClick={handleLayoutChange} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent`}>
-                        <LayoutTemplate size={12} className="max-sm:hidden" /> <LayoutTemplate size={10} className="sm:hidden" /> <span className="max-lg:hidden">{layout === 'vertical' ? 'Vertical' : 'Horizontal'}</span><span className="lg:hidden">{layout === 'vertical' ? 'V' : 'H'}</span>
                     </button>
                 </div>
 
@@ -509,7 +480,7 @@ export default function Visualizer() {
                         ?
                     </button>
 
-                    <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 bg-[#DEEBFF] dark:bg-[#0C295E] px-1.5 sm:px-2 py-1 max-sm:py-0.5 rounded border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 shadow-sm">
+                    <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 bg-[#DEEBFF] dark:bg-[#0C295E] px-1.5 sm:px-2 py-1 max-sm:py-0.5 rounded border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 shadow-sm transition-colors duration-300">
                         <span className="text-[0.6rem] sm:text-[10px] lg:text-[10px] font-bold text-[#0052CC] dark:text-[#4C9AFF] uppercase tracking-wider whitespace-nowrap">Créditos:</span>
                         <span className="text-[0.65rem] sm:text-xs lg:text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">{creditosAprobados}</span>
                     </div>
@@ -600,7 +571,7 @@ export default function Visualizer() {
             )}
 
             {selectedCourse && (
-                <div className={`absolute top-[80px] right-[20px] w-[340px] max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-[15px] backdrop-blur-md rounded-[12px] shadow-xl p-[20px] z-[950] border fade-in max-md:p-[16px] max-md:pb-[66px] select-none ${isDarkMode ? 'bg-[#1C2636]/95 border-[#3E4C5E] text-slate-100' : 'bg-white/95 border-[#DFE1E6] text-[#172B4D]'}`}>
+                <div className={`absolute top-[80px] right-[20px] w-[340px] max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-[15px] backdrop-blur-md rounded-[12px] shadow-xl p-[20px] z-[950] border fade-in max-md:p-[16px] max-md:pb-[66px] select-none transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636]/95 border-[#3E4C5E] text-slate-100' : 'bg-white/95 border-[#DFE1E6] text-[#172B4D]'}`}>
                     <button onClick={handleCerrarInfo} className={`absolute top-[12px] right-[12px] border-none text-[1rem] cursor-pointer w-[28px] h-[28px] rounded flex items-center justify-center p-0 transition-all ${isDarkMode ? 'bg-[#2D333B] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] text-[#5E6C84] hover:bg-[#EBECF0] hover:text-[#172B4D]'}`}>
                         ×
                     </button>
@@ -624,7 +595,7 @@ export default function Visualizer() {
                         {selectedCourse.nombre}
                     </div>
 
-                    <div className={`flex justify-between mb-[15px] text-[0.85rem] font-medium p-[10px] rounded-[6px] border ${isDarkMode ? 'bg-[#0E1624] border-[#3E4C5E] text-slate-300' : 'bg-[#FAFBFC] border-[#DFE1E6] text-[#5E6C84]'}`}>
+                    <div className={`flex justify-between mb-[15px] text-[0.85rem] font-medium p-[10px] rounded-[6px] border transition-colors duration-300 ${isDarkMode ? 'bg-[#0E1624] border-[#3E4C5E] text-slate-300' : 'bg-[#FAFBFC] border-[#DFE1E6] text-[#5E6C84]'}`}>
                         <span><strong>Créditos:</strong> {selectedCourse.creditos}</span>
                         <span><strong>Semestre:</strong> {selectedCourse.semestre}</span>
                     </div>

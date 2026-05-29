@@ -70,7 +70,7 @@ export class CriticalPathAnalyzer {
 
     // ---------- Pasada hacia adelante ----------
 
-    _calcularEarly(ordenAdelante, posreqs) {
+    _calcularEarly(ordenAdelante) {
         const early = new Map();
 
         ordenAdelante.forEach(id => {
@@ -115,8 +115,8 @@ export class CriticalPathAnalyzer {
 
     calcularRutaCritica() {
         const posreqs = this._construirPosrequisitos();
-        const orden = this._ordenTopologico(posreqs);
-        const early = this._calcularEarly(orden, posreqs);
+        const orden = this._ordenTopologico();
+        const early = this._calcularEarly(orden);
         const late = this._calcularLate(orden, early, posreqs);
 
         this.cursos.forEach(c => {
