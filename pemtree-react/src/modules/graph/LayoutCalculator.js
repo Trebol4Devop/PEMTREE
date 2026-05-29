@@ -27,7 +27,7 @@ export class LayoutCalculator {
 
         const niveles = Array.from(nivelesMap.entries())
             .sort(([a], [b]) => a - b)
-            .map(([_, nodos]) => this.ordenarNodosEnNivel(nodos));
+            .map(([, nodos]) => this.ordenarNodosEnNivel(nodos));
         
         const isVertical = currentLayout === 'vertical';
         const isMobile = window.innerWidth <= 768;

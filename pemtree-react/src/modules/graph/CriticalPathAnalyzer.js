@@ -1,4 +1,4 @@
-// modules/graph/CriticalPathAnalyzer.js - Análisis de ruta crítica (CPM)
+// modules/graph/CriticalPathAnalyzer.js
 
 export class CriticalPathAnalyzer {
     constructor(cursos, cursoMap) {
@@ -6,86 +6,129 @@ export class CriticalPathAnalyzer {
         this.cursoMap = cursoMap;
     }
 
-    calcularPosrequisitos() {
+    // ---------- Utilidades ----------
+
+    /**
+     * Devuelve un mapa id → Set<id> de posrequisitos, sin mutar los cursos.
+     */
+    _construirPosrequisitos() {
+        const posreqs = new Map(this.cursos.map(c => [c.id, new Set()]));
+
         this.cursos.forEach(curso => {
             curso.prerequisitos.forEach(prereqId => {
-                const prereq = this.cursoMap.get(prereqId);
-                if (prereq && !prereq.posrequisitos.includes(curso.id)) {
-                    prereq.posrequisitos.push(curso.id);
+                if (posreqs.has(prereqId)) {
+                    posreqs.get(prereqId).add(curso.id);
                 }
             });
         });
+
+        return posreqs;
     }
 
-    calcularSemestreMasTemprano() {
-        const cursos = this.cursos;
-        // Inicializar: 1 para los sin prerrequisitos
-        cursos.forEach(c => {
-            c.semestreMasTemprano = c.prerequisitos.length === 0 ? 1 : 0;
-        });
+    /**
+     * Orden topológico usando Kahn's algorithm.
+     * Lanza un error si detecta un ciclo (dato inválido).
+     * @returns {string[]} ids en orden topológico
+     */
+    _ordenTopologico() {
+        // grado de entrada = número de prerequisitos resueltos pendientes
+        const gradoEntrada = new Map(
+            this.cursos.map(c => [c.id, c.prerequisitos.length])
+        );
 
-        let changed = true;
-        while (changed) {
-            changed = false;
-            cursos.forEach(curso => {
-                if (curso.prerequisitos.length === 0) return;
-                let maxPrereqSemestre = 0;
-                curso.prerequisitos.forEach(pid => {
-                    const p = this.cursoMap.get(pid);
-                    if (p && p.semestreMasTemprano > 0) {
-                        maxPrereqSemestre = Math.max(maxPrereqSemestre, p.semestreMasTemprano);
-                    }
+        // Cola de cursos listos (sin prerequisitos pendientes)
+        const cola = this.cursos
+            .filter(c => c.prerequisitos.length === 0)
+            .map(c => c.id);
+
+        const orden = [];
+
+        while (cola.length > 0) {
+            const id = cola.shift();
+            orden.push(id);
+
+            // Reducir grado de entrada de posrequisitos
+            const curso = this.cursoMap.get(id);
+            curso.prerequisitos; // solo para referencia; los posreqs están abajo
+            this.cursos
+                .filter(c => c.prerequisitos.includes(id))
+                .forEach(c => {
+                    const nuevo = gradoEntrada.get(c.id) - 1;
+                    gradoEntrada.set(c.id, nuevo);
+                    if (nuevo === 0) cola.push(c.id);
                 });
-                const nuevoSemestre = maxPrereqSemestre > 0 ? maxPrereqSemestre + 1 : 0;
-                if (nuevoSemestre > 0 && nuevoSemestre !== curso.semestreMasTemprano) {
-                    curso.semestreMasTemprano = nuevoSemestre;
-                    changed = true;
-                }
-            });
         }
+
+        if (orden.length !== this.cursos.length) {
+            throw new Error(
+                `Ciclo detectado: ${this.cursos.length - orden.length} curso(s) no resolubles.`
+            );
+        }
+
+        return orden;
     }
 
-    calcularSemestreMasTardio() {
-        const cursos = this.cursos;
-        const maxSemestre = Math.max(...cursos.map(c => c.semestreMasTemprano || 1));
+    // ---------- Pasada hacia adelante ----------
 
-        // Inicializar: maxSemestre para los que no tienen posrequisitos, 0 para el resto
-        cursos.forEach(c => {
-            c.semestreMasTardio = c.posrequisitos.length === 0 ? maxSemestre : 0;
+    _calcularEarly(ordenAdelante, posreqs) {
+        const early = new Map();
+
+        ordenAdelante.forEach(id => {
+            const curso = this.cursoMap.get(id);
+            if (curso.prerequisitos.length === 0) {
+                early.set(id, 1);
+            } else {
+                const maxPrereq = Math.max(
+                    ...curso.prerequisitos.map(pid => early.get(pid) ?? 1)
+                );
+                early.set(id, maxPrereq + 1);
+            }
         });
 
-        let changed = true;
-        while (changed) {
-            changed = false;
-            cursos.forEach(curso => {
-                if (curso.posrequisitos.length === 0) return;
-                let minPosreqSemestre = Infinity;
-                curso.posrequisitos.forEach(pid => {
-                    const p = this.cursoMap.get(pid);
-                    if (p && p.semestreMasTardio > 0) {
-                        minPosreqSemestre = Math.min(minPosreqSemestre, p.semestreMasTardio);
-                    }
-                });
-                const nuevoTardio = minPosreqSemestre < Infinity ? minPosreqSemestre - 1 : 0;
-                if (nuevoTardio > 0 && nuevoTardio !== curso.semestreMasTardio) {
-                    curso.semestreMasTardio = nuevoTardio;
-                    changed = true;
-                }
-            });
-        }
+        return early;
     }
+
+    // ---------- Pasada hacia atrás ----------
+
+    _calcularLate(ordenAdelante, early, posreqs) {
+        const maxSemestre = Math.max(...early.values());
+        const late = new Map();
+
+        // Recorrer en orden inverso (topológico al revés = orden correcto para late)
+        [...ordenAdelante].reverse().forEach(id => {
+            const sucesores = [...(posreqs.get(id) ?? [])];
+
+            if (sucesores.length === 0) {
+                late.set(id, maxSemestre);
+            } else {
+                const minSucesor = Math.min(
+                    ...sucesores.map(sid => late.get(sid) ?? maxSemestre)
+                );
+                late.set(id, minSucesor - 1);
+            }
+        });
+
+        return late;
+    }
+
+    // ---------- API pública ----------
 
     calcularRutaCritica() {
-        this.calcularSemestreMasTemprano();
-        this.calcularSemestreMasTardio();
+        const posreqs = this._construirPosrequisitos();
+        const orden = this._ordenTopologico(posreqs);
+        const early = this._calcularEarly(orden, posreqs);
+        const late = this._calcularLate(orden, early, posreqs);
 
-        // Solo cursos obligatorios pueden ser parte de la ruta crítica.
-        // Deben tener holgura cero (CPM: semestreMasTemprano == semestreMasTardio).
         this.cursos.forEach(c => {
-            const zeroSlack = c.semestreMasTemprano > 0 &&
-                               c.semestreMasTardio > 0 &&
-                               c.semestreMasTemprano === c.semestreMasTardio;
-            c.enRutaCritica = c.obligatorio && zeroSlack;
+            c.semestreMasTemprano = early.get(c.id) ?? 0;
+            c.semestreMasTardio   = late.get(c.id)  ?? 0;
+
+            const holguraCero =
+                c.semestreMasTemprano > 0 &&
+                c.semestreMasTardio   > 0 &&
+                c.semestreMasTemprano === c.semestreMasTardio;
+
+            c.enRutaCritica = c.obligatorio && holguraCero;
         });
     }
 }

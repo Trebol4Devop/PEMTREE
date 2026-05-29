@@ -25,7 +25,7 @@ export class GraphManager {
         this.edgeRenderer = new EdgeRenderer();
         this.criticalPathAnalyzer = new CriticalPathAnalyzer(cursos, cursoMap);
 
-        // Managers que se asignan después (en UIController)
+        // Managers que se asignan después
         this.storageManager = null;
         this.infoCardManager = null;
         this.onCreditsChange = null;
@@ -35,7 +35,15 @@ export class GraphManager {
     }
 
     init() {
-        this.criticalPathAnalyzer.calcularPosrequisitos();
+        this.cursos.forEach(curso => curso.posrequisitos = []);
+        this.cursos.forEach(curso => {
+            curso.prerequisitos.forEach(prereqId => {
+                const prereq = this.cursoMap.get(prereqId);
+                if (prereq && !prereq.posrequisitos.includes(curso.id)) {
+                    prereq.posrequisitos.push(curso.id);
+                }
+            });
+        });
         this.criticalPathAnalyzer.calcularRutaCritica();
     }
 
@@ -69,7 +77,7 @@ export class GraphManager {
             this.needsFullRebuild = false;
             this.ajustarTamanioSVG();
         } else {
-            this._updateVisualState(graphGroup);
+            this._updateVisualState();
         }
     }
 
@@ -99,9 +107,9 @@ export class GraphManager {
         const nodePromises = visibleCursos.map(curso =>
             this.nodeRenderer.dibujarNodo(
                 nodesFragment, curso, this.showCriticalPath, this.temaOscuro,
-                (c) => this.onNodeClick(c, graphGroup),
-                (c) => this.onNodeDoubleClick(c, graphGroup),
-                (c) => this.onNodeLongPress(c, graphGroup),
+                (c) => this.onNodeClick(c),
+                (c) => this.onNodeDoubleClick(c),
+                (c) => this.onNodeLongPress(c),
                 this.selectedNode
             ).then(group => {
                 this.nodeElements.set(curso.id, group);
@@ -171,7 +179,7 @@ export class GraphManager {
         });
     }
 
-    _updateVisualState(graphGroup) {
+    _updateVisualState() {
         const visibleCursos = this.cursos.filter(c => this.showOptional || c.obligatorio);
 
         visibleCursos.forEach(curso => {
@@ -197,7 +205,7 @@ export class GraphManager {
         });
     }
 
-    seleccionarNodo(curso, graphGroup) {
+    seleccionarNodo(curso) {
         if (this.selectedNode && this.selectedNode.id === curso.id) {
             this.desseleccionarNodo();
             if (this.infoCardManager) {
@@ -219,6 +227,13 @@ export class GraphManager {
         ruta.forEach(id => {
             const c = this.cursoMap.get(id);
             if (c) c.highlighted = true;
+        });
+
+        // También resaltar los posrequisitos (cursos que dependen de este)
+        this.cursos.forEach(c => {
+            if (c.prerequisitos.includes(curso.id)) {
+                c.highlighted = true;
+            }
         });
 
         this.dibujarGrafo();
@@ -247,32 +262,38 @@ export class GraphManager {
         return ruta;
     }
 
-    onNodeClick(curso, graphGroup) {
-        const result = this.seleccionarNodo(curso, graphGroup);
-        return result;
+    onNodeClick(curso) {
+        return this.seleccionarNodo(curso);
     }
 
-    onNodeLongPress(curso, graphGroup) {
+    onNodeLongPress(curso) {
         if (this.selectedNode && this.selectedNode.id === curso.id) {
             if (this.infoCardManager) {
                 this.infoCardManager.mostrar(curso);
             }
             return curso;
         }
-        const result = this.seleccionarNodo(curso, graphGroup);
+        const result = this.seleccionarNodo(curso);
         if (result && this.infoCardManager) {
             this.infoCardManager.mostrar(curso);
         }
         return result;
     }
 
-    onNodeDoubleClick(curso, graphGroup) {
+    async onNodeDoubleClick(curso) {
         if (this.storageManager) {
-            this.storageManager.toggleCompletado(curso.id, this, this.infoCardManager);
+            await this.storageManager.cycleEstado(curso.id, this, this.infoCardManager);
             if (this.onCreditsChange) this.onCreditsChange();
         } else {
-            curso.completado = !curso.completado;
-            this.dibujarGrafo();
+            if (!curso.completado && !curso.cursando) {
+                curso.completado = true;
+            } else if (curso.completado) {
+                curso.completado = false;
+                curso.cursando = true;
+            } else {
+                curso.cursando = false;
+            }
+            await this.dibujarGrafo();
             if (this.onCreditsChange) this.onCreditsChange();
         }
 
@@ -308,39 +329,32 @@ export class GraphManager {
         svg.setAttribute("height", `${Math.max(maxY + 100, 2000)}px`);
     }
 
-    batchUpdate(fn) {
-        this._batching = true;
-        fn();
-        this._batching = false;
-        this.dibujarGrafo();
-    }
-
     setShowOptional(value) {
         this.showOptional = value;
         this.needsFullRebuild = true;
-        if (!this._batching) this.dibujarGrafo();
+        this.dibujarGrafo();
     }
 
     setCurrentLayout(layout) {
         this.currentLayout = layout;
         this.needsFullRebuild = true;
-        if (!this._batching) this.dibujarGrafo();
+        this.dibujarGrafo();
     }
 
     setViewMode(mode) {
         this.viewMode = mode;
         this.needsFullRebuild = true;
-        if (!this._batching) this.dibujarGrafo();
+        this.dibujarGrafo();
     }
 
     setShowCriticalPath(value) {
         this.showCriticalPath = value;
-        if (!this._batching) this.dibujarGrafo();
+        this.dibujarGrafo();
     }
 
     setTemaOscuro(value) {
         this.temaOscuro = value;
-        if (!this._batching) this.dibujarGrafo();
+        this.dibujarGrafo();
     }
 
     getSelectedNode() {
