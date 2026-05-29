@@ -35,7 +35,15 @@ export class GraphManager {
     }
 
     init() {
-        this.criticalPathAnalyzer.calcularPosrequisitos();
+        this.cursos.forEach(curso => curso.posrequisitos = []);
+        this.cursos.forEach(curso => {
+            curso.prerequisitos.forEach(prereqId => {
+                const prereq = this.cursoMap.get(prereqId);
+                if (prereq && !prereq.posrequisitos.includes(curso.id)) {
+                    prereq.posrequisitos.push(curso.id);
+                }
+            });
+        });
         this.criticalPathAnalyzer.calcularRutaCritica();
     }
 

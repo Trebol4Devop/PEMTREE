@@ -33,8 +33,8 @@ export class PanZoomManager {
         const parsedH = parseInt(rawH);
         const svgW = !isNaN(parsedW) && rawW.indexOf('%') === -1 ? parsedW : (cw * 2);
         const svgH = !isNaN(parsedH) && rawH.indexOf('%') === -1 ? parsedH : (ch * 2);
-        const hMargin = 0.35;
-        const vMargin = 0.05;
+        const hMargin = 0.15;
+        const vMargin = 0.0000625;
 
         const contentW = svgW * this.scale;
         const contentH = svgH * this.scale;
@@ -163,6 +163,34 @@ export class PanZoomManager {
             this._pinching = false;
             if (this.container) this.container.classList.remove('is-panning');
         });
+
+        container.addEventListener('wheel', (e) => {
+            if (e.ctrlKey || e.metaKey) {
+                e.preventDefault();
+                const rect = container.getBoundingClientRect();
+                const cx = e.clientX - rect.left;
+                const cy = e.clientY - rect.top;
+                const factor = e.deltaY > 0 ? 0.9 : 1.1;
+                const newScale = Math.max(0.3, Math.min(3.0, this.scale * factor));
+                const oldScale = this.scale;
+                this.scale = newScale;
+                this.translateX = cx - (cx - this.translateX) * newScale / oldScale;
+                this.translateY = cy - (cy - this.translateY) * newScale / oldScale;
+                this._calcularLimites();
+                this._aplicarLimites();
+                this.actualizarTransform();
+            } else if (e.shiftKey) {
+                e.preventDefault();
+                this.translateX -= e.deltaY;
+                this._aplicarLimites();
+                this.actualizarTransform();
+            } else {
+                e.preventDefault();
+                this.translateY -= e.deltaY;
+                this._aplicarLimites();
+                this.actualizarTransform();
+            }
+        }, { passive: false });
     }
 
     actualizarTransform() {
