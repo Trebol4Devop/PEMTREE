@@ -33,8 +33,8 @@ export class PanZoomManager {
         const parsedH = parseInt(rawH);
         const svgW = !isNaN(parsedW) && rawW.indexOf('%') === -1 ? parsedW : (cw * 2);
         const svgH = !isNaN(parsedH) && rawH.indexOf('%') === -1 ? parsedH : (ch * 2);
-        const hMargin = 0.15;
-        const vMargin = 0.0000625;
+        const hMargin = 0.10;
+        const vMargin = 0.00125;
 
         const contentW = svgW * this.scale;
         const contentH = svgH * this.scale;
