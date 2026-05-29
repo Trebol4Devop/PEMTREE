@@ -12,6 +12,7 @@ export default function Visualizer() {
     const tooltipManagerRef = useRef(null);
     const initialViewRef = useRef(null);
     const graphManagerRef = useRef(null);
+    const searchContainerRef = useRef(null);
     const dragStateRef = useRef({
         isDown: false,
         moved: false,
@@ -36,6 +37,8 @@ export default function Visualizer() {
     const [selectedCourse, setSelectedCourse] = useState(null);
     const [searchTerm, setSearchTerm] = useState('');
     const [searchResults, setSearchResults] = useState([]);
+    const [searchFocused, setSearchFocused] = useState(false);
+    const [dropdownStyle, setDropdownStyle] = useState({});
     const [creditosAprobados, setCreditosAprobados] = useState(0);
     const [showGuia, setShowGuia] = useState(() => {
         return !localStorage.getItem('pemtree_guia_visto');
@@ -287,6 +290,8 @@ export default function Visualizer() {
             await gm.dibujarGrafo();
             if (panZoom) applyInitialView(panZoom, graficaRef.current);
             setSelectedCourse(null);
+            setSearchTerm('');
+            setSearchResults([]);
         } catch (error) {
             console.error(error);
         }
@@ -327,17 +332,38 @@ export default function Visualizer() {
                 c.codigo.toLowerCase().includes(term)
             ).slice(0, 6);
             setSearchResults(results);
+        } else if (term.trim().length === 0) {
+            setSearchResults([]);
         } else {
             setSearchResults([]);
         }
     };
 
+    const handleSearchFocus = () => {
+        setSearchFocused(true);
+        if (searchContainerRef.current) {
+            const rect = searchContainerRef.current.getBoundingClientRect();
+            setDropdownStyle({
+                position: 'fixed',
+                top: rect.bottom + 4,
+                left: rect.left,
+                width: Math.max(rect.width, 224),
+                zIndex: 5000
+            });
+        }
+    };
+
+    const handleSearchBlur = () => {
+        setTimeout(() => setSearchFocused(false), 200);
+    };
+
     const handleSelectSearch = (curso) => {
         setSearchTerm('');
         setSearchResults([]);
+        setSearchFocused(false);
         const gm = graphManagerRef.current;
         if (gm) {
-            gm.seleccionarNodo(curso, document.getElementById('grafica-group'));
+            gm.seleccionarNodo(curso);
             setSelectedCourse(curso);
             if (panZoom) {
                 panZoom.centrarEnNodo(curso);
@@ -457,29 +483,17 @@ export default function Visualizer() {
                         ))}
                     </select>
 
-                    <div className="relative min-w-0 sm:flex-1 lg:w-48">
-                        <Search size={12} className="absolute inset-y-0 left-2 sm:left-2.5 top-1/2 -translate-y-1/2 pointer-events-none text-[#5E6C84] dark:text-slate-400" />
+                    <div className="flex items-center gap-1.5 min-w-0 sm:flex-1 lg:w-48 bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 transition-all focus-within:border-[#0052CC] dark:focus-within:border-[#4C9AFF]" ref={searchContainerRef}>
+                        <Search size={12} className="shrink-0 text-[#5E6C84] dark:text-slate-400" />
                         <input
                             type="text"
                             placeholder="Buscar..."
                             value={searchTerm}
                             onChange={handleSearchChange}
-                            className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 pl-7 text-[0.65rem] sm:text-xs max-lg:text-[0.65rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] w-full transition-all"
+                            onFocus={handleSearchFocus}
+                            onBlur={handleSearchBlur}
+                            className="bg-transparent border-none text-[#172B4D] dark:text-white text-[0.65rem] sm:text-xs max-lg:text-[0.65rem] focus:outline-none w-full min-w-0 p-0"
                         />
-                        {searchResults.length > 0 && (
-                            <div className="absolute top-[calc(100%+4px)] left-0 right-0 w-full sm:w-56 shadow-lg rounded-md overflow-hidden z-[5000] bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E]">
-                                {searchResults.map(curso => (
-                                    <button
-                                        key={curso.id}
-                                        onClick={() => handleSelectSearch(curso)}
-                                        className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
-                                    >
-                                        <span className="font-bold mr-[5px] text-[0.65rem] sm:text-xs">{curso.codigo}</span>
-                                        <span className="text-[0.65rem] sm:text-xs">{curso.nombre}</span>
-                                    </button>
-                                ))}
-                            </div>
-                        )}
                     </div>
                 </div>
 
@@ -507,6 +521,41 @@ export default function Visualizer() {
                 </div>
             </div>
 
+            {searchFocused && (searchTerm.trim().length === 0 || searchResults.length > 0 || searchTerm.trim().length > 1) && (
+                <div style={dropdownStyle} className="shadow-lg rounded-md overflow-hidden bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E]">
+                    {searchTerm.trim().length === 0 && searchResults.length === 0 ? (
+                        <>
+                            <div className="px-[10px] py-[5px] text-[0.6rem] uppercase tracking-wider text-[#5E6C84] dark:text-slate-400 border-b border-[#F4F5F7] dark:border-[#3E4C5E]">Sugerencias</div>
+                            {cursos.slice(0, 6).map(curso => (
+                                <button
+                                    key={curso.id}
+                                    onClick={() => handleSelectSearch(curso)}
+                                    className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
+                                >
+                                    <span className="font-bold mr-[5px] text-[0.65rem] sm:text-xs">{curso.codigo}</span>
+                                    <span className="text-[0.65rem] sm:text-xs">{curso.nombre}</span>
+                                </button>
+                            ))}
+                        </>
+                    ) : searchResults.length > 0 ? (
+                        searchResults.map(curso => (
+                            <button
+                                key={curso.id}
+                                onClick={() => handleSelectSearch(curso)}
+                                className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
+                            >
+                                <span className="font-bold mr-[5px] text-[0.65rem] sm:text-xs">{curso.codigo}</span>
+                                <span className="text-[0.65rem] sm:text-xs">{curso.nombre}</span>
+                            </button>
+                        ))
+                    ) : searchTerm.trim().length > 1 ? (
+                        <div className="px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] text-[#5E6C84] dark:text-slate-400 text-center">
+                            Sin resultados
+                        </div>
+                    ) : null}
+                </div>
+            )}
+
             <div
                 className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
                 ref={graficaRef}
@@ -517,7 +566,7 @@ export default function Visualizer() {
             ></div>
 
 
-            <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:bottom-[calc(80px+env(safe-area-inset-bottom))] max-sm:z-[700] select-none">
+            <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none">
                 <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
                     −
                 </button>
