@@ -19,6 +19,7 @@ export class NodoCurso {
         this.highlighted = false;
         this.enRutaCritica = false;
         this.completado = false;
+        this.cursando = false;
         this.disponible = false;
     }
 }
@@ -115,9 +116,6 @@ export const cursoMap = new Map();
 // Caché compartido de colores del pensum activo (evita re-fetches desde NodeRenderer)
 export let currentPensumColors = { primary: '#fc904f', secondary: '#ffd0b6' };
 
-const JSON_FILES = [];
-const JSON_INDEX_URL = new URL('/json/index.json', import.meta.url).href;
-
 // Nombre del pensum que debe cargarse al iniciar
 const DEFAULT_STARTUP_FILENAME = 'ciencias_y_sistemas_22.json';
 const DEFAULT_STARTUP_REL = `/json/${DEFAULT_STARTUP_FILENAME}`;
@@ -143,34 +141,31 @@ const INDEX_CANDIDATES = [
 export async function initializeCursos() {
     try {
         const allJson = [];
+        let pensumFiles = [];
 
-        // Preferir archivos explícitos en JSON_FILES, si existen. Si no, intentar leer index.json
-        let pensumFiles = JSON_FILES.slice();
-        if (pensumFiles.length === 0) {
-            // Intentar leer index.json desde varias rutas candidatas
-            let indexList = null;
-            for (const candidate of INDEX_CANDIDATES) {
-                try {
-                    const resIndex = await fetch(candidate.url);
-                    if (!resIndex.ok) {
-                        console.debug(`Index no encontrado en ${candidate.url}: ${resIndex.status}`);
-                        continue;
-                    }
-                    const parsed = await resIndex.json();
-                    if (Array.isArray(parsed)) {
-                        indexList = parsed;
-                        break;
-                    }
-                } catch (e) {
-                    console.debug(`Error leyendo index en ${candidate.url}:`, e);
+        // Leer index.json
+        let indexList = null;
+        for (const candidate of INDEX_CANDIDATES) {
+            try {
+                const resIndex = await fetch(candidate.url);
+                if (!resIndex.ok) {
+                    console.debug(`Index no encontrado en ${candidate.url}: ${resIndex.status}`);
                     continue;
                 }
+                const parsed = await resIndex.json();
+                if (Array.isArray(parsed)) {
+                    indexList = parsed;
+                    break;
+                }
+            } catch (e) {
+                console.debug(`Error leyendo index en ${candidate.url}:`, e);
+                continue;
             }
+        }
 
-            if (Array.isArray(indexList)) {
-                pensumFiles = indexList.map(entry => typeof entry === 'string' ? `/json/${entry}` : (entry.file ? `/json/${entry.file}` : ''))
-                                     .filter(Boolean);
-            }
+        if (Array.isArray(indexList)) {
+            pensumFiles = indexList.map(entry => typeof entry === 'string' ? `/json/${entry}` : (entry.file ? `/json/${entry.file}` : ''))
+                                   .filter(Boolean);
         }
 
         // Preferir cargar solo el pensum por defecto al iniciar (ciencias_y_sistemas_22)
@@ -188,9 +183,7 @@ export async function initializeCursos() {
                         pensumFiles = [DEFAULT_STARTUP_REL];
                         console.debug(`Archivo por defecto encontrado: ${DEFAULT_STARTUP_REL}, cargando solo este.`);
                     }
-                } catch (e) {
-                    // ignorar errores al probar existencia
-                }
+                } catch { /* ignore */ }
             }
         } catch (e) {
             // no bloquear inicialización por este paso
@@ -322,9 +315,7 @@ export async function listAvailablePensums() {
                 const id = fileName.replace('.json','');
                 detectedPensums.push({ file: rel, id, name: id.replace(/_/g,' ') });
             }
-        } catch (err) {
-            // ignorar
-        }
+        } catch { /* ignore */ }
     }
 
     if (detectedPensums.length > 0) {
@@ -332,16 +323,7 @@ export async function listAvailablePensums() {
         return detectedPensums;
     }
 
-    // Fallback final: usar JSON_FILES (posiblemente vacío)
-    const pensums = JSON_FILES.map(p => {
-        const fileName = p.split('/').pop();
-        const id = fileName.replace('.json', '');
-        const name = id.replace(/_/g, ' ');
-        return { file: p, id, name };
-    });
-
-    console.log('📋 Pensums disponibles (fallback):', pensums.length);
-    return pensums;
+    return [];
 }
 
 /**

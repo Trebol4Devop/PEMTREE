@@ -150,5 +150,4 @@ export class PanZoomManager {
     setScale(value) { this.scale = value; }
     setTranslate(x, y) { this.translateX = x; this.translateY = y; }
     getTranslate() { return { x: this.translateX, y: this.translateY }; }
-    getScale() { return this.scale; }
 }

@@ -15,8 +15,9 @@ export class StorageManager {
 
     guardarProgreso(cursos) {
         const estado = cursos.map(c => ({ 
-            id: c.id, 
-            completado: c.completado 
+            id: c.id,
+            completado: c.completado,
+            cursando: c.cursando
         }));
         localStorage.setItem(this.storageKey, JSON.stringify(estado));
     }
@@ -27,7 +28,10 @@ export class StorageManager {
             const estado = JSON.parse(guardado);
             estado.forEach(item => {
                 const curso = cursoMap.get(item.id);
-                if (curso) curso.completado = item.completado;
+                if (curso) {
+                    curso.completado = item.completado;
+                    if (item.cursando !== undefined) curso.cursando = item.cursando;
+                }
             });
         }
         this.actualizarDisponibilidad(cursos, cursoMap);
@@ -40,6 +44,7 @@ export class StorageManager {
         
         const nuevoEstado = !curso.completado;
         curso.completado = nuevoEstado;
+        if (nuevoEstado) curso.cursando = false;
         
         if (nuevoEstado) {
             this.marcarPrerequisitosComoCompletados(curso, graphManager.cursoMap);
@@ -97,8 +102,32 @@ export class StorageManager {
         }
     }
 
+    async cycleEstado(cursoId, graphManager, infoCardManager) {
+        const curso = graphManager.cursoMap.get(cursoId);
+        if (!curso) return;
+
+        if (!curso.completado && !curso.cursando) {
+            curso.completado = true;
+            this.marcarPrerequisitosComoCompletados(curso, graphManager.cursoMap);
+        } else if (curso.completado) {
+            curso.completado = false;
+            curso.cursando = true;
+        } else {
+            curso.cursando = false;
+        }
+
+        this.guardarProgreso(graphManager.cursos);
+        this.actualizarDisponibilidad(graphManager.cursos, graphManager.cursoMap);
+        graphManager.needsFullRebuild = true;
+        await graphManager.dibujarGrafo();
+
+        if (graphManager.getSelectedNode() && graphManager.getSelectedNode().id === cursoId) {
+            infoCardManager.mostrar(curso);
+        }
+    }
+
     limpiarProgreso(cursos) {
-        cursos.forEach(c => c.completado = false);
+        cursos.forEach(c => { c.completado = false; c.cursando = false; });
         localStorage.removeItem(this.storageKey);
         this.actualizarDisponibilidad(cursos, new Map(cursos.map(c => [c.id, c])));
         this.actualizarContadorCreditos(cursos);
@@ -115,7 +144,4 @@ export class StorageManager {
         return localStorage.getItem(this._pensumKey);
     }
 
-    limpiarPensumGuardado() {
-        localStorage.removeItem(this._pensumKey);
-    }
 }

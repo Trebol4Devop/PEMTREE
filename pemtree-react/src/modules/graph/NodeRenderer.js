@@ -28,7 +28,7 @@ export class NodeRenderer {
         group.setAttribute("class", "node-group");
 
         const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
-        const sectionColors = this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
+        const sectionColors = this.getSectionColors(curso, colors, temaOscuro);
 
         const parts = this.crearNodoCompuesto(curso, nodeWidth, nodeHeight, sectionColors);
 
@@ -136,7 +136,7 @@ export class NodeRenderer {
             group.classList.add('node-dimmed');
         }
 
-        if (!curso.disponible && !curso.completado && !curso.selected) {
+        if (!curso.disponible && !curso.completado && !curso.selected && !curso.cursando) {
             group.classList.add('node-locked');
         }
 
@@ -158,7 +158,7 @@ export class NodeRenderer {
         const nodeHeight = dims.height;
 
         const colors = this.determinarColores(curso, showCriticalPath, temaOscuro);
-        const sectionColors = this.getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight);
+        const sectionColors = this.getSectionColors(curso, colors, temaOscuro);
 
         this._actualizarRects(group, curso, nodeWidth, nodeHeight, sectionColors);
         this._actualizarTextos(group, curso, temaOscuro, sectionColors);
@@ -166,7 +166,7 @@ export class NodeRenderer {
         group.classList.toggle('node-selected', !!curso.selected);
         const isDimmed = !!selectedNode && !curso.selected && !curso.highlighted;
         group.classList.toggle('node-dimmed', isDimmed);
-        const isLocked = !curso.disponible && !curso.completado && !curso.selected;
+        const isLocked = !curso.disponible && !curso.completado && !curso.selected && !curso.cursando;
         group.classList.toggle('node-locked', isLocked);
 
         const showWarning = showCriticalPath && curso.enRutaCritica && !curso.completado;
@@ -197,13 +197,14 @@ export class NodeRenderer {
         if (codeText) {
             let codeTextColor;
             if (curso.completado) {
-                // Usar color complementario del color principal del pensum
-                const pensumPrimary = sectionColors.leftTop.fill;
-                codeTextColor = this.getComplementaryColor(pensumPrimary);
+                codeTextColor = temaOscuro ? '#10b981' : '#059669';
             } else {
                 codeTextColor = sectionColors.text;
             }
-            codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
+            let suffix = '';
+            if (curso.completado) suffix = ' ✓';
+            else if (curso.cursando) suffix = ' ●';
+            codeText.textContent = curso.codigo + suffix;
             codeText.setAttribute('fill', codeTextColor);
         }
 
@@ -281,13 +282,13 @@ export class NodeRenderer {
         };
     }
 
-    getSectionColors(curso, colors, temaOscuro, nodeWidth, nodeHeight) {
+    getSectionColors(curso, colors, temaOscuro) {
         const defaultText = temaOscuro ? '#ecf0f1' : '#333';
         const s = curso.colors || {};
         const stroke = 'none';
         const strokeWidth = '0';
 
-        const pensumColors = this.getPensumColors(curso);
+        const pensumColors = this.getPensumColors();
 
         return {
             leftTop: {
@@ -310,7 +311,7 @@ export class NodeRenderer {
         };
     }
 
-    getPensumColors(curso) {
+    getPensumColors() {
         return currentPensumColors;
     }
 
@@ -472,12 +473,9 @@ export class NodeRenderer {
         const centerW = nodeWidth - (2 * lateralWidth);
         const rightX = centerX + centerW;
 
-        // Calcular color complementario para el código cuando está completado
         let codeTextColor;
         if (curso.completado) {
-            // Usar color complementario del color principal del pensum
-            const pensumPrimary = sectionColors.leftTop.fill;
-            codeTextColor = this.getComplementaryColor(pensumPrimary);
+            codeTextColor = temaOscuro ? '#10b981' : '#059669';
         } else {
             codeTextColor = sectionColors.text;
         }
@@ -491,7 +489,10 @@ export class NodeRenderer {
         codeText.setAttribute("text-anchor", "middle");
         codeText.setAttribute("font-weight", "bold");
         codeText.setAttribute("fill", codeTextColor);
-        codeText.textContent = curso.codigo + (curso.completado ? " ✓" : "");
+        let codeSuffix = '';
+        if (curso.completado) codeSuffix = ' ✓';
+        else if (curso.cursando) codeSuffix = ' ●';
+        codeText.textContent = curso.codigo + codeSuffix;
         group.appendChild(codeText);
 
         const creditsText = document.createElementNS(this.svgNS, "text");

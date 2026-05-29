@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, Grid, Compass, LayoutTemplate, Layers, RotateCcw, CheckCircle2, Lock, Unlock } from 'lucide-react';
-import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum } from '../modules/data/cursos';
+import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
 import { PanZoomManager } from '../modules/ui/PanZoomManager';
@@ -21,6 +21,7 @@ export default function Visualizer() {
     const [graphManager, setGraphManager] = useState(null);
     const [panZoom, setPanZoom] = useState(null);
     const [pensums, setPensums] = useState([]);
+    const [currentPensum, setCurrentPensum] = useState('');
     
     const [zoom, setZoom] = useState(100);
     const [showOptional, setShowOptional] = useState(true);
@@ -127,14 +128,21 @@ export default function Visualizer() {
 
                 await initializeCursos();
 
-                // Si hay un pensum guardado, cargarlo
-                if (pensumGuardado) {
-                    try {
-                        await loadPensum(pensumGuardado);
-                    } catch (error) {
-                        console.warn(`No se pudo cargar el pensum guardado (${pensumGuardado}), usando el por defecto:`, error);
-                    }
+                // Determinar qué pensum cargar (guardado o default)
+                let pensumToLoad = pensumGuardado || STARTUP_LOADED_PENSUM;
+
+                // Siempre pasar por loadPensum() para el mismo comportamiento que el combobox
+                try {
+                    await loadPensum(pensumToLoad);
+                } catch (error) {
+                    console.warn(`No se pudo cargar el pensum (${pensumToLoad}), usando default:`, error);
+                    pensumToLoad = STARTUP_LOADED_PENSUM;
+                    await loadPensum(pensumToLoad);
                 }
+
+                // Persistir pensum actual
+                storageManager.guardarPensumActual(pensumToLoad);
+                setCurrentPensum(pensumToLoad);
 
                 const availablePensums = await listAvailablePensums();
 
@@ -164,10 +172,10 @@ export default function Visualizer() {
                 tooltipManagerRef.current = gm.tooltipManager;
                 gm.onCreditsChange = actualizarCreditos;
                 
-                if (typeof gm.setCurrentLayout === 'function') gm.setCurrentLayout(layout);
+                if (typeof gm.setCurrentLayout === 'function') gm.currentLayout = layout;
                 else gm.currentLayout = layout;
                 
-                if (typeof gm.setTemaOscuro === 'function') gm.setTemaOscuro(isDarkMode);
+                if (typeof gm.setTemaOscuro === 'function') gm.temaOscuro = isDarkMode;
                 else gm.temaOscuro = isDarkMode;
 
                 if (gm.edgeRenderer && typeof gm.edgeRenderer.crearFlechas === 'function') {
@@ -180,8 +188,8 @@ export default function Visualizer() {
                 };
 
                 graphManagerRef.current = gm;
-                setGraphManager(gm);
                 await gm.dibujarGrafo();
+                setGraphManager(gm);
 
                 const pz = new PanZoomManager(svg);
                 pz.init(container, (newZoom) => setZoom(newZoom));
@@ -268,6 +276,7 @@ export default function Visualizer() {
         if (!relPath || !gm) return;
         try {
             await loadPensum(relPath);
+            setCurrentPensum(relPath);
             // Guardar el pensum seleccionado
             if (gm.storageManager) {
                 gm.storageManager.guardarPensumActual(relPath);
@@ -283,18 +292,17 @@ export default function Visualizer() {
         }
     };
 
-    const handleToggleCompletado = (cursoId) => {
+    const handleCycleEstado = async (cursoId) => {
         const gm = graphManagerRef.current;
         if (!gm || !gm.storageManager) return;
-        
-        gm.storageManager.toggleCompletado(cursoId, gm, { 
-            mostrar: () => {} 
+
+        await gm.storageManager.cycleEstado(cursoId, gm, {
+            mostrar: () => {}
         });
-        
+
         actualizarCreditos();
         const updatedCourse = cursoMap.get(cursoId);
         setSelectedCourse({...updatedCourse});
-        gm.dibujarGrafo();
     };
 
     const handleZoomIn = () => { if (panZoom) panZoom.zoomIn(); };
@@ -375,22 +383,22 @@ export default function Visualizer() {
         return ids.map(id => {
             const c = cursoMap.get(id);
             if (!c) return null;
-            const statusColor = c.completado ? '#36B37E' : (c.disponible ? '#0052CC' : '#5E6C84');
-            const bgStatus = c.completado ? '#E3FCEF' : (c.disponible ? '#DEEBFF' : '#EBECF0');
-            const darkBgStatus = c.completado ? '#0A3622' : (c.disponible ? '#0C295E' : '#2D333B');
+            const statusColor = c.completado ? '#36B37E' : (c.cursando ? '#B45309' : (c.disponible ? '#0052CC' : '#5E6C84'));
+            const bgStatus = c.completado ? '#E3FCEF' : (c.cursando ? '#FEF9E7' : (c.disponible ? '#DEEBFF' : '#EBECF0'));
+            const darkBgStatus = c.completado ? '#0A3622' : (c.cursando ? '#3d2e00' : (c.disponible ? '#0C295E' : '#2D333B'));
 
             const handleBadgeEnter = (e) => {
                 tooltipManagerRef.current?.mostrar(e, c);
             };
 
-            const handleBadgeLeave = (e) => {
+            const handleBadgeLeave = () => {
                 tooltipManagerRef.current?.ocultar();
             };
 
-            const handleBadgeClick = (e) => {
+            const handleBadgeClick = () => {
                 const gm = graphManagerRef.current;
                 if (gm) {
-                    gm.seleccionarNodo(c, document.getElementById('grafica-group'));
+                    gm.seleccionarNodo(c);
                     setSelectedCourse({...c});
                     if (panZoom) {
                         panZoom.centrarEnNodo(c);
@@ -439,6 +447,7 @@ export default function Visualizer() {
                 {/* Selectors y búsqueda */}
                 <div className="flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0">
                     <select
+                        value={currentPensum}
                         onChange={handlePensumChange}
                         className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-xs max-lg:text-[0.65rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer min-w-0"
                     >
@@ -552,8 +561,8 @@ export default function Visualizer() {
                     </div>
 
                     <div className="flex items-center gap-2 mb-[12px]">
-                        <span className={`px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider border ${selectedCourse.completado ? 'bg-[#E3FCEF] text-[#006644] border-[#36B37E]' : (selectedCourse.disponible ? 'bg-[#DEEBFF] text-[#0052CC] border-[#4C9AFF]' : 'bg-[#FFEBE6] text-[#BF2600] border-[#FF5630]')}`}>
-                            {selectedCourse.completado ? 'Completado' : (selectedCourse.disponible ? 'Disponible' : 'Bloqueado')}
+                        <span className={`px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider border ${selectedCourse.completado ? 'bg-[#E3FCEF] text-[#006644] border-[#36B37E]' : (selectedCourse.cursando ? 'bg-[#FEF9E7] text-[#B45309] border-[#F59E0B]' : (selectedCourse.disponible ? 'bg-[#DEEBFF] text-[#0052CC] border-[#4C9AFF]' : 'bg-[#FFEBE6] text-[#BF2600] border-[#FF5630]'))}`}>
+                            {selectedCourse.completado ? 'Completado' : (selectedCourse.cursando ? 'Cursando' : (selectedCourse.disponible ? 'Disponible' : 'Bloqueado'))}
                         </span>
                         {!selectedCourse.completado && selectedCourse.enRutaCritica && (
                             <span className="bg-[#FFFAE6] text-[#FF8B00] border border-[#FFAB00] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
@@ -572,14 +581,18 @@ export default function Visualizer() {
                     </div>
                     
                     <button 
-                        onClick={() => handleToggleCompletado(selectedCourse.id)}
+                        onClick={() => handleCycleEstado(selectedCourse.id)}
                         className={`w-full p-[10px] mt-[5px] rounded-[6px] font-bold cursor-pointer transition-all flex items-center justify-center gap-[8px] border-none shadow-sm
                         ${selectedCourse.completado 
                             ? 'bg-[#10b981] hover:bg-[#059669] text-white' 
+                            : selectedCourse.cursando
+                            ? 'bg-[#3b82f6] hover:bg-[#2563eb] text-white'
                             : (isDarkMode ? 'bg-[#60a5fa] hover:bg-[#3b82f6] text-white' : 'bg-[#0052CC] hover:bg-[#0747A6] text-white')}`}
                     >
                         {selectedCourse.completado ? (
-                            <><CheckCircle2 size={16} /> Quitar Aprobación</>
+                            <><CheckCircle2 size={16} /> Completado</>
+                        ) : selectedCourse.cursando ? (
+                            <>● Cursando</>
                         ) : (
                             <><Lock size={16} className={selectedCourse.disponible ? 'hidden' : 'block'} /><Unlock size={16} className={selectedCourse.disponible ? 'block' : 'hidden'} /> Marcar Aprobado</>
                         )}
