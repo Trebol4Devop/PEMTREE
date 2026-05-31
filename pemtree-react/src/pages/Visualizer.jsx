@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar } from 'lucide-react';
+import Planner from '../components/Planner';
+import WelcomeModal from '../components/WelcomeModal';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
@@ -41,10 +43,10 @@ export default function Visualizer() {
     const [showGuia, setShowGuia] = useState(() => {
         return !localStorage.getItem('pemtree_guia_visto');
     });
+    const [activeView, setActiveView] = useState('graph');
 
     const guiaLightSrc = '/images/Guia_de_uso.png';
     const guiaDarkSrc = '/images/Guia_de_uso_dark.png';
-    const guiaFallbackSrc = '/images/Guia_de_uso.png';
 
     const actualizarCreditos = () => {
         let total = 0;
@@ -439,6 +441,9 @@ export default function Visualizer() {
                     <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
+                    <button onClick={() => setActiveView(activeView === 'planner' ? 'graph' : 'planner')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${activeView === 'planner' ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
+                        <Calendar size={12} className="max-sm:hidden" /> <Calendar size={10} className="sm:hidden" /> <span className="max-sm:hidden">Planificador</span><span className="sm:hidden">Plan</span>
+                    </button>
                 </div>
 
                 {/* Selectors y búsqueda */}
@@ -527,8 +532,12 @@ export default function Visualizer() {
                 </div>
             )}
 
+            {activeView === 'planner' ? (
+                <Planner key={currentPensum} currentPensum={currentPensum} />
+            ) : null}
+
             <div
-                className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
+                className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${activeView === 'planner' ? 'hidden' : ''} ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
                 ref={graficaRef}
                 id="grafo-canvas"
                 onPointerDown={handleGraphPointerDown}
@@ -536,41 +545,30 @@ export default function Visualizer() {
                 onPointerUp={handleGraphPointerUp}
             ></div>
 
-
-            <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none">
-                <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
-                    −
-                </button>
-                <span className={`text-[0.75rem] sm:text-sm font-semibold w-10 sm:w-11 text-center backdrop-blur-md py-1 sm:py-1.5 rounded-lg shadow-sm select-none border ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300' : 'bg-white/90 border-[#DFE1E6] text-[#42526E]'}`}>
-                    {zoom}%
-                </span>
-                <button onClick={handleZoomIn} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
-                    +
-                </button>
-                <button onClick={handleZoomReset} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
-                    ↺
-                </button>
-            </div>
+                    <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none">
+                        <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                            −
+                        </button>
+                        <span className={`text-[0.75rem] sm:text-sm font-semibold w-10 sm:w-11 text-center backdrop-blur-md py-1 sm:py-1.5 rounded-lg shadow-sm select-none border ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300' : 'bg-white/90 border-[#DFE1E6] text-[#42526E]'}`}>
+                            {zoom}%
+                        </span>
+                        <button onClick={handleZoomIn} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                            +
+                        </button>
+                        <button onClick={handleZoomReset} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                            ↺
+                        </button>
+                    </div>
 
             {showGuia && (
-                <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/45 backdrop-blur-sm">
-                    <button
-                        onClick={handleCerrarGuia}
-                        className="absolute top-[20px] right-[20px] w-[36px] h-[36px] rounded-full bg-white/90 text-[#172B4D] border border-white/60 hover:bg-white transition"
-                        aria-label="Cerrar guia"
-                    >
-                        ×
-                    </button>
-                    <img
-                        src={isDarkMode ? guiaDarkSrc : guiaLightSrc}
-                        onError={(e) => { e.currentTarget.src = guiaFallbackSrc; }}
-                        alt="Guia de uso"
-                        className="max-w-[92vw] max-h-[86vh] object-contain shadow-2xl"
-                    />
-                </div>
+                <WelcomeModal
+                    isDarkMode={isDarkMode}
+                    guiaSrc={isDarkMode ? guiaDarkSrc : guiaLightSrc}
+                    onClose={handleCerrarGuia}
+                />
             )}
 
-            {selectedCourse && (
+            {selectedCourse && activeView === 'graph' && (
                 <div className={`absolute top-[80px] right-[20px] w-[340px] max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-[15px] backdrop-blur-md rounded-[12px] shadow-xl p-[20px] z-[950] border fade-in max-md:p-[16px] max-md:pb-[66px] select-none transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636]/95 border-[#3E4C5E] text-slate-100' : 'bg-white/95 border-[#DFE1E6] text-[#172B4D]'}`}>
                     <button onClick={handleCerrarInfo} className={`absolute top-[12px] right-[12px] border-none text-[1rem] cursor-pointer w-[28px] h-[28px] rounded flex items-center justify-center p-0 transition-all ${isDarkMode ? 'bg-[#2D333B] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] text-[#5E6C84] hover:bg-[#EBECF0] hover:text-[#172B4D]'}`}>
                         ×
