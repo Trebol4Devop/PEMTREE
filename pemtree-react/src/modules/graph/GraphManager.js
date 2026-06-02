@@ -13,6 +13,8 @@ export class GraphManager {
         this.viewMode = 'semester';
         this.showCriticalPath = false;
         this.temaOscuro = false;
+        this.idiomaEquivalencia = false;
+        this.activePathIndex = 0;
 
         // Tracking de elementos DOM para mutación selectiva
         this.nodeElements = new Map();
@@ -44,7 +46,8 @@ export class GraphManager {
                 }
             });
         });
-        this.criticalPathAnalyzer.calcularRutaCritica();
+        this.criticalPathAnalyzer.calcularRutasCriticas(this.idiomaEquivalencia);
+        this.criticalPathAnalyzer.setRutaActiva(this.activePathIndex);
     }
 
     updateCursos(nuevosCursos, nuevoMapa) {
@@ -350,6 +353,27 @@ export class GraphManager {
     setShowCriticalPath(value) {
         this.showCriticalPath = value;
         this.dibujarGrafo();
+    }
+
+    setIdiomaEquivalencia(value) {
+        this.idiomaEquivalencia = value;
+        this.criticalPathAnalyzer.calcularRutasCriticas(value);
+        this.criticalPathAnalyzer.setRutaActiva(this.activePathIndex);
+        this.dibujarGrafo();
+    }
+
+    setRutaActiva(index) {
+        this.activePathIndex = index;
+        this.criticalPathAnalyzer.setRutaActiva(index);
+        this.dibujarGrafo();
+    }
+
+    getRutas() {
+        return this.criticalPathAnalyzer.rutas;
+    }
+
+    getRutaActiva() {
+        return this.criticalPathAnalyzer.getRutaActiva();
     }
 
     setTemaOscuro(value) {

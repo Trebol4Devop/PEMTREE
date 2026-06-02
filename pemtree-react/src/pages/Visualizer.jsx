@@ -29,6 +29,14 @@ export default function Visualizer() {
     const [zoom, setZoom] = useState(100);
     const [showOptional, setShowOptional] = useState(true);
     const [showCriticalPath, setShowCriticalPath] = useState(false);
+    const [activePathId, setActivePathId] = useState('mas_rapida');
+    const [idiomaEquivalencia, setIdiomaEquivalencia] = useState(() => {
+        return localStorage.getItem('pemtree_idioma_equivalencia') === 'true';
+    });
+    const [rutasData, setRutasData] = useState([]);
+    const [showRutaCriticaInfo, setShowRutaCriticaInfo] = useState(() => {
+        return !localStorage.getItem('pemtree_rutacritica_visto');
+    });
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = localStorage.getItem('pemtree_theme');
         return saved === 'dark';
@@ -177,6 +185,12 @@ export default function Visualizer() {
                 
                 gm.currentLayout = 'horizontal';
                 
+                const savedIdiomaEq = storageManager.getIdiomaEquivalencia();
+                if (savedIdiomaEq) {
+                    setIdiomaEquivalencia(true);
+                }
+                gm.idiomaEquivalencia = savedIdiomaEq;
+                
                 if (typeof gm.setTemaOscuro === 'function') gm.temaOscuro = isDarkMode;
                 else gm.temaOscuro = isDarkMode;
 
@@ -249,8 +263,52 @@ export default function Visualizer() {
             const newValue = !showCriticalPath;
             setShowCriticalPath(newValue);
             gm.setShowCriticalPath(newValue);
+            if (newValue) {
+                setRutasData([...(gm.getRutas() || [])]);
+                if (!localStorage.getItem('pemtree_rutacritica_visto')) {
+                    setShowRutaCriticaInfo(true);
+                }
+            }
         }
     };
+
+    const handlePathChange = (pathId) => {
+        const gm = graphManagerRef.current;
+        if (gm) {
+            const rutas = gm.getRutas();
+            const index = rutas.findIndex(r => r.id === pathId);
+            if (index >= 0) {
+                setActivePathId(pathId);
+                gm.setRutaActiva(index);
+            }
+        }
+    };
+
+    const handleIdiomaEquivalencia = () => {
+        const gm = graphManagerRef.current;
+        if (gm) {
+            const newValue = !idiomaEquivalencia;
+            setIdiomaEquivalencia(newValue);
+            localStorage.setItem('pemtree_idioma_equivalencia', newValue ? 'true' : 'false');
+            gm.setIdiomaEquivalencia(newValue);
+            setRutasData([...(gm.getRutas() || [])]);
+        }
+    };
+
+    useEffect(() => {
+        if (!showCriticalPath) return;
+        const gm = graphManagerRef.current;
+        if (!gm) return;
+        const rutas = gm.getRutas();
+        if (rutas && rutas.length > 0) {
+            const validIndex = rutas.findIndex(r => r.id === activePathId);
+            if (validIndex < 0) {
+                setActivePathId(rutas[0].id);
+            }
+            setRutasData([...rutas]);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showCriticalPath]);
 
     const handlePensumChange = async (e) => {
         const relPath = e.target.value;
@@ -434,10 +492,36 @@ export default function Visualizer() {
             <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300">
                 
                 {/* Botones de vista y opciones */}
-                <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
-                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
+                <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
+                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
+
+                    {showCriticalPath && (
+                        <>
+                            <div className="flex items-center gap-0.5 sm:gap-1 bg-black/5 dark:bg-white/5 px-1 sm:px-1.5 py-0.5 rounded-md">
+                                {rutasData.map((ruta) => (
+                                    <button
+                                        key={ruta.id}
+                                        onClick={() => handlePathChange(ruta.id)}
+                                        className={`px-1 sm:px-1.5 py-0.5 text-[0.55rem] sm:text-[0.65rem] font-bold rounded transition border-none cursor-pointer whitespace-nowrap ${activePathId === ruta.id ? (isDarkMode ? 'bg-[#4C9AFF] text-[#0E1624]' : 'bg-[#0052CC] text-white') : (isDarkMode ? 'bg-transparent text-slate-400 hover:text-white' : 'bg-transparent text-[#5E6C84] hover:text-[#172B4D]')}`}
+                                    >
+                                        <span className="max-sm:hidden">{ruta.nombre}</span>
+                                        <span className="sm:hidden">{ruta.id === 'mas_rapida' ? 'Ráp.' : ruta.id === 'mas_flexible' ? 'Flex.' : 'Bal.'}</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <label className="flex items-center gap-0.5 sm:gap-1 cursor-pointer text-[0.55rem] sm:text-[0.65rem] whitespace-nowrap select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={idiomaEquivalencia}
+                                    onChange={handleIdiomaEquivalencia}
+                                    className="w-2.5 h-2.5 sm:w-3 sm:h-3 accent-[#0052CC]"
+                                />
+                                <span className={isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}><span className="max-sm:hidden">Eq. Idioma</span><span className="sm:hidden">Eq.ID</span></span>
+                            </label>
+                        </>
+                    )}
                     <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
@@ -538,6 +622,35 @@ export default function Visualizer() {
                 <Planner key={currentPensum} currentPensum={currentPensum} />
             ) : null}
 
+{showCriticalPath && rutasData.length > 0 && activeView !== 'planner' && (
+                <div className={`flex flex-wrap items-center justify-center gap-1.5 sm:gap-3 px-2 sm:px-3 py-1.5 sm:py-2 border-b text-[0.6rem] sm:text-xs font-medium transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636] border-[#3E4C5E] text-slate-300' : 'bg-white border-[#DFE1E6] text-[#172B4D]'}`}>
+                    {(() => {
+                        const ruta = rutasData.find(r => r.id === activePathId) || rutasData[0];
+                        if (!ruta) return null;
+                        const creditosOk = ruta.creditosTotales >= 300;
+                        const shOk = ruta.socialHumCreditos >= 8;
+                        return (
+                            <>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold ${creditosOk ? (isDarkMode ? 'bg-green-900/40 text-green-300' : 'bg-green-50 text-green-700') : (isDarkMode ? 'bg-red-900/40 text-red-300' : 'bg-red-50 text-red-700')}`}>
+                                    <span className="max-sm:hidden">Créditos: </span><span className="sm:hidden">Cr: </span>{ruta.creditosTotales}/300 {creditosOk ? '✓' : '✗'}
+                                </span>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold ${shOk ? (isDarkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700') : (isDarkMode ? 'bg-red-900/40 text-red-300' : 'bg-red-50 text-red-700')}`}>
+                                    <span className="max-sm:hidden">Social Hum: </span><span className="sm:hidden">SH: </span>{ruta.socialHumCreditos}/8 {shOk ? '✓' : '✗'}
+                                </span>
+                                <span className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-black/5 dark:bg-white/10">
+                                    <span className="max-sm:hidden">Semestres: </span><span className="sm:hidden">Sem: </span>{ruta.semestres}
+                                </span>
+                                {ruta.advertencias.map((adv, i) => (
+                                    <span key={i} className="flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 text-[0.55rem] sm:text-[0.7rem]">
+                                         <span className="max-sm:hidden">{adv}</span><span className="sm:hidden">Atención</span>
+                                    </span>
+                                ))}
+                            </>
+                        );
+                    })()}
+                </div>
+            )}
+
             <div
                 className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${activeView === 'planner' ? 'hidden' : ''} ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
                 ref={graficaRef}
@@ -570,6 +683,45 @@ export default function Visualizer() {
                 />
             )}
 
+            {showRutaCriticaInfo && showCriticalPath && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }}>
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+                    <div className={`relative max-w-md w-full rounded-xl shadow-2xl p-5 sm:p-6 border transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636] border-[#3E4C5E] text-slate-100' : 'bg-white border-[#DFE1E6] text-[#172B4D]'}`} onClick={e => e.stopPropagation()}>
+                        <button onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }} className={`absolute top-3 right-3 border-none text-[1.1rem] cursor-pointer w-7 h-7 rounded-full flex items-center justify-center p-0 transition-all ${isDarkMode ? 'bg-[#2D333B] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] text-[#5E6C84] hover:bg-[#EBECF0] hover:text-[#172B4D]'}`}>
+                            ×
+                        </button>
+                        <div className="flex items-center gap-2 mb-3">
+                            <Compass size={20} className={isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]'} />
+                            <h2 className="text-base sm:text-lg font-extrabold m-0">Ruta Crítica</h2>
+                        </div>
+                        <div className={`text-[0.8rem] sm:text-sm leading-relaxed space-y-2.5 ${isDarkMode ? 'text-slate-300' : 'text-[#42526E]'}`}>
+                            <p>La ruta crítica muestra <strong>tres opciones</strong> para completar la carrera:</p>
+                            <div className={`rounded-lg p-3 space-y-1.5 ${isDarkMode ? 'bg-[#0E1624]' : 'bg-[#F4F5F7]'}`}>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle" style={{backgroundColor: '#e74c3c'}}></span><strong>Más Rápida</strong> — mínima cantidad de cursos para graduarte en el menor tiempo.</p>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle border-2 border-dashed" style={{borderColor: '#d97706', backgroundColor: 'transparent'}}></span><strong>Más Flexible</strong> — redistribuye la carga para equilibrar créditos por semestre.</p>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle border-2 border-dashed" style={{borderColor: '#d97706', backgroundColor: 'transparent'}}></span><strong>Balanceada</strong> — incluye <em>todos</em> los electivos disponibles.</p>
+                            </div>
+                            <div className={`rounded-lg p-3 space-y-1 ${isDarkMode ? 'bg-[#0E1624]' : 'bg-[#F4F5F7]'}`}>
+                                <p><strong>Reglas del algoritmo:</strong></p>
+                                <ul className="list-disc list-inside mt-1 space-y-0.5">
+                                    <li>Todos los cursos <strong>obligatorios</strong> se incluyen siempre.</li>
+                                    <li>Se aseguran mínimo <strong>8 créditos</strong> del área Social Humanística (incluye Ética, Lógica y Filosofía de la Ciencia).</li>
+                                    <li>Se requiere un mínimo de <strong>300 créditos</strong> para graduarse.</li>
+                                    <li>Los cursos de <strong>Idioma Técnico</strong> son recomendados pero no obligatorios; si tienes equivalencia, marca la casilla "Eq. Idioma".</li>
+                                </ul>
+                            </div>
+                            <div className={`rounded-lg p-3 border-l-4 ${isDarkMode ? 'bg-yellow-900/20 border-yellow-500 text-yellow-200' : 'bg-yellow-50 border-yellow-400 text-yellow-800'}`}>
+                                <p className="font-bold"> Advertencia</p>
+                                <p className="text-[0.75rem] sm:text-xs mt-0.5">Esta función es <strong>únicamente ilustrativa</strong>. no garantiza la planificación exacta de tu carrera.</p>
+                            </div>
+                        </div>
+                        <button onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }} className="w-full mt-4 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer border-none transition-all bg-[#0052CC] hover:bg-[#0747A6] text-white">
+                            Entendido
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {selectedCourse && activeView === 'graph' && (
                 <div className={`absolute top-[80px] right-[20px] w-[340px] max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-[15px] backdrop-blur-md rounded-[12px] shadow-xl p-[20px] z-[950] border fade-in max-md:p-[16px] max-md:pb-[66px] select-none transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636]/95 border-[#3E4C5E] text-slate-100' : 'bg-white/95 border-[#DFE1E6] text-[#172B4D]'}`}>
                     <button onClick={handleCerrarInfo} className={`absolute top-[12px] right-[12px] border-none text-[1rem] cursor-pointer w-[28px] h-[28px] rounded flex items-center justify-center p-0 transition-all ${isDarkMode ? 'bg-[#2D333B] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] text-[#5E6C84] hover:bg-[#EBECF0] hover:text-[#172B4D]'}`}>
@@ -586,7 +738,17 @@ export default function Visualizer() {
                         </span>
                         {!selectedCourse.completado && selectedCourse.enRutaCritica && (
                             <span className="bg-[#FFFAE6] text-[#FF8B00] border border-[#FFAB00] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
-                                ⚠️ Crítico
+                                 Crítico
+                            </span>
+                        )}
+                        {!selectedCourse.completado && showCriticalPath && selectedCourse.esSocialHum && (
+                            <span className="bg-[#DBEAFE] text-[#2563EB] border border-[#60A5FA] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
+                                SH
+                            </span>
+                        )}
+                        {!selectedCourse.completado && showCriticalPath && selectedCourse.esIdiomaTecnico && (
+                            <span className="bg-[#FEF3C7] text-[#D97706] border border-[#FBBF24] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
+                                ID
                             </span>
                         )}
                     </div>

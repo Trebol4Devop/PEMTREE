@@ -84,6 +84,9 @@ export class EdgeRenderer {
         const toHighlighted = toNode.highlighted || toNode.selected;
         const aristaEnRutaActiva = fromHighlighted && toHighlighted;
         const aristaCritica = showCriticalPath && fromNode.enRutaCritica && toNode.enRutaCritica;
+        const fromEnRuta = showCriticalPath && fromNode.enRuta && !fromNode.enRutaCritica;
+        const toEnRuta = showCriticalPath && toNode.enRuta && !toNode.enRutaCritica;
+        const aristaSugerida = showCriticalPath && (fromEnRuta || toEnRuta) && fromNode.enRuta && toNode.enRuta;
 
         let style = {
             stroke: temaOscuro ? "#7f8c8d" : "#bdc3c7",
@@ -108,6 +111,11 @@ export class EdgeRenderer {
             style.stroke = "#e74c3c";
             style.strokeWidth = "3";
             style.strokeDasharray = "5,5";
+            style.opacity = null;
+        } else if (aristaSugerida) {
+            style.stroke = temaOscuro ? "#fbbf24" : "#d97706";
+            style.strokeWidth = "2";
+            style.strokeDasharray = "4,4";
             style.opacity = null;
         }
 

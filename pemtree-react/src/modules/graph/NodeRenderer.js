@@ -144,7 +144,7 @@ export class NodeRenderer {
 
         this.dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro, sectionColors);
 
-        if (showCriticalPath && curso.enRutaCritica && !curso.completado) {
+        if (showCriticalPath && (curso.enRutaCritica || (curso.enRuta && !curso.obligatorio)) && !curso.completado) {
             this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
         }
 
@@ -169,7 +169,7 @@ export class NodeRenderer {
         const isLocked = !curso.disponible && !curso.completado && !curso.selected && !curso.cursando;
         group.classList.toggle('node-locked', isLocked);
 
-        const showWarning = showCriticalPath && curso.enRutaCritica && !curso.completado;
+        const showWarning = showCriticalPath && (curso.enRutaCritica || (curso.enRuta && !curso.obligatorio)) && !curso.completado;
         const warningEl = group.querySelector('[data-tipo="warning"]');
         if (showWarning && !warningEl) {
             this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
@@ -225,7 +225,10 @@ export class NodeRenderer {
     determinarColores(curso, showCriticalPath, temaOscuro) {
         const baseColors = this.getBaseColors(temaOscuro);
         const isCriticalView = showCriticalPath && curso.enRutaCritica;
-        
+        const isInPath = showCriticalPath && curso.enRuta && !curso.enRutaCritica;
+        const isSocialHum = curso.esSocialHum && !curso.obligatorio && showCriticalPath && curso.enRuta;
+        const isIdiomaSugerido = curso.esIdiomaTecnico && showCriticalPath && curso.enRuta;
+
         let fillColor, strokeColor, strokeWidth, strokeDasharray = null;
 
         if (curso.selected) {
@@ -248,7 +251,22 @@ export class NodeRenderer {
         } else if (isCriticalView) {
             fillColor = temaOscuro ? "#7f1d1d" : "#fdedec";
             strokeColor = baseColors.critical;
+            strokeWidth = "2.5";
+        } else if (isInPath && !curso.obligatorio && isSocialHum) {
+            fillColor = temaOscuro ? "#1e3a5f" : "#dbeafe";
+            strokeColor = temaOscuro ? "#60a5fa" : "#2563eb";
             strokeWidth = "2";
+            strokeDasharray = "6,3";
+        } else if (isInPath && isIdiomaSugerido) {
+            fillColor = temaOscuro ? "#78350f" : "#fef3c7";
+            strokeColor = temaOscuro ? "#fbbf24" : "#d97706";
+            strokeWidth = "2";
+            strokeDasharray = "6,3";
+        } else if (isInPath) {
+            fillColor = temaOscuro ? "#78350f" : "#fef3c7";
+            strokeColor = temaOscuro ? "#fbbf24" : "#d97706";
+            strokeWidth = "2";
+            strokeDasharray = "6,3";
         } else {
             fillColor = temaOscuro ? "#1f2937" : "#f4f6f7";
             strokeColor = baseColors.bloqueado;
@@ -571,14 +589,23 @@ export class NodeRenderer {
         const centerX = curso.x + squareSize;
         const centerW = nodeWidth - (2 * squareSize);
 
+        const isSH = curso.esSocialHum && !curso.obligatorio && curso.enRuta;
+        const isIdioma = curso.esIdiomaTecnico && curso.enRuta;
+
         const warning = document.createElementNS(this.svgNS, "text");
         warning.setAttribute("data-tipo", "warning");
         warning.setAttribute("x", centerX + centerW - (isMobile ? 12 : 16));
         warning.setAttribute("y", curso.y + (isMobile ? 12 : 16));
-        warning.setAttribute("fill", "#e74c3c");
+        warning.setAttribute("fill", isSH ? "#2563eb" : (isIdioma ? "#d97706" : "#e74c3c"));
         warning.setAttribute("font-size", isMobile ? "12" : "16");
         warning.setAttribute("font-weight", "bold");
-        warning.textContent = "⚠️";
+        if (isSH) {
+            warning.textContent = "SH";
+        } else if (isIdioma) {
+            warning.textContent = "ID";
+        } else {
+            warning.textContent = "!";
+        }
         group.appendChild(warning);
     }
 }

@@ -1,5 +1,8 @@
 // modules/data/cursos.js - Definición de datos y modelo
 
+const SOCIAL_HUM_CODES = ['0017', '0019', '0001', '0010', '0018'];
+const IDIOMA_TECNICO_CODES = ['0006', '0008', '0009', '0011'];
+
 export class NodoCurso {
     constructor(id, codigo, nombre, creditos, obligatorio, semestre, prerequisitos = []) {
         this.id = id;
@@ -10,6 +13,8 @@ export class NodoCurso {
         this.semestre = semestre;
         this.prerequisitos = prerequisitos;
         this.posrequisitos = [];
+        this.esSocialHum = SOCIAL_HUM_CODES.includes(codigo);
+        this.esIdiomaTecnico = IDIOMA_TECNICO_CODES.includes(codigo);
         this.x = 0;
         this.y = 0;
         this.selected = false;
@@ -18,6 +23,7 @@ export class NodoCurso {
         this.esCritico = false;
         this.highlighted = false;
         this.enRutaCritica = false;
+        this.enRuta = false;
         this.completado = false;
         this.cursando = false;
         this.disponible = false;
