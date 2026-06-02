@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import {  Users, Lock, BarChart4, GitBranch, Mail, Link as LinkIcon } from 'lucide-react';
+import Seo from '../components/seo/Seo';
 
 export default function Home() {
     const team = [
@@ -30,6 +31,8 @@ export default function Home() {
     ];
 
     return (
+        <>
+        <Seo pathname="/" />
         <div className="flex-1 flex flex-col items-center overflow-y-auto w-full hide-scrollbar">
             
             <section
@@ -159,5 +162,6 @@ export default function Home() {
                 </div>
             </footer>
         </div>
+        </>
     );
 }

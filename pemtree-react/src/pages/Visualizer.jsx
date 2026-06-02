@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff } from 'lucide-react';
+import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
@@ -497,7 +498,9 @@ export default function Visualizer() {
     };
 
     return (
-        <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300">
+        <>
+            <Seo pensum={currentPensum} pathname="/visualizador" />
+            <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300">
             
             <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300">
                 
@@ -811,5 +814,6 @@ export default function Visualizer() {
                 </div>
             )}
         </div>
+        </>
     );
 }
