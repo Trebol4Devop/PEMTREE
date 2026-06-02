@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:xhtml="http://www.w3.org/1999/xhtml">
+
+  <url>
+    <loc>https://pemtree.netlify.app/</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>1.0</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=ciencias_y_sistemas_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=ciencias_y_sistemas_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=ciencias_y_sistemas_25</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=ciencias_y_sistemas_25"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=industrial_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=industrial_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=mecanica_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=mecanica_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=civil_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=civil_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=electrica_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=electrica_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=electronica_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=electronica_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=mecanica_electrica_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=mecanica_electrica_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=mecanica_industrial_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=mecanica_industrial_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=quimica_22</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=quimica_22"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/visualizador?pensum=ambiental_25</loc>
+    <lastmod>2026-06-02</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=ambiental_25"/>
+  </url>
+
+</urlset>
