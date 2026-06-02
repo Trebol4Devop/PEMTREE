@@ -12,6 +12,7 @@ export default function SemesterBlock({ semesterNum, courses, maxCredits, sufici
     return (
         <div
             className={`planner-block planner-block-semester ${isOver ? 'planner-block-over-limit' : ''} ${isNear ? 'planner-block-near-limit' : ''}`}
+            data-block-id={`sem-${semesterNum}`}
             onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('planner-block-over'); }}
             onDragLeave={(e) => { e.currentTarget.classList.remove('planner-block-over'); }}
             onDrop={(e) => {
@@ -39,37 +40,29 @@ export default function SemesterBlock({ semesterNum, courses, maxCredits, sufici
                     <div className="planner-block-empty">Arrastra aquí</div>
                 )}
                 {regularCourses.map(curso => (
-                    <div
-                        key={curso.id}
-                        draggable
-                        onDragStart={(e) => {
-                            e.dataTransfer.setData('courseId', String(curso.id));
-                            e.dataTransfer.setData('sourceBlock', `sem-${semesterNum}`);
-                            e.dataTransfer.effectAllowed = 'move';
-                        }}
-                    >
                         <CourseChip
+                            key={curso.id}
                             curso={curso}
                             onRemove={onRemoveChip}
                             onToggleSuficiencia={onToggleSuficiencia ? () => onToggleSuficiencia(curso.id, semesterNum) : undefined}
+                            sourceBlock={`sem-${semesterNum}`}
                         />
-                    </div>
-                ))}
+                    ))}
                 {hasSuficiencia && (
                     <div className="planner-suficiencia-separator">
                         <span>Suficiencias</span>
                     </div>
                 )}
                 {suficienciaCourses.map(curso => (
-                    <div key={curso.id}>
                         <CourseChip
+                            key={curso.id}
                             curso={curso}
                             onRemove={onRemoveChip}
                             isSuficiencia
                             onToggleSuficiencia={onToggleSuficiencia ? () => onToggleSuficiencia(curso.id, semesterNum) : undefined}
+                            sourceBlock={`sem-${semesterNum}`}
                         />
-                    </div>
-                ))}
+                    ))}
             </div>
         </div>
     );

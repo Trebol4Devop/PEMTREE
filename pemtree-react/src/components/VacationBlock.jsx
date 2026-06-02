@@ -6,6 +6,7 @@ export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip })
     return (
         <div
             className={`planner-block planner-block-vacation ${isFull ? 'planner-block-vacation-full' : ''}`}
+            data-block-id={`vac-${vacNum}`}
             onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('planner-block-over'); }}
             onDragLeave={(e) => { e.currentTarget.classList.remove('planner-block-over'); }}
             onDrop={(e) => {
@@ -25,17 +26,12 @@ export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip })
                     <div className="planner-block-empty">Max 2</div>
                 )}
                 {courses.map(curso => (
-                    <div
+                    <CourseChip
                         key={curso.id}
-                        draggable
-                        onDragStart={(e) => {
-                            e.dataTransfer.setData('courseId', String(curso.id));
-                            e.dataTransfer.setData('sourceBlock', `vac-${vacNum}`);
-                            e.dataTransfer.effectAllowed = 'move';
-                        }}
-                    >
-                        <CourseChip curso={curso} onRemove={onRemoveChip} />
-                    </div>
+                        curso={curso}
+                        onRemove={onRemoveChip}
+                        sourceBlock={`vac-${vacNum}`}
+                    />
                 ))}
             </div>
         </div>

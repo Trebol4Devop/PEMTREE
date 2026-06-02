@@ -273,7 +273,7 @@ html.dark .planner-container {
     background: #0E1624;
 }
 
-.planner-pool {
+.planner-pool-wrapper {
     width: 260px;
     min-width: 220px;
     border-right: 1px solid #DFE1E6;
@@ -283,9 +283,17 @@ html.dark .planner-container {
     overflow: hidden;
     flex-shrink: 0;
 }
-html.dark .planner-pool {
+html.dark .planner-pool-wrapper {
     border-color: #3E4C5E;
     background: #1C2636;
+}
+
+.planner-pool {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
 }
 
 .planner-pool-header {
@@ -365,6 +373,7 @@ html.dark .planner-pool-search-input {
     padding: 6px 10px 12px;
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 6px;
 }
 
@@ -379,6 +388,14 @@ html.dark .planner-pool-empty {
 }
 
 /* --- Main blocks area --- */
+.planner-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+}
+
 .planner-main {
     flex: 1;
     overflow-x: auto;
@@ -512,8 +529,15 @@ html.dark .planner-block-capacity {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 0 14px;
+    padding: 10px 20px;
     flex-shrink: 0;
+    background: #fff;
+    border-bottom: 1px solid #F4F5F7;
+    z-index: 10;
+}
+html.dark .planner-promedio-bar {
+    background: #1C2636;
+    border-color: #2D333B;
 }
 
 .planner-promedio-label {
@@ -562,6 +586,40 @@ html.dark .planner-promedio-input:focus {
 html.dark .planner-promedio-limit {
     color: #4C9AFF;
     background: #0C295E;
+}
+
+/* Pool toggle in promedio bar — mobile only */
+.planner-pool-toggle-bar {
+    display: none;
+    align-items: center;
+    gap: 4px;
+    margin-left: auto;
+    padding: 5px 10px;
+    border: 1px solid #0052CC;
+    border-radius: 6px;
+    background: #0052CC;
+    color: #fff;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: background 0.15s;
+}
+html.dark .planner-pool-toggle-bar {
+    background: #4C9AFF;
+    color: #0E1624;
+    border-color: #4C9AFF;
+}
+.planner-pool-toggle-bar:hover {
+    background: #0747A6;
+}
+html.dark .planner-pool-toggle-bar:hover {
+    background: #3888FF;
+}
+.planner-pool-toggle-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
 }
 
 .planner-simultaneous-label {
@@ -665,6 +723,7 @@ html.dark .planner-block-over-limit {
 .planner-block-body {
     display: flex;
     flex-direction: column;
+    align-items: center;
     gap: 6px;
     padding: 10px;
     min-height: 80px;
@@ -722,9 +781,10 @@ html.dark .planner-add-semester:hover {
 .planner-chip {
     display: flex;
     align-items: stretch;
-    min-width: 220px;
-    height: 44px;
-    min-height: 44px;
+    width: 100%;
+    max-width: 240px;
+    height: 48px;
+    min-height: 48px;
     flex-shrink: 0;
     overflow: hidden;
     background: #fff;
@@ -747,12 +807,12 @@ html.dark .planner-chip {
     filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
 }
 
-/* Left section: split vertically (code top, credits bottom) */
+/* Left section: 1/5 del ancho (proporción 1:3:1) */
 .planner-chip-left {
     display: flex;
     flex-direction: column;
-    flex: 1;
-    min-width: 0;
+    width: 20%;
+    flex-shrink: 0;
 }
 
 .planner-chip-left-top {
@@ -772,7 +832,7 @@ html.dark .planner-chip {
 }
 
 .planner-chip-code {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 800;
     font-family: "Segoe UI", Arial, sans-serif;
     letter-spacing: 0.01em;
@@ -781,15 +841,15 @@ html.dark .planner-chip {
 }
 
 .planner-chip-credits {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 700;
     font-family: "Segoe UI", Arial, sans-serif;
     text-align: center;
 }
 
-/* Center section: course name — 3× el ancho lateral para proporción 1:3:1 (total 5:1) */
+/* Center section: 3/5 del ancho (proporción 1:3:1) */
 .planner-chip-center {
-    flex: 3;
+    width: 60%;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -800,7 +860,7 @@ html.dark .planner-chip {
 }
 
 .planner-chip-name {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 600;
     font-family: "Segoe UI", Arial, sans-serif;
     text-align: center;
@@ -818,26 +878,108 @@ html.dark .planner-chip {
     top: 2px;
     right: 3px;
     color: #ef4444;
-    font-size: 7px;
+    font-size: 8px;
     line-height: 1;
     pointer-events: none;
 }
 
-/* Right section: prerequisite codes */
+/* Touch drag ghost — floating chip preview */
+.planner-chip-ghost {
+    display: flex;
+    align-items: stretch;
+    width: 200px;
+    height: 40px;
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.18);
+    transition: transform 0.08s;
+    background: #fff;
+}
+html.dark .planner-chip-ghost {
+    background: #1f2937;
+}
+.planner-chip-ghost-left {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    flex-shrink: 0;
+}
+.planner-chip-ghost-code {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 800;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #333;
+    padding: 2px 4px;
+    text-align: center;
+    line-height: 1.1;
+}
+.planner-chip-ghost-credits {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-weight: 700;
+    font-family: "Segoe UI", Arial, sans-serif;
+    color: #333;
+    padding: 2px 4px;
+    text-align: center;
+}
+.planner-chip-ghost-center {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 6px;
+    min-width: 0;
+    overflow: hidden;
+}
+.planner-chip-ghost-name {
+    font-size: 9px;
+    font-weight: 600;
+    font-family: "Segoe UI", Arial, sans-serif;
+    text-align: center;
+    line-height: 1.2;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    color: #172B4D;
+}
+html.dark .planner-chip-ghost-name {
+    color: #f1f5f9;
+}
+.planner-chip-ghost-right {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 20%;
+    flex-shrink: 0;
+    font-size: 9px;
+    font-weight: 700;
+    color: #333;
+    padding: 2px;
+}
+
+/* Right section: 1/5 del ancho (proporción 1:3:1) */
 .planner-chip-right {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    flex: 1;
-    min-width: 0;
+    width: 20%;
+    flex-shrink: 0;
     gap: 1px;
     padding: 2px 2px;
     overflow: hidden;
 }
 
 .planner-chip-prereq {
-    font-size: 8px;
+    font-size: 9px;
     font-weight: 700;
     text-align: center;
     line-height: 1.1;
@@ -1066,20 +1208,103 @@ html.dark .planner-toast-success {
    RESPONSIVE
    ============================================ */
 
+/* Mobile drawer header — desktop-hidden */
+.planner-pool-mobile-header {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px 14px;
+    border-bottom: 1px solid #F4F5F7;
+}
+html.dark .planner-pool-mobile-header {
+    border-color: #2D333B;
+}
+.planner-pool-mobile-title {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: #5E6C84;
+}
+html.dark .planner-pool-mobile-title {
+    color: #94a3b8;
+}
+.planner-pool-close {
+    background: none;
+    border: none;
+    color: #5E6C84;
+    cursor: pointer;
+    padding: 4px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+html.dark .planner-pool-close {
+    color: #94a3b8;
+}
+.planner-pool-close:hover {
+    background: #F4F5F7;
+}
+html.dark .planner-pool-close:hover {
+    background: #2D333B;
+}
+
 @media (max-width: 768px) {
     .planner-container {
         flex-direction: column;
+        position: relative;
+    }
+
+    .planner-pool-toggle-bar {
+        display: flex;
+    }
+
+    .planner-pool-mobile-header {
+        display: flex;
+    }
+
+    .planner-pool-wrapper {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 40vh;
+        min-width: 0;
+        max-width: 100%;
+        border-right: none;
+        border-top: 1px solid #DFE1E6;
+        border-radius: 16px 16px 0 0;
+        transform: translateY(100%);
+        transition: transform 0.3s ease;
+        z-index: 95;
+        flex-direction: column;
+        overflow: hidden;
+    }
+    html.dark .planner-pool-wrapper {
+        border-color: #3E4C5E;
+    }
+
+    .planner-pool-open {
+        transform: translateY(0);
     }
 
     .planner-pool {
         width: 100%;
         min-width: 0;
-        max-height: 200px;
         border-right: none;
-        border-bottom: 1px solid #DFE1E6;
     }
-    html.dark .planner-pool {
-        border-color: #3E4C5E;
+
+    .planner-pool-header {
+        display: none;
+    }
+
+    .planner-promedio-bar {
+        padding: 8px 12px;
+        gap: 6px;
+        flex-wrap: wrap;
     }
 
     .planner-main {
@@ -1101,25 +1326,25 @@ html.dark .planner-toast-success {
     }
 
     .planner-chip {
-        min-width: 200px;
-        height: 40px;
-        min-height: 40px;
+        max-width: 220px;
+        height: 44px;
+        min-height: 44px;
     }
 
     .planner-chip-code {
-        font-size: 8px;
+        font-size: 9px;
     }
 
     .planner-chip-credits {
-        font-size: 8px;
+        font-size: 9px;
     }
 
     .planner-chip-name {
-        font-size: 8px;
+        font-size: 9px;
     }
 
     .planner-chip-prereq {
-        font-size: 7px;
+        font-size: 8px;
     }
 
     .planner-chip-obligatorio-marker {

@@ -1,5 +1,5 @@
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { Plus } from 'lucide-react';
+import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
+import { Plus, X, BookOpen } from 'lucide-react';
 import { cursoMap, getPensumKey } from '../modules/data/cursos';
 import CoursePool from './CoursePool';
 import SemesterBlock from './SemesterBlock';
@@ -91,6 +91,7 @@ function getPlannedIds(plan) {
 
 export default function Planner() {
     const { toasts, addToast, removeToast } = useToast();
+    const [showPool, setShowPool] = useState(false);
 
     const [plan, setPlan] = useState(() => loadPlanForKey(getStorageKey()));
     const [semesterCount, setSemesterCount] = useState(() => {
@@ -285,11 +286,120 @@ export default function Planner() {
         setSuficiencias(prev => [...prev, courseId]);
     }, [suficiencias, suficienciaFails, plan, addToast]);
 
+    /* Touch drag and drop for mobile */
+    const handleDropRef = useRef(handleDrop);
+    useEffect(() => { handleDropRef.current = handleDrop; }, [handleDrop]);
+
+    function findBlockEl(el) {
+        while (el && el !== document.body) {
+            if (el.classList && el.classList.contains('planner-block')) return el;
+            el = el.parentElement;
+        }
+        return null;
+    }
+
+    useEffect(() => {
+        let ghostEl = null;
+
+        function createGhost(data) {
+            const g = data.ghost;
+            const el = document.createElement('div');
+            el.className = 'planner-chip-ghost';
+            el.innerHTML = `
+                <div class="planner-chip-ghost-left">
+                    <div class="planner-chip-ghost-code" style="background:${g.primary}">${g.codigo}</div>
+                    <div class="planner-chip-ghost-credits" style="background:${g.secondary}">${g.creditos} cr</div>
+                </div>
+                <div class="planner-chip-ghost-center" style="background:${g.center}">
+                    <span class="planner-chip-ghost-name">${g.nombre}</span>
+                </div>
+                <div class="planner-chip-ghost-right" style="background:${g.primary}">—</div>
+            `;
+            el.style.position = 'fixed';
+            el.style.zIndex = '9999';
+            el.style.pointerEvents = 'none';
+            el.style.transform = 'scale(1.05) rotate(2deg)';
+            el.style.filter = 'drop-shadow(0 8px 16px rgba(0,0,0,0.2))';
+            el.style.opacity = '0.92';
+            el.style.transition = 'transform 0.08s';
+            document.body.appendChild(el);
+            return el;
+        }
+
+        function positionGhost(el, x, y) {
+            const w = el.offsetWidth;
+            el.style.left = (x - w / 2) + 'px';
+            el.style.top = (y - 70) + 'px';
+        }
+
+        function removeGhost() {
+            if (ghostEl) {
+                ghostEl.remove();
+                ghostEl = null;
+            }
+        }
+
+        function onTouchMove(e) {
+            if (!window.__touchDrag) return;
+            e.preventDefault();
+            if (!ghostEl) ghostEl = createGhost(window.__touchDrag);
+            const touch = e.touches[0];
+            positionGhost(ghostEl, touch.clientX, touch.clientY);
+            const under = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (!under) return;
+            const blockEl = findBlockEl(under);
+            document.querySelectorAll('.planner-block.planner-block-over').forEach(el => {
+                if (el !== blockEl) el.classList.remove('planner-block-over');
+            });
+            if (blockEl) blockEl.classList.add('planner-block-over');
+        }
+
+        function onTouchEnd(e) {
+            if (!window.__touchDrag) return;
+            const touch = e.changedTouches[0];
+            const under = document.elementFromPoint(touch.clientX, touch.clientY);
+            if (under) {
+                const blockEl = findBlockEl(under);
+                if (blockEl) {
+                    const blockId = blockEl.dataset.blockId;
+                    const { courseId, sourceBlock } = window.__touchDrag;
+                    if (blockId) handleDropRef.current(courseId, blockId, sourceBlock);
+                }
+            }
+            document.querySelectorAll('.planner-block.planner-block-over').forEach(el => {
+                el.classList.remove('planner-block-over');
+            });
+            window.__touchDrag = null;
+            removeGhost();
+        }
+
+        document.addEventListener('touchmove', onTouchMove, { passive: false });
+        document.addEventListener('touchend', onTouchEnd);
+        document.addEventListener('touchcancel', onTouchEnd);
+        return () => {
+            document.removeEventListener('touchmove', onTouchMove);
+            document.removeEventListener('touchend', onTouchEnd);
+            document.removeEventListener('touchcancel', onTouchEnd);
+            removeGhost();
+        };
+    }, []);
+
     return (
         <div className="planner-container">
             <ToastNotification toasts={toasts} onRemove={removeToast} />
-            <CoursePool cursos={currentCursos} plannedIds={plannedIds} />
-            <div className="planner-main">
+
+            {/* Pool sidebar / bottom sheet */}
+            <div className={`planner-pool-wrapper ${showPool ? 'planner-pool-open' : ''}`}>
+                <div className="planner-pool-mobile-header">
+                    <span className="planner-pool-mobile-title">Cursos disponibles</span>
+                    <button className="planner-pool-close" onClick={() => setShowPool(false)}>
+                        <X size={18} />
+                    </button>
+                </div>
+                <CoursePool cursos={currentCursos} plannedIds={plannedIds} />
+            </div>
+
+            <div className="planner-content">
                 <div className="planner-promedio-bar">
                     <label className="planner-promedio-label">Promedio:</label>
                     <input
@@ -312,8 +422,17 @@ export default function Planner() {
                         Carreras simultáneas
                     </label>
                     <span className="planner-promedio-limit">Máx: {maxCredits} cr/sem</span>
+                    <button
+                        className="planner-pool-toggle-bar"
+                        onClick={() => setShowPool(v => !v)}
+                        title={showPool ? 'Ocultar cursos' : 'Ver cursos'}
+                    >
+                        <BookOpen size={16} />
+                        <span className="planner-pool-toggle-label">Cursos</span>
+                    </button>
                 </div>
-                <div className="planner-blocks-row">
+                <div className="planner-main">
+                    <div className="planner-blocks-row">
                     {blocks.map(block => {
                         const courseIds = plan[block.id] || [];
                         const courseObjs = courseIds
@@ -350,6 +469,7 @@ export default function Planner() {
                         <span>Semestre {semesterCount + 1}</span>
                     </button>
                 </div>
+            </div>
             </div>
         </div>
     );

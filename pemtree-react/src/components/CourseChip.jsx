@@ -1,7 +1,7 @@
 import { currentPensumColors, cursoMap } from '../modules/data/cursos';
 import { Award } from 'lucide-react';
 
-export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia }) {
+export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia, sourceBlock }) {
     const primary = (curso.colors?.leftTop?.fill) || currentPensumColors.primary || '#fc904f';
     const secondary = (curso.colors?.leftBottom?.fill) || currentPensumColors.secondary || '#ffd0b6';
     const textFill = (curso.colors?.text?.fill) || '#333';
@@ -27,8 +27,29 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
             draggable={!isSuficiencia}
             onDragStart={isSuficiencia ? undefined : (e) => {
                 e.dataTransfer.setData('courseId', String(curso.id));
+                e.dataTransfer.setData('sourceBlock', sourceBlock || '');
                 e.dataTransfer.effectAllowed = 'move';
                 if (onDragStart) onDragStart(curso.id);
+            }}
+            onTouchStart={isSuficiencia ? undefined : (e) => {
+                e.preventDefault();
+                window.__touchDrag = {
+                    courseId: curso.id,
+                    sourceBlock: sourceBlock || '',
+                    ghost: {
+                        codigo: curso.codigo,
+                        nombre: curso.nombre,
+                        creditos: curso.creditos,
+                        primary: chipPrimary,
+                        secondary: chipSecondary,
+                        text: chipText,
+                        center: chipCenter,
+                        isDark,
+                    }
+                };
+            }}
+            onTouchMove={isSuficiencia ? undefined : (e) => {
+                if (window.__touchDrag) e.preventDefault();
             }}
         >
             <div className="planner-chip-left">
