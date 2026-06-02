@@ -12,6 +12,7 @@ export class GraphManager {
         this.currentLayout = 'horizontal';
         this.viewMode = 'semester';
         this.showCriticalPath = false;
+        this.hidePathLines = false;
         this.temaOscuro = false;
         this.idiomaEquivalencia = false;
         this.activePathIndex = 0;
@@ -101,7 +102,7 @@ export class GraphManager {
 
                 const path = this.edgeRenderer.dibujarArista(
                     edgesFragment, curso, posreq, this.currentLayout,
-                    this.selectedNode, this.showCriticalPath, this.temaOscuro
+                    this.selectedNode, this.showCriticalPath, this.temaOscuro, this.hidePathLines
                 );
                 this.edgeElements.set(path, `${curso.id}->${posreqId}`);
             });
@@ -201,7 +202,7 @@ export class GraphManager {
                 if (path) {
                     this.edgeRenderer.actualizarArista(
                         path, curso, posreq, this.selectedNode,
-                        this.showCriticalPath, this.temaOscuro
+                        this.showCriticalPath, this.temaOscuro, this.hidePathLines
                     );
                 }
             });
@@ -365,6 +366,11 @@ export class GraphManager {
     setRutaActiva(index) {
         this.activePathIndex = index;
         this.criticalPathAnalyzer.setRutaActiva(index);
+        this.dibujarGrafo();
+    }
+
+    setHidePathLines(value) {
+        this.hidePathLines = value;
         this.dibujarGrafo();
     }
 

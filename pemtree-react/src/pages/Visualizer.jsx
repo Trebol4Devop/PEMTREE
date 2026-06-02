@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff } from 'lucide-react';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
@@ -37,6 +37,16 @@ export default function Visualizer() {
     const [showRutaCriticaInfo, setShowRutaCriticaInfo] = useState(() => {
         return !localStorage.getItem('pemtree_rutacritica_visto');
     });
+    const [hidePathLines, setHidePathLines] = useState(false);
+
+    const handleToggleHideLines = () => {
+        const gm = graphManagerRef.current;
+        if (gm) {
+            const newValue = !hidePathLines;
+            setHidePathLines(newValue);
+            gm.setHidePathLines(newValue);
+        }
+    };
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = localStorage.getItem('pemtree_theme');
         return saved === 'dark';
@@ -522,6 +532,11 @@ export default function Visualizer() {
                             </label>
                         </>
                     )}
+
+                    <button onClick={handleToggleHideLines} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${hidePathLines ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`} title={hidePathLines ? 'Mostrar líneas' : 'Ocultar líneas'}>
+                        <EyeOff size={12} className="max-sm:hidden" /> <EyeOff size={10} className="sm:hidden" /> <span className="max-sm:hidden">Sin Líneas</span><span className="sm:hidden">Sin</span>
+                    </button>
+
                     <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
