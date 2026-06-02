@@ -1,5 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Grid, Compass, LayoutTemplate, Layers, RotateCcw, CheckCircle2, Lock, Unlock } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff } from 'lucide-react';
+import Planner from '../components/Planner';
+import WelcomeModal from '../components/WelcomeModal';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
@@ -27,8 +29,24 @@ export default function Visualizer() {
     const [zoom, setZoom] = useState(100);
     const [showOptional, setShowOptional] = useState(true);
     const [showCriticalPath, setShowCriticalPath] = useState(false);
-    const [viewMode, setViewMode] = useState('semester');
-    const [layout, setLayout] = useState('horizontal');
+    const [activePathId, setActivePathId] = useState('mas_rapida');
+    const [idiomaEquivalencia, setIdiomaEquivalencia] = useState(() => {
+        return localStorage.getItem('pemtree_idioma_equivalencia') === 'true';
+    });
+    const [rutasData, setRutasData] = useState([]);
+    const [showRutaCriticaInfo, setShowRutaCriticaInfo] = useState(() => {
+        return !localStorage.getItem('pemtree_rutacritica_visto');
+    });
+    const [hidePathLines, setHidePathLines] = useState(false);
+
+    const handleToggleHideLines = () => {
+        const gm = graphManagerRef.current;
+        if (gm) {
+            const newValue = !hidePathLines;
+            setHidePathLines(newValue);
+            gm.setHidePathLines(newValue);
+        }
+    };
     const [isDarkMode, setIsDarkMode] = useState(() => {
         const saved = localStorage.getItem('pemtree_theme');
         return saved === 'dark';
@@ -43,10 +61,10 @@ export default function Visualizer() {
     const [showGuia, setShowGuia] = useState(() => {
         return !localStorage.getItem('pemtree_guia_visto');
     });
+    const [activeView, setActiveView] = useState('graph');
 
     const guiaLightSrc = '/images/Guia_de_uso.png';
     const guiaDarkSrc = '/images/Guia_de_uso_dark.png';
-    const guiaFallbackSrc = '/images/Guia_de_uso.png';
 
     const actualizarCreditos = () => {
         let total = 0;
@@ -175,8 +193,13 @@ export default function Visualizer() {
                 tooltipManagerRef.current = gm.tooltipManager;
                 gm.onCreditsChange = actualizarCreditos;
                 
-                if (typeof gm.setCurrentLayout === 'function') gm.currentLayout = layout;
-                else gm.currentLayout = layout;
+                gm.currentLayout = 'horizontal';
+                
+                const savedIdiomaEq = storageManager.getIdiomaEquivalencia();
+                if (savedIdiomaEq) {
+                    setIdiomaEquivalencia(true);
+                }
+                gm.idiomaEquivalencia = savedIdiomaEq;
                 
                 if (typeof gm.setTemaOscuro === 'function') gm.temaOscuro = isDarkMode;
                 else gm.temaOscuro = isDarkMode;
@@ -206,7 +229,7 @@ export default function Visualizer() {
 
         initApp();
         return () => { isMounted = false; };
-    }, [isDarkMode, layout]);
+    }, [isDarkMode]);
 
     const handleLimpiar = () => {
         const gm = graphManagerRef.current;
@@ -250,28 +273,52 @@ export default function Visualizer() {
             const newValue = !showCriticalPath;
             setShowCriticalPath(newValue);
             gm.setShowCriticalPath(newValue);
+            if (newValue) {
+                setRutasData([...(gm.getRutas() || [])]);
+                if (!localStorage.getItem('pemtree_rutacritica_visto')) {
+                    setShowRutaCriticaInfo(true);
+                }
+            }
         }
     };
 
-    const handleCambiarVista = () => {
+    const handlePathChange = (pathId) => {
         const gm = graphManagerRef.current;
         if (gm) {
-            const newMode = viewMode === 'semester' ? 'free' : 'semester';
-            setViewMode(newMode);
-            gm.setViewMode(newMode);
+            const rutas = gm.getRutas();
+            const index = rutas.findIndex(r => r.id === pathId);
+            if (index >= 0) {
+                setActivePathId(pathId);
+                gm.setRutaActiva(index);
+            }
         }
     };
 
-    const handleLayoutChange = async () => {
-        const newLayout = layout === 'vertical' ? 'horizontal' : 'vertical';
-        setLayout(newLayout);
+    const handleIdiomaEquivalencia = () => {
         const gm = graphManagerRef.current;
         if (gm) {
-            gm.setCurrentLayout(newLayout);
-            await gm.dibujarGrafo();
-            if (panZoom) applyInitialView(panZoom, graficaRef.current);
+            const newValue = !idiomaEquivalencia;
+            setIdiomaEquivalencia(newValue);
+            localStorage.setItem('pemtree_idioma_equivalencia', newValue ? 'true' : 'false');
+            gm.setIdiomaEquivalencia(newValue);
+            setRutasData([...(gm.getRutas() || [])]);
         }
     };
+
+    useEffect(() => {
+        if (!showCriticalPath) return;
+        const gm = graphManagerRef.current;
+        if (!gm) return;
+        const rutas = gm.getRutas();
+        if (rutas && rutas.length > 0) {
+            const validIndex = rutas.findIndex(r => r.id === activePathId);
+            if (validIndex < 0) {
+                setActivePathId(rutas[0].id);
+            }
+            setRutasData([...rutas]);
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [showCriticalPath]);
 
     const handlePensumChange = async (e) => {
         const relPath = e.target.value;
@@ -452,26 +499,56 @@ export default function Visualizer() {
     return (
         <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300">
             
-            <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto">
+            <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300">
                 
                 {/* Botones de vista y opciones */}
-                <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
-                    <button onClick={handleCambiarVista} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${viewMode === 'semester' ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
-                        <Grid size={12} className="max-sm:hidden" /> <Grid size={10} className="sm:hidden" /> <span className="max-sm:hidden">Semestral</span><span className="sm:hidden">S.</span>
-                    </button>
-                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
+                <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
+                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
-                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'}`}>
+
+                    {showCriticalPath && (
+                        <>
+                            <div className="flex items-center gap-0.5 sm:gap-1 bg-black/5 dark:bg-white/5 px-1 sm:px-1.5 py-0.5 rounded-md">
+                                {rutasData.map((ruta) => (
+                                    <button
+                                        key={ruta.id}
+                                        onClick={() => handlePathChange(ruta.id)}
+                                        className={`px-1 sm:px-1.5 py-0.5 text-[0.55rem] sm:text-[0.65rem] font-bold rounded transition border-none cursor-pointer whitespace-nowrap ${activePathId === ruta.id ? (isDarkMode ? 'bg-[#4C9AFF] text-[#0E1624]' : 'bg-[#0052CC] text-white') : (isDarkMode ? 'bg-transparent text-slate-400 hover:text-white' : 'bg-transparent text-[#5E6C84] hover:text-[#172B4D]')}`}
+                                    >
+                                        <span className="max-sm:hidden">{ruta.nombre}</span>
+                                        <span className="sm:hidden">{ruta.id === 'mas_rapida' ? 'Ráp.' : ruta.id === 'mas_flexible' ? 'Flex.' : 'Bal.'}</span>
+                                    </button>
+                                ))}
+                            </div>
+                            <label className="flex items-center gap-0.5 sm:gap-1 cursor-pointer text-[0.55rem] sm:text-[0.65rem] whitespace-nowrap select-none">
+                                <input
+                                    type="checkbox"
+                                    checked={idiomaEquivalencia}
+                                    onChange={handleIdiomaEquivalencia}
+                                    className="w-2.5 h-2.5 sm:w-3 sm:h-3 accent-[#0052CC]"
+                                />
+                                <span className={isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}><span className="max-sm:hidden">Eq. Idioma</span><span className="sm:hidden">Eq.ID</span></span>
+                            </label>
+                        </>
+                    )}
+
+                    <button onClick={handleToggleHideLines} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${hidePathLines ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`} title={hidePathLines ? 'Mostrar líneas' : 'Ocultar líneas'}>
+                        <EyeOff size={12} className="max-sm:hidden" /> <EyeOff size={10} className="sm:hidden" /> <span className="max-sm:hidden">Sin Líneas</span><span className="sm:hidden">Sin</span>
+                    </button>
+
+                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
-                    <button onClick={handleLayoutChange} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent`}>
-                        <LayoutTemplate size={12} className="max-sm:hidden" /> <LayoutTemplate size={10} className="sm:hidden" /> <span className="max-lg:hidden">{layout === 'vertical' ? 'Vertical' : 'Horizontal'}</span><span className="lg:hidden">{layout === 'vertical' ? 'V' : 'H'}</span>
+
+                    {/* Planificador toggle — always visible, prominent style */}
+                    <button onClick={() => setActiveView(activeView === 'planner' ? 'graph' : 'planner')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'planner' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20')}`}>
+                        <Calendar size={12} className="max-sm:hidden" /> <Calendar size={10} className="sm:hidden" /> <span className="max-sm:hidden">Planificador</span><span className="sm:hidden">Plan</span>
                     </button>
                 </div>
 
                 {/* Selectors y búsqueda */}
-                <div className="flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0">
+                <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' ? 'hidden' : ''}`}>
                     <select
                         value={currentPensum}
                         onChange={handlePensumChange}
@@ -498,7 +575,7 @@ export default function Visualizer() {
                 </div>
 
                 {/* Botones de ayuda, créditos y reiniciar */}
-                <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0">
+                <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' ? 'hidden' : ''}`}>
                     <button
                         type="button"
                         onClick={() => setShowGuia(true)}
@@ -509,7 +586,7 @@ export default function Visualizer() {
                         ?
                     </button>
 
-                    <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 bg-[#DEEBFF] dark:bg-[#0C295E] px-1.5 sm:px-2 py-1 max-sm:py-0.5 rounded border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 shadow-sm">
+                    <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 bg-[#DEEBFF] dark:bg-[#0C295E] px-1.5 sm:px-2 py-1 max-sm:py-0.5 rounded border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 shadow-sm transition-colors duration-300">
                         <span className="text-[0.6rem] sm:text-[10px] lg:text-[10px] font-bold text-[#0052CC] dark:text-[#4C9AFF] uppercase tracking-wider whitespace-nowrap">Créditos:</span>
                         <span className="text-[0.65rem] sm:text-xs lg:text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">{creditosAprobados}</span>
                     </div>
@@ -556,8 +633,41 @@ export default function Visualizer() {
                 </div>
             )}
 
+            {activeView === 'planner' ? (
+                <Planner key={currentPensum} currentPensum={currentPensum} />
+            ) : null}
+
+{showCriticalPath && rutasData.length > 0 && activeView !== 'planner' && (
+                <div className={`flex flex-wrap items-center justify-center gap-1.5 sm:gap-3 px-2 sm:px-3 py-1.5 sm:py-2 border-b text-[0.6rem] sm:text-xs font-medium transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636] border-[#3E4C5E] text-slate-300' : 'bg-white border-[#DFE1E6] text-[#172B4D]'}`}>
+                    {(() => {
+                        const ruta = rutasData.find(r => r.id === activePathId) || rutasData[0];
+                        if (!ruta) return null;
+                        const creditosOk = ruta.creditosTotales >= 300;
+                        const shOk = ruta.socialHumCreditos >= 8;
+                        return (
+                            <>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold ${creditosOk ? (isDarkMode ? 'bg-green-900/40 text-green-300' : 'bg-green-50 text-green-700') : (isDarkMode ? 'bg-red-900/40 text-red-300' : 'bg-red-50 text-red-700')}`}>
+                                    <span className="max-sm:hidden">Créditos: </span><span className="sm:hidden">Cr: </span>{ruta.creditosTotales}/300 {creditosOk ? '✓' : '✗'}
+                                </span>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold ${shOk ? (isDarkMode ? 'bg-blue-900/40 text-blue-300' : 'bg-blue-50 text-blue-700') : (isDarkMode ? 'bg-red-900/40 text-red-300' : 'bg-red-50 text-red-700')}`}>
+                                    <span className="max-sm:hidden">Social Hum: </span><span className="sm:hidden">SH: </span>{ruta.socialHumCreditos}/8 {shOk ? '✓' : '✗'}
+                                </span>
+                                <span className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-black/5 dark:bg-white/10">
+                                    <span className="max-sm:hidden">Semestres: </span><span className="sm:hidden">Sem: </span>{ruta.semestres}
+                                </span>
+                                {ruta.advertencias.map((adv, i) => (
+                                    <span key={i} className="flex items-center gap-0.5 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-yellow-50 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-300 text-[0.55rem] sm:text-[0.7rem]">
+                                         <span className="max-sm:hidden">{adv}</span><span className="sm:hidden">Atención</span>
+                                    </span>
+                                ))}
+                            </>
+                        );
+                    })()}
+                </div>
+            )}
+
             <div
-                className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
+                className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${activeView === 'planner' ? 'hidden' : ''} ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
                 ref={graficaRef}
                 id="grafo-canvas"
                 onPointerDown={handleGraphPointerDown}
@@ -565,42 +675,70 @@ export default function Visualizer() {
                 onPointerUp={handleGraphPointerUp}
             ></div>
 
-
-            <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none">
-                <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
-                    −
-                </button>
-                <span className={`text-[0.75rem] sm:text-sm font-semibold w-10 sm:w-11 text-center backdrop-blur-md py-1 sm:py-1.5 rounded-lg shadow-sm select-none border ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300' : 'bg-white/90 border-[#DFE1E6] text-[#42526E]'}`}>
-                    {zoom}%
-                </span>
-                <button onClick={handleZoomIn} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
-                    +
-                </button>
-                <button onClick={handleZoomReset} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
-                    ↺
-                </button>
-            </div>
+                    <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none">
+                        <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                            −
+                        </button>
+                        <span className={`text-[0.75rem] sm:text-sm font-semibold w-10 sm:w-11 text-center backdrop-blur-md py-1 sm:py-1.5 rounded-lg shadow-sm select-none border ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300' : 'bg-white/90 border-[#DFE1E6] text-[#42526E]'}`}>
+                            {zoom}%
+                        </span>
+                        <button onClick={handleZoomIn} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                            +
+                        </button>
+                        <button onClick={handleZoomReset} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
+                            ↺
+                        </button>
+                    </div>
 
             {showGuia && (
-                <div className="fixed inset-0 z-[3000] flex items-center justify-center bg-black/45 backdrop-blur-sm">
-                    <button
-                        onClick={handleCerrarGuia}
-                        className="absolute top-[20px] right-[20px] w-[36px] h-[36px] rounded-full bg-white/90 text-[#172B4D] border border-white/60 hover:bg-white transition"
-                        aria-label="Cerrar guia"
-                    >
-                        ×
-                    </button>
-                    <img
-                        src={isDarkMode ? guiaDarkSrc : guiaLightSrc}
-                        onError={(e) => { e.currentTarget.src = guiaFallbackSrc; }}
-                        alt="Guia de uso"
-                        className="max-w-[92vw] max-h-[86vh] object-contain shadow-2xl"
-                    />
+                <WelcomeModal
+                    isDarkMode={isDarkMode}
+                    guiaSrc={isDarkMode ? guiaDarkSrc : guiaLightSrc}
+                    onClose={handleCerrarGuia}
+                />
+            )}
+
+            {showRutaCriticaInfo && showCriticalPath && (
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }}>
+                    <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+                    <div className={`relative max-w-md w-full rounded-xl shadow-2xl p-5 sm:p-6 border transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636] border-[#3E4C5E] text-slate-100' : 'bg-white border-[#DFE1E6] text-[#172B4D]'}`} onClick={e => e.stopPropagation()}>
+                        <button onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }} className={`absolute top-3 right-3 border-none text-[1.1rem] cursor-pointer w-7 h-7 rounded-full flex items-center justify-center p-0 transition-all ${isDarkMode ? 'bg-[#2D333B] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] text-[#5E6C84] hover:bg-[#EBECF0] hover:text-[#172B4D]'}`}>
+                            ×
+                        </button>
+                        <div className="flex items-center gap-2 mb-3">
+                            <Compass size={20} className={isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]'} />
+                            <h2 className="text-base sm:text-lg font-extrabold m-0">Ruta Crítica</h2>
+                        </div>
+                        <div className={`text-[0.8rem] sm:text-sm leading-relaxed space-y-2.5 ${isDarkMode ? 'text-slate-300' : 'text-[#42526E]'}`}>
+                            <p>La ruta crítica muestra <strong>tres opciones</strong> para completar la carrera:</p>
+                            <div className={`rounded-lg p-3 space-y-1.5 ${isDarkMode ? 'bg-[#0E1624]' : 'bg-[#F4F5F7]'}`}>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle" style={{backgroundColor: '#e74c3c'}}></span><strong>Más Rápida</strong> — mínima cantidad de cursos para graduarte en el menor tiempo.</p>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle border-2 border-dashed" style={{borderColor: '#d97706', backgroundColor: 'transparent'}}></span><strong>Más Flexible</strong> — redistribuye la carga para equilibrar créditos por semestre.</p>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle border-2 border-dashed" style={{borderColor: '#d97706', backgroundColor: 'transparent'}}></span><strong>Balanceada</strong> — incluye <em>todos</em> los electivos disponibles.</p>
+                            </div>
+                            <div className={`rounded-lg p-3 space-y-1 ${isDarkMode ? 'bg-[#0E1624]' : 'bg-[#F4F5F7]'}`}>
+                                <p><strong>Reglas del algoritmo:</strong></p>
+                                <ul className="list-disc list-inside mt-1 space-y-0.5">
+                                    <li>Todos los cursos <strong>obligatorios</strong> se incluyen siempre.</li>
+                                    <li>Se aseguran mínimo <strong>8 créditos</strong> del área Social Humanística (incluye Ética, Lógica y Filosofía de la Ciencia).</li>
+                                    <li>Se requiere un mínimo de <strong>300 créditos</strong> para graduarse.</li>
+                                    <li>Los cursos de <strong>Idioma Técnico</strong> son recomendados pero no obligatorios; si tienes equivalencia, marca la casilla "Eq. Idioma".</li>
+                                </ul>
+                            </div>
+                            <div className={`rounded-lg p-3 border-l-4 ${isDarkMode ? 'bg-yellow-900/20 border-yellow-500 text-yellow-200' : 'bg-yellow-50 border-yellow-400 text-yellow-800'}`}>
+                                <p className="font-bold"> Advertencia</p>
+                                <p className="text-[0.75rem] sm:text-xs mt-0.5">Esta función es <strong>únicamente ilustrativa</strong>. no garantiza la planificación exacta de tu carrera.</p>
+                            </div>
+                        </div>
+                        <button onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }} className="w-full mt-4 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer border-none transition-all bg-[#0052CC] hover:bg-[#0747A6] text-white">
+                            Entendido
+                        </button>
+                    </div>
                 </div>
             )}
 
-            {selectedCourse && (
-                <div className={`absolute top-[80px] right-[20px] w-[340px] max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-[15px] backdrop-blur-md rounded-[12px] shadow-xl p-[20px] z-[950] border fade-in max-md:p-[16px] max-md:pb-[66px] select-none ${isDarkMode ? 'bg-[#1C2636]/95 border-[#3E4C5E] text-slate-100' : 'bg-white/95 border-[#DFE1E6] text-[#172B4D]'}`}>
+            {selectedCourse && activeView === 'graph' && (
+                <div className={`absolute top-[80px] right-[20px] w-[340px] max-md:top-auto max-md:bottom-0 max-md:left-0 max-md:right-0 max-md:w-full max-md:rounded-b-none max-md:rounded-t-[15px] backdrop-blur-md rounded-[12px] shadow-xl p-[20px] z-[950] border fade-in max-md:p-[16px] max-md:pb-[66px] select-none transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636]/95 border-[#3E4C5E] text-slate-100' : 'bg-white/95 border-[#DFE1E6] text-[#172B4D]'}`}>
                     <button onClick={handleCerrarInfo} className={`absolute top-[12px] right-[12px] border-none text-[1rem] cursor-pointer w-[28px] h-[28px] rounded flex items-center justify-center p-0 transition-all ${isDarkMode ? 'bg-[#2D333B] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] text-[#5E6C84] hover:bg-[#EBECF0] hover:text-[#172B4D]'}`}>
                         ×
                     </button>
@@ -615,7 +753,17 @@ export default function Visualizer() {
                         </span>
                         {!selectedCourse.completado && selectedCourse.enRutaCritica && (
                             <span className="bg-[#FFFAE6] text-[#FF8B00] border border-[#FFAB00] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
-                                ⚠️ Crítico
+                                 Crítico
+                            </span>
+                        )}
+                        {!selectedCourse.completado && showCriticalPath && selectedCourse.esSocialHum && (
+                            <span className="bg-[#DBEAFE] text-[#2563EB] border border-[#60A5FA] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
+                                SH
+                            </span>
+                        )}
+                        {!selectedCourse.completado && showCriticalPath && selectedCourse.esIdiomaTecnico && (
+                            <span className="bg-[#FEF3C7] text-[#D97706] border border-[#FBBF24] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
+                                ID
                             </span>
                         )}
                     </div>
@@ -624,7 +772,7 @@ export default function Visualizer() {
                         {selectedCourse.nombre}
                     </div>
 
-                    <div className={`flex justify-between mb-[15px] text-[0.85rem] font-medium p-[10px] rounded-[6px] border ${isDarkMode ? 'bg-[#0E1624] border-[#3E4C5E] text-slate-300' : 'bg-[#FAFBFC] border-[#DFE1E6] text-[#5E6C84]'}`}>
+                    <div className={`flex justify-between mb-[15px] text-[0.85rem] font-medium p-[10px] rounded-[6px] border transition-colors duration-300 ${isDarkMode ? 'bg-[#0E1624] border-[#3E4C5E] text-slate-300' : 'bg-[#FAFBFC] border-[#DFE1E6] text-[#5E6C84]'}`}>
                         <span><strong>Créditos:</strong> {selectedCourse.creditos}</span>
                         <span><strong>Semestre:</strong> {selectedCourse.semestre}</span>
                     </div>

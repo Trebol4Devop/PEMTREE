@@ -1,5 +1,8 @@
 // modules/data/cursos.js - Definición de datos y modelo
 
+const SOCIAL_HUM_CODES = ['0017', '0019', '0001', '0010', '0018'];
+const IDIOMA_TECNICO_CODES = ['0006', '0008', '0009', '0011'];
+
 export class NodoCurso {
     constructor(id, codigo, nombre, creditos, obligatorio, semestre, prerequisitos = []) {
         this.id = id;
@@ -10,6 +13,8 @@ export class NodoCurso {
         this.semestre = semestre;
         this.prerequisitos = prerequisitos;
         this.posrequisitos = [];
+        this.esSocialHum = SOCIAL_HUM_CODES.includes(codigo);
+        this.esIdiomaTecnico = IDIOMA_TECNICO_CODES.includes(codigo);
         this.x = 0;
         this.y = 0;
         this.selected = false;
@@ -18,6 +23,7 @@ export class NodoCurso {
         this.esCritico = false;
         this.highlighted = false;
         this.enRutaCritica = false;
+        this.enRuta = false;
         this.completado = false;
         this.cursando = false;
         this.disponible = false;
@@ -228,7 +234,7 @@ export async function initializeCursos() {
         cursoMap.clear();
         cursos.forEach(curso => cursoMap.set(curso.id, curso));
 
-        console.log(`✅ Cursos inicializados (${cursos.length} cursos)`);
+        console.log(`Cursos inicializados (${cursos.length} cursos)`);
         return cursos;
     } catch (error) {
         console.error('Error inicializando cursos:', error);
@@ -286,7 +292,7 @@ export async function listAvailablePensums() {
             return null;
         }).filter(Boolean);
 
-        console.log('📋 Pensums disponibles (desde index):', pensums.length);
+        console.log(' Pensums disponibles (desde index):', pensums.length);
         pensums.forEach(p => console.log(`  - ${p.id}: ${p.name} (${p.file})`));
         return pensums;
     }
@@ -319,7 +325,7 @@ export async function listAvailablePensums() {
     }
 
     if (detectedPensums.length > 0) {
-        console.log('📋 Pensums detectados (probe):', detectedPensums.length);
+        console.log(' Pensums detectados (probe):', detectedPensums.length);
         return detectedPensums;
     }
 
@@ -356,7 +362,7 @@ export async function loadPensum(relPath) {
         // Registrar el pensum cargado para la UI
         STARTUP_LOADED_PENSUM = relPath;
 
-        console.log(`✅ Pensum cargado: ${relPath} (${cursos.length} cursos)`);
+        console.log(` Pensum cargado: ${relPath} (${cursos.length} cursos)`);
         return cursos;
     } catch (error) {
         console.error('Error cargando pensum:', error);

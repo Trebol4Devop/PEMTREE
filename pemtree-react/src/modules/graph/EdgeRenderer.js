@@ -7,7 +7,7 @@ export class EdgeRenderer {
         this.svgNS = "http://www.w3.org/2000/svg";
     }
 
-    dibujarArista(graphGroup, fromNode, toNode, currentLayout, selectedNode, showCriticalPath, temaOscuro) {
+    dibujarArista(graphGroup, fromNode, toNode, currentLayout, selectedNode, showCriticalPath, temaOscuro, hidePathLines = false) {
         const dims = getNodeDimensions();
         const nodeWidth = dims.width;
         const nodeHeight = dims.height;
@@ -19,15 +19,15 @@ export class EdgeRenderer {
         path.setAttribute("d", d);
         path.setAttribute("fill", "none");
         
-        this._aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro);
+        this._aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro, hidePathLines);
         
         graphGroup.appendChild(path);
         return path;
     }
 
-    _aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro) {
+    _aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro, hidePathLines = false) {
         const style = this.determinarEstiloArista(
-            fromNode, toNode, selectedNode, showCriticalPath, temaOscuro
+            fromNode, toNode, selectedNode, showCriticalPath, temaOscuro, hidePathLines
         );
 
         path.setAttribute("stroke", style.stroke);
@@ -49,8 +49,8 @@ export class EdgeRenderer {
         }
     }
 
-    actualizarArista(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro) {
-        this._aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro);
+    actualizarArista(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro, hidePathLines = false) {
+        this._aplicarEstilo(path, fromNode, toNode, selectedNode, showCriticalPath, temaOscuro, hidePathLines);
     }
 
     calcularPath(fromNode, toNode, currentLayout, nodeWidth, nodeHeight) {
@@ -79,11 +79,14 @@ export class EdgeRenderer {
         return { d };
     }
 
-    determinarEstiloArista(fromNode, toNode, selectedNode, showCriticalPath, temaOscuro) {
+determinarEstiloArista(fromNode, toNode, selectedNode, showCriticalPath, temaOscuro, hidePathLines = false) {
         const fromHighlighted = fromNode.highlighted || fromNode.selected;
         const toHighlighted = toNode.highlighted || toNode.selected;
         const aristaEnRutaActiva = fromHighlighted && toHighlighted;
         const aristaCritica = showCriticalPath && fromNode.enRutaCritica && toNode.enRutaCritica;
+        const fromEnRuta = showCriticalPath && fromNode.enRuta && !fromNode.enRutaCritica;
+        const toEnRuta = showCriticalPath && toNode.enRuta && !toNode.enRutaCritica;
+        const aristaSugerida = showCriticalPath && (fromEnRuta || toEnRuta) && fromNode.enRuta && toNode.enRuta;
 
         let style = {
             stroke: temaOscuro ? "#7f8c8d" : "#bdc3c7",
@@ -93,7 +96,9 @@ export class EdgeRenderer {
             opacity: temaOscuro ? "0.5" : "0.4"
         };
 
-        if (selectedNode && fromNode.id === selectedNode.id) {
+        if (hidePathLines && !aristaCritica && !aristaSugerida && !(selectedNode && (fromNode.id === selectedNode.id || aristaEnRutaActiva))) {
+            style.opacity = "0.08";
+        } else if (selectedNode && fromNode.id === selectedNode.id) {
             style.stroke = "#f39c12";
             style.strokeWidth = "2";
             style.strokeDasharray = "5,5";
@@ -108,6 +113,11 @@ export class EdgeRenderer {
             style.stroke = "#e74c3c";
             style.strokeWidth = "3";
             style.strokeDasharray = "5,5";
+            style.opacity = null;
+        } else if (aristaSugerida) {
+            style.stroke = temaOscuro ? "#fbbf24" : "#d97706";
+            style.strokeWidth = "2";
+            style.strokeDasharray = "4,4";
             style.opacity = null;
         }
 

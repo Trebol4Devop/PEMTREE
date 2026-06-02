@@ -1,41 +1,54 @@
 # AGENTS.md — PEMTREE2
 
 ## Quick facts
-- **Zero dependencies, zero build step.** Pure vanilla JS ES modules. No `package.json`, no npm, no bundler.
-- **Entry point:** `website/index.html` imports only `website/main.js` (a `<script type="module">`).
-- **Dead code:** `website/script.js` is an older entry point — it is **not imported anywhere**. Ignore it.
-- **Redundant file:** `website/modules/graph/styles.css` is an identical copy of `website/styles.css`. Only the top-level one is used.
+- **React + Vite + Tailwind** app in `pemtree-react/`. No longer vanilla JS.
+- **Package manager: pnpm** (required — netlify.toml uses `pnpm run build`).
+- **No typecheck step.** No TypeScript; all `.js`/`.jsx`.
+- **Lint:** `pnpm lint` (ESLint with react-hooks + react-refresh plugins). No test runner.
 
-## Running locally
-- **Netlify dev server:** `netlify dev` (serves `website/`, port 8888 by default).
-- **Any static server works:** `python3 -m http.server 8000 --directory website`, `npx serve website`, etc.
-- **Node test script:** `node test_import.mjs` — tests the JSON-to-course import logic directly in Node.
+## Commands (run from `pemtree-react/`)
+- `pnpm dev` — Vite dev server
+- `pnpm build` — production build to `dist/`
+- `pnpm preview` — preview production build
+- `pnpm lint` — ESLint
 
 ## Architecture
-- All app logic lives under `website/modules/` with these packages:
-  - `data/` — `NodoCurso` model, JSON loading (`cursos.js`), and conversion (`importFromJSON.js`).
-  - `graph/` — graph layout, rendering (SVG nodes + bezier edges), critical-path analysis.
-  - `ui/` — pan/zoom, info cards, tooltips, theme, search, and pensum selector.
-  - `storage/` — `localStorage` persistence for course completion progress.
-  - `events/` — wires toolbar buttons to graph and UI actions.
-  - `utils/` — text normalization and word-wrapping helpers.
-- `website/main.js` (`class PemtreeApp`) orchestrates initialization: load data → instantiate managers → wire events → draw graph.
-- All JS import paths are **relative to `website/`** (e.g., `./modules/data/cursos.js`).
+- **Entry:** `src/main.jsx` → `App.jsx`
+- **Routing:** React Router (`/` → Home, `/visualizador` → Visualizer)
+- **Core JS modules** (not React components) live in `src/modules/`:
+  - `data/` — `NodoCurso` model, JSON loading (`cursos.js`), import (`importFromJSON.js`). `cursos` and `cursoMap` are mutable module-level exports.
+  - `graph/` — `GraphManager`, `LayoutCalculator`, `NodeRenderer`, `EdgeRenderer`, `CriticalPathAnalyzer`, `dimensions.js`
+  - `storage/` — `StorageManager` (localStorage persistence, per-pensum keys)
+  - `ui/` — `PanZoomManager`, `TooltipManager`
+  - `utils/` — `TextUtils`
+- **React pages:** `src/pages/Home.jsx` (landing), `src/pages/Visualizer.jsx` (graph viewer + toolbar + planner — ~650 lines, main interactive page)
+- **React components:** `src/components/Navbar.jsx`, plus planner components: `Planner.jsx`, `CoursePool.jsx`, `SemesterBlock.jsx`, `VacationBlock.jsx`, `CourseChip.jsx`, `ToastNotification.jsx`
+- **Custom hooks:** `src/hooks/useToast.js` (toast notification state)
+- Graph rendering uses raw SVG DOM manipulation (not React) inside `GraphManager` and friends. React owns the toolbar/info-card UI; SVG nodes/edges are created imperatively.
+- **Planner:** Tab-based view in Visualizer (`activeView: 'graph' | 'planner'`). Planner uses HTML drag-and-drop to let users plan courses by semester and vacation school. Chips replicate the node aesthetic (4-section layout with pensum colors). Validates prerequisites on drop. Persists to localStorage.
+- `test_import.mjs` at repo root tests the old vanilla JS import path (`website/modules/...`) — it is **stale and will not work** with the current React app.
 
-## Data files
-- **Pensum JSONs:** `website/modules/json/*.json` — course data per engineering program. `index.json` is an array of `{file, name}` objects listing available pensums with their human-readable names.
-- **Color theme JSONs:** `website/modules/pensum_color/*_color.json` — per-program colors (primary, secondary, accent). On load, `applyPensumColors()` sets CSS custom properties `--primary`, `--accent`, `--border` on `:root`, which drive toolbar, navbar, and UI accent colors.
-- Default pensum loaded at startup: `ciencias_y_sistemas_22.json`. Falls back to hardcoded `DEFAULT_CURSOS` in `cursos.js`.
-- Default view mode is `semester` (not topological). Graph viewer opens in fullscreen immediately on page load.
+## Data files (`public/`)
+- `json/` — Pensum JSONs per engineering program. `index.json` lists available pensums as `[{file, name}]`.
+- `pensum_color/` — Per-program color themes (`*_color.json` with `color1`/`color2`/`color3`). Loaded at runtime via `applyPensumColors()`, which sets CSS custom properties `--primary`, `--accent`, `--border` and dark-mode palette vars on `:root`.
+- `images/` — Static assets (logo, guide images, background).
 
 ## localStorage keys
-- `pemtree_progreso` — array of `{id, completado}` for course completion state.
-- `pemtree_tema` — dark/light theme preference.
+- `pemtree_progreso_<pensumKey>` — per-pensum course completion state (`[{id, completado, cursando}]`)
+- `pemtree_pensum_actual` — currently selected pensum filename
+- `pemtree_theme` — `"dark"` or `"light"`
+- `pemtree_guia_visto` — whether the onboarding guide has been dismissed
+- `pemtree_plan` — planner course assignments as `{ [blockId]: [courseId, ...] }` (blockId: `sem-N` or `vac-N`)
 
 ## Known quirks
-- `EdgeRenderer.dibujarArista()` hardcodes node dimensions (140×90 desktop) that differ from the 60%-reduced dimensions used by `NodeRenderer` and `LayoutCalculator`. Edge endpoints may be slightly misaligned.
-- The app has **no typecheck, no linter, no tests** (beyond the one-off `test_import.mjs`). Make changes conservatively.
-- Netlify config (`website/netlify.toml`) uses an SPA redirect (`/* → /index.html`, status 200). The publish directory is `website/`.
+- `cursos` and `cursoMap` are module-level mutable variables. Modules that import them get the initial reference; re-importing after `initializeCursos()` returns the updated arrays only if the import is re-evaluated. The Visualizer component works around this by calling `updateCursos()` on `GraphManager`.
+- Node dimensions in `dimensions.js` are computed at call time from `window.innerWidth` — not reactive to resize.
+- Dark mode is toggled by adding/removing `dark` class on `<html>` and dispatching a `themeChanged` event. Both `App.jsx` and `Visualizer.jsx` track `isDarkMode` independently.
+- The default pensum at startup is `ciencias_y_sistemas_22.json`.
+- `StorageManager.storageKey` is dynamic (depends on current pensum), so course progress is stored **per pensum**.
 
 ## Deploy
-- `netlify deploy --prod` from the repo root or `website/` directory. The `netlify.toml` in `website/` handles config.
+- Netlify. Config in `pemtree-react/netlify.toml`: build command `pnpm run build`, publish dir `dist`.
+- SPA redirect `/* → /index.html` (status 200) is configured in netlify.toml.
+- JSON and color files have `no-cache` headers set in netlify.toml.
+- Node 20, pnpm 9 specified in build environment.

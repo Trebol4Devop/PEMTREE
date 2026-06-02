@@ -6,6 +6,15 @@ export class StorageManager {
     constructor() {
         this._baseKey = 'pemtree_progreso';
         this._pensumKey = 'pemtree_pensum_actual';
+        this._idiomaEquivalenciaKey = 'pemtree_idioma_equivalencia';
+    }
+
+    getIdiomaEquivalencia() {
+        return localStorage.getItem(this._idiomaEquivalenciaKey) === 'true';
+    }
+
+    setIdiomaEquivalencia(val) {
+        localStorage.setItem(this._idiomaEquivalenciaKey, val ? 'true' : 'false');
     }
 
     get storageKey() {
