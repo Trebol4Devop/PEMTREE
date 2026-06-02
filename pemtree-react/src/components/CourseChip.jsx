@@ -15,6 +15,12 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
     const chipText = isSuficiencia ? '#065f46' : textFill;
     const chipCenter = isSuficiencia ? '#ecfdf5' : secondary;
 
+    const isDark = document.documentElement.classList.contains('dark');
+    const codeTextColor = curso.completado
+        ? (isDark ? '#10b981' : '#059669')
+        : chipText;
+    const codeSuffix = curso.completado ? ' ✓' : (curso.cursando ? ' ●' : '');
+
     return (
         <div
             className={`planner-chip ${isSuficiencia ? 'planner-chip-suficiencia' : ''}`}
@@ -27,8 +33,8 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
         >
             <div className="planner-chip-left">
                 <div className="planner-chip-left-top" style={{ backgroundColor: chipPrimary }}>
-                    <span className="planner-chip-code" style={{ color: isSuficiencia ? '#fff' : textFill }}>
-                        {curso.codigo}{curso.obligatorio ? ' ●' : ''}
+                    <span className="planner-chip-code" style={{ color: isSuficiencia ? '#fff' : codeTextColor }}>
+                        {curso.codigo}{codeSuffix}
                     </span>
                 </div>
                 <div className="planner-chip-left-bottom" style={{ backgroundColor: chipSecondary }}>
@@ -38,6 +44,9 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
                 </div>
             </div>
             <div className="planner-chip-center" style={{ backgroundColor: chipCenter }}>
+                {curso.obligatorio && !curso.completado && !isSuficiencia && (
+                    <span className="planner-chip-obligatorio-marker">●</span>
+                )}
                 <span className="planner-chip-name" style={{ color: chipText }}>
                     {curso.nombre}
                 </span>

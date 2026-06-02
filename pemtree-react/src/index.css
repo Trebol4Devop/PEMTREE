@@ -415,45 +415,11 @@ html.dark .planner-block {
 }
 
 .planner-block-vacation {
-    min-width: 200px;
-    max-width: 240px;
+    min-width: 280px;
+    max-width: 320px;
     border-style: dashed;
     opacity: 0.85;
     overflow: hidden;
-}
-
-.planner-block-vacation .planner-chip {
-    min-width: 0;
-    width: 100%;
-    height: 44px;
-    min-height: 44px;
-}
-
-.planner-block-vacation .planner-chip-left {
-    width: 56px;
-    min-width: 56px;
-}
-
-.planner-block-vacation .planner-chip-right {
-    width: 36px;
-    min-width: 36px;
-}
-
-.planner-block-vacation .planner-chip-code {
-    font-size: 0.55rem;
-}
-
-.planner-block-vacation .planner-chip-credits {
-    font-size: 0.5rem;
-}
-
-.planner-block-vacation .planner-chip-name {
-    font-size: 0.55rem;
-    -webkit-line-clamp: 2;
-}
-
-.planner-block-vacation .planner-chip-prereq {
-    font-size: 0.45rem;
 }
 
 .planner-block-vacation-full {
@@ -756,40 +722,37 @@ html.dark .planner-add-semester:hover {
 .planner-chip {
     display: flex;
     align-items: stretch;
-    min-width: 280px;
-    height: 54px;
-    min-height: 54px;
+    min-width: 220px;
+    height: 44px;
+    min-height: 44px;
     flex-shrink: 0;
-    border-radius: 4px;
     overflow: hidden;
-    border: 1px solid #DFE1E6;
     background: #fff;
     cursor: grab;
     position: relative;
-    transition: box-shadow 0.12s, transform 0.12s;
+    transition: filter 0.12s ease, transform 0.12s ease;
     user-select: none;
+    will-change: transform, filter;
 }
 html.dark .planner-chip {
-    border-color: #3E4C5E;
     background: #1f2937;
 }
 .planner-chip:hover {
-    box-shadow: 0 3px 8px rgba(0,0,0,0.12);
-    transform: translateY(-1px);
+    transform: scale(1.008);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
 }
 .planner-chip:active {
     cursor: grabbing;
-    transform: translateY(0);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    transform: scale(1.008);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
 }
 
 /* Left section: split vertically (code top, credits bottom) */
 .planner-chip-left {
     display: flex;
     flex-direction: column;
-    width: 70px;
-    min-width: 70px;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
 }
 
 .planner-chip-left-top {
@@ -809,40 +772,55 @@ html.dark .planner-chip {
 }
 
 .planner-chip-code {
-    font-size: 0.65rem;
+    font-size: 9px;
     font-weight: 800;
+    font-family: "Segoe UI", Arial, sans-serif;
     letter-spacing: 0.01em;
     text-align: center;
     line-height: 1.1;
 }
 
 .planner-chip-credits {
-    font-size: 0.6rem;
+    font-size: 9px;
     font-weight: 700;
+    font-family: "Segoe UI", Arial, sans-serif;
     text-align: center;
 }
 
-/* Center section: course name */
+/* Center section: course name — 3× el ancho lateral para proporción 1:3:1 (total 5:1) */
 .planner-chip-center {
-    flex: 1;
+    flex: 3;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 4px 8px;
     min-width: 0;
     overflow: hidden;
+    position: relative;
 }
 
 .planner-chip-name {
-    font-size: 0.65rem;
+    font-size: 9px;
     font-weight: 600;
+    font-family: "Segoe UI", Arial, sans-serif;
     text-align: center;
     line-height: 1.2;
     display: -webkit-box;
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
     word-break: break-word;
+}
+
+/* Obligatorio marker: small red dot in top-right corner of center */
+.planner-chip-obligatorio-marker {
+    position: absolute;
+    top: 2px;
+    right: 3px;
+    color: #ef4444;
+    font-size: 7px;
+    line-height: 1;
+    pointer-events: none;
 }
 
 /* Right section: prerequisite codes */
@@ -851,16 +829,15 @@ html.dark .planner-chip {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    width: 46px;
-    min-width: 46px;
-    flex-shrink: 0;
+    flex: 1;
+    min-width: 0;
     gap: 1px;
     padding: 2px 2px;
     overflow: hidden;
 }
 
 .planner-chip-prereq {
-    font-size: 0.5rem;
+    font-size: 8px;
     font-weight: 700;
     text-align: center;
     line-height: 1.1;
@@ -1114,35 +1091,40 @@ html.dark .planner-toast-success {
     }
 
     .planner-block-semester {
-        min-width: 260px;
+        min-width: 200px;
+        max-width: 240px;
     }
 
     .planner-block-vacation {
-        min-width: 180px;
-        max-width: 200px;
+        min-width: 200px;
+        max-width: 240px;
     }
 
     .planner-chip {
-        min-width: 240px;
-        height: 48px;
-        min-height: 48px;
-    }
-
-    .planner-chip-left {
-        width: 60px;
-        min-width: 60px;
-    }
-
-    .planner-chip-right {
-        width: 40px;
-        min-width: 40px;
+        min-width: 200px;
+        height: 40px;
+        min-height: 40px;
     }
 
     .planner-chip-code {
-        font-size: 0.6rem;
+        font-size: 8px;
+    }
+
+    .planner-chip-credits {
+        font-size: 8px;
     }
 
     .planner-chip-name {
-        font-size: 0.6rem;
+        font-size: 8px;
+    }
+
+    .planner-chip-prereq {
+        font-size: 7px;
+    }
+
+    .planner-chip-obligatorio-marker {
+        font-size: 6px;
+        top: 1px;
+        right: 2px;
     }
 }
