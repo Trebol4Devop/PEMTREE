@@ -174,46 +174,47 @@ async function main() {
 
     console.log('=== SCRAPER DE HORARIOS - FIUSAC ===\n');
 
+    const allData = {};
     const allStats = {};
     const allErrores = [];
 
+    // Fetch individual sources
     for (const [nombre, url] of Object.entries(URLS)) {
         console.log(`Fetching ${nombre}...`);
         try {
             const html = await fetchHTML(url);
             const { horarios, errores } = parseRows(html, nombre);
-            
-            const outPath = `${outDir}/${nombre}.json`;
-            writeFileSync(outPath, JSON.stringify(horarios, null, 2), 'utf-8');
-            
+            allData[nombre] = horarios;
             allStats[nombre] = {
                 total: horarios.length,
-                porTipo: contarPorTipo(horarios),
-                errores: errores.length
+                porTipo: contarPorTipo(horarios)
             };
-            
-            if (errores.length > 0) {
-                allErrores.push(...errores);
-            }
-            
-            console.log(`  -> ${horarios.length} horarios guardados (${errores.length} corrupos)`);
+            if (errores.length > 0) allErrores.push(...errores);
+            console.log(`  -> ${horarios.length} horarios`);
         } catch (e) {
             console.log(`  -> ERROR: ${e.message}`);
+            allData[nombre] = [];
             allStats[nombre] = { total: 0, error: e.message };
         }
     }
 
-    console.log('\n=== ESTADISTICAS ===\n');
-    for (const [nombre, stats] of Object.entries(allStats)) {
-        if (stats.error) {
-            console.log(`${nombre}: ERROR - ${stats.error}`);
-        } else {
-            console.log(`${nombre}: ${stats.total} horarios`);
-            for (const [tipo, count] of Object.entries(stats.porTipo)) {
-                console.log(`  ${tipo}: ${count}`);
-            }
-        }
-    }
+    // Merge: semestre1 + semestre2 → semestre
+    const semestreData = [
+        ...(allData.semestre1 || []).map(h => ({ ...h })),
+        ...(allData.semestre2 || []).map(h => ({ ...h }))
+    ];
+    const vacacionesData = [
+        ...(allData.vacaciones1 || []).map(h => ({ ...h })),
+        ...(allData.vacaciones2 || []).map(h => ({ ...h }))
+    ];
+
+    // Write merged files
+    writeFileSync(`${outDir}/semestre.json`, JSON.stringify(semestreData, null, 2), 'utf-8');
+    writeFileSync(`${outDir}/vacaciones.json`, JSON.stringify(vacacionesData, null, 2), 'utf-8');
+
+    console.log(`\nFusionados:`);
+    console.log(`  semestre.json -> ${semestreData.length} horarios`);
+    console.log(`  vacaciones.json -> ${vacacionesData.length} horarios`);
 
     if (allErrores.length > 0) {
         console.log(`\n=== ERRORES ENCONTRADOS (${allErrores.length}) ===`);
@@ -223,15 +224,14 @@ async function main() {
 
     writeFileSync(`${outDir}/index.json`, JSON.stringify({
         periods: [
-            { id: 'semestre1', name: 'Primer Semestre 2026', type: 'semestre' },
-            { id: 'semestre2', name: 'Segundo Semestre 2026', type: 'semestre' },
-            { id: 'vacaciones1', name: 'Vacaciones Primer Período 2026', type: 'vacaciones' },
-            { id: 'vacaciones2', name: 'Vacaciones Segundo Período 2026', type: 'vacaciones' },
+            { id: 'semestre', name: 'Semestre', type: 'semestre' },
+            { id: 'vacaciones', name: 'Vacaciones', type: 'vacaciones' },
         ]
     }, null, 2), 'utf-8');
 
-    console.log('\n=== INDEX CREADO ===');
+    console.log(`\n=== INDEX CREADO ===`);
     console.log(`Archivos en: ${outDir}`);
+    console.log(`  index.json, semestre.json, vacaciones.json`);
 }
 
 function contarPorTipo(horarios) {

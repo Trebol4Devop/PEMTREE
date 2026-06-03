@@ -17,14 +17,12 @@ export async function cargarHorarios(periodId) {
 }
 
 export async function cargarTodosLosHorarios() {
-    const [s1, s2, v1, v2] = await Promise.all([
-        cargarHorarios('semestre1').catch(() => []),
-        cargarHorarios('semestre2').catch(() => []),
-        cargarHorarios('vacaciones1').catch(() => []),
-        cargarHorarios('vacaciones2').catch(() => [])
+    const [sem, vac] = await Promise.all([
+        cargarHorarios('semestre').catch(() => []),
+        cargarHorarios('vacaciones').catch(() => [])
     ]);
     
-    return { semestre1: s1, semestre2: s2, vacaciones1: v1, vacaciones2: v2 };
+    return { semestre: sem, vacaciones: vac };
 }
 
 export function getTipo(horario) {

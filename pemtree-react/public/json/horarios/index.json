@@ -1,23 +1,13 @@
 {
   "periods": [
     {
-      "id": "semestre1",
-      "name": "Primer Semestre 2026",
+      "id": "semestre",
+      "name": "Semestre",
       "type": "semestre"
     },
     {
-      "id": "semestre2",
-      "name": "Segundo Semestre 2026",
-      "type": "semestre"
-    },
-    {
-      "id": "vacaciones1",
-      "name": "Vacaciones Primer Período 2026",
-      "type": "vacaciones"
-    },
-    {
-      "id": "vacaciones2",
-      "name": "Vacaciones Segundo Período 2026",
+      "id": "vacaciones",
+      "name": "Vacaciones",
       "type": "vacaciones"
     }
   ]

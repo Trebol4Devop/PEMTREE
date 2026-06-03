@@ -16,26 +16,41 @@ const HORA_FIN = 22;
 const TOTAL_SLOTS = (HORA_FIN - HORA_INICIO) * 2;
 
 const PERIODS = [
-    { id: 'semestre1', label: 'Semestre 1' },
-    { id: 'semestre2', label: 'Semestre 2' },
-    { id: 'vacaciones1', label: 'Vacaciones 1' },
-    { id: 'vacaciones2', label: 'Vacaciones 2' },
+    { id: 'semestre', label: 'Semestre' },
+    { id: 'vacaciones', label: 'Vacaciones' },
 ];
 
-const TIPO_COLORS = {
-    LABORATORIO: '#3b82f6',
-    TRABAJO_DIRIGIDO: '#06b6d4',
-    DIBUJO: '#10b981',
-    PRACTICA: '#ef4444',
-    MAGISTRAL: 'var(--primary, #0052CC)'
-};
+const PALETA = [
+    '#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#db2777',
+    '#0891b2', '#65a30d', '#ea580c', '#4f46e5', '#be123c', '#0d9488',
+    '#b45309', '#9333ea', '#0284c7', '#16a34a', '#e11d48', '#ca8a04'
+];
 
-function getCourseColor(tipo) {
-    return TIPO_COLORS[tipo] || TIPO_COLORS.MAGISTRAL;
+function getCursoColor(codigo) {
+    let hash = 0;
+    for (let i = 0; i < codigo.length; i++) {
+        hash = codigo.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    return PALETA[Math.abs(hash) % PALETA.length];
+}
+
+function nombreCorto(nombre) {
+    if (!nombre || nombre === 'STAFF' || nombre === 'SIN AUXILIAR') return '';
+    const parts = nombre.split(' ');
+    const apellidos = parts.slice(-2).join(' ');
+    return apellidos.length > 14 ? apellidos.substring(0, 12) + '...' : apellidos;
+}
+
+function tipoAbrev(tipo) {
+    return tipo === 'LABORATORIO' ? 'LAB'
+        : tipo === 'TRABAJO_DIRIGIDO' ? 'TD'
+        : tipo === 'DIBUJO' ? 'DIB'
+        : tipo === 'PRACTICA' ? 'PRA'
+        : 'MAG';
 }
 
 export default function ScheduleBuilder() {
-    const [currentPeriod, setCurrentPeriod] = useState('semestre1');
+    const [currentPeriod, setCurrentPeriod] = useState('semestre');
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
@@ -203,9 +218,8 @@ export default function ScheduleBuilder() {
                 });
 
                 if (cursosEnSlot.length === 0) {
-                    const emptyKey = `empty-${cellKey}`;
                     blocks.push(
-                        <div key={emptyKey} className="schedule-cell" style={{ gridColumn: diaIdx + 2, gridRow: slotIdx + 2 }}></div>
+                        <div key={`cell-${cellKey}`} className="schedule-cell" style={{ gridColumn: diaIdx + 2, gridRow: slotIdx + 2 }}></div>
                     );
                 } else {
                     const seccion = cursosEnSlot[0];
@@ -216,7 +230,7 @@ export default function ScheduleBuilder() {
                     if (isBlockStart) {
                         const totalDuration = finMin - iniMin;
                         const rowSpan = Math.max(1, Math.round(totalDuration / slotMinutes));
-                        const color = getCourseColor(seccion.tipo);
+                        const color = getCursoColor(seccion.codigo);
                         const conf = hasConflict(seccion);
                         const borderColor = conf.status === 'error' ? '#dc2626' : conf.status === 'warning' ? '#d97706' : 'transparent';
                         const gridStart = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes) + 2;
@@ -230,14 +244,22 @@ export default function ScheduleBuilder() {
                                     gridColumn: diaIdx + 2,
                                     gridRow: `${gridStart} / span ${rowSpan}`,
                                     backgroundColor: color,
-                                    border: `2px solid ${borderColor}`
+                                    border: `1px solid ${borderColor}`
                                 }}
-                                title={`${seccion.codigo} ${seccion.seccion}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}`}
+                                title={`${seccion.codigo} - ${seccion.seccion}\n${seccion.nombre}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}`}
                                 onClick={() => toggleSection(seccion)}
                             >
-                                <span className="schedule-block-code">{seccion.codigo}</span>
-                                <span className="schedule-block-room">{seccion.salon}</span>
+                                <span className="schedule-block-code">{seccion.codigo}-{seccion.seccion.trim() || '?'}</span>
+                                <span className="schedule-block-prof">{nombreCorto(seccion.catedratico)}</span>
+                                <span className="schedule-block-bottom">
+                                    <span className="schedule-block-room">{seccion.salon}</span>
+                                    <span className="schedule-block-tipo">{tipoAbrev(seccion.tipo)}</span>
+                                </span>
                             </div>
+                        );
+                    } else {
+                        blocks.push(
+                            <div key={`span-${cellKey}`} className="schedule-cell" style={{ gridColumn: diaIdx + 2, gridRow: slotIdx + 2 }}></div>
                         );
                     }
                 }
@@ -337,7 +359,7 @@ export default function ScheduleBuilder() {
                                     >
                                         <div
                                             className="schedule-course-color"
-                                            style={{ backgroundColor: getCourseColor(curso.secciones[0]?.tipo) }}
+                                            style={{ backgroundColor: getCursoColor(curso.codigo) }}
                                         ></div>
                                         <div className="schedule-course-info">
                                             <span className="schedule-course-code">{curso.codigo}</span>
@@ -369,7 +391,7 @@ export default function ScheduleBuilder() {
                                                          <div className="schedule-section-info">
                                                             <span className="schedule-section-time">
                                                                 {formatearHorario(sec)} · {sec.salon}
-                                                                {sec.restricciones && <span className="schedule-section-restr">[R]</span>}
+                                                                {sec.restricciones && <span className="schedule-section-restr">[Con restricciones]</span>}
                                                             </span>
                                                             <span className="schedule-section-prof">
                                                                 {sec.catedratico} · {formatearDuracion(sec)}
