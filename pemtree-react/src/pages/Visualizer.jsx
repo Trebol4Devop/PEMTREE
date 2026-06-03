@@ -1,8 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff, Clock } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
+import ScheduleBuilder from '../components/ScheduleBuilder';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
@@ -506,7 +507,7 @@ export default function Visualizer() {
                 
                 {/* Botones de vista y opciones */}
                 <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
-                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
+                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
 
@@ -536,22 +537,27 @@ export default function Visualizer() {
                         </>
                     )}
 
-                    <button onClick={handleToggleHideLines} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${hidePathLines ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`} title={hidePathLines ? 'Mostrar líneas' : 'Ocultar líneas'}>
+                    <button onClick={handleToggleHideLines} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${hidePathLines ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`} title={hidePathLines ? 'Mostrar líneas' : 'Ocultar líneas'}>
                         <EyeOff size={12} className="max-sm:hidden" /> <EyeOff size={10} className="sm:hidden" /> <span className="max-sm:hidden">Sin Líneas</span><span className="sm:hidden">Sin</span>
                     </button>
 
-                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' ? 'hidden' : ''}`}>
+                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
 
                     {/* Planificador toggle — always visible, prominent style */}
-                    <button onClick={() => setActiveView(activeView === 'planner' ? 'graph' : 'planner')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'planner' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20')}`}>
+                    <button onClick={() => setActiveView(activeView === 'planner' ? 'graph' : 'planner')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'planner' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20)')}`}>
                         <Calendar size={12} className="max-sm:hidden" /> <Calendar size={10} className="sm:hidden" /> <span className="max-sm:hidden">Planificador</span><span className="sm:hidden">Plan</span>
+                    </button>
+
+                    {/* Horarios toggle */}
+                    <button onClick={() => setActiveView('schedule')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'schedule' ? 'bg-[#10b981] text-white shadow-md dark:bg-[#34d399] dark:text-[#064e3b]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#10b981]/10 text-[#10b981] hover:bg-[#10b981]/20')}`}>
+                        <Clock size={12} className="max-sm:hidden" /> <Clock size={10} className="sm:hidden" /> <span className="max-sm:hidden">Horarios</span><span className="sm:hidden">Hor</span>
                     </button>
                 </div>
 
                 {/* Selectors y búsqueda */}
-                <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' ? 'hidden' : ''}`}>
+                <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <select
                         value={currentPensum}
                         onChange={handlePensumChange}
@@ -578,7 +584,7 @@ export default function Visualizer() {
                 </div>
 
                 {/* Botones de ayuda, créditos y reiniciar */}
-                <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' ? 'hidden' : ''}`}>
+                <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <button
                         type="button"
                         onClick={() => setShowGuia(true)}
@@ -601,7 +607,7 @@ export default function Visualizer() {
                 </div>
             </div>
 
-            {searchFocused && (searchTerm.trim().length === 0 || searchResults.length > 0 || searchTerm.trim().length > 1) && (
+            {activeView === 'graph' && searchFocused && (searchTerm.trim().length === 0 || searchResults.length > 0 || searchTerm.trim().length > 1) && (
                 <div style={dropdownStyle} className="shadow-lg rounded-md overflow-hidden bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E]">
                     {searchTerm.trim().length === 0 && searchResults.length === 0 ? (
                         <>
@@ -640,7 +646,11 @@ export default function Visualizer() {
                 <Planner key={currentPensum} currentPensum={currentPensum} />
             ) : null}
 
-{showCriticalPath && rutasData.length > 0 && activeView !== 'planner' && (
+            {activeView === 'schedule' ? (
+                <ScheduleBuilder />
+            ) : null}
+
+{showCriticalPath && rutasData.length > 0 && activeView !== 'planner' && activeView !== 'schedule' && (
                 <div className={`flex flex-wrap items-center justify-center gap-1.5 sm:gap-3 px-2 sm:px-3 py-1.5 sm:py-2 border-b text-[0.6rem] sm:text-xs font-medium transition-colors duration-300 ${isDarkMode ? 'bg-[#1C2636] border-[#3E4C5E] text-slate-300' : 'bg-white border-[#DFE1E6] text-[#172B4D]'}`}>
                     {(() => {
                         const ruta = rutasData.find(r => r.id === activePathId) || rutasData[0];
@@ -670,7 +680,7 @@ export default function Visualizer() {
             )}
 
             <div
-                className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${activeView === 'planner' ? 'hidden' : ''} ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
+                className={`flex-1 relative overflow-hidden contenedor-grafica transition-colors duration-300 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''} ${isDarkMode ? 'bg-[#0E1624] tema-oscuro' : 'bg-[#FAFBFC]'}`}
                 ref={graficaRef}
                 id="grafo-canvas"
                 onPointerDown={handleGraphPointerDown}
@@ -678,7 +688,7 @@ export default function Visualizer() {
                 onPointerUp={handleGraphPointerUp}
             ></div>
 
-                    <div className="flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none">
+                    <div className={`flex justify-center items-center gap-1 sm:gap-1.5 absolute bottom-4 sm:bottom-6 right-4 sm:right-6 z-[2100] max-sm:hidden select-none ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <button onClick={handleZoomOut} className={`backdrop-blur-md rounded-lg font-semibold transition-all flex items-center justify-center shadow-sm w-8 h-8 sm:w-9 sm:h-9 p-0 active:scale-95 border cursor-pointer text-sm sm:text-base ${isDarkMode ? 'bg-[#1C2636]/90 border-[#3E4C5E] text-slate-300 hover:bg-[#2D333B]' : 'bg-white/90 border-[#DFE1E6] text-[#42526E] hover:bg-[#F4F5F7]'}`}>
                             −
                         </button>
