@@ -1442,8 +1442,13 @@ html.dark .schedule-toolbar-title h3 {
 }
 
 .schedule-period-tab.active {
-    background: var(--primary);
+    background: #0052CC;
     color: white;
+}
+
+html.dark .schedule-period-tab.active {
+    background: #4C9AFF;
+    color: #0E1624;
 }
 
 /* Search and Filters */

@@ -551,7 +551,7 @@ export default function Visualizer() {
                     </button>
 
                     {/* Horarios toggle */}
-                    <button onClick={() => setActiveView('schedule')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'schedule' ? 'bg-[#10b981] text-white shadow-md dark:bg-[#34d399] dark:text-[#064e3b]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#10b981]/10 text-[#10b981] hover:bg-[#10b981]/20')}`}>
+                    <button onClick={() => setActiveView('schedule')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'schedule' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20')}`}>
                         <Clock size={12} className="max-sm:hidden" /> <Clock size={10} className="sm:hidden" /> <span className="max-sm:hidden">Horarios</span><span className="sm:hidden">Hor</span>
                     </button>
                 </div>

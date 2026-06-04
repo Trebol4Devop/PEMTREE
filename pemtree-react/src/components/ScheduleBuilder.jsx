@@ -209,12 +209,13 @@ export default function ScheduleBuilder() {
             DIAS_SEMANA.forEach((dia, diaIdx) => {
                 const cellKey = `${slotIdx}-${dia}`;
                 const slotStart = hora * 60 + minuto;
+                const slotEnd = slotStart + slotMinutes;
                 
                 const cursosEnSlot = allSelected.filter(h => {
                     if (!h.dias.includes(dia)) return false;
                     const ini = mins(h.inicio);
                     const fin = mins(h.final);
-                    return slotStart >= ini && slotStart < fin;
+                    return slotEnd > ini && slotStart < fin;
                 });
 
                 if (cursosEnSlot.length === 0) {
@@ -225,11 +226,11 @@ export default function ScheduleBuilder() {
                     const seccion = cursosEnSlot[0];
                     const iniMin = mins(seccion.inicio);
                     const finMin = mins(seccion.final);
-                    const isBlockStart = slotStart >= iniMin && slotStart < iniMin + slotMinutes;
+                    const isBlockStart = iniMin >= slotStart && iniMin < slotStart + slotMinutes;
                     
                     if (isBlockStart) {
                         const totalDuration = finMin - iniMin;
-                        const rowSpan = Math.max(1, Math.round(totalDuration / slotMinutes));
+                        const rowSpan = Math.max(1, Math.ceil(totalDuration / slotMinutes));
                         const color = getCursoColor(seccion.codigo);
                         const conf = hasConflict(seccion);
                         const borderColor = conf.status === 'error' ? '#dc2626' : conf.status === 'warning' ? '#d97706' : 'transparent';
@@ -244,7 +245,9 @@ export default function ScheduleBuilder() {
                                     gridColumn: diaIdx + 2,
                                     gridRow: `${gridStart} / span ${rowSpan}`,
                                     backgroundColor: color,
-                                    border: `1px solid ${borderColor}`
+                                    border: `1px solid ${borderColor}`,
+                                    zIndex: 1,
+                                    position: 'relative'
                                 }}
                                 title={`${seccion.codigo} - ${seccion.seccion}\n${seccion.nombre}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}`}
                                 onClick={() => toggleSection(seccion)}
@@ -259,7 +262,7 @@ export default function ScheduleBuilder() {
                         );
                     } else {
                         blocks.push(
-                            <div key={`span-${cellKey}`} className="schedule-cell" style={{ gridColumn: diaIdx + 2, gridRow: slotIdx + 2 }}></div>
+                            <div key={`span-${cellKey}`} className="schedule-cell" style={{ gridColumn: diaIdx + 2, gridRow: slotIdx + 2, visibility: 'hidden' }}></div>
                         );
                     }
                 }
@@ -381,7 +384,7 @@ export default function ScheduleBuilder() {
                                                 const conf = hasConflict(sec);
                                                 return (
                                                     <div
-                                                        key={sec.seccion}
+                                                        key={`${sec.codigo}-${sec.seccion}-${sec.inicio}-${sec.dias[0]||''}`}
                                                         className={`schedule-section-item ${selected ? 'selected' : ''}`}
                                                         onClick={() => toggleSection(sec)}
                                                     >
