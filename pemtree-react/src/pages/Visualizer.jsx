@@ -508,12 +508,22 @@ export default function Visualizer() {
     return (
         <>
             <Seo pensum={currentPensum} pathname="/visualizador" />
-            <div className="flex-1 flex flex-col w-full h-full overflow-hidden bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300">
+            <div className={`flex-1 flex flex-col w-full h-full bg-[#FAFBFC] dark:bg-[#121924] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300 ${activeView === 'graph' ? 'overflow-hidden' : ''}`}>
             
             <div className="flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300">
                 
-                {/* Botones de vista y opciones */}
+                {/* All buttons in one row */}
                 <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-black/5 dark:bg-white/5 p-1.5 sm:p-2 rounded-lg shrink-0">
+                    {/* Planificador toggle */}
+                    <button onClick={() => setActiveView(activeView === 'planner' ? 'graph' : 'planner')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap border-none ${activeView === 'planner' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20)')}`}>
+                        <Calendar size={12} className="max-sm:hidden" /> <Calendar size={10} className="sm:hidden" /> <span className="max-sm:hidden">Planificador</span><span className="sm:hidden">Plan</span>
+                    </button>
+                    {/* Horarios toggle */}
+                    <button onClick={() => setActiveView(activeView === 'schedule' ? 'graph' : 'schedule')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap border-none ${activeView === 'schedule' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20)')}`}>
+                        <Clock size={12} className="max-sm:hidden" /> <Clock size={10} className="sm:hidden" /> <span className="max-sm:hidden">Horarios</span><span className="sm:hidden">Hor</span>
+                    </button>
+
+                    {/* Graph-only buttons */}
                     <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
@@ -550,16 +560,6 @@ export default function Visualizer() {
 
                     <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-none cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'bg-[#3E4C5E] text-white' : 'bg-white text-[#0052CC] shadow-sm') : 'text-current hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
-                    </button>
-
-                    {/* Planificador toggle — always visible, prominent style */}
-                    <button onClick={() => setActiveView(activeView === 'planner' ? 'graph' : 'planner')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'planner' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20)')}`}>
-                        <Calendar size={12} className="max-sm:hidden" /> <Calendar size={10} className="sm:hidden" /> <span className="max-sm:hidden">Planificador</span><span className="sm:hidden">Plan</span>
-                    </button>
-
-                    {/* Horarios toggle */}
-                    <button onClick={() => setActiveView(activeView === 'schedule' ? 'graph' : 'schedule')} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition cursor-pointer whitespace-nowrap ${activeView === 'schedule' ? 'bg-[#0052CC] text-white shadow-md dark:bg-[#4C9AFF] dark:text-[#0E1624]' : (isDarkMode ? 'bg-white/10 text-white hover:bg-white/20' : 'bg-[#0052CC]/10 text-[#0052CC] hover:bg-[#0052CC]/20')}`}>
-                        <Clock size={12} className="max-sm:hidden" /> <Clock size={10} className="sm:hidden" /> <span className="max-sm:hidden">Horarios</span><span className="sm:hidden">Hor</span>
                     </button>
                 </div>
 

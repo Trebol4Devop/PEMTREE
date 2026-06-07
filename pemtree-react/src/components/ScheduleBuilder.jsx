@@ -970,9 +970,9 @@ export default function ScheduleBuilder() {
         <div className="schedule-toolbar">
         <div className="schedule-toolbar-title">
         <Calendar size={18} />
-        <h3>Armador de Horarios</h3>
+        <h3 className="max-sm:hidden">Armador de Horarios</h3>
         {courseCounts.total > 0 && (
-            <div className="schedule-course-counts">
+            <div className="schedule-course-counts max-sm:hidden">
             {courseCounts.MAG > 0 && <span className="schedule-count-mag">MAG {courseCounts.MAG}</span>}
             {courseCounts.LAB > 0 && <span className="schedule-count-lab">LAB {courseCounts.LAB}</span>}
             {courseCounts.PRA > 0 && <span className="schedule-count-pra">PRA {courseCounts.PRA}</span>}
@@ -989,7 +989,8 @@ export default function ScheduleBuilder() {
             className={`schedule-period-tab ${currentPeriod === p.id ? 'active' : ''}`}
             onClick={() => setCurrentPeriod(p.id)}
             >
-            {p.label}
+            <span className="max-sm:hidden">{p.label}</span>
+            <span className="sm:hidden">{p.id === 'semestre' ? 'Sem' : 'Vac'}</span>
             </button>
         ))}
         </div>
@@ -1017,7 +1018,7 @@ export default function ScheduleBuilder() {
         <Search size={14} />
         <input
         type="text"
-        placeholder="Buscar curso por código o nombre..."
+         placeholder="Buscar código o nombre..."
         value={courseSearch}
         onChange={e => setCourseSearch(e.target.value)}
         />

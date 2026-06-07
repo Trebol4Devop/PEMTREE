@@ -1543,6 +1543,7 @@ html.dark .schedule-period-tab.active {
 
 .schedule-search {
     flex: 1;
+    max-width: 280px;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -2189,6 +2190,25 @@ html.dark .schedule-btn:hover:not(:disabled) {
     
     .schedule-sidebar {
         max-height: 250px;
+    }
+
+    .schedule-search {
+        gap: 0.25rem;
+        padding: 0.25rem 0.4rem;
+        max-width: none;
+    }
+
+    .schedule-search input {
+        font-size: 0.65rem;
+    }
+
+    .schedule-modalidad-select {
+        font-size: 0.65rem;
+        padding: 0.25rem 0.35rem;
+    }
+
+    .schedule-filters {
+        gap: 0.3rem;
     }
 }
 
