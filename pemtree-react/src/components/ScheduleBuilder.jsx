@@ -271,11 +271,35 @@ export default function ScheduleBuilder() {
             }
         }
 
-        const SEP_H = 18;
-        const totalRows = clusters.reduce((sum, c) => sum + (c.end - c.start + 1), 0) + Math.max(0, clusters.length - 1);
+        const collapsedSlotsC = new Set();
+        const collapseMarkersC = new Map();
+        if (clusterEnabled) {
+            for (const s of allSelected) {
+                const iniMin = mins(s.inicio);
+                const finMin = mins(s.final);
+                const ss = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes);
+                const es = Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes);
+                const span = es - ss;
+                if (span > 6) {
+                    for (let sl = ss + 3; sl < es - 2; sl++) collapsedSlotsC.add(sl);
+                    collapseMarkersC.set(ss + 3, true);
+                }
+            }
+        }
+
+        // recalc totalRows accounting for collapsed slots
+        let totalRows = 0;
+        for (const c of clusters) {
+            for (let s = c.start; s <= c.end; s++) {
+                if (!collapsedSlotsC.has(s)) totalRows++;
+                if (collapseMarkersC.has(s)) totalRows++;
+            }
+        }
+        const totalSeps = Math.max(0, clusters.length - 1);
 
         const W = PAD * 2 + TIME_W + COL_W * DIAS_SEMANA.length;
-        const H = PAD * 2 + HEADER_H + ROW_H * totalRows + Math.max(0, clusters.length - 1) * SEP_H;
+        const SEP_H = 18;
+        const H = PAD * 2 + HEADER_H + ROW_H * totalRows + totalSeps * SEP_H;
 
         const canvas = document.createElement('canvas');
         canvas.width  = W * scale;
@@ -386,53 +410,78 @@ export default function ScheduleBuilder() {
         });
 
         // ── per-cluster grid lines, time labels, vertical lines ─────────────
+        function slotToY(slotIdx) {
+            let y = 0;
+            for (const c of clusters) {
+                for (let s = c.start; s <= c.end; s++) {
+                    if (collapseMarkersC.has(s)) { y += ROW_H; continue; }
+                    if (collapsedSlotsC.has(s)) continue;
+                    if (s === slotIdx) return y;
+                    y += ROW_H;
+                }
+                y += SEP_H; // inter-cluster separator
+            }
+            return y;
+        }
+
         let clusterY = gridY;
 
         for (let ci = 0; ci < clusters.length; ci++) {
             const c = clusters[ci];
-            const cSlots = c.end - c.start + 1;
+            const cStartY = clusterY;
 
-            // horizontal grid lines & time labels for this cluster
-            for (let s = 0; s <= cSlots; s++) {
-                const y = clusterY + s * ROW_H;
-                const slotIdx = c.start + s;
+            for (let slotIdx = c.start; slotIdx <= c.end; slotIdx++) {
+                if (collapseMarkersC.has(slotIdx)) {
+                    // draw separator on top of blocks
+                    ctx.fillStyle = SURFACE;
+                    ctx.globalAlpha = 0.3;
+                    ctx.fillRect(PAD, clusterY, W - PAD * 2, ROW_H);
+                    ctx.globalAlpha = 1;
+                    ctx.fillStyle = TEXT_MUTED;
+                    ctx.font = `10px "${font}", sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('···', W / 2, clusterY + ROW_H / 2);
+                    clusterY += ROW_H;
+                    continue;
+                }
+                if (collapsedSlotsC.has(slotIdx)) continue;
+
                 const hora   = HORA_INICIO + Math.floor(slotIdx / 6);
                 const minuto = (slotIdx % 6) * 10;
 
+                // horizontal grid line
                 ctx.strokeStyle = BORDER;
                 ctx.lineWidth = minuto === 0 ? 0.8 : 0.3;
                 ctx.beginPath();
-                ctx.moveTo(PAD, y);
-                ctx.lineTo(W - PAD, y);
+                ctx.moveTo(PAD, clusterY);
+                ctx.lineTo(W - PAD, clusterY);
                 ctx.stroke();
 
-                if (s < cSlots) {
-                    ctx.fillStyle = TIME_BG;
-                    ctx.fillRect(PAD, y + 1, TIME_W, ROW_H - 2);
-                }
+                // time cell background
+                ctx.fillStyle = TIME_BG;
+                ctx.fillRect(PAD, clusterY + 1, TIME_W, ROW_H - 2);
 
-                if (s < cSlots) {
-                    drawText(
-                        `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`,
-                        PAD + 4, y + ROW_H / 2,
-                        TIME_W - 6, minuto === 0 ? 9 : 8, minuto === 0 ? TEXT_MUTED : TEXT_MUTED
-                    );
-                }
+                drawText(
+                    `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`,
+                    PAD + 4, clusterY + ROW_H / 2,
+                    TIME_W - 6, minuto === 0 ? 9 : 8, TEXT_MUTED
+                );
+
+                clusterY += ROW_H;
             }
 
             // vertical grid lines for this cluster
-            const clusterH = cSlots * ROW_H;
+            const clusterH = clusterY - cStartY;
             DIAS_SEMANA.forEach((_, i) => {
                 const x = gridX + i * COL_W;
                 ctx.strokeStyle = BORDER;
                 ctx.lineWidth = 0.5;
                 ctx.beginPath();
-                ctx.moveTo(x, clusterY);
-                ctx.lineTo(x, clusterY + clusterH);
+                ctx.moveTo(x, cStartY);
+                ctx.lineTo(x, cStartY + clusterH);
                 ctx.stroke();
             });
-
-            clusterY += clusterH;
 
             // separator between clusters
             if (ci < clusters.length - 1) {
@@ -458,26 +507,16 @@ export default function ScheduleBuilder() {
 
         // ── course blocks ─────────────────────────────────────────────────────
 
-        function slotToY(slotIdx) {
-            let y = 0;
-            for (const c of clusters) {
-                if (slotIdx >= c.start && slotIdx <= c.end) {
-                    return y + (slotIdx - c.start) * ROW_H;
-                }
-                y += (c.end - c.start + 1) * ROW_H + SEP_H;
-            }
-            return y;
-        }
-
         for (const seccion of allSelected) {
             const color = getCursoColor(seccion.codigo, activePalette);
             const iniMin = mins(seccion.inicio);
             const finMin = mins(seccion.final);
             const startSlot = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes);
             const endSlot   = Math.ceil((finMin  - HORA_INICIO * 60) / slotMinutes);
-            const rowSpan   = Math.max(1, endSlot - startSlot);
-            const blockH    = rowSpan * ROW_H;
-            const blockY    = gridY + slotToY(startSlot);
+            const originalRowSpan = Math.max(1, endSlot - startSlot);
+            const isCollapsed = clusterEnabled && originalRowSpan > 6;
+            const blockH = isCollapsed ? (3 + 1 + 2) * ROW_H : originalRowSpan * ROW_H;
+            const blockY = gridY + slotToY(startSlot);
 
             seccion.dias.forEach(dia => {
                 const diaIdx = DIAS_SEMANA.indexOf(dia);
@@ -513,7 +552,7 @@ export default function ScheduleBuilder() {
                 ctx.fillStyle = blocksBg ? (color + 'CC') : color;
                 ctx.fill();
 
-                // lab stripe pattern (matching CSS .schedule-block.lab)
+                // lab stripe pattern
                 if (esLaboratorio(seccion)) {
                     ctx.strokeStyle = 'rgba(255,255,255,0.1)';
                     ctx.lineWidth = 3;
@@ -528,7 +567,17 @@ export default function ScheduleBuilder() {
 
                 ctx.restore();
 
-                // conflict border (drawn outside clip so stroke is fully visible)
+                // collapsed block: draw "···" overlay in middle
+                if (isCollapsed) {
+                    const sepY = blockY + 3 * ROW_H + ROW_H / 2;
+                    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+                    ctx.font = `12px "${font}", sans-serif`;
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText('···', blockX + bw / 2, sepY);
+                }
+
+                // conflict border
                 const conf = hasConflict(seccion);
                 if (conf.status !== 'valid') {
                     ctx.save();
@@ -539,7 +588,7 @@ export default function ScheduleBuilder() {
                     ctx.restore();
                 }
 
-                // text content (matching CSS flex layout: code top, prof below, room+tipo at bottom)
+                // text content
                 const padX = 3;
                 const padY = 1;
                 const fSize = 10;
@@ -641,6 +690,8 @@ export default function ScheduleBuilder() {
     function renderGrid() {
         const blocks = [];
         const slotMinutes = 10;
+        const slotsPerHour = 60 / slotMinutes;
+        const TOTAL_SLOTS = (HORA_FIN - HORA_INICIO) * slotsPerHour;
         const activePalette = PALETAS[exportSettings.paletteName] || PALETAS.Default;
 
         if (allSelected.length === 0) {
@@ -689,7 +740,26 @@ export default function ScheduleBuilder() {
             c.end = Math.min(TOTAL_SLOTS - 1, c.end + 1);
         }
 
-        // Step 3: render clusters with separators
+        // Step 3: pre-calc collapsed slots for long blocks (compact mode)
+        const collapsedSlots = new Set();
+        const collapseMarkers = new Map(); // slotIdx -> true (where to insert separator)
+        if (clusterEnabled) {
+            for (const seccion of allSelected) {
+                const iniMin = mins(seccion.inicio);
+                const finMin = mins(seccion.final);
+                const ss = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes);
+                const es = Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes);
+                const span = es - ss;
+                if (span > 6) {
+                    for (let s = ss + 3; s < es - 2; s++) {
+                        collapsedSlots.add(s);
+                    }
+                    collapseMarkers.set(ss + 3, true);
+                }
+            }
+        }
+
+        // Step 4: render clusters with separators
         let currentRow = 2;
 
         for (let ci = 0; ci < clusters.length; ci++) {
@@ -708,9 +778,19 @@ export default function ScheduleBuilder() {
             const cLast = cluster.end;
 
             for (let slotIdx = cFirst; slotIdx <= cLast; slotIdx++) {
-                const hora = HORA_INICIO + Math.floor(slotIdx / 6);
-                const minuto = (slotIdx % 6) * 10;
-                const visualRow = (slotIdx - cFirst) + currentRow;
+                if (collapseMarkers.has(slotIdx)) {
+                    blocks.push(
+                        <div key={`collapse-${ci}-${slotIdx}`} className="schedule-separator" style={{ gridColumn: '1 / -1', gridRow: currentRow, zIndex: 2, background: 'transparent' }}>
+                        <span className="schedule-separator-dots">···</span>
+                        </div>
+                    );
+                    currentRow++;
+                }
+                if (collapsedSlots.has(slotIdx)) continue;
+
+                const hora = HORA_INICIO + Math.floor(slotIdx / slotsPerHour);
+                const minuto = (slotIdx % slotsPerHour) * slotMinutes;
+                const visualRow = currentRow;
 
                 const timeLabel = `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`;
 
@@ -747,30 +827,15 @@ export default function ScheduleBuilder() {
                         if (isBlockStart) {
                             const gridStartSlot = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes);
                             const gridEndSlot = Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes);
-                            const rowSpan = Math.max(1, gridEndSlot - gridStartSlot);
-                            const gridStart = (gridStartSlot - cFirst) + currentRow;
+                            const originalRowSpan = Math.max(1, gridEndSlot - gridStartSlot);
+                            const gridStart = currentRow;
                             const color = getCursoColor(seccion.codigo, activePalette);
                             const textColor = getTextColor(color);
                             const conf = hasConflict(seccion);
                             const borderColor = conf.status === 'error' ? '#dc2626' : conf.status === 'warning' ? '#d97706' : 'transparent';
 
-                            blocks.push(
-                                <div
-                                key={`block-${cellKey}`}
-                                className={`schedule-block ${esLaboratorio(seccion) ? 'lab' : ''}`}
-                                data-type={seccion.tipo}
-                                style={{
-                                    gridColumn: diaIdx + 2,
-                                    gridRow: `${gridStart} / span ${rowSpan}`,
-                                    backgroundColor: color,
-                                    color: textColor,
-                                    border: `1px solid ${borderColor}`,
-                                    zIndex: 1,
-                                    position: 'relative'
-                                }}
-                                title={`${seccion.codigo} - ${seccion.seccion}\n${seccion.nombre}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}`}
-                                onClick={() => toggleSection(seccion)}
-                                >
+                            const blockContent = (
+                                <>
                                 <span className="schedule-block-code">{seccion.codigo}-{seccion.seccion.trim() || '?'}</span>
                                 <span className="schedule-block-name">{truncarNombre(seccion.nombre)}</span>
                                 <span className="schedule-block-prof">{nombreCorto(seccion.catedratico)}</span>
@@ -778,8 +843,36 @@ export default function ScheduleBuilder() {
                                 <span className="schedule-block-room">{seccion.salon}</span>
                                 <span className="schedule-block-tipo">{tipoAbrev(seccion.tipo)}</span>
                                 </span>
-                                </div>
+                                </>
                             );
+
+                            const blockStyle = {
+                                gridColumn: diaIdx + 2,
+                                backgroundColor: color,
+                                color: textColor,
+                                border: `1px solid ${borderColor}`,
+                                zIndex: 1,
+                                position: 'relative'
+                            };
+
+                            const blockTitle = `${seccion.codigo} - ${seccion.seccion}\n${seccion.nombre}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}`;
+
+                            if (clusterEnabled && originalRowSpan > 6) {
+                                const totalSpan = 3 + 1 + 2;
+                                blocks.push(
+                                    <div key={`block-${cellKey}`} className={`schedule-block ${esLaboratorio(seccion) ? 'lab' : ''}`}
+                                    data-type={seccion.tipo} title={blockTitle}
+                                    style={{ ...blockStyle, gridRow: `${gridStart} / span ${totalSpan}`, zIndex: 0 }}
+                                    onClick={() => toggleSection(seccion)}>{blockContent}</div>
+                                );
+                            } else {
+                                blocks.push(
+                                    <div key={`block-${cellKey}`} className={`schedule-block ${esLaboratorio(seccion) ? 'lab' : ''}`}
+                                    data-type={seccion.tipo} title={blockTitle}
+                                    style={{ ...blockStyle, gridRow: `${gridStart} / span ${originalRowSpan}` }}
+                                    onClick={() => toggleSection(seccion)}>{blockContent}</div>
+                                );
+                            }
                         } else {
                             blocks.push(
                                 <div key={`span-${cellKey}`} className="schedule-cell" style={{ gridColumn: diaIdx + 2, gridRow: visualRow, visibility: 'hidden' }}></div>
@@ -787,9 +880,10 @@ export default function ScheduleBuilder() {
                         }
                     }
                 });
+                currentRow++;
             }
 
-            currentRow += (cLast - cFirst + 1);
+            // currentRow already incremented per slot above
         }
 
         return blocks;
