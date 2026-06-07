@@ -3,7 +3,7 @@ import { Search } from 'lucide-react';
 import { TextUtils } from '../modules/utils/TextUtils';
 import CourseChip from './CourseChip';
 
-export default function CoursePool({ cursos, plannedIds }) {
+export default function CoursePool({ cursos, plannedIds, mergedMap }) {
     const [search, setSearch] = useState('');
 
     const available = useMemo(() => {
@@ -37,7 +37,7 @@ export default function CoursePool({ cursos, plannedIds }) {
             </div>
             <div className="planner-pool-list">
                 {filtered.map(curso => (
-                    <CourseChip key={curso.id} curso={curso} />
+                    <CourseChip key={curso.id} curso={curso} mergedMap={mergedMap} />
                 ))}
                 {filtered.length === 0 && (
                     <div className="planner-pool-empty">

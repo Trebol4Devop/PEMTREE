@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
-import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock } from 'lucide-react';
+import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin } from 'lucide-react';
 import {
     cargarHorarios,
     minutos as mins,
@@ -9,6 +9,7 @@ import {
     formatearHorario,
         formatearDuracion
 } from '../modules/data/scraper';
+import { getPensumKey } from '../modules/data/cursos';
 import ExportModal from './ExportModal';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -78,13 +79,22 @@ function truncarNombre(nombre) {
     return nombre.length > 25 ? nombre.substring(0, 23) + '...' : nombre;
 }
 
+function getScheduleStorageKey(period) {
+    const pensum = getPensumKey() || 'default';
+    return `pemtree_schedule_${pensum}_${period}`;
+}
+
 export default function ScheduleBuilder() {
     const [currentPeriod, setCurrentPeriod] = useState('semestre');
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [selectedSections, setSelectedSections] = useState({});
+    const [selectedSections, setSelectedSections] = useState(() => {
+        const saved = localStorage.getItem(getScheduleStorageKey('semestre'));
+        return saved ? JSON.parse(saved) : {};
+    });
     const [expandedCourses, setExpandedCourses] = useState({});
+    const [pinnedCourses, setPinnedCourses] = useState({});
     const [courseSearch, setCourseSearch] = useState('');
     const [modalidadFilter, setModalidadFilter] = useState('todas');
     const [clusterEnabled, setClusterEnabled] = useState(true);
@@ -106,12 +116,30 @@ export default function ScheduleBuilder() {
         loadHorarios(currentPeriod);
     }, [currentPeriod]);
 
+    // persist selected sections to localStorage
+    useEffect(() => {
+        const key = getScheduleStorageKey(currentPeriod);
+        if (Object.keys(selectedSections).length > 0) {
+            localStorage.setItem(key, JSON.stringify(selectedSections));
+        } else {
+            localStorage.removeItem(key);
+        }
+    }, [selectedSections, currentPeriod]);
+
     async function loadHorarios(periodId) {
         setLoading(true);
         setError(null);
         try {
             const data = await cargarHorarios(periodId);
             setHorarios(data || []);
+            // restore saved sections for this period
+            const saved = localStorage.getItem(getScheduleStorageKey(periodId));
+            if (saved) {
+                const savedSections = JSON.parse(saved);
+                setSelectedSections(savedSections);
+            } else {
+                setSelectedSections({});
+            }
         } catch (e) {
             setError('Error cargando horarios: ' + e.message);
             setHorarios([]);
@@ -143,6 +171,20 @@ export default function ScheduleBuilder() {
         if (allSelected.length === 0) return { conflictos: [], warnings: [], isValid: true };
         return validarHorarioCompleto(allSelected, isVacaciones);
     }, [allSelected, isVacaciones]);
+
+    const courseCounts = useMemo(() => {
+        const uniqueIds = new Set();
+        const counts = { MAG: 0, LAB: 0, PRA: 0, TD: 0, DIB: 0 };
+        for (const s of allSelected) {
+            const key = `${s.codigo}|${s.tipo || ''}`;
+            if (uniqueIds.has(key)) continue;
+            uniqueIds.add(key);
+            const abrev = tipoAbrev(s.tipo);
+            if (counts[abrev] !== undefined) counts[abrev]++;
+            else counts.MAG++;
+        }
+        return { ...counts, total: uniqueIds.size };
+    }, [allSelected]);
 
     const hasConflict = (seccion) => {
         if (allSelected.length === 0) return { status: 'valid', reason: null };
@@ -205,6 +247,13 @@ export default function ScheduleBuilder() {
 
     function toggleCourseExpand(codigo) {
         setExpandedCourses(prev => ({ ...prev, [codigo]: !prev[codigo] }));
+    }
+
+    function togglePinCourse(codigo) {
+        setPinnedCourses(prev => ({ ...prev, [codigo]: !prev[codigo] }));
+        if (!pinnedCourses[codigo]) {
+            setExpandedCourses(prev => ({ ...prev, [codigo]: true }));
+        }
     }
 
     function openExport() {
@@ -281,7 +330,21 @@ export default function ScheduleBuilder() {
                 const es = Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes);
                 const span = es - ss;
                 if (span > 6) {
-                    for (let sl = ss + 3; sl < es - 2; sl++) collapsedSlotsC.add(sl);
+                    for (let sl = ss + 3; sl < es - 2; sl++) {
+                        let hasShort = false;
+                        for (const other of allSelected) {
+                            if (other === s) continue;
+                            const oi = mins(other.inicio);
+                            const of = mins(other.final);
+                            const oss = Math.floor((oi - HORA_INICIO * 60) / slotMinutes);
+                            const oes = Math.ceil((of - HORA_INICIO * 60) / slotMinutes);
+                            if (sl >= oss && sl < oes && (oes - oss) <= 6) {
+                                hasShort = true;
+                                break;
+                            }
+                        }
+                        if (!hasShort) collapsedSlotsC.add(sl);
+                    }
                     collapseMarkersC.set(ss + 3, true);
                 }
             }
@@ -741,8 +804,9 @@ export default function ScheduleBuilder() {
         }
 
         // Step 3: pre-calc collapsed slots for long blocks (compact mode)
+        // Only collapse slots that are NOT occupied by any short course (span <=6)
         const collapsedSlots = new Set();
-        const collapseMarkers = new Map(); // slotIdx -> true (where to insert separator)
+        const collapseMarkers = new Map();
         if (clusterEnabled) {
             for (const seccion of allSelected) {
                 const iniMin = mins(seccion.inicio);
@@ -751,8 +815,20 @@ export default function ScheduleBuilder() {
                 const es = Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes);
                 const span = es - ss;
                 if (span > 6) {
-                    for (let s = ss + 3; s < es - 2; s++) {
-                        collapsedSlots.add(s);
+                    for (let sl = ss + 3; sl < es - 2; sl++) {
+                        let hasShort = false;
+                        for (const other of allSelected) {
+                            if (other === seccion) continue;
+                            const oi = mins(other.inicio);
+                            const of = mins(other.final);
+                            const oss = Math.floor((oi - HORA_INICIO * 60) / slotMinutes);
+                            const oes = Math.ceil((of - HORA_INICIO * 60) / slotMinutes);
+                            if (sl >= oss && sl < oes && (oes - oss) <= 6) {
+                                hasShort = true;
+                                break;
+                            }
+                        }
+                        if (!hasShort) collapsedSlots.add(sl);
                     }
                     collapseMarkers.set(ss + 3, true);
                 }
@@ -895,6 +971,15 @@ export default function ScheduleBuilder() {
         <div className="schedule-toolbar-title">
         <Calendar size={18} />
         <h3>Armador de Horarios</h3>
+        {courseCounts.total > 0 && (
+            <div className="schedule-course-counts">
+            {courseCounts.MAG > 0 && <span className="schedule-count-mag">MAG {courseCounts.MAG}</span>}
+            {courseCounts.LAB > 0 && <span className="schedule-count-lab">LAB {courseCounts.LAB}</span>}
+            {courseCounts.PRA > 0 && <span className="schedule-count-pra">PRA {courseCounts.PRA}</span>}
+            {courseCounts.TD > 0 && <span className="schedule-count-other">TD {courseCounts.TD}</span>}
+            {courseCounts.DIB > 0 && <span className="schedule-count-other">DIB {courseCounts.DIB}</span>}
+            </div>
+        )}
         </div>
 
         <div className="schedule-period-tabs">
@@ -966,6 +1051,23 @@ export default function ScheduleBuilder() {
         {!loading && !error && (
             <div className="schedule-content">
             <div className="schedule-grid-container" ref={gridRef}>
+            {(validation.conflictos?.length > 0 || validation.errores?.length > 0 || validation.traslapesMenores50?.length > 0) && (
+                <div className="schedule-conflict-banner">
+                <div className="schedule-conflict-banner-icon">
+                    <AlertTriangle size={14} />
+                </div>
+                <div className="schedule-conflict-banner-text">
+                    <strong>¡Conflictos detectados!</strong>
+                    <span>
+                    {validation.conflictos?.slice(0, 3).map((c, i) => (
+                        <span key={i}>{c.curso1.codigo} ↔ {c.curso2.codigo} ({c.minutos}min){i < Math.min(validation.conflictos.length, 3) - 1 ? ', ' : ''}</span>
+                    ))}
+                    {validation.traslapesMenores50?.length > 0 && ` (+${validation.traslapesMenores50.length} menores de 50min)`}
+                    {validation.conflictos?.length > 3 && ` y ${validation.conflictos.length - 3} más`}
+                    </span>
+                </div>
+                </div>
+            )}
             <div className="schedule-grid" style={{ display: 'grid', gridTemplateColumns: `50px repeat(7, 1fr)` }}>
             {(() => {
                 const headerBg = getPaletteAccent(exportSettings.paletteName);
@@ -989,19 +1091,27 @@ export default function ScheduleBuilder() {
                 <div key={curso.codigo} className="schedule-course-item">
                 <div
                 className="schedule-course-header"
-                onClick={() => toggleCourseExpand(curso.codigo)}
+                onClick={() => !pinnedCourses[curso.codigo] && toggleCourseExpand(curso.codigo)}
                 >
                 <div className="schedule-course-color"></div>
                 <div className="schedule-course-info">
                 <span className="schedule-course-code">{curso.codigo}</span>
                 <span className="schedule-course-name">{curso.nombre}</span>
                 </div>
+                <button
+                  className={`schedule-pin-btn ${pinnedCourses[curso.codigo] ? 'active' : ''}`}
+                  onClick={e => { e.stopPropagation(); togglePinCourse(curso.codigo); }}
+                  title={pinnedCourses[curso.codigo] ? 'Desfijar curso' : 'Fijar curso para cambiar sección'}
+                >
+                  <Pin size={11} />
+                </button>
                 <ChevronRight
                 size={14}
                 style={{
                     transform: expandedCourses[curso.codigo] ? 'rotate(90deg)' : 'none',
                                            transition: 'transform 0.15s'
                 }}
+                onClick={e => { e.stopPropagation(); toggleCourseExpand(curso.codigo); }}
                 />
                 </div>
 

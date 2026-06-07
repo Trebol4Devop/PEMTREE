@@ -1,6 +1,6 @@
 import CourseChip from './CourseChip';
 
-export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip }) {
+export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, mergedMap }) {
     const isFull = courses.length >= 2;
 
     return (
@@ -31,6 +31,7 @@ export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip })
                         curso={curso}
                         onRemove={onRemoveChip}
                         sourceBlock={`vac-${vacNum}`}
+                        mergedMap={mergedMap}
                     />
                 ))}
             </div>

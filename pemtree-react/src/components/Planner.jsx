@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, X, BookOpen } from 'lucide-react';
-import { cursoMap, getPensumKey } from '../modules/data/cursos';
+import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
+import { importarCursosDesdeJSON } from '../modules/data/importFromJSON';
 import CoursePool from './CoursePool';
 import SemesterBlock from './SemesterBlock';
 import VacationBlock from './VacationBlock';
@@ -89,7 +90,7 @@ function getPlannedIds(plan) {
     return ids;
 }
 
-export default function Planner() {
+export default function Planner({ currentPensum }) {
     const { toasts, addToast, removeToast } = useToast();
     const [showPool, setShowPool] = useState(false);
 
@@ -114,8 +115,48 @@ export default function Planner() {
             return localStorage.getItem(getSimultaneousKey()) === 'true';
         } catch { return false; }
     });
+    const [ignorePrereqs, setIgnorePrereqs] = useState(false);
     const [suficiencias, setSuficiencias] = useState(() => loadArrayFromStorage(getSuficienciasKey()));
     const [suficienciaFails] = useState(() => loadArrayFromStorage(getSuficienciaFailsKey()));
+
+    // second pensum (carrera simultánea)
+    const [availablePensums, setAvailablePensums] = useState([]);
+    const [secondPensum, setSecondPensum] = useState(null);
+    const [secondCursoMap, setSecondCursoMap] = useState(new Map());
+    const [secondLoading, setSecondLoading] = useState(false);
+
+    useEffect(() => {
+        if (simultaneous && availablePensums.length === 0) {
+            listAvailablePensums().then(setAvailablePensums);
+        }
+    }, [simultaneous, availablePensums.length]);
+
+    function handleSimultaneousChange(e) {
+        setSimultaneous(e.target.checked);
+        if (!e.target.checked) {
+            setSecondPensum(null);
+            setSecondCursoMap(new Map());
+        }
+    }
+
+    async function loadSecondPensum(file) {
+        setSecondLoading(true);
+        try {
+            const res = await fetch(file);
+            if (!res.ok) throw new Error('No se pudo cargar el pensum');
+            const json = await res.json();
+            const cursos = importarCursosDesdeJSON(json);
+            const map = new Map();
+            cursos.forEach(c => map.set(c.id, c));
+            setSecondCursoMap(map);
+            setSecondPensum(file);
+        } catch (e) {
+            console.error('Error cargando segundo pensum:', e);
+            setSecondCursoMap(new Map());
+            setSecondPensum(null);
+        }
+        setSecondLoading(false);
+    }
 
     const maxCredits = useMemo(() => getMaxCredits(promedio, simultaneous), [promedio, simultaneous]);
     const blocks = useMemo(() => buildBlocks(semesterCount), [semesterCount]);
@@ -143,11 +184,30 @@ export default function Planner() {
     const plannedIds = useMemo(() => getPlannedIds(plan), [plan]);
 
     const currentCursos = useMemo(() => {
-        return Array.from(cursoMap.values());
-    }, []);
+        const primary = Array.from(cursoMap.values());
+        if (!simultaneous || secondCursoMap.size === 0) return primary;
+        const seen = new Set(primary.map(c => c.codigo));
+        const extra = [];
+        for (const c of secondCursoMap.values()) {
+            if (!seen.has(c.codigo)) {
+                seen.add(c.codigo);
+                extra.push(c);
+            }
+        }
+        return [...primary, ...extra];
+    }, [simultaneous, secondCursoMap]);
+
+    const mergedCursoMap = useMemo(() => {
+        const map = new Map();
+        for (const c of cursoMap.values()) map.set(c.id, c);
+        for (const c of secondCursoMap.values()) {
+            if (!map.has(c.id)) map.set(c.id, c);
+        }
+        return map;
+    }, [secondCursoMap]);
 
     const validatePrereqs = useCallback((courseId, targetBlockId) => {
-        const course = cursoMap.get(courseId);
+        const course = mergedCursoMap.get(courseId);
         if (!course) return true;
 
         const targetBlock = blocks.find(b => b.id === targetBlockId);
@@ -172,14 +232,14 @@ export default function Planner() {
                 }
             }
             if (!found) {
-                const prereqCourse = cursoMap.get(prereqId);
+                const prereqCourse = mergedCursoMap.get(prereqId);
                 const code = prereqCourse ? prereqCourse.codigo : `#${prereqId}`;
                 return { valid: false, message: `Falta prerequisito: ${code}` };
             }
         }
 
         return { valid: true };
-    }, [blocks, plan]);
+    }, [blocks, plan, mergedCursoMap]);
 
     const handleDrop = useCallback((courseId, targetBlockId, sourceBlockId) => {
         const isVac = targetBlockId.startsWith('vac');
@@ -191,11 +251,11 @@ export default function Planner() {
         }
 
         if (!isVac) {
-            const course = cursoMap.get(courseId);
+            const course = mergedCursoMap.get(courseId);
             if (course) {
                 const currentCredits = targetCourses
                     .filter(id => !suficiencias.includes(id))
-                    .map(id => cursoMap.get(id))
+                    .map(id => mergedCursoMap.get(id))
                     .filter(Boolean)
                     .reduce((sum, c) => sum + (c.creditos || 0), 0);
                 const newTotal = currentCredits + (course.creditos || 0);
@@ -218,10 +278,12 @@ export default function Planner() {
             return;
         }
 
-        const prereqCheck = validatePrereqs(courseId, targetBlockId);
-        if (!prereqCheck.valid) {
-            addToast(prereqCheck.message);
-            return;
+        if (!ignorePrereqs) {
+            const prereqCheck = validatePrereqs(courseId, targetBlockId);
+            if (!prereqCheck.valid) {
+                addToast(prereqCheck.message);
+                return;
+            }
         }
 
         setPlan(prev => {
@@ -238,7 +300,7 @@ export default function Planner() {
 
             return next;
         });
-    }, [plan, addToast, validatePrereqs, maxCredits, suficiencias]);
+    }, [plan, addToast, validatePrereqs, maxCredits, suficiencias, ignorePrereqs, mergedCursoMap]);
 
     const handleRemoveChip = useCallback((courseId) => {
         setPlan(prev => {
@@ -258,10 +320,6 @@ export default function Planner() {
     const handlePromedioChange = useCallback((e) => {
         const val = parseFloat(e.target.value);
         setPromedio(isNaN(val) ? 0 : Math.min(100, Math.max(0, val)));
-    }, []);
-
-    const handleSimultaneousChange = useCallback((e) => {
-        setSimultaneous(e.target.checked);
     }, []);
 
     const handleToggleSuficiencia = useCallback((courseId, semesterNum) => {
@@ -396,7 +454,7 @@ export default function Planner() {
                         <X size={18} />
                     </button>
                 </div>
-                <CoursePool cursos={currentCursos} plannedIds={plannedIds} />
+                <CoursePool cursos={currentCursos} plannedIds={plannedIds} mergedMap={simultaneous ? mergedCursoMap : null} />
             </div>
 
             <div className="planner-content">
@@ -421,6 +479,34 @@ export default function Planner() {
                         />
                         Carreras simultáneas
                     </label>
+                    <label className="planner-simultaneous-label">
+                        <input
+                            type="checkbox"
+                            checked={ignorePrereqs}
+                            onChange={e => setIgnorePrereqs(e.target.checked)}
+                            className="planner-simultaneous-checkbox"
+                        />
+                        Sin prerequisitos
+                    </label>
+                    {simultaneous && availablePensums.length > 0 && (
+                        <select
+                            className="planner-promedio-input"
+                            value={secondPensum || ''}
+                            onChange={e => e.target.value ? loadSecondPensum(e.target.value) : setSecondPensum(null)}
+                            style={{ fontSize: '0.7rem', padding: '0.2rem 0.4rem', width: 'auto', minWidth: '140px' }}
+                        >
+                            <option value="">2do pensum...</option>
+                            {availablePensums.filter(p => p.file !== currentPensum).map(p => (
+                                <option key={p.file} value={p.file}>{p.name}</option>
+                            ))}
+                        </select>
+                    )}
+                    {simultaneous && secondLoading && <span className="planner-promedio-limit">Cargando...</span>}
+                    {simultaneous && secondPensum && !secondLoading && (
+                        <span className="planner-promedio-limit" style={{ color: '#059669' }}>
+                            +{secondCursoMap.size} cursos
+                        </span>
+                    )}
                     <span className="planner-promedio-limit">Máx: {maxCredits} cr/sem</span>
                     <button
                         className="planner-pool-toggle-bar"
@@ -435,8 +521,9 @@ export default function Planner() {
                     <div className="planner-blocks-row">
                     {blocks.map(block => {
                         const courseIds = plan[block.id] || [];
+                        const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
                         const courseObjs = courseIds
-                            .map(id => cursoMap.get(id))
+                            .map(id => resolveMap.get(id))
                             .filter(Boolean);
 
                         if (block.type === 'semester') {
@@ -450,6 +537,7 @@ export default function Planner() {
                                     onDrop={handleDrop}
                                     onRemoveChip={handleRemoveChip}
                                     onToggleSuficiencia={handleToggleSuficiencia}
+                                    mergedMap={simultaneous ? mergedCursoMap : null}
                                 />
                             );
                         }
@@ -461,6 +549,7 @@ export default function Planner() {
                                 courses={courseObjs}
                                 onDrop={handleDrop}
                                 onRemoveChip={handleRemoveChip}
+                                mergedMap={simultaneous ? mergedCursoMap : null}
                             />
                         );
                     })}
