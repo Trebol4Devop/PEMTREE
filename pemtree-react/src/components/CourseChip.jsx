@@ -1,13 +1,16 @@
 import { currentPensumColors, cursoMap } from '../modules/data/cursos';
 import { Award } from 'lucide-react';
 
-export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia, sourceBlock }) {
+export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia, sourceBlock, mergedMap }) {
     const primary = (curso.colors?.leftTop?.fill) || currentPensumColors.primary || '#fc904f';
     const secondary = (curso.colors?.leftBottom?.fill) || currentPensumColors.secondary || '#ffd0b6';
     const textFill = (curso.colors?.text?.fill) || '#333';
 
     const prereqCodes = (curso.prerequisitos || [])
-        .map(id => { const c = cursoMap.get(id); return c ? c.codigo : null; })
+        .map(id => {
+            const c = (mergedMap ? mergedMap.get(id) : null) || cursoMap.get(id);
+            return c ? c.codigo : null;
+        })
         .filter(Boolean);
 
     const chipPrimary = isSuficiencia ? '#059669' : primary;

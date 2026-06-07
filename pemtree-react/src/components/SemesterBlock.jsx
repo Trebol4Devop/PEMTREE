@@ -1,6 +1,6 @@
 import CourseChip from './CourseChip';
 
-export default function SemesterBlock({ semesterNum, courses, maxCredits, suficiencias, onDrop, onRemoveChip, onToggleSuficiencia }) {
+export default function SemesterBlock({ semesterNum, courses, maxCredits, suficiencias, onDrop, onRemoveChip, onToggleSuficiencia, mergedMap }) {
     const regularCourses = courses.filter(c => !suficiencias.includes(c.id));
     const suficienciaCourses = courses.filter(c => suficiencias.includes(c.id));
     const totalCredits = regularCourses.reduce((sum, c) => sum + (c.creditos || 0), 0);
@@ -46,6 +46,7 @@ export default function SemesterBlock({ semesterNum, courses, maxCredits, sufici
                             onRemove={onRemoveChip}
                             onToggleSuficiencia={onToggleSuficiencia ? () => onToggleSuficiencia(curso.id, semesterNum) : undefined}
                             sourceBlock={`sem-${semesterNum}`}
+                            mergedMap={mergedMap}
                         />
                     ))}
                 {hasSuficiencia && (
@@ -61,6 +62,7 @@ export default function SemesterBlock({ semesterNum, courses, maxCredits, sufici
                             isSuficiencia
                             onToggleSuficiencia={onToggleSuficiencia ? () => onToggleSuficiencia(curso.id, semesterNum) : undefined}
                             sourceBlock={`sem-${semesterNum}`}
+                            mergedMap={mergedMap}
                         />
                     ))}
             </div>

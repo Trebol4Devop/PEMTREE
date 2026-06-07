@@ -1,0 +1,1172 @@
+[
+  {
+    "codigo": "0008",
+    "nombre": "IDIOMA TECNICO 2",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0028",
+    "nombre": "ECOLOGIA",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "JOSÉ DANIEL FUENTES OROZCO",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0103",
+    "nombre": "AREA MATEMATICA BASICA 2",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "ABEL ALEJANDRO SALGUERO UCELO",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0107",
+    "nombre": "AREA MATEMATICA INTERMEDIA 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles"
+    ],
+    "catedratico": "BERTI GABRIELA ZEPEDA SANDOVAL",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0112",
+    "nombre": "AREA MATEMATICA INTERMEDIA 2",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "sabado"
+    ],
+    "catedratico": "EDWIN JOSUÉ CASTILLO MENÉNDEZ",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0114",
+    "nombre": "AREA MATEMATICA INTERMEDIA 3",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "sabado"
+    ],
+    "catedratico": "EDWIN JOSUÉ CASTILLO MENÉNDEZ",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0218",
+    "nombre": "LINEAS DE TRANSMISION",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0252",
+    "nombre": "HIDRAULICA",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "martes",
+      "sabado",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0311",
+    "nombre": "ANALISIS ESTRUCTURAL",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0314",
+    "nombre": "CONCRETO ARMADO 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "jueves",
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0318",
+    "nombre": "CIMENTACIONES 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0640",
+    "nombre": "CONTROL DE LA PRODUCCION",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "sabado",
+      "domingo"
+    ],
+    "catedratico": "JOSE ROLANDO CHAVEZ SALAZAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0722",
+    "nombre": "TEORIA DE SISTEMAS 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0729",
+    "nombre": "MODELACION Y SIMULACION 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0732",
+    "nombre": "ESTADISTICA 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "JACQUELIN ANDREA GARCÍA FLORES",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0734",
+    "nombre": "ESTADISTICA 2",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "martes",
+      "viernes"
+    ],
+    "catedratico": "MARCO ANTONIO TAX ALVAREZ",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0736",
+    "nombre": "ANALISIS PROBABILISTICO",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "ASTRID SARAÍ CHOXÍN SAMAYOA",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0768",
+    "nombre": "INTRODUCCION A LOS ALGORITMOS Y FLUJO DE DATOS",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0781",
+    "nombre": "ORGANIZACION DE LENGUAJES Y COMPILADORES 2",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0798",
+    "nombre": "SEMINARIO DE SISTEMAS 2",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0972",
+    "nombre": "INTELIGENCIA ARTIFICIAL 1",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0640",
+    "nombre": "CONTROL DE LA PRODUCCION",
+    "seccion": "A",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "sabado",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "B",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles"
+    ],
+    "catedratico": "DILAN CARLOS ROLANDO GARCÍA MÉNDEZ",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0103",
+    "nombre": "AREA MATEMATICA BASICA 2",
+    "seccion": "B",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "EDVIN YAHIR PERNILLO MORATAYA",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0107",
+    "nombre": "AREA MATEMATICA INTERMEDIA 1",
+    "seccion": "B",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "domingo"
+    ],
+    "catedratico": "DIANA LISSETH MORALES MORALES",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0112",
+    "nombre": "AREA MATEMATICA INTERMEDIA 2",
+    "seccion": "B",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "domingo"
+    ],
+    "catedratico": "BRAYAN ALEXANDER MEJÍA BARRIENTOS",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0250",
+    "nombre": "MECANICA DE FLUIDOS",
+    "seccion": "B",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "martes",
+      "sabado",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0103",
+    "nombre": "AREA MATEMATICA BASICA 2",
+    "seccion": "C",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "jueves",
+      "domingo"
+    ],
+    "catedratico": "GABRIEL CANDELARIO ICUTE YUCUTE",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "D",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "STHEEVEN ADONIAS COC CHAN",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0103",
+    "nombre": "AREA MATEMATICA BASICA 2",
+    "seccion": "D",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles"
+    ],
+    "catedratico": "SOFIA PAOLA ARDIANO SOLIS",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "E",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes",
+      "sabado"
+    ],
+    "catedratico": "HERIBERTO ALEJANDRO VELÁSQUEZ Y VELÁSQUEZ",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "F",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "viernes"
+    ],
+    "catedratico": "WERNNER STEV VÁSQUEZ BRAN",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "G",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "domingo"
+    ],
+    "catedratico": "CRISTHIAN RODRIGO MEJIA CACAO",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0101",
+    "nombre": "AREA MATEMATICA BASICA 1",
+    "seccion": "H",
+    "modalidad": "VIRTUAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "jueves"
+    ],
+    "catedratico": "ELSA JULISSA GARCÍA LÉMUS",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L1",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L1",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "08:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L1",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L1",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "08:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0252",
+    "nombre": "HIDRAULICA",
+    "seccion": "L1",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0252",
+    "nombre": "HIDRAULICA",
+    "seccion": "L1",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "08:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "08:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "08:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0250",
+    "nombre": "MECANICA DE FLUIDOS",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0250",
+    "nombre": "MECANICA DE FLUIDOS",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "10:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0252",
+    "nombre": "HIDRAULICA",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0252",
+    "nombre": "HIDRAULICA",
+    "seccion": "L2",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "08:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L3",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L3",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "10:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L3",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L3",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "10:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0250",
+    "nombre": "MECANICA DE FLUIDOS",
+    "seccion": "L3",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0250",
+    "nombre": "MECANICA DE FLUIDOS",
+    "seccion": "L3",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "10:00",
+    "final": "12:00",
+    "dias": [
+      "lunes",
+      "domingo"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L4",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0147",
+    "nombre": "FISICA BASICA",
+    "seccion": "L4",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "10:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L4",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0152",
+    "nombre": "FISICA 2",
+    "seccion": "L4",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "10:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles",
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0281",
+    "nombre": "SISTEMAS OPERATIVOS 1",
+    "seccion": "P",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "miercoles"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0773",
+    "nombre": "MANEJO E IMPLEMENTACION DE ARCHIVOS",
+    "seccion": "P",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "jueves"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0780",
+    "nombre": "SOFTWARE AVANZADO",
+    "seccion": "P",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "09:00",
+    "inicio": "11:00",
+    "final": "12:00",
+    "dias": [
+      "martes",
+      "jueves",
+      "sabado"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  },
+  {
+    "codigo": "0785",
+    "nombre": "ANALISIS Y DISE\\O DE SISTEMAS 2",
+    "seccion": "P",
+    "modalidad": "VIRTUAL",
+    "tipo": "LABORATORIO",
+    "edificio": "VIRTUAL",
+    "salon": "07:00",
+    "inicio": "09:00",
+    "final": "12:00",
+    "dias": [
+      "lunes"
+    ],
+    "catedratico": "SIN AUXILIAR",
+    "auxiliar": "Sin restricciones",
+    "restricciones": false,
+    "fuente": "vacaciones1"
+  }
+]

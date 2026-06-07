@@ -1,0 +1,14 @@
+{
+  "periods": [
+    {
+      "id": "semestre",
+      "name": "Semestre",
+      "type": "semestre"
+    },
+    {
+      "id": "vacaciones",
+      "name": "Vacaciones",
+      "type": "vacaciones"
+    }
+  ]
+}
