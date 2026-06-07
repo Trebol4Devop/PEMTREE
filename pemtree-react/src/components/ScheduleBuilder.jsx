@@ -47,6 +47,17 @@ function getCursoColor(codigo, palette) {
     return palette[Math.abs(hash) % palette.length];
 }
 
+function getTextColor(hex) {
+    const r = parseInt(hex.slice(1, 3), 16);
+    const g = parseInt(hex.slice(3, 5), 16);
+    const b = parseInt(hex.slice(5, 7), 16);
+    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5 ? '#1e293b' : '#ffffff';
+}
+
+function getPaletteAccent(paletteName) {
+    return (PALETAS[paletteName] || PALETAS.Default)[0];
+}
+
 function nombreCorto(nombre) {
     if (!nombre || nombre === 'STAFF' || nombre === 'SIN AUXILIAR') return '';
     const parts = nombre.split(' ');
@@ -60,6 +71,11 @@ function tipoAbrev(tipo) {
     : tipo === 'DIBUJO' ? 'DIB'
     : tipo === 'PRACTICA' ? 'PRA'
     : 'MAG';
+}
+
+function truncarNombre(nombre) {
+    if (!nombre) return '';
+    return nombre.length > 25 ? nombre.substring(0, 23) + '...' : nombre;
 }
 
 export default function ScheduleBuilder() {
@@ -348,8 +364,10 @@ export default function ScheduleBuilder() {
         const gridX = PAD + TIME_W;
         const gridY = PAD + HEADER_H;
 
-        // ── day headers (always #0052CC like CSS .schedule-header-cell) ───────
-        ctx.fillStyle = '#0052CC';
+        // ── day headers (palette accent color) ────────────────────────────
+        const headerBg = getPaletteAccent(settingsOverride.paletteName);
+        const headerTextColor = getTextColor(headerBg);
+        ctx.fillStyle = headerBg;
         ctx.fillRect(PAD, PAD, W - PAD * 2, HEADER_H);
 
         DIAS_SEMANA.forEach((dia, i) => {
@@ -363,7 +381,7 @@ export default function ScheduleBuilder() {
             drawText(
                 dia.substring(0, 3).toUpperCase(),
                 x + COL_W / 2, PAD + HEADER_H / 2,
-                COL_W - 4, 10, '#ffffff', 'center', '600'
+                COL_W - 4, 10, headerTextColor, 'center', '600'
             );
         });
 
@@ -465,15 +483,15 @@ export default function ScheduleBuilder() {
                 const diaIdx = DIAS_SEMANA.indexOf(dia);
                 if (diaIdx === -1) return;
 
-                const blockX = gridX + diaIdx * COL_W;
-                const bw = COL_W;
-                const bh = blockH;
+                const blockX = gridX + diaIdx * COL_W - 0.5;
+                const bw = COL_W + 1;
+                const bh = blockH + 1;
 
                 const blocksBg = bgImg && bgApply === 'blocks';
 
                 // block background
                 ctx.save();
-                roundRect(blockX, blockY, bw, bh, 1);
+                roundRect(blockX, blockY - 0.5, bw, bh, 0);
                 ctx.clip();
 
                 if (blocksBg) {
@@ -483,7 +501,7 @@ export default function ScheduleBuilder() {
                     } else if (bm === 'tile') {
                         const pat = ctx.createPattern(bgImg, 'repeat');
                         ctx.fillStyle = pat;
-                        ctx.fillRect(blockX, blockY, bw, bh);
+                        ctx.fillRect(blockX, blockY - 0.5, bw, bh);
                     } else {
                         const ratio = Math.min(W / bgImg.width, H / bgImg.height);
                         const dw = bgImg.width * ratio;
@@ -514,7 +532,7 @@ export default function ScheduleBuilder() {
                 const conf = hasConflict(seccion);
                 if (conf.status !== 'valid') {
                     ctx.save();
-                    roundRect(blockX, blockY, bw, bh, 1);
+                    roundRect(blockX, blockY - 0.5, bw, bh, 0);
                     ctx.strokeStyle = conf.status === 'error' ? '#dc2626' : '#d97706';
                     ctx.lineWidth = 2;
                     ctx.stroke();
@@ -525,6 +543,10 @@ export default function ScheduleBuilder() {
                 const padX = 3;
                 const padY = 1;
                 const fSize = 10;
+                const tc = getTextColor(color);
+                const tcProf = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
+                const tcRoom = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
+                const tcTipo = tc === '#ffffff' ? 'rgba(255,255,255,0.75)' : 'rgba(30,41,59,0.65)';
 
                 if (isDark) {
                     ctx.save();
@@ -533,33 +555,52 @@ export default function ScheduleBuilder() {
                     ctx.shadowOffsetY = 1;
                 }
 
-                if (bh >= 42) {
+                if (bh >= 50) {
+                    const lineH = fSize * 1.1;
                     drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
                         blockX + padX, blockY + padY + fSize * 0.6,
-                        bw - padX * 2, fSize, '#ffffff', 'left', 'bold');
+                        bw - padX * 2, fSize, tc, 'left', 'bold');
+                    drawText(truncarNombre(seccion.nombre),
+                        blockX + padX, blockY + padY + fSize * 0.6 + lineH,
+                        bw - padX * 2, fSize * 0.65, tc, 'left');
                     drawText(nombreCorto(seccion.catedratico),
-                        blockX + padX, blockY + padY + fSize * 0.6 + fSize * 1.1,
-                        bw - padX * 2, fSize * 0.85, 'rgba(255,255,255,0.85)', 'left');
+                        blockX + padX, blockY + padY + fSize * 0.6 + lineH * 2,
+                        bw - padX * 2, fSize * 0.8, tcProf, 'left');
                     const bottomY = blockY + bh - padY - fSize * 0.6;
                     drawText(seccion.salon,
                         blockX + padX, bottomY,
-                        bw - padX * 2 - 18, fSize * 0.85, 'rgba(255,255,255,0.85)', 'left');
+                        bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, bottomY,
-                        16, fSize * 0.8, 'rgba(255,255,255,0.75)', 'right', 'bold');
+                        16, fSize * 0.8, tcTipo, 'right', 'bold');
+                } else if (bh >= 30) {
+                    const lineH = fSize * 1.05;
+                    drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                        blockX + padX, blockY + padY + fSize * 0.6,
+                        bw - padX * 2, fSize, tc, 'left', 'bold');
+                    drawText(truncarNombre(seccion.nombre),
+                        blockX + padX, blockY + padY + fSize * 0.6 + lineH,
+                        bw - padX * 2, fSize * 0.65, tc, 'left');
+                    const bottomY = blockY + bh - padY - fSize * 0.6;
+                    drawText(seccion.salon,
+                        blockX + padX, bottomY,
+                        bw - padX * 2 - 18, fSize * 0.8, tcRoom, 'left');
+                    drawText(tipoAbrev(seccion.tipo),
+                        blockX + bw - padX, bottomY,
+                        16, fSize * 0.75, tcTipo, 'right', 'bold');
                 } else if (bh >= 25) {
                     const midY = blockY + bh / 2;
                     drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
                         blockX + padX, midY - fSize * 0.5,
-                        bw - padX * 2, fSize, '#ffffff', 'left', 'bold');
+                        bw - padX * 2, fSize, tc, 'left', 'bold');
                     drawText(seccion.salon,
                         blockX + padX, midY + fSize * 0.5,
-                        bw - padX * 2, fSize * 0.85, 'rgba(255,255,255,0.85)', 'left');
+                        bw - padX * 2, fSize * 0.85, tcRoom, 'left');
                 } else {
                     const midY = blockY + bh / 2;
                     drawText(seccion.codigo,
                         blockX + padX, midY,
-                        bw - padX * 2, fSize, '#ffffff', 'left', 'bold');
+                        bw - padX * 2, fSize, tc, 'left', 'bold');
                 }
 
                 if (isDark) {
@@ -709,6 +750,7 @@ export default function ScheduleBuilder() {
                             const rowSpan = Math.max(1, gridEndSlot - gridStartSlot);
                             const gridStart = (gridStartSlot - cFirst) + currentRow;
                             const color = getCursoColor(seccion.codigo, activePalette);
+                            const textColor = getTextColor(color);
                             const conf = hasConflict(seccion);
                             const borderColor = conf.status === 'error' ? '#dc2626' : conf.status === 'warning' ? '#d97706' : 'transparent';
 
@@ -721,6 +763,7 @@ export default function ScheduleBuilder() {
                                     gridColumn: diaIdx + 2,
                                     gridRow: `${gridStart} / span ${rowSpan}`,
                                     backgroundColor: color,
+                                    color: textColor,
                                     border: `1px solid ${borderColor}`,
                                     zIndex: 1,
                                     position: 'relative'
@@ -729,6 +772,7 @@ export default function ScheduleBuilder() {
                                 onClick={() => toggleSection(seccion)}
                                 >
                                 <span className="schedule-block-code">{seccion.codigo}-{seccion.seccion.trim() || '?'}</span>
+                                <span className="schedule-block-name">{truncarNombre(seccion.nombre)}</span>
                                 <span className="schedule-block-prof">{nombreCorto(seccion.catedratico)}</span>
                                 <span className="schedule-block-bottom">
                                 <span className="schedule-block-room">{seccion.salon}</span>
@@ -829,12 +873,18 @@ export default function ScheduleBuilder() {
             <div className="schedule-content">
             <div className="schedule-grid-container" ref={gridRef}>
             <div className="schedule-grid" style={{ display: 'grid', gridTemplateColumns: `50px repeat(7, 1fr)` }}>
-            <div className="schedule-cell schedule-header-cell"></div>
-            {DIAS_SEMANA.map(dia => (
-                <div key={dia} className="schedule-cell schedule-header-cell">
-                {dia.substring(0, 3).toUpperCase()}
-                </div>
-            ))}
+            {(() => {
+                const headerBg = getPaletteAccent(exportSettings.paletteName);
+                const headerColor = getTextColor(headerBg);
+                return <>
+                <div className="schedule-cell schedule-header-cell" style={{ backgroundColor: headerBg }}></div>
+                {DIAS_SEMANA.map(dia => (
+                    <div key={dia} className="schedule-cell schedule-header-cell" style={{ backgroundColor: headerBg, color: headerColor }}>
+                    {dia.substring(0, 3).toUpperCase()}
+                    </div>
+                ))}
+                </>;
+            })()}
             {renderGrid()}
             </div>
             </div>
