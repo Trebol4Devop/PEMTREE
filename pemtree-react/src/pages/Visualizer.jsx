@@ -80,6 +80,7 @@ export default function Visualizer() {
         if (cursoMap) {
             cursoMap.forEach(curso => {
                 if (curso.completado) {
+                    if (idiomaEquivalencia && curso.esIdiomaTecnico) return;
                     total += parseInt(curso.creditos) || 0;
                 }
             });
@@ -311,6 +312,19 @@ export default function Visualizer() {
             localStorage.setItem('pemtree_idioma_equivalencia', newValue ? 'true' : 'false');
             gm.setIdiomaEquivalencia(newValue);
             setRutasData([...(gm.getRutas() || [])]);
+            if (gm.storageManager) {
+                gm.storageManager.actualizarContadorCreditos(gm.cursos);
+            }
+            let total = 0;
+            if (cursoMap) {
+                cursoMap.forEach(curso => {
+                    if (curso.completado) {
+                        if (newValue && curso.esIdiomaTecnico) return;
+                        total += parseInt(curso.creditos) || 0;
+                    }
+                });
+            }
+            setCreditosAprobados(total);
         }
     };
 
@@ -528,7 +542,7 @@ export default function Visualizer() {
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
 
-                    {showCriticalPath && (
+                    {showCriticalPath && activeView !== 'planner' && activeView !== 'schedule' && (
                         <>
                             <div className="flex items-center gap-0.5 sm:gap-1 bg-black/5 dark:bg-white/5 px-1 sm:px-1.5 py-0.5 rounded-md">
                                 {rutasData.map((ruta) => (

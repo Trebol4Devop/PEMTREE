@@ -1,4 +1,4 @@
-import { currentPensumColors } from '../modules/data/cursos';
+import { currentPensumColors, cursoMap } from '../modules/data/cursos';
 import { Award } from 'lucide-react';
 
 export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia, sourceBlock, mergedMap }) {
@@ -6,9 +6,11 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
     const secondary = (curso.colors?.leftBottom?.fill) || currentPensumColors.secondary || '#ffd0b6';
     const textFill = (curso.colors?.text?.fill) || '#333';
 
-    const lookup = mergedMap || null;
     const prereqCodes = (curso.prerequisitos || [])
-        .map(id => { const c = lookup ? lookup.get(id) : null; return c ? c.codigo : null; })
+        .map(id => {
+            const c = (mergedMap ? mergedMap.get(id) : null) || cursoMap.get(id);
+            return c ? c.codigo : null;
+        })
         .filter(Boolean);
 
     const chipPrimary = isSuficiencia ? '#059669' : primary;

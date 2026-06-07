@@ -100,9 +100,13 @@ export class StorageManager {
     }
 
     actualizarContadorCreditos(cursos) {
+        const idiomaEquiv = this.getIdiomaEquivalencia();
         let total = 0;
         cursos.forEach(c => {
-            if (c.completado) total += c.creditos;
+            if (c.completado) {
+                if (idiomaEquiv && c.esIdiomaTecnico) return;
+                total += c.creditos;
+            }
         });
         
         const counter = document.getElementById('creditos-display');

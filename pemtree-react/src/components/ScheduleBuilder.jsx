@@ -160,8 +160,16 @@ export default function ScheduleBuilder() {
             }
             grouped[h.codigo].secciones.push(h);
         }
-        return Object.values(grouped).sort((a, b) => a.codigo.localeCompare(b.codigo));
-    }, [horarios, courseSearch, modalidadFilter]);
+        return Object.values(grouped).sort((a, b) => {
+            const aPin = pinnedCourses[a.codigo] ? 1 : 0;
+            const bPin = pinnedCourses[b.codigo] ? 1 : 0;
+            if (aPin !== bPin) return bPin - aPin;
+            const aSel = selectedSections[a.codigo]?.length ? 1 : 0;
+            const bSel = selectedSections[b.codigo]?.length ? 1 : 0;
+            if (aSel !== bSel) return bSel - aSel;
+            return a.codigo.localeCompare(b.codigo);
+        });
+    }, [horarios, courseSearch, modalidadFilter, pinnedCourses, selectedSections]);
 
     const allSelected = useMemo(() => {
         return Object.values(selectedSections).flat();
@@ -1014,15 +1022,6 @@ export default function ScheduleBuilder() {
         </div>
 
         <div className="schedule-filters">
-        <div className="schedule-search">
-        <Search size={14} />
-        <input
-        type="text"
-         placeholder="Buscar código o nombre..."
-        value={courseSearch}
-        onChange={e => setCourseSearch(e.target.value)}
-        />
-        </div>
         <select
         className="schedule-modalidad-select"
         value={modalidadFilter}
@@ -1033,6 +1032,15 @@ export default function ScheduleBuilder() {
         <option value="SEMIPRESENCIAL">Semipresencial</option>
         <option value="VIRTUAL">Virtual</option>
         </select>
+        <div className="schedule-search">
+        <Search size={14} />
+        <input
+        type="text"
+         placeholder="Buscar código o nombre..."
+        value={courseSearch}
+        onChange={e => setCourseSearch(e.target.value)}
+        />
+        </div>
         </div>
 
         {loading && (

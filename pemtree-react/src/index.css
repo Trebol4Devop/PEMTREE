@@ -1539,6 +1539,7 @@ html.dark .schedule-period-tab.active {
     display: flex;
     gap: 0.5rem;
     padding: 0 0.25rem;
+    justify-content: flex-end;
 }
 
 .schedule-search {
