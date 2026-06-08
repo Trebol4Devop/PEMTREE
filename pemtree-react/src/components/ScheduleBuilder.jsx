@@ -125,6 +125,7 @@ export default function ScheduleBuilder() {
     });
     const gridRef = useRef(null);
     const savedSettingsRef = useRef(null);
+    const initialMountRef = useRef(true); // true until first loadHorarios completes
     const [showExportModal, setShowExportModal] = useState(false);
     const [exportSettings, setExportSettings] = useState({
         paletteName: 'Default',
@@ -163,13 +164,12 @@ export default function ScheduleBuilder() {
         try {
             const data = await cargarHorarios(periodId);
             setHorarios(data || []);
-            // restore saved sections for this period
-            const saved = localStorage.getItem(getScheduleStorageKey(periodId));
-            if (saved) {
-                const savedSections = JSON.parse(saved);
-                setSelectedSections(savedSections);
-            } else {
-                setSelectedSections({});
+            // On the very first mount the useState lazy initializer has already
+            // read the correct sections from localStorage — don't overwrite them.
+            // Only restore when the user explicitly switches period.
+            if (!initialMountRef.current) {
+                const saved = localStorage.getItem(getScheduleStorageKey(periodId));
+                setSelectedSections(saved ? JSON.parse(saved) : {});
             }
             sectionsPeriodRef.current = periodId;
         } catch (e) {
@@ -177,6 +177,7 @@ export default function ScheduleBuilder() {
             setHorarios([]);
         }
         setLoading(false);
+        initialMountRef.current = false;
     }
 
     const filteredCourses = useMemo(() => {
@@ -755,21 +756,28 @@ export default function ScheduleBuilder() {
         } else {
             clusters = [{ start: sorted[0], end: sorted[sorted.length - 1] }];
         }
-        for (const c of clusters) {
-            c.start = Math.max(0, c.start - 1);
-            c.end   = Math.min(TOTAL_SLOTS_LOCAL - 1, c.end + 1);
-        }
+        // No padding: exact occupied slot bounds, no dead rows around clusters.
 
-        // ── 3. collapsed slots (compact: hide middle rows of long blocks) ──────
-        // A slot is a candidate for collapsing if it belongs to a long block's
-        // middle (ss+3 … es-3 inclusive, giving 3 head + 3 tail visible rows).
-        // A slot is PROTECTED if any OTHER course (regardless of length) occupies it
-        // — that way we never hide a row where a concurrent course sits.
+        // ── 3. collapsed slots ────────────────────────────────────────────────
+        // In compact mode every slot within a cluster that has NO course on ANY
+        // day is hidden. Additionally, the middle rows of long (>6 slot) blocks
+        // are also hidden (keeping 3 head + 3 tail rows visible per block).
+        // Hidden runs of slots are replaced by a single "···" marker row.
         const collapsedSlots  = new Set();
-        const collapseMarkers = new Set(); // slot indices where a "···" row appears BEFORE
+        const collapseMarkers = new Set();
 
         if (clusterEnabled) {
-            // Build per-slot occupancy map for quick lookup
+            // ── 3a. hide unoccupied slots inside clusters ──────────────────────
+            for (const c of clusters) {
+                for (let sl = c.start; sl <= c.end; sl++) {
+                    if (!occupiedSlots.has(sl)) {
+                        collapsedSlots.add(sl);
+                    }
+                }
+            }
+
+            // ── 3b. also hide middle rows of long blocks (>6 slots) ───────────
+            // Build per-slot occupancy map to protect slots shared by any course.
             const slotOccupants = new Map(); // slotIdx → Set of sections
             for (const s of sections) {
                 const ss = Math.floor((mins(s.inicio) - HORA_INICIO * 60) / slotMinutes);
@@ -786,13 +794,11 @@ export default function ScheduleBuilder() {
                 const span = es - ss;
                 if (span <= 6) continue; // only long blocks get compacted
 
-                // candidate range: rows 3..span-3 (0-indexed inside block)
-                // i.e. slots ss+3 … es-3 (keep first 3 and last 3)
                 const collapseStart = ss + 3;
-                const collapseEnd   = es - 3; // exclusive
+                const collapseEnd   = es - 3; // exclusive — keep last 3 rows visible
 
                 for (let sl = collapseStart; sl < collapseEnd; sl++) {
-                    // protect slot if any OTHER section occupies it
+                    // protect if any OTHER section also occupies this slot
                     const occupants = slotOccupants.get(sl) || new Set();
                     const hasOther = [...occupants].some(o => o !== s);
                     if (!hasOther) {
@@ -801,21 +807,18 @@ export default function ScheduleBuilder() {
                 }
             }
 
-            // Place collapse-marker rows: for each contiguous run of collapsed slots,
-            // put a marker at the first slot of the run (it renders instead of that slot).
+            // ── 3c. mark the first slot of each contiguous collapsed run ───────
             let inRun = false;
-            let allSlotsSorted = [];
             for (const c of clusters) {
-                for (let sl = c.start; sl <= c.end; sl++) allSlotsSorted.push(sl);
-            }
-            for (let i = 0; i < allSlotsSorted.length; i++) {
-                const sl = allSlotsSorted[i];
-                if (collapsedSlots.has(sl) && !inRun) {
-                    collapseMarkers.add(sl); // "···" row goes here
-                    inRun = true;
-                } else if (!collapsedSlots.has(sl)) {
-                    inRun = false;
+                for (let sl = c.start; sl <= c.end; sl++) {
+                    if (collapsedSlots.has(sl) && !inRun) {
+                        collapseMarkers.add(sl);
+                        inRun = true;
+                    } else if (!collapsedSlots.has(sl)) {
+                        inRun = false;
+                    }
                 }
+                inRun = false; // reset between clusters
             }
         }
 
