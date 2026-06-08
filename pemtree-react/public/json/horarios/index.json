@@ -1,14 +1,29 @@
 {
+  "lastRun": "2026-06-08T05:07:12.268Z",
   "periods": [
     {
-      "id": "semestre",
-      "name": "Semestre",
-      "type": "semestre"
+      "id": "semestre1",
+      "name": "Semestre 1",
+      "type": "semestre",
+      "lastUpdated": "2026-06-08T05:07:12.268Z"
     },
     {
-      "id": "vacaciones",
-      "name": "Vacaciones",
-      "type": "vacaciones"
+      "id": "semestre2",
+      "name": "Semestre 2",
+      "type": "semestre",
+      "lastUpdated": "2026-06-08T05:07:12.268Z"
+    },
+    {
+      "id": "vacaciones1",
+      "name": "Vacaciones 1",
+      "type": "vacaciones",
+      "lastUpdated": "2026-06-08T05:07:12.268Z"
+    },
+    {
+      "id": "vacaciones2",
+      "name": "Vacaciones 2",
+      "type": "vacaciones",
+      "lastUpdated": "2026-06-08T05:07:12.268Z"
     }
   ]
 }
