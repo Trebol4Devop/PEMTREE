@@ -16,6 +16,14 @@
     <meta name="geo.region" content="GT" />
     <meta name="geo.placename" content="Universidad de San Carlos de Guatemala" />
 
+    <!-- Preload de recursos críticos para mejorar performance -->
+    <link rel="preload" href="/src/index.css" as="style" />
+    <link rel="modulepreload" href="/src/main.jsx" />
+    
+    <!-- DNS prefetch para dominios externos si se usan -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+
     <meta property="og:locale" content="es_GT" />
     <meta property="og:title" content="PEMTREE | Grafo de Estudios USAC">
     <meta property="og:description" content="PEMTREE es una aplicación web interactiva que permite explorar y visualizar rutas académicas del PENSUM CLAR 2022 USAC.">
