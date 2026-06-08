@@ -1,7 +1,42 @@
-# Local Netlify folder
-.netlify
-
-
+```
+# Dependencies
 node_modules/
+
+# Build artifacts
 dist/
-.parcel-cache/
+build/
+*.js.map
+*.css.map
+
+# Environment
+.env
+.env.local
+*.env.*
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Temporary files
+*.tmp
+
+# Coverage
+coverage/
+htmlcov/
+.coverage
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+```

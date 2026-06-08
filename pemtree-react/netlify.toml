@@ -6,23 +6,47 @@
   NODE_VERSION = "20"
   PNPM_VERSION = "9"
 
+# Caché de larga duración para assets estáticos (JS, CSS, imágenes)
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400"
+
+# Caché media para datos JSON (se actualizan periódicamente)
 [[headers]]
   for = "/json/*"
   [headers.values]
-    Cache-Control = "no-cache, must-revalidate"
+    Cache-Control = "public, max-age=3600, must-revalidate"
     Content-Type = "application/json; charset=utf-8"
 
 [[headers]]
   for = "/pensum_color/*"
   [headers.values]
-    Cache-Control = "no-cache, must-revalidate"
+    Cache-Control = "public, max-age=3600, must-revalidate"
     Content-Type = "application/json; charset=utf-8"
 
+# No cachear HTML para asegurar actualizaciones inmediatas
 [[headers]]
-  for = "/*.json"
+  for = "/index.html"
   [headers.values]
-    Cache-Control = "no-cache, must-revalidate"
-    Content-Type = "application/json; charset=utf-8"
+    Cache-Control = "no-cache, no-store, must-revalidate"
+    Content-Type = "text/html; charset=utf-8"
+
+[[headers]]
+  for = "/*.html"
+  [headers.values]
+    Cache-Control = "no-cache, no-store, must-revalidate"
+
+# Fallback para otros archivos estáticos
+[[headers]]
+  for = "/*"
+  [headers.values]
+    Cache-Control = "public, max-age=600"
 
 [[redirects]]
   from = "/*"
