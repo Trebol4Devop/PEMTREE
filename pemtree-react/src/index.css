@@ -302,6 +302,7 @@ html.dark input {
 .planner-container {
     flex: 1;
     display: flex;
+    flex-direction: column;
     overflow: hidden;
     background: #FAFBFC;
     font-family: 'Segoe UI', Arial, sans-serif;
@@ -424,6 +425,68 @@ html.dark .planner-pool-empty {
     color: #94a3b8;
 }
 
+/* --- Warning banner --- */
+.planner-warning-banner {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 14px;
+    margin: 8px 8px 0 8px;
+    background: #FFF7E0;
+    border: 1px solid #F59E0B;
+    border-radius: 8px;
+    font-size: 0.72rem;
+    color: #92400E;
+    line-height: 1.4;
+}
+html.dark .planner-warning-banner {
+    background: #3D2E0A;
+    border-color: #D97706;
+    color: #FCD34D;
+}
+.planner-warning-banner a {
+    color: #0052CC;
+    text-decoration: underline;
+}
+html.dark .planner-warning-banner a {
+    color: #4C9AFF;
+}
+.planner-warning-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: #F59E0B;
+}
+html.dark .planner-warning-icon {
+    color: #D97706;
+}
+.planner-warning-text {
+    flex: 1;
+}
+.planner-warning-close {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #92400E;
+    padding: 2px;
+    border-radius: 4px;
+    line-height: 0;
+}
+html.dark .planner-warning-close {
+    color: #FCD34D;
+}
+.planner-warning-close:hover {
+    background: rgba(0,0,0,0.08);
+}
+
+/* --- Body (pool + content side by side) --- */
+.planner-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+    min-height: 0;
+}
+
 /* --- Main blocks area --- */
 .planner-content {
     flex: 1;
@@ -445,6 +508,24 @@ html.dark .planner-pool-empty {
     gap: 12px;
     align-items: flex-start;
     min-width: min-content;
+}
+
+.planner-year-group {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.planner-year-separator {
+    width: 2px;
+    min-height: 200px;
+    background: linear-gradient(to bottom, transparent 0%, #DFE1E6 20%, #DFE1E6 80%, transparent 100%);
+    border-radius: 1px;
+    flex-shrink: 0;
+    align-self: stretch;
+}
+html.dark .planner-year-separator {
+    background: linear-gradient(to bottom, transparent 0%, #3E4C5E 20%, #3E4C5E 80%, transparent 100%);
 }
 
 /* --- Block (semester + vacation) --- */
@@ -623,6 +704,16 @@ html.dark .planner-promedio-input:focus {
 html.dark .planner-promedio-limit {
     color: #4C9AFF;
     background: #0C295E;
+}
+
+.planner-last-updated {
+    font-size: 0.65rem;
+    color: #5E6C84;
+    white-space: nowrap;
+    margin-left: auto;
+}
+html.dark .planner-last-updated {
+    color: #94a3b8;
 }
 
 /* Pool toggle in promedio bar — mobile only */
@@ -1434,6 +1525,8 @@ html.dark .schedule-container {
     background: var(--bg-secondary);
     border: 1px solid var(--border);
     border-radius: 8px;
+    flex-wrap: wrap;
+    gap: 0.5rem;
 }
 
 .schedule-toolbar-title {
@@ -1507,6 +1600,14 @@ html.dark .schedule-count-lab {
     border: 1px solid var(--border);
 }
 
+@media (max-width: 640px) {
+    .schedule-period-tabs {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 2px;
+    }
+}
+
 .schedule-period-tab {
     padding: 0.35rem 0.75rem;
     border: none;
@@ -1517,6 +1618,7 @@ html.dark .schedule-count-lab {
     color: var(--text-secondary);
     cursor: pointer;
     transition: all 0.15s;
+    text-align: center;
 }
 
 .schedule-period-tab:hover:not(.active) {

@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, X, BookOpen } from 'lucide-react';
+import { Plus, X, BookOpen, AlertTriangle } from 'lucide-react';
 import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
 import { importarCursosDesdeJSON } from '../modules/data/importFromJSON';
 import CoursePool from './CoursePool';
@@ -35,6 +35,15 @@ function getSuficienciasKey() {
 function getSuficienciaFailsKey() {
     const pk = getPensumKey();
     return pk ? `pemtree_suf_fails_${pk}` : 'pemtree_suf_fails_default';
+}
+
+function getLastUpdatedKey() {
+    const pk = getPensumKey();
+    return pk ? `pemtree_plan_updated_${pk}` : 'pemtree_plan_updated_default';
+}
+
+function getWarningDismissedKey() {
+    return 'pemtree_horario_warning_dismissed';
 }
 
 function getMaxCredits(promedio, simultaneous) {
@@ -93,6 +102,9 @@ function getPlannedIds(plan) {
 export default function Planner({ currentPensum }) {
     const { toasts, addToast, removeToast } = useToast();
     const [showPool, setShowPool] = useState(false);
+    const [showWarning, setShowWarning] = useState(() => {
+        return localStorage.getItem(getWarningDismissedKey()) !== 'true';
+    });
 
     const [plan, setPlan] = useState(() => loadPlanForKey(getStorageKey()));
     const [semesterCount, setSemesterCount] = useState(() => {
@@ -163,6 +175,7 @@ export default function Planner({ currentPensum }) {
 
     useEffect(() => {
         localStorage.setItem(getStorageKey(), JSON.stringify(plan));
+        localStorage.setItem(getLastUpdatedKey(), new Date().toISOString());
     }, [plan]);
 
     useEffect(() => {
@@ -442,11 +455,30 @@ export default function Planner({ currentPensum }) {
         };
     }, []);
 
+    function dismissWarning() {
+        setShowWarning(false);
+        localStorage.setItem(getWarningDismissedKey(), 'true');
+    }
+
     return (
         <div className="planner-container">
             <ToastNotification toasts={toasts} onRemove={removeToast} />
 
+            {showWarning && (
+                <div className="planner-warning-banner">
+                    <AlertTriangle size={18} className="planner-warning-icon" />
+                    <div className="planner-warning-text">
+                        <strong>Este sitio no es oficial de FIUSAC.</strong>
+                        <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://fiusac.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">fiusac.ingenieria.usac.edu.gt</a>.</span>
+                    </div>
+                    <button className="planner-warning-close" onClick={dismissWarning} title="Cerrar">
+                        <X size={16} />
+                    </button>
+                </div>
+            )}
+
             {/* Pool sidebar / bottom sheet */}
+            <div className="planner-body">
             <div className={`planner-pool-wrapper ${showPool ? 'planner-pool-open' : ''}`}>
                 <div className="planner-pool-mobile-header">
                     <span className="planner-pool-mobile-title">Cursos disponibles</span>
@@ -519,15 +551,16 @@ export default function Planner({ currentPensum }) {
                 </div>
                 <div className="planner-main">
                     <div className="planner-blocks-row">
-                    {blocks.map(block => {
+                    {blocks.map((block, idx) => {
                         const courseIds = plan[block.id] || [];
                         const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
                         const courseObjs = courseIds
                             .map(id => resolveMap.get(id))
                             .filter(Boolean);
 
+                        let el;
                         if (block.type === 'semester') {
-                            return (
+                            el = (
                                 <SemesterBlock
                                     key={block.id}
                                     semesterNum={block.semester}
@@ -540,24 +573,39 @@ export default function Planner({ currentPensum }) {
                                     mergedMap={simultaneous ? mergedCursoMap : null}
                                 />
                             );
+                        } else {
+                            el = (
+                                <VacationBlock
+                                    key={block.id}
+                                    vacNum={block.vacNum}
+                                    courses={courseObjs}
+                                    onDrop={handleDrop}
+                                    onRemoveChip={handleRemoveChip}
+                                    mergedMap={simultaneous ? mergedCursoMap : null}
+                                />
+                            );
                         }
 
-                        return (
-                            <VacationBlock
-                                key={block.id}
-                                vacNum={block.vacNum}
-                                courses={courseObjs}
-                                onDrop={handleDrop}
-                                onRemoveChip={handleRemoveChip}
-                                mergedMap={simultaneous ? mergedCursoMap : null}
-                            />
-                        );
+                        const isYearEnd = block.type === 'vacation';
+                        const isLastBlock = idx === blocks.length - 1;
+
+                        if (isYearEnd && !isLastBlock) {
+                            return (
+                                <div key={`year-group-${block.id}`} className="planner-year-group">
+                                    {el}
+                                    <div className="planner-year-separator" title={`Fin del año ${block.vacNum}`} />
+                                </div>
+                            );
+                        }
+
+                        return el;
                     })}
                     <button className="planner-add-semester" onClick={handleAddSemester}>
                         <Plus size={18} />
                         <span>Semestre {semesterCount + 1}</span>
                     </button>
                 </div>
+            </div>
             </div>
             </div>
         </div>

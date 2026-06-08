@@ -1,4 +1,8 @@
 import { writeFileSync, mkdirSync } from 'fs';
+import { resolve, dirname } from 'path';
+import { fileURLToPath } from 'url';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const URLS = {
     semestre1: 'https://usuarios.ingenieria.usac.edu.gt/horarios/semestre/1',
@@ -169,7 +173,7 @@ function esHorarioValido(inicio, final, dias) {
 }
 
 async function main() {
-    const outDir = '/home/carlos/Escritorio/PEMTREE2/pemtree-react/public/json/horarios';
+    const outDir = resolve(__dirname, 'pemtree-react', 'public', 'json', 'horarios');
     mkdirSync(outDir, { recursive: true });
 
     console.log('=== SCRAPER DE HORARIOS - FIUSAC ===\n');
@@ -198,6 +202,11 @@ async function main() {
         }
     }
 
+    // Write individual period files (overwrites each run)
+    for (const [nombre, horarios] of Object.entries(allData)) {
+        writeFileSync(`${outDir}/${nombre}.json`, JSON.stringify(horarios, null, 2), 'utf-8');
+    }
+
     // Merge: semestre1 + semestre2 → semestre
     const semestreData = [
         ...(allData.semestre1 || []).map(h => ({ ...h })),
@@ -212,6 +221,10 @@ async function main() {
     writeFileSync(`${outDir}/semestre.json`, JSON.stringify(semestreData, null, 2), 'utf-8');
     writeFileSync(`${outDir}/vacaciones.json`, JSON.stringify(vacacionesData, null, 2), 'utf-8');
 
+    console.log(`\nIndividuales:`);
+    for (const [nombre, horarios] of Object.entries(allData)) {
+        console.log(`  ${nombre}.json -> ${horarios.length} horarios`);
+    }
     console.log(`\nFusionados:`);
     console.log(`  semestre.json -> ${semestreData.length} horarios`);
     console.log(`  vacaciones.json -> ${vacacionesData.length} horarios`);
@@ -222,16 +235,20 @@ async function main() {
         unicos.forEach(u => console.log(`  - ${u}`));
     }
 
+    const now = new Date().toISOString();
     writeFileSync(`${outDir}/index.json`, JSON.stringify({
+        lastRun: now,
         periods: [
-            { id: 'semestre', name: 'Semestre', type: 'semestre' },
-            { id: 'vacaciones', name: 'Vacaciones', type: 'vacaciones' },
+            { id: 'semestre1', name: 'Semestre 1', type: 'semestre', lastUpdated: now },
+            { id: 'semestre2', name: 'Semestre 2', type: 'semestre', lastUpdated: now },
+            { id: 'vacaciones1', name: 'Vacaciones 1', type: 'vacaciones', lastUpdated: now },
+            { id: 'vacaciones2', name: 'Vacaciones 2', type: 'vacaciones', lastUpdated: now },
         ]
     }, null, 2), 'utf-8');
 
-    console.log(`\n=== INDEX CREADO ===`);
+    console.log(`\n=== INDEX CREADO (${now}) ===`);
     console.log(`Archivos en: ${outDir}`);
-    console.log(`  index.json, semestre.json, vacaciones.json`);
+    console.log(`  index.json, semestre.json, vacaciones.json + individuales`);
 }
 
 function contarPorTipo(horarios) {

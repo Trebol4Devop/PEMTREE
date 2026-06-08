@@ -67,10 +67,42 @@ export default function Visualizer() {
         return localStorage.getItem('pemtree_active_view') || 'graph';
     });
 
+    const [scheduleTimestamps, setScheduleTimestamps] = useState({});
+    const [schedulePeriod, setSchedulePeriod] = useState(() => {
+        return localStorage.getItem('pemtree_schedule_period') || 'semestre1';
+    });
+
     // persist activeView changes
     useEffect(() => {
         localStorage.setItem('pemtree_active_view', activeView);
     }, [activeView]);
+
+    // Load schedule timestamps from index.json
+    useEffect(() => {
+        fetch('/json/horarios/index.json')
+            .then(r => r.json())
+            .then(data => {
+                const ts = {};
+                if (data.periods) {
+                    data.periods.forEach(p => { ts[p.id] = p.lastUpdated || null; });
+                }
+                setScheduleTimestamps(ts);
+            })
+            .catch(() => {});
+    }, []);
+
+    // Listen for schedule period changes from ScheduleBuilder
+    useEffect(() => {
+        const handler = () => {
+            setSchedulePeriod(localStorage.getItem('pemtree_schedule_period') || 'semestre1');
+        };
+        window.addEventListener('pemtree-schedule-period-changed', handler);
+        window.addEventListener('storage', handler);
+        return () => {
+            window.removeEventListener('pemtree-schedule-period-changed', handler);
+            window.removeEventListener('storage', handler);
+        };
+    }, []);
 
     const guiaLightSrc = '/images/Guia_de_uso.png';
     const guiaDarkSrc = '/images/Guia_de_uso_dark.png';
@@ -576,6 +608,17 @@ export default function Visualizer() {
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
                 </div>
+
+                {scheduleTimestamps[schedulePeriod] && (activeView === 'schedule') && (
+                    <span className="text-[0.6rem] sm:text-[0.65rem] text-[#5E6C84] dark:text-[#94a3b8] ml-auto whitespace-nowrap shrink-0" title="Última actualización de horarios desde FIUSAC">
+                        Actualizado: {(() => {
+                            try {
+                                const d = new Date(scheduleTimestamps[schedulePeriod]);
+                                return d.toLocaleDateString('es-GT', { day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+                            } catch { return scheduleTimestamps[schedulePeriod]; }
+                        })()}
+                    </span>
+                )}
 
                 {/* Selectors y búsqueda */}
                 <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
