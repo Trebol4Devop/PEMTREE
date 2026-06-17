@@ -55,18 +55,40 @@ function parseRows(html, fuente) {
     const tableStart = html.indexOf('<table');
     const tableEnd = html.indexOf('</table>');
     if (tableStart < 0 || tableEnd < 0) return { horarios: [], errores: [] };
-    
+
     const tableHtml = html.substring(tableStart, tableEnd + 8);
+
+    // ── Detect if the table has a "Modalidad" column ──────────────────
+    // Semester pages have it; vacation pages do NOT.
+    const theadMatch = tableHtml.match(/<thead[^>]*>([\s\S]*?)<\/thead>/);
+    const hasModalidadCol = theadMatch
+        ? /Modalidad/i.test(theadMatch[1])
+        : true; // default to true for backward compatibility
+
     const tbodyMatch = tableHtml.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
     const tbody = tbodyMatch ? tbodyMatch[1] : tableHtml;
-    
+
     const rows = tbody.match(/<tr\s*>[\s\S]*?<\/tr>/g) || [];
     const horarios = [];
     const errores = [];
 
+    // Column indices depend on whether Modalidad column is present
+    const IDX_SECCION   = 1;
+    const IDX_MODALIDAD = hasModalidadCol ? 2 : null;
+    const IDX_EDIFICIO  = hasModalidadCol ? 3 : 2;
+    const IDX_SALON     = hasModalidadCol ? 4 : 3;
+    const IDX_INICIO    = hasModalidadCol ? 5 : 4;
+    const IDX_FINAL     = hasModalidadCol ? 6 : 5;
+    const IDX_DIAS      = hasModalidadCol ? 7 : 6;
+    const IDX_CATEDRATICO = hasModalidadCol ? 8 : 7;
+    const IDX_AUXILIAR  = hasModalidadCol ? 9 : 8;
+    const IDX_DETALLE   = hasModalidadCol ? 10 : 9;
+
+    const MIN_CELLS = hasModalidadCol ? 10 : 9;
+
     for (const row of rows) {
         const cells = row.match(/<td[^>]*>([\s\S]*?)<\/td>/g) || [];
-        if (cells.length < 10) continue;
+        if (cells.length < MIN_CELLS) continue;
 
         const cell0 = cells[0]; // course name + badge
         const codigoMatch = cell0.match(/(\d{4})/);
@@ -76,20 +98,34 @@ function parseRows(html, fuente) {
         const tipo = extractBadgeType(cell0);
         const nombre = cell0.replace(/<[^>]*>/g, '').replace(codigo, '').trim().replace(/\s+/g, ' ');
 
-        const seccion = (cells[1] || '').replace(/<[^>]*>/g, '').trim();
-        const modalidadRaw = (cells[2] || '').replace(/<[^>]*>/g, '').trim();
-        const modalidad = normalizeModalidad(modalidadRaw);
-        const edificio = (cells[3] || '').replace(/<[^>]*>/g, '').trim();
-        const salon = (cells[4] || '').replace(/<[^>]*>/g, '').trim();
-        const inicioRaw = (cells[5] || '').replace(/<[^>]*>/g, '').trim();
-        const finalRaw = (cells[6] || '').replace(/<[^>]*>/g, '').trim();
-        const diasRaw = (cells[7] || '').replace(/<[^>]*>/g, '').trim();
+        const seccion = (cells[IDX_SECCION] || '').replace(/<[^>]*>/g, '').trim();
+
+        // Modalidad: from dedicated column if present, otherwise infer
+        let modalidad;
+        if (hasModalidadCol) {
+            const modalidadRaw = (cells[IDX_MODALIDAD] || '').replace(/<[^>]*>/g, '').trim();
+            modalidad = normalizeModalidad(modalidadRaw);
+        } else {
+            // Vacaciones: no Modalidad column. The edificio cell often contains
+            // "MEET" or "VIRTUAL" for virtual courses — use that to infer.
+            const edificioCell = (cells[IDX_EDIFICIO] || '').replace(/<[^>]*>/g, '').trim().toUpperCase();
+            if (edificioCell === 'MEET' || edificioCell === 'VIRTUAL') {
+                modalidad = 'VIRTUAL';
+            } else {
+                modalidad = 'PRESENCIAL';
+            }
+        }
+
+        const edificio = (cells[IDX_EDIFICIO] || '').replace(/<[^>]*>/g, '').trim();
+        const salon = (cells[IDX_SALON] || '').replace(/<[^>]*>/g, '').trim();
+        const inicioRaw = (cells[IDX_INICIO] || '').replace(/<[^>]*>/g, '').trim();
+        const finalRaw = (cells[IDX_FINAL] || '').replace(/<[^>]*>/g, '').trim();
+        const diasRaw = (cells[IDX_DIAS] || '').replace(/<[^>]*>/g, '').trim();
         const dias = parseDias(diasRaw);
-        const catedratico = (cells[8] || '').replace(/<[^>]*>/g, '').trim();
-        const auxiliar = (cells[9] || '').replace(/<[^>]*>/g, '').trim();
-        const detalleCell = cells[10] || '';
+        const catedratico = (cells[IDX_CATEDRATICO] || '').replace(/<[^>]*>/g, '').trim();
+        const auxiliar = (cells[IDX_AUXILIAR] || '').replace(/<[^>]*>/g, '').trim();
+        const detalleCell = cells[IDX_DETALLE] || '';
         const tieneRestricciones = !detalleCell.includes('disabled') && detalleCell.includes('verRestricciones');
-        const restriccionesRaw = detalleCell.replace(/<[^>]*>/g, '').trim();
 
         const [inicio, final, esCorrupto] = corregirHorario(inicioRaw, finalRaw, diasRaw, dias);
 

@@ -124,7 +124,7 @@ function RuleCard({ rule, isDarkMode }) {
                 <div className="overflow-x-auto -mx-1 px-1">
                     <table className={`w-full text-xs max-sm:text-[0.7rem] rounded overflow-hidden min-w-[280px] ${isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}`}>
                         <thead>
-                            <tr className={isDarkMode ? 'bg-[#1C2636]' : 'bg-[#EBECF0]'}>
+                            <tr className={isDarkMode ? 'bg-[#1C2636]' : 'bg-[#DFE1E6]'}>
                                 {rule.table[0] && Object.keys(rule.table[0]).map((colKey, ci) => (
                                     <th key={ci} className={`text-left px-2 py-1.5 max-sm:px-1.5 max-sm:py-1 font-semibold text-[10px] max-sm:text-[9px] uppercase tracking-wide whitespace-nowrap ${isDarkMode ? 'text-slate-200' : 'text-[#172B4D]'}`}>
                                         {colKey.charAt(0).toUpperCase() + colKey.slice(1)}
@@ -180,7 +180,7 @@ export default function WelcomeModal({ isDarkMode, guiaSrc, onClose }) {
                     </div>
                     <button
                         onClick={onClose}
-                        className={`w-8 h-8 max-sm:w-7 max-sm:h-7 rounded-full border flex items-center justify-center text-base max-sm:text-sm font-bold transition flex-shrink-0 ${isDarkMode ? 'bg-[#2D333B] border-[#3E4C5E] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] border-[#DFE1E6] text-[#5E6C84] hover:bg-[#EBECF0]'}`}
+                        className={`w-8 h-8 max-sm:w-7 max-sm:h-7 rounded-full border flex items-center justify-center text-base max-sm:text-sm font-bold transition flex-shrink-0 ${isDarkMode ? 'bg-[#2D333B] border-[#3E4C5E] text-slate-400 hover:text-white hover:bg-[#3E4C5E]' : 'bg-[#F4F5F7] border-[#DFE1E6] text-[#5E6C84] hover:bg-[#DFE1E6]'}`}
                         aria-label="Cerrar"
                     >
                         x
@@ -233,10 +233,10 @@ export default function WelcomeModal({ isDarkMode, guiaSrc, onClose }) {
 
                     {activeTab === 'descargo' && (
                         <div className="space-y-3 max-sm:space-y-2.5">
-                            <div className={`rounded-lg p-4 max-sm:p-3 border-2 flex items-start gap-3 max-sm:gap-2 ${isDarkMode ? 'bg-[#2D333B] border-[#F59E0B]/40' : 'bg-[#FFFBEB] border-[#F59E0B]/50'}`}>
+                            <div className={`rounded-lg p-4 max-sm:p-3 border-2 flex items-start gap-3 max-sm:gap-2 ${isDarkMode ? 'bg-[#2D333B] border-[#F59E0B]/40' : 'bg-[#FFF0B3] border-[#F59E0B]/50'}`}>
                                 <span className="w-6 h-6 max-sm:w-5 max-sm:h-5 rounded-full flex items-center justify-center text-sm max-sm:text-xs font-bold flex-shrink-0 bg-[#F59E0B] text-white">{DISCLAIMER.icon}</span>
                                 <div>
-                                    <h3 className={`font-bold text-sm max-sm:text-xs mb-1 ${isDarkMode ? 'text-[#FCD34D]' : 'text-[#92400E]'}`}>{DISCLAIMER.title}</h3>
+                                    <h3 className={`font-bold text-sm max-sm:text-xs mb-1 ${isDarkMode ? 'text-[#fbbf24]' : 'text-[#A54800]'}`}>{DISCLAIMER.title}</h3>
                                     <p className={`text-sm max-sm:text-[0.8rem] leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}`}>{DISCLAIMER.text}</p>
                                 </div>
                             </div>
@@ -262,7 +262,7 @@ export default function WelcomeModal({ isDarkMode, guiaSrc, onClose }) {
                                             href={link.url}
                                             target="_blank"
                                             rel="noopener noreferrer"
-                                            className={`flex items-center gap-2 text-sm max-sm:text-[0.8rem] hover:underline ${isDarkMode ? 'text-[#60A5FA]' : 'text-[#0065FF]'}`}
+                                            className={`flex items-center gap-2 text-sm max-sm:text-[0.8rem] hover:underline ${isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]'}`}
                                         >
                                             <ChevronRight size={14} className="flex-shrink-0" />
                                             {link.label}

@@ -15,10 +15,10 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <span className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0">
                         <img src="/images/logo_trebol.png" alt="PEMTREE Logo" className="w-5 h-5 sm:w-6 sm:h-6 logo-trebol-blue" />
                     </span>
-                    <span className="font-extrabold tracking-tight text-[#013ea6] dark:text-slate-100 hidden sm:inline">PEMTREE</span>
+                    <span className="font-extrabold tracking-tight text-[#0052CC] dark:text-slate-100 hidden sm:inline">PEMTREE</span>
                 </Link>
 
-                <div className="hidden lg:flex items-center gap-2 lg:gap-4 text-xs sm:text-sm font-medium text-[#42526E] dark:text-slate-300">
+                <div className="hidden lg:flex items-center gap-2 lg:gap-4 text-xs sm:text-sm font-medium text-[#5E6C84] dark:text-slate-300">
                     <Link to="/" className={`px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline whitespace-nowrap ${currentView === 'home' ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] font-semibold' : 'hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E]'}`}>
                         Inicio Portal
                     </Link>
@@ -37,7 +37,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     {isDarkMode ? <Sun size={16} className="sm:w-5 sm:h-5 text-yellow-400" /> : <Moon size={16} className="sm:w-5 sm:h-5" />}
                 </button>
 
-                <div className="hidden sm:flex items-center gap-1 px-1.5 sm:px-2.5 py-1 bg-[#EEF2F6] dark:bg-[#0E1624] rounded-full text-[0.65rem] sm:text-xs font-semibold border border-[#E1E6EB] dark:border-[#3E4C5E] whitespace-nowrap">
+                <div className="hidden sm:flex items-center gap-1 px-1.5 sm:px-2.5 py-1 bg-[#F4F5F7] dark:bg-[#0E1624] rounded-full text-[0.65rem] sm:text-xs font-semibold border border-[#E1E6EB] dark:border-[#3E4C5E] whitespace-nowrap">
                     <CheckCircle2 size={11} className="sm:w-3.5 sm:h-3.5 text-[#0052CC] dark:text-[#4C9AFF] flex-shrink-0" />
                     <span className="text-[#172B4D] dark:text-slate-300">PENSUM</span>
                 </div>

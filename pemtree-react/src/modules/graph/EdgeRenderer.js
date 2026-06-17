@@ -1,6 +1,7 @@
 // modules/graph/EdgeRenderer.js - Renderizado de aristas
 
 import { getNodeDimensions } from './dimensions.js';
+import { EDGE_COLORS } from '../../theme/tokens.js';
 
 export class EdgeRenderer {
     constructor() {
@@ -88,34 +89,36 @@ determinarEstiloArista(fromNode, toNode, selectedNode, showCriticalPath, temaOsc
         const toEnRuta = showCriticalPath && toNode.enRuta && !toNode.enRutaCritica;
         const aristaSugerida = showCriticalPath && (fromEnRuta || toEnRuta) && fromNode.enRuta && toNode.enRuta;
 
+        const ec = temaOscuro ? EDGE_COLORS.dark : EDGE_COLORS.light;
+
         let style = {
-            stroke: temaOscuro ? "#7f8c8d" : "#bdc3c7",
+            stroke: ec.default,
             strokeWidth: "1",
             strokeDasharray: null,
             markerEnd: null,
-            opacity: temaOscuro ? "0.5" : "0.4"
+            opacity: ec.opacity
         };
 
         if (hidePathLines && !aristaCritica && !aristaSugerida && !(selectedNode && (fromNode.id === selectedNode.id || aristaEnRutaActiva))) {
             style.opacity = "0.08";
         } else if (selectedNode && fromNode.id === selectedNode.id) {
-            style.stroke = "#f39c12";
+            style.stroke = ec.selected;
             style.strokeWidth = "2";
             style.strokeDasharray = "5,5";
             style.markerEnd = "url(#arrowhead-yellow)";
             style.opacity = null;
         } else if (selectedNode && aristaEnRutaActiva) {
-            style.stroke = temaOscuro ? "#0747A6" : "#2c3e50";
+            style.stroke = ec.active;
             style.strokeWidth = "2";
             style.markerEnd = temaOscuro ? "url(#arrowhead-blue)" : "url(#arrowhead)";
             style.opacity = null;
         } else if (aristaCritica) {
-            style.stroke = "#e74c3c";
+            style.stroke = ec.critical;
             style.strokeWidth = "3";
             style.strokeDasharray = "5,5";
             style.opacity = null;
         } else if (aristaSugerida) {
-            style.stroke = temaOscuro ? "#fbbf24" : "#d97706";
+            style.stroke = ec.suggested;
             style.strokeWidth = "2";
             style.strokeDasharray = "4,4";
             style.opacity = null;

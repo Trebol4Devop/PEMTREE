@@ -3,6 +3,7 @@
 import { TextUtils } from '../utils/TextUtils.js';
 import { cursoMap, currentPensumColors } from '../data/cursos.js';
 import { getNodeDimensions } from './dimensions.js';
+import { getBaseColors, NODE_FILLS, NODE_STROKES, SECTION_TEXT, CODE_COMPLETED, WARNING_COLORS } from '../../theme/tokens.js';
 
 export class NodeRenderer {
     constructor() {
@@ -197,7 +198,7 @@ export class NodeRenderer {
         if (codeText) {
             let codeTextColor;
             if (curso.completado) {
-                codeTextColor = temaOscuro ? '#10b981' : '#059669';
+                codeTextColor = temaOscuro ? CODE_COMPLETED.dark : CODE_COMPLETED.light;
             } else {
                 codeTextColor = sectionColors.text;
             }
@@ -232,43 +233,43 @@ export class NodeRenderer {
         let fillColor, strokeColor, strokeWidth, strokeDasharray = null;
 
         if (curso.selected) {
-            fillColor = temaOscuro ? "#2d3748" : "#fff";
+            fillColor = temaOscuro ? NODE_FILLS.selected.dark : NODE_FILLS.selected.light;
             strokeColor = baseColors.selected;
             strokeWidth = "3";
         } else if (curso.completado) {
-            fillColor = temaOscuro ? "#064e3b" : "#d4efdf";
+            fillColor = temaOscuro ? NODE_FILLS.completado.dark : NODE_FILLS.completado.light;
             strokeColor = baseColors.completado;
             strokeWidth = "2";
         } else if (curso.disponible) {
-            fillColor = temaOscuro ? "#1e3a8a" : "#fff";
+            fillColor = temaOscuro ? NODE_FILLS.disponible.dark : NODE_FILLS.disponible.light;
             strokeColor = baseColors.highlighted;
             strokeWidth = "3";
             strokeDasharray = "5,2";
         } else if (curso.highlighted) {
-            fillColor = temaOscuro ? "#1f3c7a" : "#e8f6f3";
-            strokeColor = temaOscuro ? "#60a5fa" : "#14ab85";
+            fillColor = temaOscuro ? NODE_FILLS.highlighted.dark : NODE_FILLS.highlighted.light;
+            strokeColor = temaOscuro ? NODE_STROKES.highlighted.dark : NODE_STROKES.highlighted.light;
             strokeWidth = "2";
         } else if (isCriticalView) {
-            fillColor = temaOscuro ? "#7f1d1d" : "#fdedec";
+            fillColor = temaOscuro ? NODE_FILLS.critical.dark : NODE_FILLS.critical.light;
             strokeColor = baseColors.critical;
             strokeWidth = "2.5";
         } else if (isInPath && !curso.obligatorio && isSocialHum) {
-            fillColor = temaOscuro ? "#1e3a5f" : "#dbeafe";
-            strokeColor = temaOscuro ? "#60a5fa" : "#2563eb";
+            fillColor = temaOscuro ? NODE_FILLS.pathSocialHum.dark : NODE_FILLS.pathSocialHum.light;
+            strokeColor = temaOscuro ? NODE_STROKES.pathSocialHum.dark : NODE_STROKES.pathSocialHum.light;
             strokeWidth = "2";
             strokeDasharray = "6,3";
         } else if (isInPath && isIdiomaSugerido) {
-            fillColor = temaOscuro ? "#78350f" : "#fef3c7";
-            strokeColor = temaOscuro ? "#fbbf24" : "#d97706";
+            fillColor = temaOscuro ? NODE_FILLS.pathIdioma.dark : NODE_FILLS.pathIdioma.light;
+            strokeColor = temaOscuro ? NODE_STROKES.pathIdioma.dark : NODE_STROKES.pathIdioma.light;
             strokeWidth = "2";
             strokeDasharray = "6,3";
         } else if (isInPath) {
-            fillColor = temaOscuro ? "#78350f" : "#fef3c7";
-            strokeColor = temaOscuro ? "#fbbf24" : "#d97706";
+            fillColor = temaOscuro ? NODE_FILLS.pathGeneric.dark : NODE_FILLS.pathGeneric.light;
+            strokeColor = temaOscuro ? NODE_STROKES.pathGeneric.dark : NODE_STROKES.pathGeneric.light;
             strokeWidth = "2";
             strokeDasharray = "6,3";
         } else {
-            fillColor = temaOscuro ? "#1f2937" : "#f4f6f7";
+            fillColor = temaOscuro ? NODE_FILLS.default.dark : NODE_FILLS.default.light;
             strokeColor = baseColors.bloqueado;
             strokeWidth = "1";
         }
@@ -277,31 +278,11 @@ export class NodeRenderer {
     }
 
     getBaseColors(temaOscuro) {
-        return temaOscuro ? {
-            fill: '#1a1f2e',
-            stroke: '#2c3e50',
-            text: '#f5f7fa',
-            completado: '#10b981',
-            disponible: '#3b82f6',
-            bloqueado: '#9ca3af',
-            selected: '#f59e0b',
-            highlighted: '#fbbf24',
-            critical: '#ef4444'
-        } : {
-            fill: 'white',
-            stroke: '#ccc',
-            text: '#333',
-            completado: '#059669',
-            disponible: '#3498db',
-            bloqueado: '#bdc3c7',
-            selected: '#e67e22',
-            highlighted: '#f39c12',
-            critical: '#e74c3c'
-        };
+        return getBaseColors(temaOscuro);
     }
 
     getSectionColors(curso, colors, temaOscuro) {
-        const defaultText = temaOscuro ? '#ecf0f1' : '#333';
+        const defaultText = temaOscuro ? SECTION_TEXT.dark : SECTION_TEXT.light;
         const s = curso.colors || {};
         const stroke = 'none';
         const strokeWidth = '0';
@@ -493,7 +474,7 @@ export class NodeRenderer {
 
         let codeTextColor;
         if (curso.completado) {
-            codeTextColor = temaOscuro ? '#10b981' : '#059669';
+            codeTextColor = temaOscuro ? CODE_COMPLETED.dark : CODE_COMPLETED.light;
         } else {
             codeTextColor = sectionColors.text;
         }
@@ -596,7 +577,7 @@ export class NodeRenderer {
         warning.setAttribute("data-tipo", "warning");
         warning.setAttribute("x", centerX + centerW - (isMobile ? 12 : 16));
         warning.setAttribute("y", curso.y + (isMobile ? 12 : 16));
-        warning.setAttribute("fill", isSH ? "#2563eb" : (isIdioma ? "#d97706" : "#e74c3c"));
+        warning.setAttribute("fill", isSH ? WARNING_COLORS.socialHum : (isIdioma ? WARNING_COLORS.idioma : WARNING_COLORS.critica));
         warning.setAttribute("font-size", isMobile ? "12" : "16");
         warning.setAttribute("font-weight", "bold");
         if (isSH) {

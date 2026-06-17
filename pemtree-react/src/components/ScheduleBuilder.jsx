@@ -10,6 +10,7 @@ import {
         formatearDuracion
 } from '../modules/data/scraper';
 import { getPensumKey } from '../modules/data/cursos';
+import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
 import ExportModal from './ExportModal';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -23,43 +24,6 @@ const PERIODS = [
     { id: 'vacaciones1', label: 'Vacaciones 1', shortLabel: 'Vac 1' },
     { id: 'vacaciones2', label: 'Vacaciones 2', shortLabel: 'Vac 2' },
 ];
-
-const PALETAS = {
-    Default: ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#db2777',
-    '#0891b2', '#65a30d', '#ea580c', '#4f46e5', '#be123c', '#0d9488',
-    '#b45309', '#9333ea', '#0284c7', '#16a34a', '#e11d48', '#ca8a04'],
-    Pastel:  ['#93c5fd', '#86efac', '#fcd34d', '#fca5a5', '#c4b5fd', '#f9a8d4',
-    '#67e8f9', '#bef264', '#fdba74', '#a5b4fc', '#fda4af', '#5eead4',
-    '#d6b5e0', '#d8b4fe', '#7dd3fc', '#a3e635', '#fb7185', '#fbbf24'],
-    Oscuro:  ['#1e3a5f', '#064e3b', '#78350f', '#7f1d1d', '#3b0764', '#701a75',
-    '#164e63', '#365314', '#431407', '#1e1b4b', '#4a1d2a', '#134e4a',
-    '#2d1a0a', '#4c1d95', '#0c4a6e', '#14532d', '#881337', '#713f12'],
-    Neon:    ['#00ffcc', '#39ff14', '#ff6600', '#ff0033', '#b300ff', '#ff00ff',
-    '#00ccff', '#ccff00', '#ff3300', '#6600ff', '#ff0066', '#00ff99',
-    '#ff9900', '#9933ff', '#00aaff', '#33ff33', '#ff0044', '#ffaa00'],
-    Calido:  ['#cc3300', '#8b4513', '#daa520', '#cd853f', '#b22222', '#ff6347',
-    '#ff8c00', '#9acd32', '#556b2f', '#a0522d', '#d2691e', '#f4a460',
-    '#8b0000', '#ff4500', '#b8860b', '#6b8e23', '#c71585', '#ff7f50']
-};
-
-function getCursoColor(codigo, palette) {
-    let hash = 0;
-    for (let i = 0; i < codigo.length; i++) {
-        hash = codigo.charCodeAt(i) + ((hash << 5) - hash);
-    }
-    return palette[Math.abs(hash) % palette.length];
-}
-
-function getTextColor(hex) {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > 0.5 ? '#1e293b' : '#ffffff';
-}
-
-function getPaletteAccent(paletteName) {
-    return (PALETAS[paletteName] || PALETAS.Default)[0];
-}
 
 function nombreCorto(nombre) {
     if (!nombre || nombre === 'STAFF' || nombre === 'SIN AUXILIAR') return '';
@@ -358,11 +322,11 @@ export default function ScheduleBuilder() {
         ctx.scale(scale, scale);
 
         // ── theme colours (matching CSS custom properties) ────────────────────
-        const BG      = isDark ? '#121924' : '#f8fafc';
-        const SURFACE = isDark ? '#1c2636' : '#ffffff';
-        const BORDER  = isDark ? '#334155' : '#d1d5db';
-        const TEXT_MUTED = isDark ? '#94a3b8' : '#7a869a';
-        const TIME_BG = isDark ? '#0f172a' : '#f4f5f7';
+        const BG      = isDark ? '#0E1624' : '#FAFBFC';
+        const SURFACE = isDark ? '#1C2636' : '#ffffff';
+        const BORDER  = isDark ? '#3E4C5E' : '#DFE1E6';
+        const TEXT_MUTED = isDark ? '#94a3b8' : '#7A869A';
+        const TIME_BG = isDark ? '#0E1624' : '#F4F5F7';
         const CARD_R = 6;
 
         // ── background ────────────────────────────────────────────────────────
@@ -609,7 +573,7 @@ export default function ScheduleBuilder() {
                 if (conf.status !== 'valid') {
                     ctx.save();
                     roundRect(blockX, blockY - 0.5, bw, bh, 0);
-                    ctx.strokeStyle = conf.status === 'error' ? '#dc2626' : '#d97706';
+                    ctx.strokeStyle = conf.status === 'error' ? '#e74c3c' : '#d97706';
                     ctx.lineWidth = 2;
                     ctx.stroke();
                     ctx.restore();
@@ -953,7 +917,7 @@ export default function ScheduleBuilder() {
                     const color       = getCursoColor(seccion.codigo, activePalette);
                     const textColor   = getTextColor(color);
                     const conf        = hasConflict(seccion);
-                    const borderColor = conf.status === 'error' ? '#dc2626' : conf.status === 'warning' ? '#d97706' : 'transparent';
+                    const borderColor = conf.status === 'error' ? '#e74c3c' : conf.status === 'warning' ? '#d97706' : 'transparent';
 
                     const blockContent = (
                         <>
@@ -961,7 +925,7 @@ export default function ScheduleBuilder() {
                             <span className="schedule-block-name">{truncarNombre(seccion.nombre)}</span>
                             <span className="schedule-block-prof">{nombreCorto(seccion.catedratico)}</span>
                             <span className="schedule-block-bottom">
-                                <span className="schedule-block-room">{seccion.salon}</span>
+                                <span className="schedule-block-room">{seccion.edificio} {seccion.salon}</span>
                                 <span className="schedule-block-tipo">{tipoAbrev(seccion.tipo)}</span>
                             </span>
                         </>
@@ -1135,7 +1099,7 @@ export default function ScheduleBuilder() {
                 className="schedule-course-header"
                 onClick={() => !pinnedCourses[curso.codigo] && toggleCourseExpand(curso.codigo)}
                 >
-                <div className="schedule-course-color"></div>
+                <div className="schedule-course-color" style={{ backgroundColor: getCursoColor(curso.codigo, PALETAS[exportSettings.paletteName] || PALETAS.Default) }}></div>
                 <div className="schedule-course-info">
                 <span className="schedule-course-code">{curso.codigo}</span>
                 <span className="schedule-course-name">{curso.nombre}</span>

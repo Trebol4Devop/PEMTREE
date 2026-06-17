@@ -56,7 +56,7 @@ export default function Home() {
                     </h1>
 
                     <p className="text-[17px] md:text-[20px] text-[#5E6C84] dark:text-slate-400 mt-10 max-w-2xl leading-relaxed font-normal">
-                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-200">Pensum CLAR 2022</span> todas la carrreras de FIUSAC mediante un tablero interactivo.
+                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022</span> todas la carrreras de FIUSAC mediante un tablero interactivo.
                     </p>
 
                     <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
@@ -67,7 +67,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="w-full bg-[#FAFBFC] dark:bg-[#121924] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0 flex-grow">
+            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0 flex-grow">
                 <div className="max-w-5xl mx-auto text-center">
                     <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">Establece tu camino, un curso a la vez</h2>
                     <p className="text-sm text-[#5E6C84] dark:text-slate-400 max-w-xl mx-auto mb-10">
@@ -117,17 +117,17 @@ export default function Home() {
 
                     <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {team.map(member => (
-                            <div key={member.name} className="bg-[#F7F8FA] dark:bg-[#151F30] rounded-2xl p-6 shadow-sm border border-transparent hover:border-[#DEEBFF] dark:hover:border-[#2B3A55] transition-colors">
-                                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#E6EEF5] to-[#DCE6EF] dark:from-[#24324A] dark:to-[#1B263A] flex items-center justify-center overflow-hidden">
+                            <div key={member.name} className="bg-[#F4F5F7] dark:bg-[#1C2636] rounded-2xl p-6 shadow-sm border border-transparent hover:border-[#DEEBFF] dark:hover:border-[#3E4C5E] transition-colors">
+                                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#DEEBFF] to-[#DEEBFF] dark:from-[#1C2636] dark:to-[#0E1624] flex items-center justify-center overflow-hidden">
                                     <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
                                 </div>
                                 <h3 className="mt-4 text-base font-extrabold text-[#172B4D] dark:text-slate-100">
                                     {member.name}
                                 </h3>
-                                <p className="text-[11px] font-extrabold text-[#111827] dark:text-slate-300 tracking-widest mt-2">
+                                <p className="text-[11px] font-extrabold text-[#172B4D] dark:text-slate-300 tracking-widest mt-2">
                                     {member.role.toUpperCase()}
                                 </p>
-                                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[#8A96A8] dark:text-slate-400">
+                                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[#7A869A] dark:text-slate-400">
                                     <a href={member.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
                                         <GitBranch size={14} />
                                         <span>GitHub</span>
@@ -137,8 +137,8 @@ export default function Home() {
                         ))}
                     </div>
 
-                    <div className="mt-10 text-xs text-[#5E6C84] dark:text-slate-400 border-t border-[#DFE1E6] dark:border-[#2B3A55] pt-6">
-                        Tecnologias: <span className="font-semibold text-[#172B4D] dark:text-slate-200">React&Vite</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-200">Node.js</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-200">TailwindCSS</span>
+                    <div className="mt-10 text-xs text-[#5E6C84] dark:text-slate-400 border-t border-[#DFE1E6] dark:border-[#3E4C5E] pt-6">
+                        Tecnologias: <span className="font-semibold text-[#172B4D] dark:text-slate-100">React&Vite</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">Node.js</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">TailwindCSS</span>
                     </div>
                 </div>
             </section>

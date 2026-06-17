@@ -15,8 +15,8 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
 
     const chipPrimary = isSuficiencia ? '#059669' : primary;
     const chipSecondary = isSuficiencia ? '#d1fae5' : secondary;
-    const chipText = isSuficiencia ? '#065f46' : textFill;
-    const chipCenter = isSuficiencia ? '#ecfdf5' : secondary;
+    const chipText = isSuficiencia ? '#059669' : textFill;
+    const chipCenter = isSuficiencia ? '#E3FCEF' : secondary;
 
     const isDark = document.documentElement.classList.contains('dark');
     const codeTextColor = curso.completado

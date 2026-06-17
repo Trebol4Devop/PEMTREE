@@ -2,6 +2,7 @@ import { LayoutCalculator } from './LayoutCalculator.js';
 import { NodeRenderer } from './NodeRenderer.js';
 import { EdgeRenderer } from './EdgeRenderer.js';
 import { CriticalPathAnalyzer } from './CriticalPathAnalyzer.js';
+import { SEMESTER_LABEL } from '../../theme/tokens.js';
 
 export class GraphManager {
     constructor(cursos, cursoMap) {
@@ -178,7 +179,7 @@ export class GraphManager {
                 label.setAttribute('dominant-baseline', 'alphabetic');
             }
 
-            label.setAttribute('fill', this.temaOscuro ? '#ffffff' : '#42526E');
+            label.setAttribute('fill', this.temaOscuro ? SEMESTER_LABEL.dark : SEMESTER_LABEL.light);
             graphGroup.appendChild(label);
         });
     }

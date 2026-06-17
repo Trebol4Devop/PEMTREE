@@ -29,34 +29,34 @@ html, body {
 }
 
 ::-webkit-scrollbar-thumb {
-    background: #c1c9d2;
+    background: #DFE1E6;
     border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-    background: #a0aab5;
+    background: #7A869A;
 }
 
 html.dark ::-webkit-scrollbar-thumb {
-    background: #475569;
+    background: #3E4C5E;
 }
 
 html.dark ::-webkit-scrollbar-thumb:hover {
-    background: #64748b;
+    background: #94a3b8;
 }
 
 /* Firefox scrollbar */
 * {
     scrollbar-width: thin;
-    scrollbar-color: #c1c9d2 transparent;
+    scrollbar-color: #DFE1E6 transparent;
 }
 
 html.dark * {
-    scrollbar-color: #475569 transparent;
+    scrollbar-color: #3E4C5E transparent;
 }
 
 html.dark {
-    background-color: #0f172a;
+    background-color: #0E1624;
     color: #f1f5f9;
 }
 
@@ -185,7 +185,7 @@ html.dark .logo-trebol-blue {
     letter-spacing: 0.04em;
     pointer-events: none;
     user-select: none;
-    fill: #42526E;
+    fill: #5E6C84;
     opacity: 1;
 }
 
@@ -239,20 +239,10 @@ html.dark .hide-scrollbar::-webkit-scrollbar-thumb {
     background-color: #3E4C5E; 
 }
 
-/* Mejoras de contraste en modo oscuro */
-html.dark {
-    --bg-elevated: #1c2636;
-    --bg-overlay: #121924;
-    --text-primary: #f1f5f9;
-    --text-secondary: #cbd5e1;
-    --border-subtle: #334155;
-    --border-focus: #60a5fa;
-}
-
 /* Mejorar visibilidad del select y inputs en dark mode */
 html.dark select,
 html.dark input {
-    background-color: #0f172a !important;
+    background-color: #0E1624 !important;
     color: #f1f5f9 !important;
 }
 
@@ -602,7 +592,7 @@ html.dark .planner-block-header-semester {
 }
 
 .planner-block-header-vacation {
-    background: #FFFBEB;
+    background: #FFF0B3;
     color: #92400E;
 }
 html.dark .planner-block-header-vacation {
@@ -1494,8 +1484,8 @@ html.dark .planner-pool-close:hover {
     --bg-secondary: #F4F5F7;
     --bg-elevated: #FFFFFF;
     --bg-overlay: #FAFBFC;
-    --border: #D1D5DB;
-    --border-subtle: #EBECF0;
+    --border: #DFE1E6;
+    --border-subtle: #F4F5F7;
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -1508,10 +1498,10 @@ html.dark .schedule-container {
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
     --text-muted: #94a3b8;
-    --bg-primary: #121924;
+    --bg-primary: #0E1624;
     --bg-secondary: #1c2636;
     --bg-elevated: #1c2636;
-    --bg-overlay: #0f172a;
+    --bg-overlay: #0E1624;
     --border: #334155;
     --border-subtle: #334155;
 }
@@ -1567,7 +1557,7 @@ html.dark .schedule-toolbar-title h3 {
 
 .schedule-count-lab {
     background: rgba(220, 38, 38, 0.12);
-    color: #dc2626;
+    color: #e74c3c;
 }
 
 .schedule-count-pra {
@@ -1598,14 +1588,6 @@ html.dark .schedule-count-lab {
     padding: 0.25rem;
     border-radius: 6px;
     border: 1px solid var(--border);
-}
-
-@media (max-width: 640px) {
-    .schedule-period-tabs {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 2px;
-    }
 }
 
 .schedule-period-tab {
@@ -1722,7 +1704,7 @@ html.dark .schedule-modalidad-select {
 }
 
 .schedule-conflict-banner-icon {
-    color: #dc2626;
+    color: #e74c3c;
     flex-shrink: 0;
     margin-top: 1px;
 }
@@ -1732,7 +1714,7 @@ html.dark .schedule-modalidad-select {
     flex-direction: column;
     gap: 0.1rem;
     font-size: 0.7rem;
-    color: #dc2626;
+    color: #e74c3c;
     line-height: 1.3;
 }
 
@@ -1949,12 +1931,14 @@ html.dark .schedule-course-item:hover {
     height: 28px;
     border-radius: 2px;
     flex-shrink: 0;
-    background: var(--border);
 }
 
 .schedule-course-info {
     flex: 1;
     min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
 }
 
 .schedule-pin-btn {
@@ -1990,7 +1974,7 @@ html.dark .schedule-course-item:hover {
 }
 
 .schedule-pin-btn.active:hover {
-    color: #dc2626;
+    color: #e74c3c;
     background: rgba(220, 38, 38, 0.1);
 }
 
@@ -2109,11 +2093,11 @@ html.dark .schedule-course-sections {
     align-items: center;
     font-size: 0.5rem;
     font-weight: 700;
-    color: #dc2626;
+    color: #e74c3c;
     cursor: help;
     margin-left: 0.2rem;
     padding: 0.1rem 0.2rem;
-    border: 1px solid #dc2626;
+    border: 1px solid #e74c3c;
     border-radius: 2px;
     line-height: 1;
 }
@@ -2142,7 +2126,7 @@ html.dark .schedule-section-prof {
 
 .schedule-section-status.error {
     background: rgba(248, 113, 113, 0.15);
-    color: #dc2626;
+    color: #e74c3c;
 }
 
 html.dark .schedule-section-status.valid {
@@ -2184,7 +2168,7 @@ html.dark .schedule-validation {
 }
 
 .schedule-validation-item.error {
-    color: #dc2626;
+    color: #e74c3c;
 }
 
 .schedule-validation-item.warning {
@@ -2215,7 +2199,7 @@ html.dark .schedule-validation-item.warning {
 }
 
 .schedule-error {
-    color: #dc2626;
+    color: #e74c3c;
     background: rgba(248, 113, 113, 0.1);
     border-radius: 8px;
     padding: 1rem;
@@ -2268,6 +2252,46 @@ html.dark .schedule-btn:hover:not(:disabled) {
     border-color: var(--border);
 }
 
+/* ── Schedule toolbar: mobile layout ────────────────────────── */
+@media (max-width: 640px) {
+    .schedule-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        padding: 0.4rem 0.5rem;
+        gap: 0.4rem;
+    }
+
+    .schedule-toolbar-title {
+        display: none;
+    }
+
+    .schedule-period-tabs {
+        width: 100%;
+        flex-direction: row;
+        gap: 2px;
+        padding: 3px;
+    }
+
+    .schedule-period-tab {
+        flex: 1;
+        padding: 0.35rem 0.2rem;
+        font-size: 0.62rem;
+        text-align: center;
+        white-space: nowrap;
+    }
+
+    .schedule-toolbar-actions {
+        width: 100%;
+        justify-content: flex-end;
+        gap: 0.35rem;
+    }
+
+    .schedule-btn {
+        padding: 0.35rem 0.5rem;
+        font-size: 0.7rem;
+    }
+}
+
 .schedule-block.lab {
     background-image: repeating-linear-gradient(
         45deg,
@@ -2290,9 +2314,18 @@ html.dark .schedule-btn:hover:not(:disabled) {
         grid-template-columns: 1fr;
         grid-template-rows: 1fr auto;
     }
-    
+
+    /* Allow panning the schedule grid on mobile */
+    .schedule-grid-container {
+        overflow: auto;
+    }
+
+    .schedule-grid {
+        min-width: 620px;
+    }
+
     .schedule-sidebar {
-        max-height: 250px;
+        max-height: 300px;
     }
 
     .schedule-search {
@@ -2524,7 +2557,7 @@ html.dark .export-font-btn.active {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    border: 1px dashed #d1d5db;
+    border: 1px dashed #DFE1E6;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -2545,7 +2578,7 @@ html.dark .export-bg-preview {
 }
 
 html.dark .export-bg-preview-empty {
-    background: #0f172a;
+    background: #0E1624;
     color: #64748b;
 }
 
@@ -2627,8 +2660,8 @@ html.dark .export-bg-mode-btn.active {
 }
 
 .export-bg-remove-btn:hover {
-    border-color: #dc2626;
-    color: #dc2626;
+    border-color: #e74c3c;
+    color: #e74c3c;
 }
 
 html.dark .export-bg-upload-btn,
@@ -2652,7 +2685,7 @@ html.dark .export-modal-footer {
 
 .export-modal-cancel-btn {
     padding: 0.5rem 1rem;
-    border: 1.5px solid #d1d5db;
+    border: 1.5px solid #DFE1E6;
     border-radius: 8px;
     background: transparent;
     cursor: pointer;
@@ -2749,7 +2782,7 @@ html.dark .export-theme-btn.active {
 .export-modal-preview-area {
     width: 100%;
     min-height: 120px;
-    border: 1px dashed #d1d5db;
+    border: 1px dashed #DFE1E6;
     border-radius: 8px;
     display: flex;
     align-items: center;

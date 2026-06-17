@@ -1,0 +1,388 @@
+{
+  "_instrucciones": "EDITA SOLO LOS VALORES HEX. Cada clave tiene 'current' (valor actual) y 'target' (valor deseado — vacío, llénalo tú). Cuando termines, avísame y aplicaré los 'target' en todo el código.",
+
+  "_consolidacion": {
+    "_resumen": "Reducción de ~90 a ~35 tokens únicos. Los targets homogeneizan colores que cumplen el mismo rol semántico.",
+    "_tokens_base_light": {
+      "page":             "#FAFBFC",
+      "surface":          "#FFFFFF",
+      "surface_secondary":"#F4F5F7",
+      "text_primary":     "#172B4D",
+      "text_secondary":   "#5E6C84",
+      "text_muted":       "#7A869A",
+      "border_default":   "#DFE1E6",
+      "border_subtle":    "#F4F5F7",
+      "primary":          "#0052CC",
+      "primary_hover":    "#0747A6",
+      "primary_light":    "#DEEBFF",
+      "success_base":     "#059669",
+      "error_base":       "#e74c3c"
+    },
+    "_tokens_base_dark": {
+      "page":             "#0E1624",
+      "surface":          "#1C2636",
+      "surface_secondary":"#2D333B",
+      "text_primary":     "#f1f5f9",
+      "text_secondary":   "#cbd5e1",
+      "text_muted":       "#94a3b8",
+      "border_default":   "#3E4C5E",
+      "border_subtle":    "#334155",
+      "primary":          "#4C9AFF",
+      "primary_hover":    "#2684FF",
+      "primary_light":    "#0C295E",
+      "success_base":     "#10b981",
+      "error_base":       "#ef4444"
+    }
+  },
+
+  "page": {
+    "_desc": "Fondo principal de la página",
+    "light": { "current": "#FAFBFC", "target": "#FAFBFC" },
+    "dark":  { "current": "#0E1624", "target": "#0E1624" },
+    "_ubicaciones": ["App.jsx (root div)", "index.css (html.dark background-color usa #0f172a)", "Home.jsx (features section)", "Visualizer.jsx (contenedor principal usa #121924)"]
+  },
+
+  "surface": {
+    "_desc": "Fondo de tarjetas, navbar, modales",
+    "light": { "current": "#FFFFFF", "target": "#FFFFFF" },
+    "dark":  { "current": "#1C2636", "target": "#1C2636" },
+    "_ubicaciones": ["Navbar.jsx", "Visualizer.jsx (toolbar, info card)", "WelcomeModal.jsx", "index.css (planner-container, schedule-container)"]
+  },
+
+  "overlay": {
+    "_desc": "Fondo de overlays y áreas secundarias — unificado con page",
+    "light": { "current": "#FAFBFC", "target": "#FAFBFC" },
+    "dark":  { "current": "#0E1624", "target": "#0E1624" },
+    "_ubicaciones": ["Visualizer.jsx (grafo canvas)", "index.css (schedule time cells usa #0f172a)"]
+  },
+
+  "text": {
+    "primary": {
+      "_desc": "Texto principal (headings, body)",
+      "light": { "current": "#172B4D", "target": "#172B4D" },
+      "dark":  { "current": "#f1f5f9", "target": "#f1f5f9" },
+      "_ubicaciones": ["App.jsx", "Home.jsx", "Navbar.jsx", "Visualizer.jsx", "WelcomeModal.jsx"]
+    },
+    "secondary": {
+      "_desc": "Texto secundario (descripciones, labels)",
+      "light": { "current": "#5E6C84", "target": "#5E6C84" },
+      "dark":  { "current": "#cbd5e1", "target": "#cbd5e1" },
+      "_ubicaciones": ["Home.jsx", "Navbar.jsx", "Visualizer.jsx", "WelcomeModal.jsx"]
+    },
+    "muted": {
+      "_desc": "Texto terciario / placeholders",
+      "light": { "current": "#7A869A", "target": "#7A869A" },
+      "dark":  { "current": "#94a3b8", "target": "#94a3b8" },
+      "_ubicaciones": ["Visualizer.jsx (timestamp)", "index.css (schedule)"]
+    },
+    "brand": {
+      "_desc": "Texto del logo PEMTREE en navbar — unificado con primary",
+      "light": { "current": "#013ea6", "target": "#0052CC" },
+      "dark":  { "current": "#f1f5f9", "target": "#f1f5f9" },
+      "_ubicaciones": ["Navbar.jsx"],
+      "_nota": "Era #013ea6, casi idéntico a primary #0052CC. Se unifica."
+    }
+  },
+
+  "border": {
+    "default": {
+      "_desc": "Bordes principales — unifica #DFE1E6, #d1d5db y #D1D5DB",
+      "light": { "current": "#DFE1E6", "target": "#DFE1E6" },
+      "dark":  { "current": "#3E4C5E", "target": "#3E4C5E" },
+      "_ubicaciones": ["Navbar.jsx", "Home.jsx", "Visualizer.jsx", "WelcomeModal.jsx", "index.css"],
+      "_nota": "Los tres valores light (#DFE1E6, #d1d5db, #D1D5DB) son indistinguibles. Se usa #DFE1E6 en todos."
+    },
+    "subtle": {
+      "_desc": "Bordes suaves / separadores internos",
+      "light": { "current": "#F4F5F7", "target": "#F4F5F7" },
+      "dark":  { "current": "#334155", "target": "#334155" },
+      "_ubicaciones": ["Visualizer.jsx (search dropdown)", "index.css (schedule)"]
+    }
+  },
+
+  "primary": {
+    "_desc": "Color de acento principal (botones, links, activos) — unifica #0052CC, #013ea6, #0065FF en light",
+    "light": { "current": "#0052CC", "target": "#0052CC" },
+    "dark":  { "current": "#4C9AFF", "target": "#4C9AFF" },
+    "_ubicaciones": ["Navbar.jsx (CTA, links activos)", "Home.jsx (hero badge, CTA)", "Visualizer.jsx (toolbar, credits badge)", "index.css (focused inputs)"],
+    "_nota": "En light: #013ea6 y #0065FF colapsados aquí. En dark: #3b82f6 y #60a5fa colapsados aquí."
+  },
+
+  "primaryHover": {
+    "_desc": "Hover del color principal",
+    "light": { "current": "#0747A6", "target": "#0747A6" },
+    "dark":  { "current": "#2684FF", "target": "#2684FF" },
+    "_ubicaciones": ["Navbar.jsx (CTA hover)", "Home.jsx (CTA hover)"]
+  },
+
+  "primaryLight": {
+    "_desc": "Fondo sutil con tint del color principal (badges, chips)",
+    "light": { "current": "#DEEBFF", "target": "#DEEBFF" },
+    "dark":  { "current": "#0C295E", "target": "#0C295E" },
+    "_ubicaciones": ["Navbar.jsx (nav link activo)", "Home.jsx (hero badge, feature icon)", "Visualizer.jsx (credits badge, search result hover)"]
+  },
+
+  "accent": {
+    "_desc": "Color de acento secundario (naranja del pensum) — se mantiene sin cambio",
+    "light": { "current": "#fc904f", "target": "#fc904f" },
+    "dark":  { "current": "#fc904f", "target": "#fc904f" },
+    "_ubicaciones": ["CourseChip.jsx", "NodeRenderer.js (pensum colors)", "WelcomeModal.jsx (tabs activos, bullets)"]
+  },
+
+  "accentSecondary": {
+    "_desc": "Color secundario del pensum — se mantiene sin cambio",
+    "light": { "current": "#ffd0b6", "target": "#ffd0b6" },
+    "dark":  { "current": "#ffd0b6", "target": "#ffd0b6" },
+    "_ubicaciones": ["CourseChip.jsx", "NodeRenderer.js"]
+  },
+
+  "navbar": {
+    "subtleBg": {
+      "_desc": "Fondo sutil del badge PENSUM en navbar",
+      "light": { "current": "#EEF2F6", "target": "#F4F5F7" },
+      "dark":  { "current": "#0E1624", "target": "#0E1624" },
+      "_nota": "Light: #EEF2F6 es casi igual a surface-secondary #F4F5F7. Se unifica."
+    },
+    "hoverBg": {
+      "_desc": "Fondo hover en navbar y botones",
+      "light": { "current": "#F4F5F7", "target": "#F4F5F7" },
+      "dark":  { "current": "#3E4C5E", "target": "#3E4C5E" },
+      "_ubicaciones": ["Navbar.jsx", "Visualizer.jsx (zoom controls, toolbar buttons)"]
+    }
+  },
+
+  "graph": {
+    "_desc": "Colores del grafo SVG (NodeRenderer.js + EdgeRenderer.js) — variedad semántica justificada, cambios mínimos",
+
+    "nodeFill": {
+      "default":      { "light": { "current": "#f4f6f7", "target": "#F4F5F7" },  "dark": { "current": "#1f2937", "target": "#1f2937" } },
+      "selected":     { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#2d3748", "target": "#2d3748" } },
+      "completed":    { "light": { "current": "#d4efdf", "target": "#d4efdf" },  "dark": { "current": "#064e3b", "target": "#064e3b" } },
+      "available":    { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1e3a8a", "target": "#1e3a8a" } },
+      "highlighted":  { "light": { "current": "#e8f6f3", "target": "#e8f6f3" },  "dark": { "current": "#1f3c7a", "target": "#1f3c7a" } },
+      "criticalPath": { "light": { "current": "#fdedec", "target": "#fdedec" },  "dark": { "current": "#7f1d1d", "target": "#7f1d1d" } },
+      "pathSocialHum":{ "light": { "current": "#dbeafe", "target": "#dbeafe" },  "dark": { "current": "#1e3a5f", "target": "#1e3a5f" } },
+      "pathIdioma":   { "light": { "current": "#fef3c7", "target": "#fef3c7" },  "dark": { "current": "#78350f", "target": "#78350f" } },
+      "pathGeneric":  { "light": { "current": "#fef3c7", "target": "#fef3c7" },  "dark": { "current": "#78350f", "target": "#78350f" } }
+    },
+
+    "nodeStroke": {
+      "selected":     { "light": { "current": "#e67e22", "target": "#e67e22" },  "dark": { "current": "#f59e0b", "target": "#f59e0b" } },
+      "completed":    { "light": { "current": "#059669", "target": "#059669" },  "dark": { "current": "#10b981", "target": "#10b981" } },
+      "available":    { "light": { "current": "#3498db", "target": "#0052CC" },  "dark": { "current": "#3b82f6", "target": "#4C9AFF" } },
+      "highlighted":  { "light": { "current": "#14ab85", "target": "#14ab85" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
+      "critical":     { "light": { "current": "#e74c3c", "target": "#e74c3c" },  "dark": { "current": "#ef4444", "target": "#ef4444" } },
+      "blocked":      { "light": { "current": "#bdc3c7", "target": "#bdc3c7" },  "dark": { "current": "#9ca3af", "target": "#9ca3af" } },
+      "pathSocialHum":{ "light": { "current": "#2563eb", "target": "#2563eb" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
+      "pathIdioma":   { "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
+      "pathGeneric":  { "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
+      "_nota": "available y highlighted dark: #3b82f6 y #60a5fa colapsados a primary dark #4C9AFF."
+    },
+
+    "nodeText": {
+      "_desc": "Color de texto dentro de los nodos SVG — unificado con text tokens",
+      "light": { "current": "#333333", "target": "#172B4D" },
+      "dark":  { "current": "#ecf0f1", "target": "#f1f5f9" },
+      "_ubicaciones": ["NodeRenderer.js (getSectionColors)"],
+      "_nota": "Light: #333333 → text-primary #172B4D. Dark: #ecf0f1 → text-primary dark #f1f5f9."
+    },
+
+    "nodeCodeCompleted": {
+      "_desc": "Color del código cuando el curso está completado — unificado con success-base",
+      "light": { "current": "#059669", "target": "#059669" },
+      "dark":  { "current": "#10b981", "target": "#10b981" }
+    },
+
+    "edgeStroke": {
+      "default":  { "light": { "current": "#bdc3c7", "target": "#bdc3c7" },  "dark": { "current": "#7f8c8d", "target": "#7f8c8d" } },
+      "selected": { "light": { "current": "#f39c12", "target": "#f39c12" },  "dark": { "current": "#f39c12", "target": "#f39c12" } },
+      "active":   { "light": { "current": "#2c3e50", "target": "#172B4D" },  "dark": { "current": "#0747A6", "target": "#4C9AFF" } },
+      "critical": { "light": { "current": "#e74c3c", "target": "#e74c3c" },  "dark": { "current": "#e74c3c", "target": "#ef4444" } },
+      "suggested":{ "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
+      "_nota": "active light: #2c3e50 → text-primary #172B4D. active dark: #0747A6 → primary dark #4C9AFF. critical dark: #e74c3c → error-base dark #ef4444."
+    },
+
+    "arrowheadFill": {
+      "default":  { "light": { "current": "#2c3e50", "target": "#172B4D" },  "dark": { "current": "#2c3e50", "target": "#f1f5f9" } },
+      "selected": { "light": { "current": "#f39c12", "target": "#f39c12" },  "dark": { "current": "#f39c12", "target": "#f39c12" } },
+      "active":   { "light": { "current": "#0747A6", "target": "#0052CC" },  "dark": { "current": "#0747A6", "target": "#4C9AFF" } },
+      "_nota": "default: #2c3e50 → text-primary en ambos modos. active unificado con primary."
+    },
+
+    "warningIcon": {
+      "_desc": "Colores de los íconos de advertencia en nodos (SH, ID, !) — se mantienen por ser semánticamente distintos",
+      "socialHum": { "current": "#2563eb", "target": "#2563eb" },
+      "idioma":    { "current": "#d97706", "target": "#d97706" },
+      "critica":   { "current": "#e74c3c", "target": "#e74c3c" }
+    },
+
+    "semesterLabel": {
+      "_desc": "Etiqueta de semestre en el grafo — unificada con text-secondary / text-primary",
+      "light": { "current": "#42526E", "target": "#5E6C84" },
+      "dark":  { "current": "#ffffff", "target": "#f1f5f9" },
+      "_ubicaciones": ["GraphManager.js"],
+      "_nota": "Light: #42526E casi igual a text-secondary #5E6C84. Se unifica."
+    },
+
+    "mandatoryDot": {
+      "_desc": "Punto rojo que indica curso obligatorio — unificado con error-base",
+      "current": "#e74c3c",
+      "target":  "#e74c3c"
+    }
+  },
+
+  "statusColors": {
+    "_desc": "Colores de estado (success, warning, error, info) usados en badges, chips, alerts",
+
+    "success": {
+      "text":   { "light": { "current": "#006644", "target": "#059669" },  "dark": { "current": "#10b981", "target": "#10b981" } },
+      "bg":     { "light": { "current": "#E3FCEF", "target": "#E3FCEF" },  "dark": { "current": "#0A3622", "target": "#0A3622" } },
+      "border": { "light": { "current": "#36B37E", "target": "#059669" },  "dark": { "current": "#36B37E", "target": "#10b981" } },
+      "_nota": "text light: #006644 → success-base #059669. border: unificado con success-base en cada modo.",
+      "_ubicaciones": ["Visualizer.jsx (info card badge)", "Home.jsx (feature icon)"]
+    },
+    "warning": {
+      "text":   { "light": { "current": "#A54800", "target": "#A54800" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
+      "bg":     { "light": { "current": "#FFF0B3", "target": "#FFF0B3" },  "dark": { "current": "#5C4000", "target": "#5C4000" } },
+      "border": { "light": { "current": "#F59E0B", "target": "#F59E0B" },  "dark": { "current": "#F59E0B", "target": "#F59E0B" } },
+      "_ubicaciones": ["Visualizer.jsx (info card)", "Home.jsx (feature icon)"]
+    },
+    "error": {
+      "text":   { "light": { "current": "#BF2600", "target": "#BF2600" },  "dark": { "current": "#F87171", "target": "#F87171" } },
+      "bg":     { "light": { "current": "#FFEBE6", "target": "#FFEBE6" },  "dark": { "current": "#450A0A", "target": "#450A0A" } },
+      "border": { "light": { "current": "#FF5630", "target": "#e74c3c" },  "dark": { "current": "#FF5630", "target": "#ef4444" } },
+      "_nota": "border: #FF5630 → error-base para consistencia con graph.nodeStroke.critical.",
+      "_ubicaciones": ["Visualizer.jsx (info card badge)", "ScheduleBuilder.jsx (conflict border)"]
+    },
+    "info": {
+      "text":   { "light": { "current": "#0052CC", "target": "#0052CC" },  "dark": { "current": "#4C9AFF", "target": "#4C9AFF" } },
+      "bg":     { "light": { "current": "#DEEBFF", "target": "#DEEBFF" },  "dark": { "current": "#0C295E", "target": "#0C295E" } },
+      "border": { "light": { "current": "#4C9AFF", "target": "#0052CC" },  "dark": { "current": "#4C9AFF", "target": "#4C9AFF" } },
+      "_nota": "info text y border ya coinciden con primary. border light: #4C9AFF → primary light #0052CC.",
+      "_ubicaciones": ["Visualizer.jsx (info card badge)"]
+    }
+  },
+
+  "visualizerInfoCard": {
+    "_desc": "Tarjeta de información del curso seleccionado en el grafo",
+    "bg":              { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "detailsBg":       { "light": { "current": "#FAFBFC", "target": "#FAFBFC" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
+    "closeBtnBg":      { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
+    "closeBtnHover":   { "light": { "current": "#EBECF0", "target": "#DFE1E6" },  "dark": { "current": "#3E4C5E", "target": "#3E4C5E" } },
+    "buttonCompletado":{ "current": "#10b981", "target": "#10b981" },
+    "buttonCursando":  { "current": "#3b82f6", "target": "#4C9AFF" },
+    "buttonDisponible":{ "light": { "current": "#0052CC", "target": "#0052CC" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
+    "_nota": "closeBtnHover light: #EBECF0 → border-default #DFE1E6. buttonCursando: #3b82f6 → primary dark #4C9AFF. buttonDisponible dark: #60a5fa → primary dark #4C9AFF."
+  },
+
+  "rutaCriticaModal": {
+    "_desc": "Modal de información de Ruta Crítica",
+    "bg":            { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "sectionBg":     { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
+    "warningBg":     { "light": { "current": "#FEF9C3", "target": "#FFF0B3" },  "dark": { "current": "#422006", "target": "#5C4000" } },
+    "warningText":   { "light": { "current": "#854D0E", "target": "#A54800" },  "dark": { "current": "#FDE047", "target": "#fbbf24" } },
+    "okBadgeBg":     { "light": { "current": "#F0FDF4", "target": "#E3FCEF" },  "dark": { "current": "#052E16", "target": "#0A3622" } },
+    "okBadgeText":   { "light": { "current": "#166534", "target": "#059669" },  "dark": { "current": "#86EFAC", "target": "#10b981" } },
+    "errorBadgeBg":  { "light": { "current": "#FEF2F2", "target": "#FFEBE6" },  "dark": { "current": "#450A0A", "target": "#450A0A" } },
+    "errorBadgeText":{ "light": { "current": "#991B1B", "target": "#BF2600" },  "dark": { "current": "#FCA5A5", "target": "#F87171" } },
+    "_nota": "Todos los badges de ok/error unificados con statusColors.success y statusColors.error. warningBg/Text unificados con statusColors.warning."
+  },
+
+  "welcomeModal": {
+    "_desc": "Modal de bienvenida / guía / descargo",
+    "bg":               { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "cardBg":           { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
+    "tableHeaderBg":    { "light": { "current": "#EBECF0", "target": "#DFE1E6" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "disclaimerBg":     { "light": { "current": "#FFFBEB", "target": "#FFF0B3" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
+    "disclaimerBorder": { "light": { "current": "#F59E0B", "target": "#F59E0B" },  "dark": { "current": "#F59E0B", "target": "#F59E0B" } },
+    "disclaimerTitle":  { "light": { "current": "#92400E", "target": "#A54800" },  "dark": { "current": "#FCD34D", "target": "#fbbf24" } },
+    "link":             { "light": { "current": "#0065FF", "target": "#0052CC" },  "dark": { "current": "#60A5FA", "target": "#4C9AFF" } },
+    "closeBtnBg":       { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
+    "closeBtnHover":    { "light": { "current": "#EBECF0", "target": "#DFE1E6" },  "dark": { "current": "#3E4C5E", "target": "#3E4C5E" } },
+    "_nota": "tableHeaderBg light: #EBECF0 → border-default #DFE1E6. link: #0065FF/#60A5FA → primary tokens. disclaimerTitle dark: #FCD34D → warning #fbbf24."
+  },
+
+  "scheduleBuilder": {
+    "_desc": "Componente de horarios (ScheduleBuilder + CSS)",
+
+    "canvasBg":      { "light": { "current": "#f8fafc", "target": "#FAFBFC" },  "dark": { "current": "#121924", "target": "#0E1624" } },
+    "canvasSurface": { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1c2636", "target": "#1C2636" } },
+    "canvasBorder":  { "light": { "current": "#d1d5db", "target": "#DFE1E6" },  "dark": { "current": "#334155", "target": "#3E4C5E" } },
+    "canvasTimeBg":  { "light": { "current": "#f4f5f7", "target": "#F4F5F7" },  "dark": { "current": "#0f172a", "target": "#0E1624" } },
+    "_nota": "canvasBg → page token. canvasBorder light: #d1d5db → border-default #DFE1E6. canvasBorder dark: #334155 → border-default dark #3E4C5E. canvasTimeBg dark: #0f172a → page dark #0E1624.",
+
+    "cssVars": {
+      "_desc": "Variables CSS usadas en .schedule-container (index.css)",
+      "textPrimary":   { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#f1f5f9", "target": "#f1f5f9" } },
+      "textSecondary": { "light": { "current": "#5E6C84", "target": "#5E6C84" },  "dark": { "current": "#cbd5e1", "target": "#cbd5e1" } },
+      "textMuted":     { "light": { "current": "#7A869A", "target": "#7A869A" },  "dark": { "current": "#94a3b8", "target": "#94a3b8" } },
+      "bgPrimary":     { "light": { "current": "#FFFFFF", "target": "#FFFFFF" },  "dark": { "current": "#121924", "target": "#0E1624" } },
+      "bgSecondary":   { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#1c2636", "target": "#1C2636" } },
+      "bgElevated":    { "light": { "current": "#FFFFFF", "target": "#FFFFFF" },  "dark": { "current": "#1c2636", "target": "#1C2636" } },
+      "bgOverlay":     { "light": { "current": "#FAFBFC", "target": "#FAFBFC" },  "dark": { "current": "#0f172a", "target": "#0E1624" } },
+      "border":        { "light": { "current": "#D1D5DB", "target": "#DFE1E6" },  "dark": { "current": "#334155", "target": "#3E4C5E" } },
+      "borderSubtle":  { "light": { "current": "#EBECF0", "target": "#F4F5F7" },  "dark": { "current": "#334155", "target": "#334155" } }
+    },
+
+    "conflictColors": {
+      "error":   { "current": "#dc2626", "target": "#e74c3c" },
+      "warning": { "current": "#d97706", "target": "#d97706" },
+      "_nota": "error: #dc2626 → error-base #e74c3c para consistencia con el resto del sistema."
+    }
+  },
+
+  "exportModal": {
+    "_desc": "Modal de exportación de horario",
+    "palettes": {
+      "_desc": "Paletas de colores para cursos (NO se tocan — son datos funcionales)",
+      "_nota": "Estas paletas son funcionales, definen los colores de los cursos en el horario. No son parte del tema visual."
+    }
+  },
+
+  "planner": {
+    "_desc": "Componente Planner (arrastrar cursos por semestres)",
+    "containerBg":         { "light": { "current": "#FAFBFC", "target": "#FAFBFC" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
+    "poolBg":              { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "chipBg":              { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1f2937", "target": "#1f2937" } },
+    "semesterBg":          { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "warningBannerBg":     { "light": { "current": "#FFFBEB", "target": "#FFF0B3" },  "dark": { "current": "#422006", "target": "#5C4000" } },
+    "warningBannerBorder": { "light": { "current": "#F59E0B", "target": "#F59E0B" },  "dark": { "current": "#F59E0B", "target": "#F59E0B" } },
+    "_nota": "warningBannerBg unificado con statusColors.warning.bg.",
+    "_ubicaciones": ["index.css (líneas ~297-1483)"]
+  },
+
+  "home": {
+    "_desc": "Landing page",
+    "heroOverlay":          { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
+    "heroSvgLine":          { "current": "#FFAB00", "target": "#FFAB00" },
+    "teamCardBg":           { "light": { "current": "#F7F8FA", "target": "#F4F5F7" },  "dark": { "current": "#151F30", "target": "#1C2636" } },
+    "teamCardHoverBorder":  { "light": { "current": "#DEEBFF", "target": "#DEEBFF" },  "dark": { "current": "#2B3A55", "target": "#3E4C5E" } },
+    "teamAvatarGradientFrom":{ "light": { "current": "#E6EEF5", "target": "#DEEBFF" },  "dark": { "current": "#24324A", "target": "#1C2636" } },
+    "teamAvatarGradientTo":  { "light": { "current": "#DCE6EF", "target": "#DEEBFF" },  "dark": { "current": "#1B263A", "target": "#0E1624" } },
+    "footerBg":             { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
+    "techStackText":        { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#E2E8F0", "target": "#f1f5f9" } },
+    "teamRoleBg":           { "light": { "current": "#111827", "target": "#172B4D" },  "dark": { "current": "#CBD5E1", "target": "#cbd5e1" } },
+    "githubText":           { "light": { "current": "#8A96A8", "target": "#7A869A" },  "dark": { "current": "#94A3B8", "target": "#94a3b8" } },
+    "_nota": "teamCardBg → surface/page tokens. teamCardHoverBorder dark: #2B3A55 → border-default dark. techStackText dark: #E2E8F0 → text-primary dark. teamRoleBg light: #111827 → text-primary light. githubText → text-muted tokens."
+  },
+
+  "scrollbar": {
+    "_desc": "Estilos de scrollbar",
+    "thumb":      { "light": { "current": "#c1c9d2", "target": "#DFE1E6" },  "dark": { "current": "#475569", "target": "#3E4C5E" } },
+    "thumbHover": { "light": { "current": "#a0aab5", "target": "#7A869A" },  "dark": { "current": "#64748b", "target": "#94a3b8" } },
+    "_nota": "thumb → border-default tokens. thumbHover → text-muted tokens.",
+    "_ubicaciones": ["index.css"]
+  },
+
+  "courseChip": {
+    "_desc": "Chips de cursos en el planner",
+    "suficiencia": {
+      "primary":         { "current": "#059669", "target": "#059669" },
+      "secondary":       { "current": "#d1fae5", "target": "#d1fae5" },
+      "text":            { "current": "#065f46", "target": "#059669" },
+      "center":          { "current": "#ecfdf5", "target": "#E3FCEF" },
+      "completedStroke": { "light": { "current": "#059669", "target": "#059669" },  "dark": { "current": "#10b981", "target": "#10b981" } },
+      "_nota": "text: #065f46 → success-base #059669. center: #ecfdf5 → statusColors.success.bg #E3FCEF."
+    }
+  }
+}
