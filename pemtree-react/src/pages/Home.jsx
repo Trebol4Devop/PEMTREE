@@ -1,8 +1,69 @@
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {  Users, Lock, BarChart4, GitBranch, Mail, Link as LinkIcon } from 'lucide-react';
 import Seo from '../components/seo/Seo';
+import CareerCard from '../components/CareerCard';
 
 export default function Home() {
+    const navigate = useNavigate();
+    const [careers, setCareers] = useState([]);
+
+    useEffect(() => {
+        let cancelled = false;
+        const loadCareers = async () => {
+            try {
+                const res = await fetch('/json/index.json');
+                if (!res.ok) return;
+                const list = await res.json();
+                if (!Array.isArray(list) || cancelled) return;
+
+                const enriched = await Promise.all(list.map(async (entry) => {
+                    const file = entry.file;
+                    const name = entry.name;
+                    const base = file.replace(/\.json$/i, '').replace(/_\d{2,4}$/, '');
+                    const yearMatch = file.replace(/\.json$/i, '').match(/_(\d{2,4})$/);
+                    const year = yearMatch ? `20${yearMatch[1]}` : '';
+                    const shortName = name
+                        .replace(/^Ingenier[ií]a\s+/i, '')
+                        .replace(/\s*\(\d{4}\)\s*$/, '')
+                        .trim();
+                    const jsonFile = `/json/${file}`;
+
+                    let colors = { color1: '#0052CC', color2: '#DEEBFF', color3: '#0052CC' };
+                    try {
+                        const cRes = await fetch(`/pensum_color/${base}_color.json`);
+                        if (cRes.ok) {
+                            const cJson = await cRes.json();
+                            colors = {
+                                color1: cJson.color1 || colors.color1,
+                                color2: cJson.color2 || colors.color2,
+                                color3: cJson.color3 || cJson.color1 || colors.color3,
+                            };
+                        }
+                    } catch {
+                        // keep defaults
+                    }
+                    return { name, shortName, base, jsonFile, colors, year };
+                }));
+
+                if (!cancelled) setCareers(enriched);
+            } catch (err) {
+                console.debug('Error cargando carreras:', err);
+            }
+        };
+        loadCareers();
+        return () => { cancelled = true; };
+    }, []);
+
+    const handleSelectCareer = (jsonFile) => {
+        try {
+            localStorage.setItem('pemtree_pensum_actual', jsonFile);
+        } catch {
+            // ignore
+        }
+        navigate('/visualizador');
+    };
+
     const team = [
         {
             name: 'Jose Monzon',
@@ -36,11 +97,11 @@ export default function Home() {
         <div className="flex-1 flex flex-col items-center overflow-y-auto w-full hide-scrollbar">
             
             <section
-                className="w-full min-h-screen bg-center bg-no-repeat bg-cover relative"
+                className="w-full bg-center bg-no-repeat bg-cover relative"
                 style={{ backgroundImage: "url('/images/fondo.png')" }}
             >
                 <div className="absolute inset-0 bg-white/45 dark:bg-[#0E1624]/55"></div>
-                <div className="pt-40 pb-12 px-4 text-center max-w-4xl mx-auto flex flex-col items-center relative z-10">
+                <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 text-center max-w-6xl mx-auto flex flex-col items-center relative z-10">
                     <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full mb-5 shadow-xs">
                         FIUSAC pensum interactivo
                     </p>
@@ -59,10 +120,19 @@ export default function Home() {
                         Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022</span> todas la carrreras de FIUSAC mediante un tablero interactivo.
                     </p>
 
-                    <div className="mt-10 flex flex-col sm:flex-row sm:space-x-4 space-y-3 sm:space-y-0">
-                        <Link to="/visualizador" className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-base px-8 py-3 rounded transition-all duration-300 shadow-md transform hover:-translate-y-0.5 cursor-pointer no-underline text-center">
-                            Comenzar a Visualizar
-                        </Link>
+                    <div className="mt-10 w-full mx-auto flex flex-wrap justify-center gap-10 sm:gap-12 lg:gap-16">
+                        {careers.map(c => (
+                            <CareerCard
+                                key={c.jsonFile}
+                                name={c.name}
+                                shortName={c.shortName}
+                                base={c.base}
+                                jsonFile={c.jsonFile}
+                                colors={c.colors}
+                                year={c.year}
+                                onSelect={handleSelectCareer}
+                            />
+                        ))}
                     </div>
                 </div>
             </section>
