@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, X, BookOpen, AlertTriangle } from 'lucide-react';
+import { Plus, X, BookOpen, AlertTriangle, Copy, Pencil, Trash2 } from 'lucide-react';
 import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
 import { importarCursosDesdeJSON } from '../modules/data/importFromJSON';
 import CoursePool from './CoursePool';
@@ -15,6 +15,11 @@ const SIMULTANEOUS_BONUS = 5;
 function getStorageKey() {
     const pk = getPensumKey();
     return pk ? `pemtree_plan_${pk}` : 'pemtree_plan_default';
+}
+
+function getLinesStorageKey() {
+    const pk = getPensumKey();
+    return pk ? `pemtree_plan_lines_${pk}` : 'pemtree_plan_lines_default';
 }
 
 function getPromedioKey() {
@@ -80,6 +85,50 @@ function loadPlanForKey(storageKey) {
     return {};
 }
 
+function inferSemesterCount(plan) {
+    let max = INITIAL_SEMESTERS;
+    for (const key of Object.keys(plan)) {
+        const match = key.match(/^(?:sem|vac)-(\d+)$/);
+        if (match) max = Math.max(max, parseInt(match[1], 10));
+    }
+    return max;
+}
+
+function loadLinesFromStorage() {
+    try {
+        const raw = localStorage.getItem(getLinesStorageKey());
+        if (raw) {
+            const parsed = JSON.parse(raw);
+            if (Array.isArray(parsed) && parsed.length > 0) {
+                return parsed.map(l => ({
+                    id: l.id,
+                    name: l.name || 'Línea',
+                    plan: (l.plan && typeof l.plan === 'object') ? l.plan : {},
+                    semesterCount: typeof l.semesterCount === 'number' ? l.semesterCount : INITIAL_SEMESTERS,
+                }));
+            }
+        }
+    } catch { /* ignore */ }
+
+    // Migrate from old single-plan format
+    const oldPlan = loadPlanForKey(getStorageKey());
+    if (oldPlan && Object.keys(oldPlan).length > 0) {
+        return [{
+            id: `line-${Date.now()}`,
+            name: 'Línea 1',
+            plan: oldPlan,
+            semesterCount: inferSemesterCount(oldPlan),
+        }];
+    }
+
+    return [{
+        id: `line-${Date.now()}`,
+        name: 'Línea 1',
+        plan: {},
+        semesterCount: INITIAL_SEMESTERS,
+    }];
+}
+
 function loadArrayFromStorage(key) {
     try {
         const raw = localStorage.getItem(key);
@@ -99,6 +148,20 @@ function getPlannedIds(plan) {
     return ids;
 }
 
+function sumLineCredits(line, resolveMap, suficiencias) {
+    if (!line || !resolveMap) return 0;
+    const sufSet = new Set(suficiencias);
+    let total = 0;
+    for (const ids of Object.values(line.plan || {})) {
+        for (const id of ids) {
+            if (sufSet.has(id)) continue;
+            const c = resolveMap.get(id);
+            if (c) total += parseInt(c.creditos, 10) || 0;
+        }
+    }
+    return total;
+}
+
 export default function Planner({ currentPensum }) {
     const { toasts, addToast, removeToast } = useToast();
     const [showPool, setShowPool] = useState(false);
@@ -106,15 +169,10 @@ export default function Planner({ currentPensum }) {
         return localStorage.getItem(getWarningDismissedKey()) !== 'true';
     });
 
-    const [plan, setPlan] = useState(() => loadPlanForKey(getStorageKey()));
-    const [semesterCount, setSemesterCount] = useState(() => {
-        let max = INITIAL_SEMESTERS;
-        for (const key of Object.keys(loadPlanForKey(getStorageKey()))) {
-            const match = key.match(/^(?:sem|vac)-(\d+)$/);
-            if (match) max = Math.max(max, parseInt(match[1], 10));
-        }
-        return Math.max(max, INITIAL_SEMESTERS);
-    });
+    const [lines, setLines] = useState(() => loadLinesFromStorage());
+    const [renamingLineId, setRenamingLineId] = useState(null);
+    const [renameValue, setRenameValue] = useState('');
+
     const [promedio, setPromedio] = useState(() => {
         try {
             const raw = localStorage.getItem(getPromedioKey());
@@ -171,12 +229,11 @@ export default function Planner({ currentPensum }) {
     }
 
     const maxCredits = useMemo(() => getMaxCredits(promedio, simultaneous), [promedio, simultaneous]);
-    const blocks = useMemo(() => buildBlocks(semesterCount), [semesterCount]);
 
     useEffect(() => {
-        localStorage.setItem(getStorageKey(), JSON.stringify(plan));
+        localStorage.setItem(getLinesStorageKey(), JSON.stringify(lines));
         localStorage.setItem(getLastUpdatedKey(), new Date().toISOString());
-    }, [plan]);
+    }, [lines]);
 
     useEffect(() => {
         localStorage.setItem(getPromedioKey(), String(promedio));
@@ -193,8 +250,6 @@ export default function Planner({ currentPensum }) {
     useEffect(() => {
         localStorage.setItem(getSuficienciaFailsKey(), JSON.stringify(suficienciaFails));
     }, [suficienciaFails]);
-
-    const plannedIds = useMemo(() => getPlannedIds(plan), [plan]);
 
     const currentCursos = useMemo(() => {
         const primary = Array.from(cursoMap.values());
@@ -219,44 +274,86 @@ export default function Planner({ currentPensum }) {
         return map;
     }, [secondCursoMap]);
 
-    const validatePrereqs = useCallback((courseId, targetBlockId) => {
-        const course = mergedCursoMap.get(courseId);
-        if (!course) return true;
+    const lineCredits = useCallback((line) => {
+        const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
+        return sumLineCredits(line, resolveMap, suficiencias);
+    }, [simultaneous, mergedCursoMap, suficiencias]);
 
-        const targetBlock = blocks.find(b => b.id === targetBlockId);
-        if (!targetBlock) return true;
+    const updateLine = useCallback((lineId, updater) => {
+        setLines(prev => {
+            const idx = prev.findIndex(l => l.id === lineId);
+            if (idx < 0) return prev;
+            const current = prev[idx];
+            const updated = typeof updater === 'function' ? updater(current) : updater;
+            const next = prev.slice();
+            next[idx] = updated;
+            return next;
+        });
+    }, []);
 
-        const targetOrder = blocks.indexOf(targetBlock);
+    const handleAddLine = useCallback(() => {
+        const newId = `line-${Date.now()}`;
+        const newLine = {
+            id: newId,
+            name: `Línea ${lines.length + 1}`,
+            plan: {},
+            semesterCount: INITIAL_SEMESTERS,
+        };
+        setLines(prev => [...prev, newLine]);
+    }, [lines.length]);
 
-        const prereqIds = [];
-        for (const pid of (course.prerequisitos || [])) {
-            if (typeof pid === 'number') {
-                prereqIds.push(pid);
+    const handleDuplicateLine = useCallback((lineId) => {
+        setLines(prev => {
+            const idx = prev.findIndex(l => l.id === lineId);
+            if (idx < 0) return prev;
+            const source = prev[idx];
+            const newId = `line-${Date.now()}`;
+            const copy = {
+                id: newId,
+                name: `${source.name} (copia)`,
+                plan: JSON.parse(JSON.stringify(source.plan || {})),
+                semesterCount: source.semesterCount || INITIAL_SEMESTERS,
+            };
+            const next = prev.slice();
+            next.splice(idx + 1, 0, copy);
+            return next;
+        });
+    }, []);
+
+    const handleDeleteLine = useCallback((lineId) => {
+        setLines(prev => {
+            if (prev.length <= 1) {
+                addToast('Debe existir al menos una línea de planificación');
+                return prev;
             }
+            return prev.filter(l => l.id !== lineId);
+        });
+    }, [addToast]);
+
+    const handleStartRename = useCallback((line) => {
+        setRenamingLineId(line.id);
+        setRenameValue(line.name);
+    }, []);
+
+    const handleCommitRename = useCallback(() => {
+        if (!renamingLineId) return;
+        const trimmed = renameValue.trim();
+        if (trimmed) {
+            setLines(prev => prev.map(l => l.id === renamingLineId ? { ...l, name: trimmed } : l));
         }
+        setRenamingLineId(null);
+        setRenameValue('');
+    }, [renamingLineId, renameValue]);
 
-        for (const prereqId of prereqIds) {
-            let found = false;
-            for (let i = 0; i < targetOrder; i++) {
-                const blockCourses = plan[blocks[i].id] || [];
-                if (blockCourses.includes(prereqId)) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) {
-                const prereqCourse = mergedCursoMap.get(prereqId);
-                const code = prereqCourse ? prereqCourse.codigo : `#${prereqId}`;
-                return { valid: false, message: `Falta prerequisito: ${code}` };
-            }
-        }
+    const makeHandleDrop = useCallback((lineId) => (courseId, targetBlockId, sourceBlockId) => {
+        const line = lines.find(l => l.id === lineId);
+        if (!line) return;
+        const linePlan = line.plan || {};
+        const lineSemesterCount = line.semesterCount || INITIAL_SEMESTERS;
+        const lineBlocks = buildBlocks(lineSemesterCount);
 
-        return { valid: true };
-    }, [blocks, plan, mergedCursoMap]);
-
-    const handleDrop = useCallback((courseId, targetBlockId, sourceBlockId) => {
         const isVac = targetBlockId.startsWith('vac');
-        const targetCourses = plan[targetBlockId] || [];
+        const targetCourses = linePlan[targetBlockId] || [];
 
         if (isVac && targetCourses.length >= 2) {
             addToast('Máximo 2 cursos por escuela de vacaciones');
@@ -279,9 +376,9 @@ export default function Planner({ currentPensum }) {
             }
         }
 
-        for (const [blockId, ids] of Object.entries(plan)) {
+        for (const [blockId, ids] of Object.entries(linePlan)) {
             if (blockId !== sourceBlockId && ids.includes(courseId)) {
-                addToast('Este curso ya está planificado');
+                addToast('Este curso ya está planificado en esta línea');
                 return;
             }
         }
@@ -292,50 +389,74 @@ export default function Planner({ currentPensum }) {
         }
 
         if (!ignorePrereqs) {
-            const prereqCheck = validatePrereqs(courseId, targetBlockId);
-            if (!prereqCheck.valid) {
-                addToast(prereqCheck.message);
-                return;
+            const course = mergedCursoMap.get(courseId);
+            const targetBlock = lineBlocks.find(b => b.id === targetBlockId);
+            if (course && targetBlock) {
+                const targetOrder = lineBlocks.indexOf(targetBlock);
+                for (const prereqId of (course.prerequisitos || [])) {
+                    if (typeof prereqId !== 'number') continue;
+                    let found = false;
+                    for (let i = 0; i < targetOrder; i++) {
+                        if ((linePlan[lineBlocks[i].id] || []).includes(prereqId)) { found = true; break; }
+                    }
+                    if (!found) {
+                        const pc = mergedCursoMap.get(prereqId);
+                        addToast(`Falta prerequisito: ${pc ? pc.codigo : '#' + prereqId}`);
+                        return;
+                    }
+                }
             }
         }
 
-        setPlan(prev => {
-            const next = { ...prev };
+        updateLine(lineId, l => ({
+            ...l,
+            plan: {
+                ...l.plan,
+                ...(sourceBlockId && sourceBlockId !== targetBlockId
+                    ? { [sourceBlockId]: (l.plan[sourceBlockId] || []).filter(id => id !== courseId) }
+                    : {}),
+                [targetBlockId]: [
+                    ...((l.plan[targetBlockId] || []).filter(id => id !== courseId)),
+                    courseId,
+                ],
+            },
+        }));
+    }, [lines, addToast, maxCredits, suficiencias, ignorePrereqs, mergedCursoMap, updateLine]);
 
-            if (sourceBlockId && sourceBlockId !== targetBlockId) {
-                next[sourceBlockId] = (next[sourceBlockId] || []).filter(id => id !== courseId);
+    const makeHandleRemoveChip = useCallback((lineId) => (courseId) => {
+        if (!lines.some(l => l.id === lineId)) return;
+        updateLine(lineId, l => {
+            const nextPlan = {};
+            for (const [blockId, ids] of Object.entries(l.plan)) {
+                nextPlan[blockId] = ids.filter(id => id !== courseId);
             }
-
-            if (!next[targetBlockId]) next[targetBlockId] = [];
-            if (!next[targetBlockId].includes(courseId)) {
-                next[targetBlockId] = [...next[targetBlockId], courseId];
-            }
-
-            return next;
-        });
-    }, [plan, addToast, validatePrereqs, maxCredits, suficiencias, ignorePrereqs, mergedCursoMap]);
-
-    const handleRemoveChip = useCallback((courseId) => {
-        setPlan(prev => {
-            const next = {};
-            for (const [blockId, ids] of Object.entries(prev)) {
-                next[blockId] = ids.filter(id => id !== courseId);
-            }
-            return next;
+            return { ...l, plan: nextPlan };
         });
         setSuficiencias(prev => prev.filter(id => id !== courseId));
-    }, []);
+    }, [lines, updateLine]);
 
-    const handleAddSemester = useCallback(() => {
-        setSemesterCount(prev => prev + 1);
-    }, []);
+    const makeHandleAddSemester = useCallback((lineId) => () => {
+        updateLine(lineId, l => ({ ...l, semesterCount: (l.semesterCount || INITIAL_SEMESTERS) + 1 }));
+    }, [updateLine]);
 
-    const handlePromedioChange = useCallback((e) => {
-        const val = parseFloat(e.target.value);
-        setPromedio(isNaN(val) ? 0 : Math.min(100, Math.max(0, val)));
-    }, []);
+    const makeHandleRemoveSemester = useCallback((lineId) => () => {
+        updateLine(lineId, l => {
+            const current = l.semesterCount || INITIAL_SEMESTERS;
+            if (current <= INITIAL_SEMESTERS) return l;
+            const nextCount = current - 1;
+            const nextPlan = {};
+            for (const [blockId, ids] of Object.entries(l.plan)) {
+                const match = blockId.match(/^(?:sem|vac)-(\d+)$/);
+                if (match && parseInt(match[1], 10) > nextCount) continue;
+                nextPlan[blockId] = ids;
+            }
+            return { ...l, semesterCount: nextCount, plan: nextPlan };
+        });
+    }, [updateLine]);
 
-    const handleToggleSuficiencia = useCallback((courseId, semesterNum) => {
+    const makeHandleToggleSuficiencia = useCallback((lineId) => (courseId, semesterNum) => {
+        const line = lines.find(l => l.id === lineId);
+        if (!line) return;
         const blockId = `sem-${semesterNum}`;
 
         if (suficiencias.includes(courseId)) {
@@ -348,22 +469,40 @@ export default function Planner({ currentPensum }) {
             return;
         }
 
-        const semesterSuficiencias = (plan[blockId] || []).filter(id => suficiencias.includes(id));
+        const semesterSuficiencias = (line.plan[blockId] || []).filter(id => suficiencias.includes(id));
         if (semesterSuficiencias.length >= 1) {
             addToast('Solo 1 suficiencia por semestre');
             return;
         }
 
         setSuficiencias(prev => [...prev, courseId]);
-    }, [suficiencias, suficienciaFails, plan, addToast]);
+    }, [lines, suficiencias, suficienciaFails, addToast]);
+
+    const handlePromedioChange = useCallback((e) => {
+        const val = parseFloat(e.target.value);
+        setPromedio(isNaN(val) ? 0 : Math.min(100, Math.max(0, val)));
+    }, []);
 
     /* Touch drag and drop for mobile */
-    const handleDropRef = useRef(handleDrop);
-    useEffect(() => { handleDropRef.current = handleDrop; }, [handleDrop]);
+    const handleDropRef = useRef(null);
+    useEffect(() => {
+        handleDropRef.current = (lineId, courseId, targetBlockId, sourceBlockId) => {
+            const handler = makeHandleDrop(lineId);
+            handler(courseId, targetBlockId, sourceBlockId);
+        };
+    }, [makeHandleDrop]);
 
     function findBlockEl(el) {
         while (el && el !== document.body) {
             if (el.classList && el.classList.contains('planner-block')) return el;
+            el = el.parentElement;
+        }
+        return null;
+    }
+
+    function findLineEl(el) {
+        while (el && el !== document.body) {
+            if (el.dataset && el.dataset.lineId) return el;
             el = el.parentElement;
         }
         return null;
@@ -433,8 +572,12 @@ export default function Planner({ currentPensum }) {
                 const blockEl = findBlockEl(under);
                 if (blockEl) {
                     const blockId = blockEl.dataset.blockId;
+                    const lineEl = findLineEl(blockEl);
+                    const lineId = lineEl ? lineEl.dataset.lineId : null;
                     const { courseId, sourceBlock } = window.__touchDrag;
-                    if (blockId) handleDropRef.current(courseId, blockId, sourceBlock);
+                    if (blockId && lineId) {
+                        handleDropRef.current(lineId, courseId, blockId, sourceBlock);
+                    }
                 }
             }
             document.querySelectorAll('.planner-block.planner-block-over').forEach(el => {
@@ -486,7 +629,7 @@ export default function Planner({ currentPensum }) {
                         <X size={18} />
                     </button>
                 </div>
-                <CoursePool cursos={currentCursos} plannedIds={plannedIds} mergedMap={simultaneous ? mergedCursoMap : null} />
+                <CoursePool cursos={currentCursos} plannedIds={new Set()} mergedMap={simultaneous ? mergedCursoMap : null} />
             </div>
 
             <div className="planner-content">
@@ -550,62 +693,155 @@ export default function Planner({ currentPensum }) {
                     </button>
                 </div>
                 <div className="planner-main">
-                    <div className="planner-blocks-row">
-                    {blocks.map((block, idx) => {
-                        const courseIds = plan[block.id] || [];
-                        const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
-                        const courseObjs = courseIds
-                            .map(id => resolveMap.get(id))
-                            .filter(Boolean);
-
-                        let el;
-                        if (block.type === 'semester') {
-                            el = (
-                                <SemesterBlock
-                                    key={block.id}
-                                    semesterNum={block.semester}
-                                    courses={courseObjs}
-                                    maxCredits={maxCredits}
-                                    suficiencias={suficiencias}
-                                    onDrop={handleDrop}
-                                    onRemoveChip={handleRemoveChip}
-                                    onToggleSuficiencia={handleToggleSuficiencia}
-                                    mergedMap={simultaneous ? mergedCursoMap : null}
-                                />
-                            );
-                        } else {
-                            el = (
-                                <VacationBlock
-                                    key={block.id}
-                                    vacNum={block.vacNum}
-                                    courses={courseObjs}
-                                    onDrop={handleDrop}
-                                    onRemoveChip={handleRemoveChip}
-                                    mergedMap={simultaneous ? mergedCursoMap : null}
-                                />
-                            );
-                        }
-
-                        const isYearEnd = block.type === 'vacation';
-                        const isLastBlock = idx === blocks.length - 1;
-
-                        if (isYearEnd && !isLastBlock) {
-                            return (
-                                <div key={`year-group-${block.id}`} className="planner-year-group">
-                                    {el}
-                                    <div className="planner-year-separator" title={`Fin del año ${block.vacNum}`} />
+                    {lines.map(line => {
+                        const credits = lineCredits(line);
+                        const lineSemesterCount = line.semesterCount || INITIAL_SEMESTERS;
+                        const lineBlocks = buildBlocks(lineSemesterCount);
+                        const isRenaming = renamingLineId === line.id;
+                        return (
+                            <div key={line.id} className="planner-line-section" data-line-id={line.id}>
+                                <div className="planner-line-header">
+                                    <div className="planner-line-header-left">
+                                        {isRenaming ? (
+                                            <input
+                                                type="text"
+                                                autoFocus
+                                                value={renameValue}
+                                                onChange={e => setRenameValue(e.target.value)}
+                                                onBlur={handleCommitRename}
+                                                onKeyDown={e => {
+                                                    if (e.key === 'Enter') handleCommitRename();
+                                                    if (e.key === 'Escape') { setRenamingLineId(null); setRenameValue(''); }
+                                                }}
+                                                className="planner-line-rename-input"
+                                            />
+                                        ) : (
+                                            <h3 className="planner-line-header-name" title={line.name}>{line.name}</h3>
+                                        )}
+                                        <span
+                                            className="planner-line-header-credits"
+                                            title="Créditos totales planificados en esta línea"
+                                        >
+                                            <strong>{credits}</strong> cr
+                                        </span>
+                                    </div>
+                                    <div className="planner-line-header-actions">
+                                        <button
+                                            type="button"
+                                            className="planner-line-action-btn"
+                                            onClick={() => handleStartRename(line)}
+                                            title="Renombrar línea"
+                                            aria-label="Renombrar línea"
+                                        >
+                                            <Pencil size={13} />
+                                        </button>
+                                        <button
+                                            type="button"
+                                            className="planner-line-action-btn"
+                                            onClick={() => handleDuplicateLine(line.id)}
+                                            title="Duplicar línea"
+                                            aria-label="Duplicar línea"
+                                        >
+                                            <Copy size={13} />
+                                        </button>
+                                        {lines.length > 1 && (
+                                            <button
+                                                type="button"
+                                                className="planner-line-action-btn planner-line-action-btn-danger"
+                                                onClick={() => {
+                                                    if (confirm(`¿Eliminar la línea "${line.name}"? Esta acción no se puede deshacer.`)) {
+                                                        handleDeleteLine(line.id);
+                                                    }
+                                                }}
+                                                title="Eliminar línea"
+                                                aria-label="Eliminar línea"
+                                            >
+                                                <Trash2 size={13} />
+                                            </button>
+                                        )}
+                                    </div>
                                 </div>
-                            );
-                        }
+                                <div className="planner-blocks-row">
+                                    {lineBlocks.map((block, idx) => {
+                                        const courseIds = line.plan[block.id] || [];
+                                        const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
+                                        const courseObjs = courseIds
+                                            .map(id => resolveMap.get(id))
+                                            .filter(Boolean);
 
-                        return el;
+                                        let el;
+                                        if (block.type === 'semester') {
+                                            el = (
+                                                <SemesterBlock
+                                                    key={block.id}
+                                                    semesterNum={block.semester}
+                                                    courses={courseObjs}
+                                                    maxCredits={maxCredits}
+                                                    suficiencias={suficiencias}
+                                                    onDrop={makeHandleDrop(line.id)}
+                                                    onRemoveChip={makeHandleRemoveChip(line.id)}
+                                                    onToggleSuficiencia={makeHandleToggleSuficiencia(line.id)}
+                                                    mergedMap={simultaneous ? mergedCursoMap : null}
+                                                />
+                                            );
+                                        } else {
+                                            el = (
+                                                <VacationBlock
+                                                    key={block.id}
+                                                    vacNum={block.vacNum}
+                                                    courses={courseObjs}
+                                                    onDrop={makeHandleDrop(line.id)}
+                                                    onRemoveChip={makeHandleRemoveChip(line.id)}
+                                                    mergedMap={simultaneous ? mergedCursoMap : null}
+                                                />
+                                            );
+                                        }
+
+                                        const isYearEnd = block.type === 'vacation';
+                                        const isLastBlock = idx === lineBlocks.length - 1;
+
+                                        if (isYearEnd && !isLastBlock) {
+                                            return (
+                                                <div key={`year-group-${line.id}-${block.id}`} className="planner-year-group">
+                                                    {el}
+                                                    <div className="planner-year-separator" title={`Fin del año ${block.vacNum}`} />
+                                                </div>
+                                            );
+                                        }
+
+                                        return el;
+                                    })}
+                                    <button
+                                        className="planner-add-semester"
+                                        onClick={makeHandleAddSemester(line.id)}
+                                    >
+                                        <Plus size={18} />
+                                        <span>Semestre {lineSemesterCount + 1}</span>
+                                    </button>
+                                    {lineSemesterCount > INITIAL_SEMESTERS && (
+                                        <button
+                                            className="planner-add-semester planner-remove-semester"
+                                            onClick={makeHandleRemoveSemester(line.id)}
+                                            title="Quitar el último semestre"
+                                        >
+                                            <X size={18} />
+                                            <span>Quitar semestre</span>
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+                        );
                     })}
-                    <button className="planner-add-semester" onClick={handleAddSemester}>
+                    <button
+                        type="button"
+                        className="planner-add-line-bottom"
+                        onClick={handleAddLine}
+                        title="Crear nueva línea de planificación"
+                    >
                         <Plus size={18} />
-                        <span>Semestre {semesterCount + 1}</span>
+                        <span>Nueva línea de planificación</span>
                     </button>
                 </div>
-            </div>
             </div>
             </div>
         </div>

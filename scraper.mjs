@@ -38,6 +38,43 @@ function extractBadgeType(cell0Content) {
     return 'MAGISTRAL';
 }
 
+function extractRestriccionDetalle(detalleCell) {
+    if (!detalleCell) return false;
+    if (detalleCell.includes('disabled') && !detalleCell.includes('verRestricciones')) return false;
+    if (!/verRestricciones|restriccion/i.test(detalleCell)) return false;
+
+    // 1) Atributo title con el detalle (muchos tooltips de Bootstrap lo usan)
+    const titleMatch = detalleCell.match(/\btitle=["']([^"']+)["']/i);
+    if (titleMatch && titleMatch[1] && !/^\s*ver\s+restr/i.test(titleMatch[1])) {
+        return titleMatch[1].trim();
+    }
+
+    // 2) data-original-title / data-title (Bootstrap tooltip)
+    const dataTitleMatch = detalleCell.match(/data-(?:original-)?title=["']([^"']+)["']/i);
+    if (dataTitleMatch && dataTitleMatch[1] && !/^\s*ver\s+restr/i.test(dataTitleMatch[1])) {
+        return dataTitleMatch[1].trim();
+    }
+
+    // 3) data-restriccion o data-restricciones (atributo custom)
+    const dataRestr = detalleCell.match(/data-restricci(?:on|ones)?=["']([^"']+)["']/i);
+    if (dataRestr && dataRestr[1]) return dataRestr[1].trim();
+
+    // 4) data-content (popover de Bootstrap) — suele contener HTML
+    const dataContent = detalleCell.match(/data-content=["']([^"']+)["']/i);
+    if (dataContent && dataContent[1]) {
+        const text = dataContent[1].replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+        if (text) return text;
+    }
+
+    // 5) Contenido de texto visible que no sea solo el botón
+    const text = detalleCell.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim();
+    const cleaned = text.replace(/ver\s+restricciones?/gi, '').replace(/^\s+|\s+$/g, '').trim();
+    if (cleaned && cleaned.length > 2) return cleaned;
+
+    // 6) No se pudo extraer el detalle, pero sabemos que tiene restricciones
+    return true;
+}
+
 function parseDias(diasTexto) {
     const dias = [];
     for (const [abrev, nombre] of Object.entries(DIAS_MAP)) {
@@ -125,7 +162,7 @@ function parseRows(html, fuente) {
         const catedratico = (cells[IDX_CATEDRATICO] || '').replace(/<[^>]*>/g, '').trim();
         const auxiliar = (cells[IDX_AUXILIAR] || '').replace(/<[^>]*>/g, '').trim();
         const detalleCell = cells[IDX_DETALLE] || '';
-        const tieneRestricciones = !detalleCell.includes('disabled') && detalleCell.includes('verRestricciones');
+        const restricciones = extractRestriccionDetalle(detalleCell);
 
         const [inicio, final, esCorrupto] = corregirHorario(inicioRaw, finalRaw, diasRaw, dias);
 
@@ -148,7 +185,7 @@ function parseRows(html, fuente) {
             dias,
             catedratico,
             auxiliar,
-            restricciones: tieneRestricciones,
+            restricciones,
             fuente
         });
     }
@@ -208,6 +245,24 @@ function esHorarioValido(inicio, final, dias) {
     return true;
 }
 
+function loadExistingRestricciones(filePath) {
+    const map = new Map();
+    try {
+        const raw = readFileSync(filePath, 'utf-8');
+        const data = JSON.parse(raw);
+        if (Array.isArray(data)) {
+            for (const h of data) {
+                // Only preserve string values (enriched details)
+                if (typeof h.restricciones === 'string') {
+                    const key = `${h.codigo}|${h.seccion || ''}|${h.tipo || ''}|${h.inicio || ''}|${(h.dias || [])[0] || ''}`;
+                    map.set(key, h.restricciones);
+                }
+            }
+        }
+    } catch {}
+    return map;
+}
+
 async function main() {
     const outDir = resolve(__dirname, 'pemtree-react', 'public', 'json', 'horarios');
     mkdirSync(outDir, { recursive: true });
@@ -240,7 +295,18 @@ async function main() {
 
     // Write individual period files (overwrites each run)
     for (const [nombre, horarios] of Object.entries(allData)) {
-        writeFileSync(`${outDir}/${nombre}.json`, JSON.stringify(horarios, null, 2), 'utf-8');
+        const filePath = `${outDir}/${nombre}.json`;
+        const existingRestr = loadExistingRestricciones(filePath);
+        let preserved = 0;
+        for (const h of horarios) {
+            if (typeof h.restricciones !== 'string') {
+                const key = `${h.codigo}|${h.seccion || ''}|${h.tipo || ''}|${h.inicio || ''}|${(h.dias || [])[0] || ''}`;
+                const existing = existingRestr.get(key);
+                if (existing) { h.restricciones = existing; preserved++; }
+            }
+        }
+        if (preserved > 0) console.log(`  -> preservadas ${preserved} restricciones existentes`);
+        writeFileSync(filePath, JSON.stringify(horarios, null, 2), 'utf-8');
     }
 
     // Merge: semestre1 + semestre2 → semestre

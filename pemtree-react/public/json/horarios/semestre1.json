@@ -357,7 +357,7 @@
     ],
     "catedratico": "ALEJANDRO CASTAÑON LOPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -375,7 +375,7 @@
     ],
     "catedratico": "CARLOS ENRIQUE PINTO ALONZO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -1077,7 +1077,7 @@
     ],
     "catedratico": "FERNANDO AMILCAR BOITON VELASQUEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -1926,7 +1926,7 @@
     ],
     "catedratico": "EDUARDO MARTIN RIVERA PÉREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -2008,7 +2008,7 @@
     ],
     "catedratico": "ANA VELA CASTRO MELLADO",
     "auxiliar": "SARA LUCÍA BATRES ECHEVERRIA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -2123,7 +2123,7 @@
     ],
     "catedratico": "JUAN ALBERTO ORTIZ ESTURBAN",
     "auxiliar": "CARLOS ALBERTO GODINEZ GUDIEL",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -2221,7 +2221,7 @@
     ],
     "catedratico": "SHARONN PRYSCILA PU MORALES",
     "auxiliar": "JOSE DANIEL ELÍAS TEJAXUN SAY",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -2716,7 +2716,7 @@
     ],
     "catedratico": "SERGIO ALEJANDRO RECINOS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -3085,7 +3085,7 @@
     ],
     "catedratico": "RENATO ISAAC RIVERA PEREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -3722,7 +3722,7 @@
     ],
     "catedratico": "MARLON FRANCISCO ORELLANA LOPEZ",
     "auxiliar": "DIEGO ABRAHAM ROBLES MEZA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -4444,7 +4444,7 @@
     ],
     "catedratico": "DIEGO ABRAHAM ROBLES MEZA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -5041,7 +5041,7 @@
     ],
     "catedratico": "ILEANA GUISELA RALDA R. DE ILLESCAS",
     "auxiliar": "KEVIN ESTUARDO SOTOJ GARCÍA",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5061,7 +5061,7 @@
     ],
     "catedratico": "MARILYN CARIBEL ROJAS MALDONADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5082,7 +5082,7 @@
     ],
     "catedratico": "ERIC JOSUE JACOBS MAZARIEGOS",
     "auxiliar": "PEDRO PABLO MOLINA MARTÍNEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5102,7 +5102,7 @@
     ],
     "catedratico": "CESAR ALFONSO GARCIA GUERRA",
     "auxiliar": "ADRIAN JOSUE GIL GONZALEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5122,7 +5122,7 @@
     ],
     "catedratico": "CESAR ALFONSO GARCIA GUERRA",
     "auxiliar": "LAURA SUSANA GIL SARAVIA",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5142,7 +5142,7 @@
     ],
     "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5180,7 +5180,7 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5199,7 +5199,7 @@
     ],
     "catedratico": "OSCAR APARICIO SEGURA MONZON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5217,7 +5217,7 @@
     ],
     "catedratico": "MAYRA REBECA GARCIA SORIA DE SIERRA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8 SE PERMITEN ESTUDIANTES DE: INGENIERIA CIVIL",
     "fuente": "semestre1"
   },
   {
@@ -5235,7 +5235,7 @@
     ],
     "catedratico": "OSCAR ARGUETA HERNANDEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8 SE PERMITEN ESTUDIANTES DE: INGENIERIA CIVIL",
     "fuente": "semestre1"
   },
   {
@@ -5254,7 +5254,7 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5273,7 +5273,7 @@
     ],
     "catedratico": "OSCAR APARICIO SEGURA MONZON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5291,7 +5291,7 @@
     ],
     "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -5309,7 +5309,7 @@
     ],
     "catedratico": "EVELYN CAROLINA MORALES RUIZ",
     "auxiliar": "LUIS CARLOS CORLETO MARROQUIN",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5329,7 +5329,7 @@
     ],
     "catedratico": "GERARDO ORDONEZ",
     "auxiliar": "GRICELDA TOMASA PÉREZ AGUILAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5350,7 +5350,7 @@
     ],
     "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
     "auxiliar": "ANGEL FERNANDO NAJERA CON",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5370,7 +5370,7 @@
     ],
     "catedratico": "GERSON JOÉL ORTEGA MORALES",
     "auxiliar": "ANDRÉ DANIEL MAZAT LIMA",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5390,7 +5390,7 @@
     ],
     "catedratico": "VICTOR MANUEL MONZON VALDEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5410,7 +5410,7 @@
     ],
     "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5448,7 +5448,7 @@
     ],
     "catedratico": "OSCAR APARICIO SEGURA MONZON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5467,7 +5467,7 @@
     ],
     "catedratico": "JULIO CÉSAR VILLATORO SANABRIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5485,7 +5485,7 @@
     ],
     "catedratico": "CHRISTA DEL ROSARIO CLASSON REHWOLDT DE PINTO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9 SE PERMITEN ESTUDIANTES DE: INGENIERIA CIVIL",
     "fuente": "semestre1"
   },
   {
@@ -5503,7 +5503,7 @@
     ],
     "catedratico": "SILVIO JOSE RODRIGUEZ SERRANO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9 SE PERMITEN ESTUDIANTES DE: INGENIERIA CIVIL",
     "fuente": "semestre1"
   },
   {
@@ -5522,7 +5522,7 @@
     ],
     "catedratico": "OSCAR APARICIO SEGURA MONZON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5541,7 +5541,7 @@
     ],
     "catedratico": "JULIO CÉSAR VILLATORO SANABRIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5559,7 +5559,7 @@
     ],
     "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -5579,7 +5579,7 @@
     ],
     "catedratico": "MERCEDES ESTHER ROQUEL CHAVEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO)",
     "fuente": "semestre1"
   },
   {
@@ -5747,7 +5747,7 @@
     ],
     "catedratico": "JULIO RICARDO DIAZ PAPPA",
     "auxiliar": "NATHALI ALEJANDRA PAREDES PÉREZ",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO)",
     "fuente": "semestre1"
   },
   {
@@ -5821,7 +5821,7 @@
     ],
     "catedratico": "GERARDO ORDONEZ",
     "auxiliar": "KEVIN HUMBERTO CIFUENTES GIRÓN",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO)",
     "fuente": "semestre1"
   },
   {
@@ -6675,7 +6675,7 @@
     ],
     "catedratico": "MARIO ENRIQUE RIVERA GONZALEZ",
     "auxiliar": "BRYAN ESTUARDO DE LEÓN ESTRADA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -6693,7 +6693,7 @@
     ],
     "catedratico": "JUAN ALBERTO ORTIZ ESTURBAN",
     "auxiliar": "JULISSA PAMELA GARCÍA MORALES",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -6732,7 +6732,7 @@
     ],
     "catedratico": "RAMON BENJAMIN PIEDRASANTA BATZ",
     "auxiliar": "CRISTHIAN RODRIGO MEJIA CACAO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -7607,7 +7607,7 @@
     ],
     "catedratico": "FLORIZA FELIPA AVILA PESQUERA DE MEDINILLA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -8156,7 +8156,7 @@
     ],
     "catedratico": "BRIAN  ENRIQUE CHICOL  MORALES",
     "auxiliar": "ANGEL FERNANDO NAJERA CON",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8177,7 +8177,7 @@
     ],
     "catedratico": "WALTER GIOVANNI ALVAREZ MARROQUIN",
     "auxiliar": "JOHAN ESTIVEN SABÁN LÓPEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8198,7 +8198,7 @@
     ],
     "catedratico": "CESAR ABIGAIL GARCIA NAJERA",
     "auxiliar": "ANGEL FERNANDO NAJERA CON",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8219,7 +8219,7 @@
     ],
     "catedratico": "ADELA MARIA MARROQUIN GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8239,7 +8239,7 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8258,7 +8258,7 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8279,7 +8279,7 @@
     ],
     "catedratico": "EDWIN ADALBERTO BRACAMONTE OROZCO",
     "auxiliar": "ASTRID SARAÍ CHOXÍN SAMAYOA",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8297,7 +8297,7 @@
     ],
     "catedratico": "DAVID ESTUARDO MORALES AJCOT",
     "auxiliar": "KEWIN MASLOVY PATZÁN TZÚN",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8315,7 +8315,7 @@
     ],
     "catedratico": "SIGRID ALITZA CALDERON DE LEON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8 SE PERMITEN ESTUDIANTES DE: INGENIERIA INDUSTRIAL SE PERMITEN ESTUDIANTES DE: INGENIERIA MECANICA INDUSTRIAL",
     "fuente": "semestre1"
   },
   {
@@ -8334,7 +8334,7 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8352,7 +8352,7 @@
     ],
     "catedratico": "KEWIN MASLOVY PATZÁN TZÚN",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -8410,7 +8410,7 @@
     ],
     "catedratico": "ERIC JOSUE JACOBS MAZARIEGOS",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8431,7 +8431,7 @@
     ],
     "catedratico": "CLAUDIA CECILIA CONTRERAS FOLGAR DE ALFARO",
     "auxiliar": "JOHAN ESTIVEN SABÁN LÓPEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8452,7 +8452,7 @@
     ],
     "catedratico": "CALIXTO SANTIAGO MONTEAGUDO CORDERO",
     "auxiliar": "MARÍA ALEJANDRA ESTRADA GONZÁLEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8473,7 +8473,7 @@
     ],
     "catedratico": "BYRON RENE AGUILAR UCK",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8512,7 +8512,7 @@
     ],
     "catedratico": "OSCAR APARICIO SEGURA MONZON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8533,7 +8533,7 @@
     ],
     "catedratico": "LADY MARIEBELIA ELIAS ESTRADA",
     "auxiliar": "JACQUELIN ANDREA GARCÍA FLORES",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8551,7 +8551,7 @@
     ],
     "catedratico": "ZULMA KARINA AGUIRRE ORDONEZ",
     "auxiliar": "RIVER ANDERSON ISMALEJ ROMAN",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8569,7 +8569,7 @@
     ],
     "catedratico": "JAIME HUMBERTO BATTEN ESQUIVEL",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9 SE PERMITEN ESTUDIANTES DE: INGENIERIA INDUSTRIAL SE PERMITEN ESTUDIANTES DE: INGENIERIA MECANICA INDUSTRIAL",
     "fuente": "semestre1"
   },
   {
@@ -8588,7 +8588,7 @@
     ],
     "catedratico": "OSCAR APARICIO SEGURA MONZON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -8606,7 +8606,7 @@
     ],
     "catedratico": "RIVER ANDERSON ISMALEJ ROMAN",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -9476,7 +9476,7 @@
     ],
     "catedratico": "INGRID MARISOL FLORES ESTRADA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -9497,7 +9497,7 @@
     ],
     "catedratico": "ANA VELA CASTRO MELLADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -9536,7 +9536,7 @@
     ],
     "catedratico": "ALLEN EDUARDO RAMIREZ TOLEDO",
     "auxiliar": "CARLOS ALBERTO GODINEZ GUDIEL",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -9557,7 +9557,7 @@
     ],
     "catedratico": "MARIO RENE DE LEON GARCIA",
     "auxiliar": "HERIBERTO ALEJANDRO VELÁSQUEZ Y VELÁSQUEZ",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -9740,7 +9740,7 @@
     ],
     "catedratico": "RENATO ISAAC RIVERA PEREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10057,7 +10057,7 @@
     ],
     "catedratico": "FLORIZA FELIPA AVILA PESQUERA DE MEDINILLA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10075,7 +10075,7 @@
     ],
     "catedratico": "YOCASTA  IVANOBLA ORTIZ DEL CID",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10355,7 +10355,7 @@
     ],
     "catedratico": "RODOLFO   ESTUARDO QUIROA  MELENDRES",
     "auxiliar": "PEDRO PABLO MOLINA MARTÍNEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -10376,7 +10376,7 @@
     ],
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
     "auxiliar": "JOSE DANIEL ELÍAS TEJAXUN SAY",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -10397,7 +10397,7 @@
     ],
     "catedratico": "JOSE ADOLFO TUNA AGUILAR",
     "auxiliar": "ANGEL FERNANDO NAJERA CON",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -10418,7 +10418,7 @@
     ],
     "catedratico": "CLAUDIA CECILIA CONTRERAS FOLGAR DE ALFARO",
     "auxiliar": "OSCAR GIOVANNI HERNÁNDEZ CARIAS",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -10873,7 +10873,7 @@
     ],
     "catedratico": "CARLOS ENRIQUE GÓMEZ DONIS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10894,7 +10894,7 @@
     ],
     "catedratico": "MONICA MARLENI QUIÑONEZ ANDRADE",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10950,7 +10950,7 @@
     ],
     "catedratico": "NOEL JOEL GRAMAJO MONTERROSO",
     "auxiliar": "JOSÉ EMANUEL SALAZAR CANO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10968,7 +10968,7 @@
     ],
     "catedratico": "JUAN ALBERTO ORTIZ ESTURBAN",
     "auxiliar": "CARLOS ALBERTO GODINEZ GUDIEL",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -10989,7 +10989,7 @@
     ],
     "catedratico": "RENATO GIOVANNI PONCIANO SANDOVAL",
     "auxiliar": "EDWIN JOSUÉ CASTILLO MENÉNDEZ",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -11073,7 +11073,7 @@
     ],
     "catedratico": "CASTA PETRONA ZECENA ZECENA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -11149,7 +11149,7 @@
     ],
     "catedratico": "HERMAN IGOR VELIZ LINARES",
     "auxiliar": "ERICK DANIEL PORÓN MUÑOZ",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -11241,7 +11241,7 @@
     ],
     "catedratico": "SERGIO LEONEL GOMEZ BRAVO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -11296,7 +11296,7 @@
     ],
     "catedratico": "ERICK DANIEL PORÓN MUÑOZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -11390,7 +11390,7 @@
     ],
     "catedratico": "RODOLFO   ESTUARDO QUIROA  MELENDRES",
     "auxiliar": "DAYANNA EUNICE CHE DONIS",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -11408,7 +11408,7 @@
     ],
     "catedratico": "NORMA ILEANA SARMIENTO ZECENA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8 SE PERMITEN ESTUDIANTES DE: INGENIERIA INDUSTRIAL SE PERMITEN ESTUDIANTES DE: INGENIERIA MECANICA INDUSTRIAL",
     "fuente": "semestre1"
   },
   {
@@ -11429,7 +11429,7 @@
     ],
     "catedratico": "EDDY  JOSUE SOLARES  ESPINOZA",
     "auxiliar": "DAYANNA EUNICE CHE DONIS",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -11447,7 +11447,7 @@
     ],
     "catedratico": "YOCASTA  IVANOBLA ORTIZ DEL CID",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9 SE PERMITEN ESTUDIANTES DE: INGENIERIA INDUSTRIAL SE PERMITEN ESTUDIANTES DE: INGENIERIA MECANICA INDUSTRIAL",
     "fuente": "semestre1"
   },
   {
@@ -12062,7 +12062,7 @@
     ],
     "catedratico": "MONICA MARLENI QUIÑONEZ ANDRADE",
     "auxiliar": "SARA LUCÍA BATRES ECHEVERRIA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -12099,7 +12099,7 @@
     ],
     "catedratico": "NOEL JOEL GRAMAJO MONTERROSO",
     "auxiliar": "BRYAN ESTUARDO DE LEÓN ESTRADA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -12120,7 +12120,7 @@
     ],
     "catedratico": "GUSTAVO ADOLFO SANTOS OROZCO",
     "auxiliar": "GABRIEL CANDELARIO ICUTE YUCUTE",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -12244,7 +12244,7 @@
     ],
     "catedratico": "NEFTALI DE JESUS CALDERON MENDEZ",
     "auxiliar": "EDUARDO ISAÍ AJSIVINAC XICO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -12300,7 +12300,7 @@
     ],
     "catedratico": "FRANCISCO JAVIER GONZALEZ LOPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -12318,7 +12318,7 @@
     ],
     "catedratico": "EDUARDO ISAÍ AJSIVINAC XICO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -12354,7 +12354,7 @@
     ],
     "catedratico": "ALLEN EDUARDO RAMIREZ TOLEDO",
     "auxiliar": "SOFIA AIDALI VÁSQUEZ ALVARADO",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO) SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -12375,7 +12375,7 @@
     ],
     "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -12396,7 +12396,7 @@
     ],
     "catedratico": "BERTHA ROXANDA MOLINA LEON DE QUINTO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO) SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -12414,7 +12414,7 @@
     ],
     "catedratico": "ALLEN EDUARDO RAMIREZ TOLEDO",
     "auxiliar": "SOFIA AIDALI VÁSQUEZ ALVARADO",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO) SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -12435,7 +12435,7 @@
     ],
     "catedratico": "EDDY  JOSUE SOLARES  ESPINOZA",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -12456,7 +12456,7 @@
     ],
     "catedratico": "EDGAR GAMALIEL DE LEON HERNANDEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO) SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -12477,7 +12477,7 @@
     ],
     "catedratico": "RONAL NOE GALVEZ GARCIA",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,1,2,3",
     "fuente": "semestre1"
   },
   {
@@ -12570,7 +12570,7 @@
     ],
     "catedratico": "LUIS  ALBERTO BAUTISTA",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 4,5,6",
     "fuente": "semestre1"
   },
   {
@@ -12627,7 +12627,7 @@
     ],
     "catedratico": "JOSE ADOLFO TUNA AGUILAR",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 7,8,9",
     "fuente": "semestre1"
   },
   {
@@ -12717,7 +12717,7 @@
     ],
     "catedratico": "ERICKA NATHALIE LOPEZ TORRES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO)",
     "fuente": "semestre1"
   },
   {
@@ -12737,7 +12737,7 @@
     ],
     "catedratico": "ERICKA NATHALIE LOPEZ TORRES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO)",
     "fuente": "semestre1"
   },
   {
@@ -12990,7 +12990,7 @@
     ],
     "catedratico": "DENNIS STANLEY BARRIOS GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13009,7 +13009,7 @@
     ],
     "catedratico": "CARLOS LEONEL MUÑOZ LEMUS",
     "auxiliar": "KARLA JUDITH MONZÓN BARRERA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13030,7 +13030,7 @@
     ],
     "catedratico": "CRISTOBAL MARDOQUEO ARRIOLA MAIREN",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13048,7 +13048,7 @@
     ],
     "catedratico": "MARIO ENRIQUE RIVERA GONZALEZ",
     "auxiliar": "BRYAN ESTUARDO DE LEÓN ESTRADA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13087,7 +13087,7 @@
     ],
     "catedratico": "ERICK GEOVANI AGUSTIN MARROQUIN",
     "auxiliar": "ABEL ALEJANDRO SALGUERO UCELO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13304,7 +13304,7 @@
     ],
     "catedratico": "RODOLFO   ESTUARDO QUIROA  MELENDRES",
     "auxiliar": "DIEGO JOSE PORRES ALMEDA",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -13322,7 +13322,7 @@
     ],
     "catedratico": "SERGIO LEONEL GOMEZ BRAVO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8 SE PERMITEN ESTUDIANTES DE: INGENIERIA EN CIENCIAS Y SISTEMAS",
     "fuente": "semestre1"
   },
   {
@@ -13343,7 +13343,7 @@
     ],
     "catedratico": "EDDY  JOSUE SOLARES  ESPINOZA",
     "auxiliar": "JUAN MIGUEL MONTEALEGRE GOMEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -13361,7 +13361,7 @@
     ],
     "catedratico": "HERMAN IGOR VELIZ LINARES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9 SE PERMITEN ESTUDIANTES DE: INGENIERIA EN CIENCIAS Y SISTEMAS",
     "fuente": "semestre1"
   },
   {
@@ -13382,7 +13382,7 @@
     ],
     "catedratico": "ANGELICA BECILIA PACHECO MAZARIEGOS",
     "auxiliar": "JUAN MIGUEL MONTEALEGRE GOMEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -13439,7 +13439,7 @@
     ],
     "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
     "auxiliar": "JUAN MIGUEL MONTEALEGRE GOMEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -13710,7 +13710,7 @@
     ],
     "catedratico": "WILLIAM ESTUARDO ESCOBAR ARGUETA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13728,7 +13728,7 @@
     ],
     "catedratico": "ERICKA NATHALIE LOPEZ TORRES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13748,7 +13748,7 @@
     ],
     "catedratico": "ERICKA NATHALIE LOPEZ TORRES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13769,7 +13769,7 @@
     ],
     "catedratico": "CRISTOBAL MARDOQUEO ARRIOLA MAIREN",
     "auxiliar": "SARA LUCÍA BATRES ECHEVERRIA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13787,7 +13787,7 @@
     ],
     "catedratico": "MARIO ENRIQUE RIVERA GONZALEZ",
     "auxiliar": "JOSÉ EMANUEL SALAZAR CANO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -13826,7 +13826,7 @@
     ],
     "catedratico": "ERICKA JOHANA CANO DIAZ",
     "auxiliar": "DIANA LISSETH MORALES MORALES",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14220,7 +14220,7 @@
     ],
     "catedratico": "CINTHYA PATRICIA ORTIZ QUIROA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14241,7 +14241,7 @@
     ],
     "catedratico": "EDGAR HAROLDO TORRES SOTO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14259,7 +14259,7 @@
     ],
     "catedratico": "MARIO ENRIQUE RIVERA GONZALEZ",
     "auxiliar": "BRYAN ESTUARDO DE LEÓN ESTRADA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14280,7 +14280,7 @@
     ],
     "catedratico": "ANGEL DANIEL LOPEZ LOPEZ",
     "auxiliar": "LUDDIN FERNANDO ALVAREZ CAMEY",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14667,7 +14667,7 @@
     ],
     "catedratico": "DENNIS STANLEY BARRIOS GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14688,7 +14688,7 @@
     ],
     "catedratico": "PEDRO RAFAEL MORAN ARAGON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14706,7 +14706,7 @@
     ],
     "catedratico": "NOEL JOEL GRAMAJO MONTERROSO",
     "auxiliar": "JOSÉ EMANUEL SALAZAR CANO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -14745,7 +14745,7 @@
     ],
     "catedratico": "FRANCISCO BERNARDO R DE LA ROSA",
     "auxiliar": "VICTOR DANIEL TEPÁZ MORENTE",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15023,7 +15023,7 @@
     ],
     "catedratico": "ERICKA NATHALIE LOPEZ TORRES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15044,7 +15044,7 @@
     ],
     "catedratico": "MONICA MARLENI QUIÑONEZ ANDRADE",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15062,7 +15062,7 @@
     ],
     "catedratico": "NOEL JOEL GRAMAJO MONTERROSO",
     "auxiliar": "JOSÉ EMANUEL SALAZAR CANO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15083,7 +15083,7 @@
     ],
     "catedratico": "SILVIA CAROLINA LEMUS CASTRO",
     "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15594,7 +15594,7 @@
     ],
     "catedratico": "EDWIN JOSUE IXPATA REYES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15633,7 +15633,7 @@
     ],
     "catedratico": "NOEL JOEL GRAMAJO MONTERROSO",
     "auxiliar": "JOSÉ EMANUEL SALAZAR CANO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15651,7 +15651,7 @@
     ],
     "catedratico": "JUAN ALBERTO ORTIZ ESTURBAN",
     "auxiliar": "JULISSA PAMELA GARCÍA MORALES",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15672,7 +15672,7 @@
     ],
     "catedratico": "OSCAR ALBERTO MARTINEZ LOBOS",
     "auxiliar": "SAUL ALEJANDRO CIFUENTES VIVAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15693,7 +15693,7 @@
     ],
     "catedratico": "TELMA MARICELA CANO MORALES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15747,7 +15747,7 @@
     ],
     "catedratico": "CLAUDIO CESAR CASTAÑON CONTRERAS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -15765,7 +15765,7 @@
     ],
     "catedratico": "CLAUDIO CESAR CASTAÑON CONTRERAS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -15820,7 +15820,7 @@
     ],
     "catedratico": "CARLOS LEONEL MUÑOZ LEMUS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15841,7 +15841,7 @@
     ],
     "catedratico": "PEDRO RAFAEL MORAN ARAGON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15859,7 +15859,7 @@
     ],
     "catedratico": "MARIO ENRIQUE RIVERA GONZALEZ",
     "auxiliar": "JOSÉ EMANUEL SALAZAR CANO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15877,7 +15877,7 @@
     ],
     "catedratico": "ANDREA SUSANA LÓPEZ RAMÍREZ",
     "auxiliar": "JULISSA PAMELA GARCÍA MORALES",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -15898,7 +15898,7 @@
     ],
     "catedratico": "EDER KEITH PAZ TIGUILA",
     "auxiliar": "EDGARD ABRAHAM GARCÍA CUTZ",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -16196,7 +16196,7 @@
     ],
     "catedratico": "EDWIN ESTUARDO SARCEÑO ZEPEDA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -16214,7 +16214,7 @@
     ],
     "catedratico": "EDWIN ESTUARDO SARCEÑO ZEPEDA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -16385,7 +16385,7 @@
     ],
     "catedratico": "EDGAR GAMALIEL DE LEON HERNANDEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO) SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -16404,7 +16404,7 @@
     ],
     "catedratico": "YOCASTA  IVANOBLA ORTIZ DEL CID",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -16423,7 +16423,7 @@
     ],
     "catedratico": "YOCASTA  IVANOBLA ORTIZ DEL CID",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -16444,7 +16444,7 @@
     ],
     "catedratico": "BYRON RENE AGUILAR UCK",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SECCION PARA ESTUDIANTES DE PRIMER INGRESO EN ESTA FACULTAD (NUEVOS Y DE TRASLADO) SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -16463,7 +16463,7 @@
     ],
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -16482,7 +16482,7 @@
     ],
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -16975,7 +16975,7 @@
     ],
     "catedratico": "ANA VELA CASTRO MELLADO",
     "auxiliar": "LUIS ANDRÉS SAMAYOA PORTILLO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -17051,7 +17051,7 @@
     ],
     "catedratico": "NOEL JOEL GRAMAJO MONTERROSO",
     "auxiliar": "BRYAN ESTUARDO DE LEÓN ESTRADA",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -17089,7 +17089,7 @@
     ],
     "catedratico": "ALLEN EDUARDO RAMIREZ TOLEDO",
     "auxiliar": "LESLY MELISSA SIQUE SANTOS",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -17226,7 +17226,7 @@
     ],
     "catedratico": "MARIO RENE DE LEON GARCIA",
     "auxiliar": "ABEL ALEJANDRO SALGUERO UCELO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -19746,7 +19746,7 @@
     ],
     "catedratico": "RENATO ISAAC RIVERA PEREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -20908,7 +20908,7 @@
     ],
     "catedratico": "LUIS GREGORIO ALFARO VELIZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -20926,7 +20926,7 @@
     ],
     "catedratico": "JUAN MERCK COS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -22084,7 +22084,7 @@
     ],
     "catedratico": "ERWIN DANILO GONZALEZ TREJO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22105,7 +22105,7 @@
     ],
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
     "auxiliar": "LUIS ARTURO SABAN LOPEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22126,7 +22126,7 @@
     ],
     "catedratico": "CESAR ABIGAIL GARCIA NAJERA",
     "auxiliar": "MARÍA ALEJANDRA ESTRADA GONZÁLEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22144,7 +22144,7 @@
     ],
     "catedratico": "GUILLERMO ANTONIO PUENTE ROMERO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22162,7 +22162,7 @@
     ],
     "catedratico": "GUILLERMO ANTONIO PUENTE ROMERO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22180,7 +22180,7 @@
     ],
     "catedratico": "CARLOS EDUARDO GUZMAN SALAZAR",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22198,7 +22198,7 @@
     ],
     "catedratico": "CARLOS EDUARDO GUZMAN SALAZAR",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22218,7 +22218,7 @@
     ],
     "catedratico": "FREDY MAURICIO MONROY PERALTA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22238,7 +22238,7 @@
     ],
     "catedratico": "ROBERTO GUZMAN ORTIZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22258,7 +22258,7 @@
     ],
     "catedratico": "RIGOBERTO RAFAEL SANDOVAL LOPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22278,7 +22278,7 @@
     ],
     "catedratico": "MARÍA LORENA RIZZO LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22298,7 +22298,7 @@
     ],
     "catedratico": "FREDY MAURICIO MONROY PERALTA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22317,7 +22317,7 @@
     ],
     "catedratico": "CARLOS ANIBAL CHICOJAY COLOMA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22336,7 +22336,7 @@
     ],
     "catedratico": "CARLOS ANIBAL CHICOJAY COLOMA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22356,7 +22356,7 @@
     ],
     "catedratico": "JORGE ALEJANDRO AREVALO VALDEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22375,7 +22375,7 @@
     ],
     "catedratico": "YOCASTA  IVANOBLA ORTIZ DEL CID",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22394,7 +22394,7 @@
     ],
     "catedratico": "MAYRA SAADETH ARREAZA MARTINEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22413,7 +22413,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22432,7 +22432,7 @@
     ],
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22451,7 +22451,7 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22470,7 +22470,7 @@
     ],
     "catedratico": "ERWIN DANILO GONZALEZ TREJO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22489,7 +22489,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22508,7 +22508,7 @@
     ],
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22527,7 +22527,7 @@
     ],
     "catedratico": "HUGO LEONEL ALVARADO DE LEON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22583,7 +22583,7 @@
     ],
     "catedratico": "KAREN NATALIE MEINICKE PALACIOS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22601,7 +22601,7 @@
     ],
     "catedratico": "DIANA ORALIA SALGUERO ESPANA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -22620,7 +22620,7 @@
     ],
     "catedratico": "KARLA LIZBETH MARTÍNEZ VARGAS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22641,7 +22641,7 @@
     ],
     "catedratico": "LUIS  ALBERTO BAUTISTA",
     "auxiliar": "LUIS ARTURO SABAN LOPEZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22662,7 +22662,7 @@
     ],
     "catedratico": "CALIXTO SANTIAGO MONTEAGUDO CORDERO",
     "auxiliar": "ANGEL FERNANDO NAJERA CON",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22680,7 +22680,7 @@
     ],
     "catedratico": "HUGO LEONEL TIUL VALENZUELA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22698,7 +22698,7 @@
     ],
     "catedratico": "HUGO LEONEL TIUL VALENZUELA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22716,7 +22716,7 @@
     ],
     "catedratico": "JORGE MARIO SITAVI COS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22734,7 +22734,7 @@
     ],
     "catedratico": "JORGE MARIO SITAVI COS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22754,7 +22754,7 @@
     ],
     "catedratico": "ESDRAS FELICIANO MIRANDA OROZCO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22774,7 +22774,7 @@
     ],
     "catedratico": "MYNOR RODERICO FIGUEROA FUENTES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22814,7 +22814,7 @@
     ],
     "catedratico": "JULIO ROLANDO BARRIOS ARCHILA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22834,7 +22834,7 @@
     ],
     "catedratico": "BYRON GIOVANNI PALACIOS COLINDRES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22853,7 +22853,7 @@
     ],
     "catedratico": "HERBERT SAMUEL FIGUEROA AVENDAÑO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22872,7 +22872,7 @@
     ],
     "catedratico": "LUIS ALFREDO ASTURIAS ZUNIGA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22892,7 +22892,7 @@
     ],
     "catedratico": "MARIO ESTUARDO ARRIOLA AVILA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22911,7 +22911,7 @@
     ],
     "catedratico": "HUGO LEONEL ALVARADO DE LEON",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22930,7 +22930,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22949,7 +22949,7 @@
     ],
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22968,7 +22968,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -22987,7 +22987,7 @@
     ],
     "catedratico": "MARIA MARTHA WOLFORD E. DE HERNANDEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23006,7 +23006,7 @@
     ],
     "catedratico": "KARLA LIZBETH MARTÍNEZ VARGAS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23025,7 +23025,7 @@
     ],
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23044,7 +23044,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23063,7 +23063,7 @@
     ],
     "catedratico": "EDWIN JOSUE IXPATA REYES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23119,7 +23119,7 @@
     ],
     "catedratico": "KAREN NATALIE MEINICKE PALACIOS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23137,7 +23137,7 @@
     ],
     "catedratico": "DIANA ORALIA SALGUERO ESPANA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -23178,7 +23178,7 @@
     ],
     "catedratico": "FRANCISCO JAVIER GONZALEZ LOPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,1,2,3",
     "fuente": "semestre1"
   },
   {
@@ -23197,7 +23197,7 @@
     ],
     "catedratico": "CESAR ALFONSO GARCIA GUERRA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,1,2,3",
     "fuente": "semestre1"
   },
   {
@@ -23253,7 +23253,7 @@
     ],
     "catedratico": "JOSE ANIBAL SILVA DE LOS ANGELES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 4,5,6",
     "fuente": "semestre1"
   },
   {
@@ -23272,7 +23272,7 @@
     ],
     "catedratico": "MARIO JOSE MERIDA MERE",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 4,5,6",
     "fuente": "semestre1"
   },
   {
@@ -23328,7 +23328,7 @@
     ],
     "catedratico": "GUILLERMO ANTONIO PUENTE ROMERO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 7,8,9",
     "fuente": "semestre1"
   },
   {
@@ -23347,7 +23347,7 @@
     ],
     "catedratico": "EDWIN JOSÉ SARAVIA CANO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 7,8,9",
     "fuente": "semestre1"
   },
   {
@@ -23479,7 +23479,7 @@
     ],
     "catedratico": "FRANCISCO BERNARDO R DE LA ROSA",
     "auxiliar": "JORGE PABLO ORTIZ SOTO",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -25918,7 +25918,7 @@
     ],
     "catedratico": "MANUEL ALFREDO ARRIVILLAGA OCHAETA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -25936,7 +25936,7 @@
     ],
     "catedratico": "MANUEL ALFREDO ARRIVILLAGA OCHAETA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -26547,7 +26547,7 @@
     ],
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -26568,7 +26568,7 @@
     ],
     "catedratico": "GABRIEL ESTUARDO SOLÓRZANO CASTELLANOS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -26588,7 +26588,7 @@
     ],
     "catedratico": "MILTON ALEXANDER FUENTES OROZCO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -26627,7 +26627,7 @@
     ],
     "catedratico": "KARLA LIZBETH MARTÍNEZ VARGAS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -26646,7 +26646,7 @@
     ],
     "catedratico": "KARLA LIZBETH MARTÍNEZ VARGAS",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -26682,7 +26682,7 @@
     ],
     "catedratico": "GLADYS MARÍA ESTRADA QUINTANILLA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -26702,7 +26702,7 @@
     ],
     "catedratico": "RAFAEL ENRIQUE MORALES OCHOA",
     "auxiliar": "EDGAR ESTUARDO CALEL PÉREZ",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -26723,7 +26723,7 @@
     ],
     "catedratico": "BERTHA ROXANDA MOLINA LEON DE QUINTO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -26743,7 +26743,7 @@
     ],
     "catedratico": "CARLOS SNELL CHICOL MORALES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -26783,7 +26783,7 @@
     ],
     "catedratico": "ALBERTO EULALIO HERNANDEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -26802,7 +26802,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -26821,7 +26821,7 @@
     ],
     "catedratico": "ALDO OZAETA SANTIAGO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -26857,7 +26857,7 @@
     ],
     "catedratico": "GLADYS MARÍA ESTRADA QUINTANILLA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -27638,7 +27638,7 @@
     ],
     "catedratico": "CHRISTIAN DAVID POCOL FRANCO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -27674,7 +27674,7 @@
     ],
     "catedratico": "NATANAEL JONATHAN REQUENA GOMEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -28011,7 +28011,7 @@
     ],
     "catedratico": "ANGELICA BECILIA PACHECO MAZARIEGOS",
     "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -28031,7 +28031,7 @@
     ],
     "catedratico": "LUIS ALFREDO ASTURIAS ZUNIGA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -28050,7 +28050,7 @@
     ],
     "catedratico": "RIGOBERTO RAFAEL SANDOVAL LOPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -28069,7 +28069,7 @@
     ],
     "catedratico": "MYNOR RODERICO FIGUEROA FUENTES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -28090,7 +28090,7 @@
     ],
     "catedratico": "CARLOS RODOLFO MARTINEZ GIRON",
     "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -28110,7 +28110,7 @@
     ],
     "catedratico": "FREDY MAURICIO MONROY PERALTA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -28129,7 +28129,7 @@
     ],
     "catedratico": "CARLOS ENRIQUE CHICOL CABRERA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -28639,7 +28639,7 @@
     ],
     "catedratico": "LORENA VICTORIA PINEDA CABRERA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -28657,7 +28657,7 @@
     ],
     "catedratico": "LORENA VICTORIA PINEDA CABRERA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -28935,7 +28935,7 @@
     ],
     "catedratico": "RIGOBERTO RAFAEL SANDOVAL LOPEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -28954,7 +28954,7 @@
     ],
     "catedratico": "CARLOS ENRIQUE CHICOL CABRERA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -29288,7 +29288,7 @@
     ],
     "catedratico": "DIEGO ISRAEL NAVARRO GODINEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -29306,7 +29306,7 @@
     ],
     "catedratico": "DIEGO ISRAEL NAVARRO GODINEZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -29435,7 +29435,7 @@
     ],
     "catedratico": "SINDY MASSIEL GODINEZ BAUTISTA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {
@@ -29471,7 +29471,7 @@
     ],
     "catedratico": "ROCIO CAROLINA MEDINA GALINDO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 1,3,5,7,9",
     "fuente": "semestre1"
   },
   {
@@ -29601,7 +29601,7 @@
     ],
     "catedratico": "EDWIN JOSUE IXPATA REYES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": true,
+    "restricciones": false,
     "fuente": "semestre1"
   },
   {
@@ -29676,7 +29676,7 @@
     ],
     "catedratico": "ANGELICA BECILIA PACHECO MAZARIEGOS",
     "auxiliar": "MARGARITA LETICIA AJPOP SIPAC",
-    "restricciones": true,
+    "restricciones": "SOLO PARA ESTUDIANTES CON CARNE FINALIZADO EN: 0,2,4,6,8",
     "fuente": "semestre1"
   },
   {

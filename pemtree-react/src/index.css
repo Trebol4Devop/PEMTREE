@@ -498,6 +498,11 @@ html.dark .planner-warning-close {
     gap: 12px;
     align-items: flex-start;
     min-width: min-content;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 12px;
+    flex: 1 1 auto;
+    scrollbar-width: thin;
 }
 
 .planner-year-group {
@@ -887,6 +892,214 @@ html.dark .planner-add-semester {
     color: #94a3b8;
 }
 html.dark .planner-add-semester:hover {
+    border-color: #4C9AFF;
+    color: #4C9AFF;
+    background: #0C295E;
+}
+
+/* --- Remove semester button --- */
+.planner-remove-semester {
+    border-style: solid;
+    border-color: #F4F5F7;
+    color: #5E6C84;
+    background: #F4F5F7;
+}
+.planner-remove-semester:hover {
+    border-color: #BF2600;
+    color: #BF2600;
+    background: #FFEBE6;
+}
+html.dark .planner-remove-semester {
+    border-color: #2D333B;
+    color: #94a3b8;
+    background: #2D333B;
+}
+html.dark .planner-remove-semester:hover {
+    border-color: #F87171;
+    color: #F87171;
+    background: #450A0A;
+}
+
+/* --- Lines bar (planning variants) --- */
+.planner-lines-bar {
+    display: flex;
+    align-items: center;
+    padding: 8px 10px;
+    border-bottom: 1px solid #DFE1E6;
+    background: #FAFBFC;
+    overflow-x: auto;
+    scrollbar-width: thin;
+}
+html.dark .planner-lines-bar {
+    border-bottom-color: #3E4C5E;
+    background: #0E1624;
+}
+.planner-lines-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: nowrap;
+}
+.planner-line-rename-input {
+    width: 160px;
+    padding: 2px 6px;
+    border: 1px solid #0052CC;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 700;
+    color: inherit;
+    background: #FFFFFF;
+    outline: none;
+}
+html.dark .planner-line-rename-input {
+    background: #1C2636;
+    border-color: #4C9AFF;
+}
+
+/* --- Stacked line sections (planner-main) --- */
+.planner-main {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    padding: 12px;
+    overflow-y: auto;
+    min-height: 0;
+}
+.planner-line-section {
+    display: flex;
+    flex-direction: column;
+    flex: 0 0 auto;
+    border: 1px solid #DFE1E6;
+    border-radius: 12px;
+    background: #FFFFFF;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+html.dark .planner-line-section {
+    border-color: #3E4C5E;
+    background: #1C2636;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.planner-line-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 10px 12px;
+    border-bottom: 1px solid #DFE1E6;
+    background: #F4F5F7;
+}
+html.dark .planner-line-header {
+    border-bottom-color: #3E4C5E;
+    background: #2D333B;
+}
+.planner-line-header-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+}
+.planner-line-header-name {
+    margin: 0;
+    font-size: 0.95rem;
+    font-weight: 800;
+    color: #172B4D;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 280px;
+}
+html.dark .planner-line-header-name {
+    color: #f1f5f9;
+}
+.planner-line-header-credits {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    padding: 3px 9px;
+    border-radius: 999px;
+    background: #DEEBFF;
+    color: #0052CC;
+    font-size: 0.7rem;
+    font-weight: 700;
+    border: 1px solid #0052CC40;
+    white-space: nowrap;
+}
+.planner-line-header-credits strong {
+    font-weight: 800;
+    font-size: 0.78rem;
+}
+html.dark .planner-line-header-credits {
+    background: #0C295E;
+    color: #4C9AFF;
+    border-color: #4C9AFF40;
+}
+.planner-line-header-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 2px;
+    flex-shrink: 0;
+}
+.planner-line-action-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: none;
+    background: transparent;
+    color: #5E6C84;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, opacity 0.15s;
+    opacity: 0.7;
+}
+.planner-line-action-btn:hover {
+    opacity: 1;
+    background: #DFE1E6;
+    color: #172B4D;
+}
+.planner-line-action-btn-danger:hover {
+    color: #BF2600;
+    background: #FFEBE6;
+}
+html.dark .planner-line-action-btn {
+    color: #94a3b8;
+}
+html.dark .planner-line-action-btn:hover {
+    background: #3E4C5E;
+    color: #f1f5f9;
+}
+html.dark .planner-line-action-btn-danger:hover {
+    color: #F87171;
+    background: #450A0A;
+}
+.planner-add-line-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 14px;
+    border: 2px dashed #DFE1E6;
+    border-radius: 12px;
+    background: transparent;
+    color: #5E6C84;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: border-color 0.15s, color 0.15s, background 0.15s;
+}
+.planner-add-line-bottom:hover {
+    border-color: #0052CC;
+    color: #0052CC;
+    background: #F0F7FF;
+}
+html.dark .planner-add-line-bottom {
+    border-color: #3E4C5E;
+    color: #94a3b8;
+}
+html.dark .planner-add-line-bottom:hover {
     border-color: #4C9AFF;
     color: #4C9AFF;
     background: #0C295E;
@@ -1407,6 +1620,10 @@ html.dark .planner-pool-close:hover {
 
     .planner-pool-open {
         transform: translateY(0);
+    }
+
+    .planner-pool-wrapper.planner-pool-open + .planner-content {
+        padding-bottom: 42vh;
     }
 
     .planner-pool {
@@ -2100,6 +2317,27 @@ html.dark .schedule-course-sections {
     border: 1px solid #e74c3c;
     border-radius: 2px;
     line-height: 1;
+}
+
+.schedule-section-restrictions-panel {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.35rem;
+    margin-top: 0.3rem;
+    padding: 0.35rem 0.45rem;
+    background: #FFEBE6;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    font-size: 0.58rem;
+    font-weight: 600;
+    line-height: 1.3;
+    color: #BF2600;
+    cursor: help;
+}
+html.dark .schedule-section-restrictions-panel {
+    background: #450A0A;
+    border-color: #ef4444;
+    color: #FCA5A5;
 }
 
 html.dark .schedule-section-time,

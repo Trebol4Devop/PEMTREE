@@ -25,17 +25,12 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                 : 'text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'
         }`;
 
-    const homeLinkClass = (active) =>
-        `flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold ${
-            active
-                ? 'bg-[#DEEBFF] dark:bg-[#0C295E] font-semibold'
-                : 'hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'
-        }`;
+    const homeLinkClass = 'flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold';
 
     return (
         <nav className="h-12 sm:h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-2 sm:px-4 flex items-center justify-between transition-colors duration-300 shrink-0 select-none">
             <div className="flex items-center gap-3 sm:gap-6 min-w-0">
-                <Link to="/" className={homeLinkClass(currentView === 'home')}>
+                <Link to="/" className={homeLinkClass}>
                     <span className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0">
                         <img src="/images/logo_trebol.png" alt="PEMTREE Logo" className="w-5 h-5 sm:w-6 sm:h-6 logo-trebol-blue" />
                     </span>

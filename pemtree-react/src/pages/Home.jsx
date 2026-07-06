@@ -1,6 +1,11 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import {  Users, Lock, BarChart4, GitBranch, Mail, Link as LinkIcon } from 'lucide-react';
+import { Link, useNavigate } from 'react-router-dom';
+import {
+    Users, Lock, BarChart4, GitBranch, Mail, Link as LinkIcon,
+    Compass, Calendar, Clock, Search, CheckCircle2, Layers,
+    Copy, BookOpen, AlertTriangle, Download, Pin, Filter,
+    EyeOff, Sparkles, GitMerge, Sun, Moon
+} from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
 
@@ -91,6 +96,30 @@ export default function Home() {
         }
     ];
 
+    const FEATURE_COLORS = {
+        blue:   { bg: 'bg-[#DEEBFF] dark:bg-[#0C295E]', text: 'text-[#0052CC] dark:text-[#4C9AFF]' },
+        green:  { bg: 'bg-[#E3FCEF] dark:bg-[#0A3622]', text: 'text-[#006644] dark:text-[#79F2B8]' },
+        orange: { bg: 'bg-[#FFF0B3] dark:bg-[#5C4000]', text: 'text-[#A54800] dark:text-[#FFD666]' },
+        red:    { bg: 'bg-[#FFEBE6] dark:bg-[#450A0A]', text: 'text-[#BF2600] dark:text-[#F87171]' },
+        purple: { bg: 'bg-[#EADDFF] dark:bg-[#2E1065]', text: 'text-[#7030A0] dark:text-[#C4A8FF]' },
+        cyan:   { bg: 'bg-[#E0F2FE] dark:bg-[#0C4A6E]', text: 'text-[#0369A1] dark:text-[#7DD3FC]' },
+    };
+
+    function FeatureCard({ icon: Icon, color, title, text }) {
+        const c = FEATURE_COLORS[color] || FEATURE_COLORS.blue;
+        return (
+            <div className="flex items-start gap-3 p-3 rounded-lg hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] transition-colors">
+                <div className={`w-9 h-9 rounded-md ${c.bg} ${c.text} flex items-center justify-center shrink-0`}>
+                    <Icon size={16} />
+                </div>
+                <div className="min-w-0">
+                    <h4 className="font-bold text-sm text-[#172B4D] dark:text-slate-100">{title}</h4>
+                    <p className="text-xs text-[#5E6C84] dark:text-slate-400 leading-relaxed mt-0.5">{text}</p>
+                </div>
+            </div>
+        );
+    }
+
     return (
         <>
         <Seo pathname="/" />
@@ -103,7 +132,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-white/45 dark:bg-[#0E1624]/55"></div>
                 <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 text-center max-w-6xl mx-auto flex flex-col items-center relative z-10">
                     <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full mb-5 shadow-xs">
-                        FIUSAC pensum interactivo
+                        pensum interactivo
                     </p>
 
                     <h1 className="text-[44px] md:text-[62px] leading-[1.1] font-extrabold text-[#172B4D] dark:text-white tracking-tight max-w-3xl">
@@ -117,7 +146,7 @@ export default function Home() {
                     </h1>
 
                     <p className="text-[17px] md:text-[20px] text-[#5E6C84] dark:text-slate-400 mt-10 max-w-2xl leading-relaxed font-normal">
-                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022</span> todas la carrreras de FIUSAC mediante un tablero interactivo.
+                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> todas la carrreras de FIUSAC mediante un tablero interactivo.
                     </p>
 
                     <div className="mt-10 w-full mx-auto flex flex-wrap justify-center gap-10 sm:gap-12 lg:gap-16">
@@ -138,39 +167,111 @@ export default function Home() {
             </section>
 
             <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0 flex-grow">
-                <div className="max-w-5xl mx-auto text-center">
-                    <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">Establece tu camino, un curso a la vez</h2>
-                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 max-w-xl mx-auto mb-10">
-                        Controla visualmente las materias que has superado y obtén retroalimentación animada sobre prerrequisitos bloqueados y materias desbloqueadas.
-                    </p>
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-12">
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
+                            Herramientas
+                        </p>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
+                            Tres herramientas, una sola plataforma
+                        </h2>
+                        <p className="text-sm text-[#5E6C84] dark:text-slate-400 max-w-2xl mx-auto">
+                            Visualiza, planifica y arma tu horario desde un mismo lugar.
+                        </p>
+                    </div>
 
-                    <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-left max-w-4xl mx-auto">
-                        <div className="space-y-2">
-                            <div className="w-10 h-10 rounded-md bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#8CB4FF] flex items-center justify-center font-bold">
-                                <Lock size={18} />
+                    {/* Visualizador */}
+                    <div className="mb-10 bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden">
+                        <div className="p-6 sm:p-8 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
+                                    <Compass size={22} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Visualizador</h3>
+                                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 mt-1 max-w-xl">
+                                        Tablero interactivo con todos los cursos de tu pensum, organizados por semestre y conectados por sus prerrequisitos.
+                                    </p>
+                                </div>
                             </div>
-                            <h3 className="font-bold text-base text-[#172B4D] dark:text-slate-100">Lógica de Bloqueo Inteligente</h3>
-                            <p className="text-xs text-[#5E6C84] dark:text-slate-400 leading-relaxed">
-                                El tablero interactivo comprueba los prerrequisitos del PENSUM CLAR 2022. Llena todos los prerequisitos automaticamente.
-                            </p>
+                            <Link to="/visualizador" className="shrink-0 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2 rounded transition shadow-sm cursor-pointer no-underline text-center whitespace-nowrap">
+                                Abrir Visualizador
+                            </Link>
                         </div>
-                        <div className="space-y-2">
-                            <div className="w-10 h-10 rounded-md bg-[#E3FCEF] dark:bg-[#0A3622] text-[#006644] dark:text-[#79F2B8] flex items-center justify-center font-bold">
-                                <BarChart4 size={18} />
-                            </div>
-                            <h3 className="font-bold text-base text-[#172B4D] dark:text-slate-100">Métricas e Indicadores Clave</h3>
-                            <p className="text-xs text-[#5E6C84] dark:text-slate-400 leading-relaxed">
-                                Lleva el control de tus créditos acumulados instantáneamente conforme interactúas con los nodos de progreso.
-                            </p>
+                        <div className="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[
+                                { icon: GitBranch, color: 'blue', title: 'Grafo de prerrequisitos', text: 'Conexiones visuales entre cursos: haz clic en cualquier nodo para iluminar sus dependencias y cursos que lo requieren.' },
+                                { icon: Lock, color: 'red', title: 'Lógica de bloqueo', text: 'Los cursos se bloquean automáticamente hasta que apruebes todos sus prerrequisitos.' },
+                                { icon: CheckCircle2, color: 'green', title: 'Marca tu progreso', text: 'Marca cursos como Aprobado, Cursando o Disponible. Tu avance se guarda automáticamente.' },
+                                { icon: Compass, color: 'orange', title: 'Ruta crítica', text: 'Tres rutas optimizadas: Más Rápida, Más Flexible y Balanceada, considerando créditos y electivos.' },
+                                { icon: BarChart4, color: 'purple', title: 'Métricas en vivo', text: 'Contador de créditos aprobados, requisitos de graduación (300 cr) y área Social Humanística (8 cr).' },
+                                { icon: Search, color: 'cyan', title: 'Búsqueda instantánea', text: 'Busca por código o nombre y selecciona el curso para centrarlo en el grafo.' },
+                            ].map(f => (
+                                <FeatureCard key={f.title} {...f} />
+                            ))}
                         </div>
-                        <div className="space-y-2">
-                            <div className="w-10 h-10 rounded-md bg-[#FFF0B3] dark:bg-[#5C4000] text-[#A54800] dark:text-[#FFD666] flex items-center justify-center font-bold">
-                                <Users size={18} />
+                    </div>
+
+                    {/* Planificador */}
+                    <div className="mb-10 bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden">
+                        <div className="p-6 sm:p-8 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-[#E3FCEF] dark:bg-[#0A3622] text-[#006644] dark:text-[#79F2B8] flex items-center justify-center shrink-0">
+                                    <Calendar size={22} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Planificador</h3>
+                                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 mt-1 max-w-xl">
+                                        Arrastra y suelta cursos en los semestres y escuelas de vacaciones para diseñar tu línea académica.
+                                    </p>
+                                </div>
                             </div>
-                            <h3 className="font-bold text-base text-[#172B4D] dark:text-slate-100">Prerrequisitos Visuales</h3>
-                            <p className="text-xs text-[#5E6C84] dark:text-slate-400 leading-relaxed">
-                                Al dar clic de un curso de interés, la interfaz iluminará inmediatamente todos sus prerrequisitos y dependencias futuras.
-                            </p>
+                            <Link to="/visualizador?view=planner" className="shrink-0 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2 rounded transition shadow-sm cursor-pointer no-underline text-center whitespace-nowrap">
+                                Abrir Planificador
+                            </Link>
+                        </div>
+                        <div className="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[
+                                { icon: GitMerge, color: 'blue', title: 'Drag & Drop', text: 'Arrastra cursos desde el pool hacia semestres o vacaciones. Mueve entre bloques con validación en tiempo real.' },
+                                { icon: Sparkles, color: 'green', title: 'Múltiples líneas de planificación', text: 'Crea variantes como "Ruta rápida" o "Con vacaciones" y compara créditos totales entre ellas.' },
+                                { icon: BarChart4, color: 'orange', title: 'Límite por créditos CLAR', text: 'Calcula tu máximo permitido según tu promedio (32/37/42 cr) y detecta excedentes automáticamente.' },
+                                { icon: Lock, color: 'red', title: 'Validación de prerrequisitos', text: 'Impide planificar un curso si faltan prerrequisitos en semestres anteriores. Opción de desactivar disponible.' },
+                                { icon: Copy, color: 'cyan', title: 'Carreras simultáneas', text: 'Carga un segundo pensum y planifica dos carreras en paralelo con el bono de +5 créditos.' },
+                            ].map(f => (
+                                <FeatureCard key={f.title} {...f} />
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Armador de horarios */}
+                    <div className="mb-2 bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden">
+                        <div className="p-6 sm:p-8 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+                            <div className="flex items-start gap-4">
+                                <div className="w-12 h-12 rounded-xl bg-[#FFF0B3] dark:bg-[#5C4000] text-[#A54800] dark:text-[#FFD666] flex items-center justify-center shrink-0">
+                                    <Clock size={22} />
+                                </div>
+                                <div>
+                                    <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Armador de Horarios</h3>
+                                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 mt-1 max-w-xl">
+                                        Visualiza, combina y exporta tus horarios por semestre o vacaciones con datos actualizados de FIUSAC.
+                                    </p>
+                                </div>
+                            </div>
+                            <Link to="/visualizador?view=schedule" className="shrink-0 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2 rounded transition shadow-sm cursor-pointer no-underline text-center whitespace-nowrap">
+                                Abrir Horarios
+                            </Link>
+                        </div>
+                        <div className="p-6 sm:p-8 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {[
+                                { icon: Clock, color: 'orange', title: 'Vista semanal interactiva', text: 'Cuadrícula de lunes a sábado con bloques de tiempo. Haz clic en una sección para agregarla o quitarla.' },
+                                { icon: Search, color: 'blue', title: 'Búsqueda por docente', text: 'Encuentra cursos por catedrático o auxiliar, además de código, nombre, edificio o salón.' },
+                                { icon: Filter, color: 'purple', title: 'Filtro por modalidad', text: 'Filtra entre Presencial, Semipresencial y Virtual. Combina con búsqueda para encontrar secciones específicas.' },
+                                { icon: AlertTriangle, color: 'red', title: 'Detección de conflictos', text: 'Resalta traslapes entre secciones elegidas con advertencias en tiempo real.' },
+                                { icon: Pin, color: 'cyan', title: 'Cursos fijados', text: 'Fija cursos que estás considerando llevar para no perderlos de vista, incluso si tienen traslapes u otros problemas con tu horario actual.' },
+                                { icon: Download, color: 'green', title: 'Exportar como PNG', text: 'Descarga tu horario final como imagen PNG lista para compartir o imprimir.' },
+                            ].map(f => (
+                                <FeatureCard key={f.title} {...f} />
+                            ))}
                         </div>
                     </div>
                 </div>

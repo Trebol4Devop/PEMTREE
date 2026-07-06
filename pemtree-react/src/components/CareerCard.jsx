@@ -13,21 +13,20 @@ const CAREER_ICONS = {
     quimica: FlaskConical,
 };
 
-function NodeStyleBar({ primary, secondary, indicator, className = '' }) {
+function NodeStyleBar({ primary, secondary, className = '' }) {
     return (
         <div
             className={`flex w-full h-3.5 sm:h-4 rounded-sm overflow-hidden ${className}`}
             style={{ border: `1px solid ${primary}40` }}
         >
             <div
-                className="flex flex-col h-full"
-                style={{ width: '14%', minWidth: '14%' }}
+                className="flex flex-col h-full w-3.5 sm:w-4 shrink-0"
             >
-                <div className="flex-1" style={{ backgroundColor: indicator || primary }} />
-                <div className="flex-1" style={{ backgroundColor: secondary }} />
+                <div className="flex-1" style={{ backgroundColor: primary }} />
+            <div className="w-[42px] sm:w-[48px] shrink-0" style={{ backgroundColor: secondary }} />
             </div>
-            <div className="flex-1" style={{ backgroundColor: `${primary}26` }} />
-            <div style={{ width: '18%', minWidth: '18%', backgroundColor: primary }} />
+            <div className="flex-1" style={{ backgroundColor: secondary }} />
+            <div className="w-3.5 sm:w-4 shrink-0" style={{ backgroundColor: primary }} />
         </div>
     );
 }
@@ -136,21 +135,9 @@ export default function CareerCard({ name, shortName, base, jsonFile, colors, ye
                     <CareerIcon base={base} primary={primary} />
 
                     <div className="flex-1 flex flex-col gap-1 sm:gap-1.5 min-w-0">
-                        <NodeStyleBar
-                            primary={primary}
-                            secondary={secondary}
-                            indicator={primary}
-                        />
-                        <NodeStyleBar
-                            primary={primary}
-                            secondary={secondary}
-                            indicator={secondary}
-                        />
-                        <NodeStyleBar
-                            primary={primary}
-                            secondary={secondary}
-                            indicator={null}
-                        />
+                        <NodeStyleBar primary={primary} secondary={secondary} />
+                        <NodeStyleBar primary={primary} secondary={secondary} />
+                        <NodeStyleBar primary={primary} secondary={secondary} />
                     </div>
                 </div>
             </div>
