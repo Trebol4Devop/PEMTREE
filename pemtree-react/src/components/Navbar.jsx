@@ -6,31 +6,58 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
     const location = useLocation();
-    const currentView = location.pathname === '/visualizador' ? 'board' : 'home';
+    const isOnBoard = location.pathname === '/visualizador';
+    const currentView = (() => {
+        if (location.pathname === '/visualizador') {
+            const params = new URLSearchParams(location.search);
+            const v = params.get('view');
+            if (v === 'planner') return 'planner';
+            if (v === 'schedule') return 'schedule';
+            return 'graph';
+        }
+        return 'home';
+    })();
+
+    const boardLinkClass = (active) =>
+        `px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline whitespace-nowrap text-xs sm:text-sm font-medium ${
+            active
+                ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] font-semibold'
+                : 'text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'
+        }`;
+
+    const homeLinkClass = (active) =>
+        `flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold ${
+            active
+                ? 'bg-[#DEEBFF] dark:bg-[#0C295E] font-semibold'
+                : 'hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'
+        }`;
 
     return (
         <nav className="h-12 sm:h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-2 sm:px-4 flex items-center justify-between transition-colors duration-300 shrink-0 select-none">
             <div className="flex items-center gap-3 sm:gap-6 min-w-0">
-                <Link to="/" className="flex items-center gap-1.5 sm:gap-2 font-bold text-sm sm:text-base tracking-tight hover:opacity-85 transition bg-transparent border-none cursor-pointer no-underline shrink-0">
+                <Link to="/" className={homeLinkClass(currentView === 'home')}>
                     <span className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0">
                         <img src="/images/logo_trebol.png" alt="PEMTREE Logo" className="w-5 h-5 sm:w-6 sm:h-6 logo-trebol-blue" />
                     </span>
                     <span className="font-extrabold tracking-tight text-[#0052CC] dark:text-slate-100 hidden sm:inline">PEMTREE</span>
                 </Link>
 
-                <div className="hidden lg:flex items-center gap-2 lg:gap-4 text-xs sm:text-sm font-medium text-[#5E6C84] dark:text-slate-300">
-                    <Link to="/" className={`px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline whitespace-nowrap ${currentView === 'home' ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] font-semibold' : 'hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E]'}`}>
-                        Inicio Portal
+                <div className="hidden lg:flex items-center gap-1 lg:gap-2 text-xs sm:text-sm font-medium">
+                    <Link to="/visualizador" className={boardLinkClass(currentView === 'graph')}>
+                        Visualizador
                     </Link>
-                    <Link to="/visualizador" className={`px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline whitespace-nowrap ${currentView === 'board' ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] font-semibold' : 'hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E]'}`}>
-                        Visualizador Board
+                    <Link to="/visualizador?view=planner" className={boardLinkClass(currentView === 'planner')}>
+                        Planificador
+                    </Link>
+                    <Link to="/visualizador?view=schedule" className={boardLinkClass(currentView === 'schedule')}>
+                        Horarios
                     </Link>
                 </div>
             </div>
 
             <div className="flex items-center gap-1.5 sm:gap-2 lg:gap-3 shrink-0">
-                <button 
-                    onClick={onToggleTheme} 
+                <button
+                    onClick={onToggleTheme}
                     className="p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] cursor-pointer border-none bg-transparent flex items-center justify-center text-[#5E6C84] dark:text-slate-300"
                     aria-label="Toggle theme"
                 >
@@ -42,7 +69,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <span className="text-[#172B4D] dark:text-slate-300">PENSUM</span>
                 </div>
 
-                {currentView !== 'board' && (
+                {!isOnBoard && (
                     <Link to="/visualizador" className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white text-[0.7rem] sm:text-xs font-bold px-2 sm:px-3.5 py-1 sm:py-1.5 rounded transition shadow-sm cursor-pointer no-underline whitespace-nowrap">
                         Abrir Board
                     </Link>
@@ -57,11 +84,14 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
 
             {mobileMenuOpen && (
                 <div className="absolute top-12 sm:top-14 left-0 w-full bg-white dark:bg-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-2 px-2 flex flex-col gap-1 text-xs sm:text-sm font-semibold z-30 lg:hidden shadow-lg">
-                    <Link to="/" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] no-underline ${currentView === 'home' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200'}`}>
-                        Inicio Portal
+                    <Link to="/visualizador" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'graph' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
+                        Visualizador
                     </Link>
-                    <Link to="/visualizador" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] no-underline ${currentView === 'board' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200'}`}>
-                        Visualizador Board
+                    <Link to="/visualizador?view=planner" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'planner' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
+                        Planificador
+                    </Link>
+                    <Link to="/visualizador?view=schedule" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'schedule' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
+                        Horarios
                     </Link>
                 </div>
             )}
