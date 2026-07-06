@@ -145,11 +145,32 @@ export default function ScheduleBuilder() {
     }
 
     const filteredCourses = useMemo(() => {
+        const normalize = (s) => {
+            if (!s) return '';
+            return s.toString()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .trim();
+        };
+        const searchWords = normalize(courseSearch).split(/\s+/).filter(Boolean);
         const grouped = {};
         for (const h of horarios) {
-            const matchSearch = !courseSearch ||
-            h.nombre.toLowerCase().includes(courseSearch.toLowerCase()) ||
-            h.codigo.includes(courseSearch);
+            const haystackWords = normalize([
+                h.codigo,
+                h.nombre,
+                h.seccion,
+                h.tipo,
+                h.edificio,
+                h.salon,
+                h.catedratico,
+                h.auxiliar,
+                h.modalidad,
+                h.dias ? h.dias.join(' ') : '',
+            ].filter(Boolean).join(' ')).split(/\s+/).filter(Boolean);
+            const matchSearch = !searchWords.length || searchWords.every(sw =>
+                haystackWords.some(hw => hw.includes(sw))
+            );
             const matchModalidad = modalidadFilter === 'todas' || h.modalidad === modalidadFilter;
             if (!matchSearch || !matchModalidad) continue;
             if (!grouped[h.codigo]) {
@@ -1033,7 +1054,7 @@ export default function ScheduleBuilder() {
         <Search size={14} />
         <input
         type="text"
-         placeholder="Buscar código o nombre..."
+         placeholder="Buscar..."
         value={courseSearch}
         onChange={e => setCourseSearch(e.target.value)}
         />
@@ -1126,11 +1147,15 @@ export default function ScheduleBuilder() {
                     {curso.secciones.map(sec => {
                         const selected = isSectionSelected(sec);
                         const conf = hasConflict(sec);
+                        const hasRestrictions = !!sec.restricciones;
+                        const restrictionDetail = typeof sec.restricciones === 'string' ? sec.restricciones : null;
+                        const restrictionHover = restrictionDetail || 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC.';
                         return (
                             <div
                             key={`${sec.codigo}-${sec.seccion}-${sec.inicio}-${sec.dias[0]||''}`}
                             className={`schedule-section-item ${selected ? 'selected' : ''}`}
                             onClick={() => toggleSection(sec)}
+                            title={hasRestrictions ? restrictionHover : undefined}
                             >
                             <div className="schedule-section-check">
                             {selected && <Check size={10} />}
@@ -1141,11 +1166,25 @@ export default function ScheduleBuilder() {
                             <div className="schedule-section-info">
                             <span className="schedule-section-time">
                             <span className="schedule-section-label">Sec. {sec.seccion.trim() || '?'}</span> {formatearHorario(sec)} · {sec.salon}
-                            {sec.restricciones && <span className="schedule-section-restr">[Con restricciones]</span>}
+                            {hasRestrictions && (
+                                <span className="schedule-section-restr" title={restrictionHover}>
+                                    <AlertTriangle size={9} className="inline-block mr-0.5" />Con restricciones
+                                </span>
+                            )}
                             </span>
                             <span className="schedule-section-prof">
                             {sec.catedratico} · {formatearDuracion(sec)}
                             </span>
+                            {selected && hasRestrictions && (
+                                <div className="schedule-section-restrictions-panel" role="note">
+                                    <AlertTriangle size={11} className="shrink-0 mt-0.5" />
+                                    <span>
+                                        {restrictionDetail
+                                            ? <>Restricciones: <strong>{restrictionDetail}</strong></>
+                                            : 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC antes de confirmar.'}
+                                    </span>
+                                </div>
+                            )}
                             </div>
                             {conf.status !== 'valid' && (
                                 <span className={`schedule-section-status ${conf.status}`}>
