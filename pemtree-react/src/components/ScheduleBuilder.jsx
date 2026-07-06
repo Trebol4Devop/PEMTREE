@@ -145,11 +145,30 @@ export default function ScheduleBuilder() {
     }
 
     const filteredCourses = useMemo(() => {
+        const normalize = (s) => {
+            if (!s) return '';
+            return s.toString()
+                .toLowerCase()
+                .normalize('NFD')
+                .replace(/[\u0300-\u036f]/g, '')
+                .trim();
+        };
+        const search = normalize(courseSearch);
         const grouped = {};
         for (const h of horarios) {
-            const matchSearch = !courseSearch ||
-            h.nombre.toLowerCase().includes(courseSearch.toLowerCase()) ||
-            h.codigo.includes(courseSearch);
+            const haystack = normalize([
+                h.codigo,
+                h.nombre,
+                h.seccion,
+                h.tipo,
+                h.edificio,
+                h.salon,
+                h.catedratico,
+                h.auxiliar,
+                h.modalidad,
+                h.dias ? h.dias.join(' ') : '',
+            ].filter(Boolean).join(' '));
+            const matchSearch = !search || haystack.includes(search);
             const matchModalidad = modalidadFilter === 'todas' || h.modalidad === modalidadFilter;
             if (!matchSearch || !matchModalidad) continue;
             if (!grouped[h.codigo]) {
@@ -1033,7 +1052,7 @@ export default function ScheduleBuilder() {
         <Search size={14} />
         <input
         type="text"
-         placeholder="Buscar código o nombre..."
+         placeholder="Buscar..."
         value={courseSearch}
         onChange={e => setCourseSearch(e.target.value)}
         />
