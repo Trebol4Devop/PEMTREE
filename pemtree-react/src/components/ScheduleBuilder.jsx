@@ -89,7 +89,6 @@ export default function ScheduleBuilder() {
     });
     const gridRef = useRef(null);
     const savedSettingsRef = useRef(null);
-    const initialMountRef = useRef(true); // true until first loadHorarios completes
     const [showExportModal, setShowExportModal] = useState(false);
     const [exportSettings, setExportSettings] = useState({
         paletteName: 'Default',
@@ -105,6 +104,21 @@ export default function ScheduleBuilder() {
     useEffect(() => {
         loadHorarios(currentPeriod);
     }, [currentPeriod]);
+
+    // getPensumKey() (en cursos.js) depende de un fetch async totalmente
+    // independiente de cargarHorarios(), así que no hay garantía de cuál
+    // termina primero. Si el pensum queda listo DESPUÉS de que este
+    // componente ya intentó leer localStorage con la clave equivocada
+    // ('default'), este evento nos avisa para re-sincronizar selectedSections
+    // con la clave correcta en cuanto esté disponible.
+    useEffect(() => {
+        function handlePensumReady() {
+            const saved = localStorage.getItem(getScheduleStorageKey(sectionsPeriodRef.current));
+            setSelectedSections(saved ? JSON.parse(saved) : {});
+        }
+        window.addEventListener('pemtree-pensum-ready', handlePensumReady);
+        return () => window.removeEventListener('pemtree-pensum-ready', handlePensumReady);
+    }, []);
 
     // persist current period to localStorage for cross-component communication
     useEffect(() => {
@@ -128,20 +142,23 @@ export default function ScheduleBuilder() {
         try {
             const data = await cargarHorarios(periodId);
             setHorarios(data || []);
-            // On the very first mount the useState lazy initializer has already
-            // read the correct sections from localStorage — don't overwrite them.
-            // Only restore when the user explicitly switches period.
-            if (!initialMountRef.current) {
-                const saved = localStorage.getItem(getScheduleStorageKey(periodId));
-                setSelectedSections(saved ? JSON.parse(saved) : {});
-            }
+            // Always re-sync selectedSections from localStorage once cargarHorarios
+            // resolves, even on the very first mount. getPensumKey() can depend on
+            // data that isn't ready yet during the initial synchronous render (the
+            // useState lazy initializer), so the key used there may briefly compute
+            // as the wrong pensum ('default') and miss the real saved schedule. By
+            // the time cargarHorarios resolves, getPensumKey() is reliable, so we
+            // simply re-read localStorage with the now-correct key. This is safe to
+            // do unconditionally: the course list hasn't loaded yet before this
+            // point, so the user can't have made a selection to lose.
+            const saved = localStorage.getItem(getScheduleStorageKey(periodId));
+            setSelectedSections(saved ? JSON.parse(saved) : {});
             sectionsPeriodRef.current = periodId;
         } catch (e) {
             setError('Error cargando horarios: ' + e.message);
             setHorarios([]);
         }
         setLoading(false);
-        initialMountRef.current = false;
     }
 
     const filteredCourses = useMemo(() => {
@@ -731,6 +748,18 @@ export default function ScheduleBuilder() {
      * Shared compact-layout computation used by both renderGrid (DOM) and
      * renderToCanvas (image export).
      *
+     * For long blocks (>6 slots), only the first 2 rows and the last 3 rows
+     * (5 total) stay visible; the collapsed middle becomes a single "···"
+     * marker row. A slot only collapses if EVERY course occupying it (across
+     * all days, since grid rows are shared across columns) independently
+     * agrees the slot is hideable for its own compaction — two courses with
+     * the exact same long block on different days will collapse together
+     * fine, but a shorter course (or one whose own head/tail lands there)
+     * keeps the slot visible for everyone. Visual coherence between courses
+     * always wins over maximum compactness (this can split one block's
+     * hidden middle into more than one "···" run if another course pokes
+     * into it).
+     *
      * Returns:
      *   clusters        – array of { start, end } slot ranges (with padding)
      *   collapsedSlots  – Set<slotIdx>  slots that are hidden (middle of long block)
@@ -774,8 +803,9 @@ export default function ScheduleBuilder() {
         // ── 3. collapsed slots ────────────────────────────────────────────────
         // In compact mode every slot within a cluster that has NO course on ANY
         // day is hidden. Additionally, the middle rows of long (>6 slot) blocks
-        // are also hidden (keeping 3 head + 3 tail rows visible per block).
-        // Hidden runs of slots are replaced by a single "···" marker row.
+        // are also hidden (keeping 2 head + 3 tail rows visible per block, i.e.
+        // 5 rows total). Hidden runs of slots are replaced by a single "···"
+        // marker row.
         const collapsedSlots  = new Set();
         const collapseMarkers = new Set();
 
@@ -790,8 +820,16 @@ export default function ScheduleBuilder() {
             }
 
             // ── 3b. also hide middle rows of long blocks (>6 slots) ───────────
-            // Build per-slot occupancy map to protect slots shared by any course.
-            const slotOccupants = new Map(); // slotIdx → Set of sections
+            // Keep the first HEAD_ROWS_LONG rows and the last TAIL_ROWS_LONG
+            // rows visible (5 total) — see doc comment above for the "unless
+            // another course is in the middle" exception.
+            const HEAD_ROWS_LONG = 2;
+            const TAIL_ROWS_LONG = 3;
+
+            // Per-section candidate collapse range — the slots THAT section
+            // alone would be happy to hide. null = too short to ever compact.
+            const candidateRange = new Map(); // section → {start,end} | null
+            const slotOccupants  = new Map(); // slotIdx → Set of sections
             for (const s of sections) {
                 const ss = Math.floor((mins(s.inicio) - HORA_INICIO * 60) / slotMinutes);
                 const es = Math.ceil((mins(s.final)  - HORA_INICIO * 60) / slotMinutes);
@@ -799,25 +837,26 @@ export default function ScheduleBuilder() {
                     if (!slotOccupants.has(sl)) slotOccupants.set(sl, new Set());
                     slotOccupants.get(sl).add(s);
                 }
+                const span = es - ss;
+                candidateRange.set(s, span <= 6 ? null : { start: ss + HEAD_ROWS_LONG, end: es - TAIL_ROWS_LONG });
             }
 
-            for (const s of sections) {
-                const ss = Math.floor((mins(s.inicio) - HORA_INICIO * 60) / slotMinutes);
-                const es = Math.ceil((mins(s.final)  - HORA_INICIO * 60) / slotMinutes);
-                const span = es - ss;
-                if (span <= 6) continue; // only long blocks get compacted
-
-                const collapseStart = ss + 3;
-                const collapseEnd   = es - 3; // exclusive — keep last 3 rows visible
-
-                for (let sl = collapseStart; sl < collapseEnd; sl++) {
-                    // protect if any OTHER section also occupies this slot
-                    const occupants = slotOccupants.get(sl) || new Set();
-                    const hasOther = [...occupants].some(o => o !== s);
-                    if (!hasOther) {
-                        collapsedSlots.add(sl);
+            // A slot can only be hidden if EVERY course occupying it (across
+            // all days, since rows are shared) agrees it's hideable for its
+            // own compaction. If two courses share the exact same long block
+            // across different days, both agree and the slot collapses fine.
+            // If a shorter course — or a longer one whose own head/tail
+            // touches this slot — needs it visible, it stays visible for all.
+            for (const [sl, occupants] of slotOccupants) {
+                let canHide = true;
+                for (const o of occupants) {
+                    const range = candidateRange.get(o);
+                    if (!range || sl < range.start || sl >= range.end) {
+                        canHide = false;
+                        break;
                     }
                 }
+                if (canHide) collapsedSlots.add(sl);
             }
 
             // ── 3c. mark the first slot of each contiguous collapsed run ───────

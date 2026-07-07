@@ -129,6 +129,19 @@ const DEFAULT_STARTUP_REL = `/json/${DEFAULT_STARTUP_FILENAME}`;
 // Exporta el pensum cargado al iniciar (para sincronizar la UI)
 export let STARTUP_LOADED_PENSUM = '';
 
+// Notifica a cualquier parte de la app (p. ej. ScheduleBuilder) que
+// STARTUP_LOADED_PENSUM ya tiene un valor válido, para que quien dependa de
+// getPensumKey() pueda re-sincronizarse — sin esto, cualquier componente que
+// lea localStorage con una clave basada en getPensumKey() ANTES de que este
+// módulo termine de cargar el pensum (fetch async, sin relación con otros
+// flujos de carga de la app) usaría la clave incorrecta ('default') y nunca
+// se enteraría de que ya está disponible la correcta.
+function notifyPensumReady() {
+    if (typeof window !== 'undefined') {
+        window.dispatchEvent(new CustomEvent('pemtree-pensum-ready', { detail: { pensum: STARTUP_LOADED_PENSUM } }));
+    }
+}
+
 export function getPensumKey() {
     if (!STARTUP_LOADED_PENSUM) return null;
     const fileName = STARTUP_LOADED_PENSUM.split('/').pop();
@@ -206,7 +219,10 @@ export async function initializeCursos() {
                 const json = await res.json();
                 if (Array.isArray(json)) {
                     allJson.push(...json);
-                    if (!STARTUP_LOADED_PENSUM) STARTUP_LOADED_PENSUM = relPath;
+                    if (!STARTUP_LOADED_PENSUM) {
+                        STARTUP_LOADED_PENSUM = relPath;
+                        notifyPensumReady();
+                    }
                 }
             } catch (innerErr) {
                 console.warn(`Error cargando ${relPath}:`, innerErr);
@@ -361,6 +377,7 @@ export async function loadPensum(relPath) {
 
         // Registrar el pensum cargado para la UI
         STARTUP_LOADED_PENSUM = relPath;
+        notifyPensumReady();
 
         console.log(` Pensum cargado: ${relPath} (${cursos.length} cursos)`);
         return cursos;
