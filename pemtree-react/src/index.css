@@ -497,7 +497,7 @@ html.dark .planner-warning-close {
     display: flex;
     gap: 12px;
     align-items: flex-start;
-    min-width: min-content;
+    min-width: 0;
     overflow-x: auto;
     overflow-y: hidden;
     padding: 12px;
@@ -969,6 +969,9 @@ html.dark .planner-line-rename-input {
     display: flex;
     flex-direction: column;
     flex: 0 0 auto;
+    width: 100%;
+    max-width: 100%;
+    min-width: 0;
     border: 1px solid #DFE1E6;
     border-radius: 12px;
     background: #FFFFFF;
