@@ -12,11 +12,40 @@ export default function CoursePool({ cursos, plannedIds, mergedMap }) {
 
     const filtered = useMemo(() => {
         if (!search.trim()) return available;
-        const q = TextUtils.normalizarTexto(search);
-        return available.filter(c =>
-            TextUtils.normalizarTexto(c.codigo).includes(q) ||
-            TextUtils.normalizarTexto(c.nombre).includes(q)
-        );
+        const query = TextUtils.normalizarTexto(search).trim();
+        const terms = query.split(/\s+/).filter(Boolean);
+        if (terms.length === 0) return available;
+
+        const scored = available
+            .map(curso => {
+                const code = TextUtils.normalizarTexto(curso.codigo);
+                const name = TextUtils.normalizarTexto(curso.nombre);
+                const combined = `${code} ${name}`;
+
+                let score = 0;
+                for (const term of terms) {
+                    const codeIdx = code.indexOf(term);
+                    const nameIdx = name.indexOf(term);
+                    if (codeIdx >= 0) {
+                        score += 20;
+                        if (codeIdx === 0) score += 10;
+                    } else if (nameIdx >= 0) {
+                        score += 10;
+                        if (nameIdx === 0) score += 5;
+                        else if (name[nameIdx - 1] === ' ') score += 3;
+                    } else if (combined.indexOf(term) >= 0) {
+                        score += 2;
+                    } else {
+                        return null;
+                    }
+                }
+                return { curso, score };
+            })
+            .filter(Boolean)
+            .sort((a, b) => b.score - a.score)
+            .map(item => item.curso);
+
+        return scored;
     }, [available, search]);
 
     return (

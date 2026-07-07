@@ -424,7 +424,6 @@ export default function Planner({ currentPensum }) {
     }, [lines, addToast, maxCredits, suficiencias, ignorePrereqs, mergedCursoMap, updateLine]);
 
     const makeHandleRemoveChip = useCallback((lineId) => (courseId) => {
-        if (!lines.some(l => l.id === lineId)) return;
         updateLine(lineId, l => {
             const nextPlan = {};
             for (const [blockId, ids] of Object.entries(l.plan)) {
@@ -433,7 +432,7 @@ export default function Planner({ currentPensum }) {
             return { ...l, plan: nextPlan };
         });
         setSuficiencias(prev => prev.filter(id => id !== courseId));
-    }, [lines, updateLine]);
+    }, [updateLine]);
 
     const makeHandleAddSemester = useCallback((lineId) => () => {
         updateLine(lineId, l => ({ ...l, semesterCount: (l.semesterCount || INITIAL_SEMESTERS) + 1 }));
