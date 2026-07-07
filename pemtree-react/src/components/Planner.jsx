@@ -222,9 +222,33 @@ export default function Planner({ currentPensum }) {
             const res = await fetch(file);
             if (!res.ok) throw new Error('No se pudo cargar el pensum');
             const json = await res.json();
+
+            // Cargar color del segundo pensum
+            const basename = file.split('/').pop().replace('.json', '');
+            const base = basename.replace(/_20\d\d|_22/, '');
+            const colorRes = await fetch(`/pensum_color/${base}_color.json`);
+            let colorData = null;
+            if (colorRes.ok) {
+                const cJson = await colorRes.json();
+                colorData = cJson[0];
+            }
+
             const cursos = importarCursosDesdeJSON(json);
             const map = new Map();
-            cursos.forEach(c => map.set(c.id, c));
+            cursos.forEach(c => {
+                c.id += 10000;
+                if (c.prerequisitos) {
+                    c.prerequisitos = c.prerequisitos.map(p => typeof p === 'number' ? p + 10000 : p);
+                }
+                c.isSimultaneous = true;
+                if (colorData) {
+                    c.colors = c.colors || {};
+                    c.colors.leftTop = { fill: colorData.color1 };
+                    c.colors.leftBottom = { fill: colorData.color2 };
+                    c.colors.text = { fill: colorData.color3 };
+                }
+                map.set(c.id, c);
+            });
             setSecondCursoMap(map);
             setSecondPensum(file);
         } catch (e) {
@@ -261,16 +285,20 @@ export default function Planner({ currentPensum }) {
     const currentCursos = useMemo(() => {
         const primary = Array.from(cursoMap.values());
         if (!simultaneous || secondCursoMap.size === 0) return primary;
-        const seen = new Set(primary.map(c => c.codigo));
-        const extra = [];
-        for (const c of secondCursoMap.values()) {
-            if (!seen.has(c.codigo)) {
-                seen.add(c.codigo);
-                extra.push(c);
-            }
-        }
+        // Mostrar cursos de ambas carreras (cursos comunes aparecerán con IDs diferentes)
+        const extra = Array.from(secondCursoMap.values());
         return [...primary, ...extra];
     }, [simultaneous, secondCursoMap]);
+
+    const allPlannedIds = useMemo(() => {
+        const ids = new Set();
+        for (const line of lines) {
+            for (const courseIds of Object.values(line.plan || {})) {
+                for (const id of courseIds) ids.add(id);
+            }
+        }
+        return ids;
+    }, [lines]);
 
     const mergedCursoMap = useMemo(() => {
         const map = new Map();
@@ -652,7 +680,7 @@ export default function Planner({ currentPensum }) {
                         <X size={18} />
                     </button>
                 </div>
-                <CoursePool cursos={currentCursos} plannedIds={new Set()} mergedMap={simultaneous ? mergedCursoMap : null} />
+                <CoursePool cursos={currentCursos} plannedIds={allPlannedIds} mergedMap={simultaneous ? mergedCursoMap : null} />
             </div>
 
             <div className="planner-content">
