@@ -229,9 +229,11 @@ export default function ScheduleBuilder() {
                     const aLab = esLaboratorio(a);
                     const bLab = esLaboratorio(b);
                     if (!(aLab || bLab) && t >= 50) continue;
-                    const iniMin = Math.max(mins(a.inicio), mins(b.inicio));
-                    const finMin = Math.min(mins(a.final), mins(b.final));
-                    pairs.push({ day: dia, a, b, startMin: iniMin, endMin: finMin });
+                    const iniMin = Math.min(mins(a.inicio), mins(b.inicio));
+                    const finMin = Math.max(mins(a.final), mins(b.final));
+                    const overlapStart = Math.max(mins(a.inicio), mins(b.inicio));
+                    const overlapEnd = Math.min(mins(a.final), mins(b.final));
+                    pairs.push({ day: dia, a, b, startMin: iniMin, endMin: finMin, overlapStart, overlapEnd });
                 }
             }
         }
@@ -725,6 +727,66 @@ export default function ScheduleBuilder() {
             ctx.restore();
         }
 
+        function drawPairContent(activo, otro, blockX, blockY, bw, bh, tc) {
+            const padX = 3;
+            const padY = 2;
+            const fSize = 9;
+            const lineH = fSize * 1.1;
+            const isLight = tc === '#ffffff' ? false : true;
+            const tcActive = tc;
+            const tcDim = isLight ? 'rgba(30,41,59,0.55)' : 'rgba(255,255,255,0.55)';
+            const tcProf = isLight ? 'rgba(30,41,59,0.75)' : 'rgba(255,255,255,0.75)';
+
+            if (isDark) {
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetY = 1;
+            }
+
+            // Active course: code + name on one line, prof on second line
+            const codeText = `${activo.codigo}-${activo.seccion.trim() || '?'}`;
+            drawText(codeText, blockX + padX, blockY + padY + fSize * 0.6,
+                bw - padX * 2 - 22, fSize, tcActive, 'left', 'bold');
+            drawText(truncarNombre(activo.nombre),
+                blockX + padX, blockY + padY + fSize * 0.6 + lineH,
+                bw - padX * 2, fSize * 0.85, tcActive, 'left');
+            drawText(`${nombreCorto(activo.catedratico)} · ${activo.edificio} ${activo.salon}`,
+                blockX + padX, blockY + padY + fSize * 0.6 + lineH * 2,
+                bw - padX * 2, fSize * 0.7, tcProf, 'left');
+
+            // Pair indicator badge in top-right of active section
+            drawText(`↔${otro.codigo}`,
+                blockX + bw - padX - 20, blockY + padY + fSize * 0.6,
+                18, fSize * 0.7, tcActive, 'right', 'bold');
+
+            // Divider line
+            const dividerY = blockY + padY + fSize * 0.6 + lineH * 3 + 2;
+            ctx.save();
+            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)';
+            ctx.lineWidth = 0.5;
+            ctx.beginPath();
+            ctx.moveTo(blockX + padX, dividerY);
+            ctx.lineTo(blockX + bw - padX, dividerY);
+            ctx.stroke();
+            ctx.restore();
+
+            // Inactive course: dimmed
+            const codeText2 = `${otro.codigo}-${otro.seccion.trim() || '?'}`;
+            drawText(codeText2, blockX + padX, dividerY + 4 + fSize * 0.6,
+                bw - padX * 2 - 22, fSize, tcDim, 'left', 'bold');
+            drawText(truncarNombre(otro.nombre),
+                blockX + padX, dividerY + 4 + fSize * 0.6 + lineH,
+                bw - padX * 2, fSize * 0.85, tcDim, 'left');
+            drawText(`${nombreCorto(otro.catedratico)} · ${otro.edificio} ${otro.salon}`,
+                blockX + padX, dividerY + 4 + fSize * 0.6 + lineH * 2,
+                bw - padX * 2, fSize * 0.7, tcProf, 'left');
+
+            if (isDark) {
+                ctx.restore();
+            }
+        }
+
         // ── 1. Render merged pair blocks ────────────────────────────────────
         for (const pair of overlapPairs) {
             const pk = pairKey(pair.a, pair.b);
@@ -745,7 +807,8 @@ export default function ScheduleBuilder() {
                 if (collapseMarkersC.has(s)) visibleRows++;
             }
             visibleRows = Math.max(1, visibleRows);
-            const blockH = visibleRows * ROW_H;
+            const minPairHeight = 80;
+            const blockH = Math.max(visibleRows * ROW_H, minPairHeight);
             const blockY = slotYMap.has(pairStartSlot) ? slotYMap.get(pairStartSlot) : gridY;
             const blockX = gridX + diaIdx * COL_W - 0.5;
             const bw = COL_W + 1;
@@ -766,16 +829,7 @@ export default function ScheduleBuilder() {
             ctx.restore();
 
             const tc = getTextColor(color);
-            drawBlockContent(activo, blockX, blockY, bw, bh, tc);
-
-            // Pair indicator badge "↔ NNNN"
-            const padX = 3;
-            const padY = 1;
-            const fSize = 10;
-            const bottomY = blockY + bh - padY - fSize * 0.6;
-            drawText(`↔${otro.codigo}`,
-                blockX + bw - padX - 22, bottomY,
-                20, fSize * 0.7, tc, 'right', 'bold');
+            drawPairContent(activo, otro, blockX, blockY, bw, bh, tc);
 
             renderedPairKeysCanvas.add(pk);
         }
@@ -1243,18 +1297,35 @@ export default function ScheduleBuilder() {
 
                         const blockContent = (
                             <>
-                                <span className="schedule-block-code">{activo.codigo}-{activo.seccion.trim() || '?'}</span>
-                                <span className="schedule-block-name">{truncarNombre(activo.nombre)}</span>
-                                <span className="schedule-block-prof">{nombreCorto(activo.catedratico)}</span>
-                                <span className="schedule-block-bottom">
-                                    <span className="schedule-block-room">{activo.edificio} {activo.salon}</span>
-                                    <span className="schedule-block-tipo">{tipoAbrev(activo.tipo)}</span>
-                                    <span className="schedule-block-pair-indicator" title={`Traslape permitido con ${otro.codigo}-${otro.seccion.trim() || '?'}`}>↔ {otro.codigo}</span>
-                                </span>
+                                <div className="schedule-block-pair-half schedule-block-pair-active">
+                                    <div className="schedule-block-pair-row">
+                                        <span className="schedule-block-code">{activo.codigo}-{activo.seccion.trim() || '?'}</span>
+                                        <span className="schedule-block-pair-badge" title={`Traslape permitido con ${otro.codigo}-${otro.seccion.trim() || '?'}`}>↔ {otro.codigo}</span>
+                                    </div>
+                                    <span className="schedule-block-name">{truncarNombre(activo.nombre)}</span>
+                                    <span className="schedule-block-prof">{nombreCorto(activo.catedratico)}</span>
+                                    <span className="schedule-block-bottom">
+                                        <span className="schedule-block-room">{activo.edificio} {activo.salon}</span>
+                                        <span className="schedule-block-tipo">{tipoAbrev(activo.tipo)}</span>
+                                    </span>
+                                </div>
+                                <div className="schedule-block-pair-divider" />
+                                <div className="schedule-block-pair-half schedule-block-pair-inactive">
+                                    <div className="schedule-block-pair-row">
+                                        <span className="schedule-block-code">{otro.codigo}-{otro.seccion.trim() || '?'}</span>
+                                    </div>
+                                    <span className="schedule-block-name">{truncarNombre(otro.nombre)}</span>
+                                    <span className="schedule-block-prof">{nombreCorto(otro.catedratico)}</span>
+                                    <span className="schedule-block-bottom">
+                                        <span className="schedule-block-room">{otro.edificio} {otro.salon}</span>
+                                        <span className="schedule-block-tipo">{tipoAbrev(otro.tipo)}</span>
+                                    </span>
+                                </div>
                             </>
                         );
 
-                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\nTraslape permitido (${pairForSlot.endMin - pairForSlot.startMin} min) con:\n${otro.codigo} - ${otro.seccion} · ${otro.nombre}\n${otro.inicio}-${otro.final} · ${otro.catedratico}`;
+                        const overlapDur = (pairForSlot.overlapEnd ?? pairForSlot.endMin) - (pairForSlot.overlapStart ?? pairForSlot.startMin);
+                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\nTraslape permitido (${overlapDur} min) con:\n${otro.codigo} - ${otro.seccion} · ${otro.nombre}\n${otro.inicio}-${otro.final} · ${otro.catedratico}`;
 
                         blocks.push(
                             <div key={`pair-block-${pairKey(pairForSlot.a, pairForSlot.b)}`}
@@ -1267,7 +1338,8 @@ export default function ScheduleBuilder() {
                                     color: textColor,
                                     border: '2px solid #d97706',
                                     zIndex: 2,
-                                    position: 'relative'
+                                    position: 'relative',
+                                    minHeight: '80px'
                                 }}
                                 onClick={() => cyclePair(pairForSlot)}>
                                 {blockContent}

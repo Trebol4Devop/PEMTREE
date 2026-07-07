@@ -2578,9 +2578,60 @@ html.dark .schedule-btn:hover:not(:disabled) {
 
 .schedule-block-merged {
     box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.25), 0 2px 4px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
 }
 .schedule-block-merged:hover {
     filter: brightness(1.08);
+}
+.schedule-block-pair-half {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
+    padding: 0.25rem 0.4rem;
+    min-width: 0;
+    overflow: hidden;
+}
+.schedule-block-pair-active {
+    flex: 1 1 auto;
+}
+.schedule-block-pair-inactive {
+    flex: 0 0 auto;
+    opacity: 0.55;
+}
+.schedule-block-pair-divider {
+    height: 1px;
+    background: currentColor;
+    opacity: 0.25;
+    margin: 0 0.4rem;
+}
+.schedule-block-pair-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.25rem;
+    min-width: 0;
+}
+.schedule-block-pair-row .schedule-block-code {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.schedule-block-pair-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.5rem;
+    font-weight: 800;
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.3);
+    color: #fff;
+    line-height: 1.1;
+    flex-shrink: 0;
 }
 .schedule-block-pair-indicator {
     display: inline-flex;
