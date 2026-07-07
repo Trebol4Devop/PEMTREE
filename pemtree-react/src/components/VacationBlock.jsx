@@ -1,6 +1,7 @@
+import { Trash2 } from 'lucide-react';
 import CourseChip from './CourseChip';
 
-export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, mergedMap }) {
+export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, mergedMap, onToggle }) {
     const isFull = courses.length >= 2;
 
     return (
@@ -19,7 +20,21 @@ export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, m
         >
             <div className="planner-block-header planner-block-header-vacation">
                 <span className="planner-block-label">Vac {vacNum}</span>
-                <span className="planner-block-capacity">{courses.length}/2</span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                    <span className="planner-block-capacity">{courses.length}/2</span>
+                    {onToggle && (
+                        <button 
+                            type="button" 
+                            onClick={() => onToggle(vacNum)}
+                            title="Eliminar escuela de vacaciones"
+                            style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', opacity: 0.6 }}
+                            onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                            onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
+                        >
+                            <Trash2 size={13} />
+                        </button>
+                    )}
+                </div>
             </div>
             <div className="planner-block-body">
                 {courses.length === 0 && !isFull && (
