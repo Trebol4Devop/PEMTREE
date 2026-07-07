@@ -612,6 +612,175 @@ export default function ScheduleBuilder() {
 
         // ── course blocks ─────────────────────────────────────────────────────
 
+        const blockHasBg = bgImg && bgApply === 'blocks';
+        const renderedPairKeysCanvas = new Set();
+
+        function fillBlockBackground(blockX, blockY, bw, bh) {
+            if (!blockHasBg) return;
+            const bm = settingsOverride.bgMode;
+            if (bm === 'stretch') {
+                ctx.drawImage(bgImg, 0, 0, W, H);
+            } else if (bm === 'tile') {
+                const pat = ctx.createPattern(bgImg, 'repeat');
+                ctx.save();
+                ctx.translate(blockX, blockY - 0.5);
+                ctx.fillStyle = pat;
+                ctx.fillRect(0, 0, bw, bh);
+                ctx.restore();
+            } else {
+                const ratio = Math.min(W / bgImg.width, H / bgImg.height);
+                const dw = bgImg.width * ratio;
+                const dh = bgImg.height * ratio;
+                ctx.drawImage(bgImg, (W - dw) / 2, (H - dh) / 2, dw, dh);
+            }
+        }
+
+        function drawLabStripes(blockX, blockY, bw, bh) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.lineWidth = 3;
+            const sp = 6;
+            for (let sy = -bh * 2; sy < bh * 2; sy += sp) {
+                ctx.beginPath();
+                ctx.moveTo(blockX - bh * 2, sy + bh * 2);
+                ctx.lineTo(blockX + bw * 2, sy - bw * 2);
+                ctx.stroke();
+            }
+        }
+
+        function drawBlockContent(seccion, blockX, blockY, bw, bh, tc) {
+            const padX = 3;
+            const padY = 1;
+            const fSize = 10;
+            const tcProf = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
+            const tcRoom = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
+            const tcTipo = tc === '#ffffff' ? 'rgba(255,255,255,0.75)' : 'rgba(30,41,59,0.65)';
+
+            if (isDark) {
+                ctx.save();
+                ctx.shadowColor = 'rgba(0,0,0,0.3)';
+                ctx.shadowBlur = 2;
+                ctx.shadowOffsetY = 1;
+            }
+
+            if (bh >= 50) {
+                const lineH = fSize * 1.1;
+                drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                    blockX + padX, blockY + padY + fSize * 0.6,
+                    bw - padX * 2, fSize, tc, 'left', 'bold');
+                drawText(truncarNombre(seccion.nombre),
+                    blockX + padX, blockY + padY + fSize * 0.6 + lineH,
+                    bw - padX * 2, fSize * 0.65, tc, 'left');
+                drawText(nombreCorto(seccion.catedratico),
+                    blockX + padX, blockY + padY + fSize * 0.6 + lineH * 2,
+                    bw - padX * 2, fSize * 0.8, tcProf, 'left');
+                const bottomY = blockY + bh - padY - fSize * 0.6;
+                drawText(seccion.salon,
+                    blockX + padX, bottomY,
+                    bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
+                drawText(tipoAbrev(seccion.tipo),
+                    blockX + bw - padX, bottomY,
+                    16, fSize * 0.8, tcTipo, 'right', 'bold');
+            } else if (bh >= 30) {
+                const lineH = fSize * 1.05;
+                drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                    blockX + padX, blockY + padY + fSize * 0.6,
+                    bw - padX * 2, fSize, tc, 'left', 'bold');
+                drawText(truncarNombre(seccion.nombre),
+                    blockX + padX, blockY + padY + fSize * 0.6 + lineH,
+                    bw - padX * 2, fSize * 0.65, tc, 'left');
+                const bottomY = blockY + bh - padY - fSize * 0.6;
+                drawText(seccion.salon,
+                    blockX + padX, bottomY,
+                    bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
+                drawText(tipoAbrev(seccion.tipo),
+                    blockX + bw - padX, bottomY,
+                    16, fSize * 0.75, tcTipo, 'right', 'bold');
+            } else if (bh >= 25) {
+                const midY = blockY + bh / 2;
+                drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                    blockX + padX, midY - fSize * 0.5,
+                    bw - padX * 2, fSize, tc, 'left', 'bold');
+                drawText(seccion.salon,
+                    blockX + padX, midY + fSize * 0.5,
+                    bw - padX * 2, fSize * 0.85, tcRoom, 'left');
+            } else {
+                const midY = blockY + bh / 2;
+                drawText(seccion.codigo,
+                    blockX + padX, midY,
+                    bw - padX * 2, fSize, tc, 'left', 'bold');
+            }
+
+            if (isDark) {
+                ctx.restore();
+            }
+        }
+
+        function drawBlockShell(blockX, blockY, bw, bh, color) {
+            ctx.save();
+            roundRect(blockX, blockY - 0.5, bw, bh, 0);
+            ctx.clip();
+            fillBlockBackground(blockX, blockY, bw, bh);
+            ctx.fillStyle = blockHasBg ? (color + 'CC') : color;
+            ctx.fill();
+            ctx.restore();
+        }
+
+        // ── 1. Render merged pair blocks ────────────────────────────────────
+        for (const pair of overlapPairs) {
+            const pk = pairKey(pair.a, pair.b);
+            if (renderedPairKeysCanvas.has(pk)) continue;
+            const diaIdx = DIAS_SEMANA.indexOf(pair.day);
+            if (diaIdx === -1) continue;
+
+            const aSel = isSectionSelected(pair.a);
+            const bSel = isSectionSelected(pair.b);
+            const activo = aSel ? pair.a : (bSel ? pair.b : pair.a);
+            const otro = activo === pair.a ? pair.b : pair.a;
+
+            const pairStartSlot = Math.floor((pair.startMin - HORA_INICIO * 60) / slotMinutes);
+            const pairEndSlot   = Math.ceil((pair.endMin - HORA_INICIO * 60) / slotMinutes);
+            let visibleRows = 0;
+            for (let s = pairStartSlot; s < pairEndSlot; s++) {
+                if (!collapsedSlotsC.has(s)) visibleRows++;
+                if (collapseMarkersC.has(s)) visibleRows++;
+            }
+            visibleRows = Math.max(1, visibleRows);
+            const blockH = visibleRows * ROW_H;
+            const blockY = slotYMap.has(pairStartSlot) ? slotYMap.get(pairStartSlot) : gridY;
+            const blockX = gridX + diaIdx * COL_W - 0.5;
+            const bw = COL_W + 1;
+            const bh = blockH + 1;
+
+            const color = getCursoColor(activo.codigo, activePalette);
+            drawBlockShell(blockX, blockY, bw, bh, color);
+            if (esLaboratorio(activo)) {
+                drawLabStripes(blockX, blockY, bw, bh);
+            }
+
+            // Warning border (pair overlap indicator)
+            ctx.save();
+            roundRect(blockX, blockY - 0.5, bw, bh, 0);
+            ctx.strokeStyle = '#d97706';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.restore();
+
+            const tc = getTextColor(color);
+            drawBlockContent(activo, blockX, blockY, bw, bh, tc);
+
+            // Pair indicator badge "↔ NNNN"
+            const padX = 3;
+            const padY = 1;
+            const fSize = 10;
+            const bottomY = blockY + bh - padY - fSize * 0.6;
+            drawText(`↔${otro.codigo}`,
+                blockX + bw - padX - 22, bottomY,
+                20, fSize * 0.7, tc, 'right', 'bold');
+
+            renderedPairKeysCanvas.add(pk);
+        }
+
+        // ── 2. Render individual sections, excluding pair-overlap windows ──
         for (const seccion of allSelected) {
             const color = getCursoColor(seccion.codigo, activePalette);
             const iniMin = mins(seccion.inicio);
@@ -633,9 +802,44 @@ export default function ScheduleBuilder() {
                 const diaIdx = DIAS_SEMANA.indexOf(dia);
                 if (diaIdx === -1) return;
 
+                // Collect pair-overlap windows for this section on this day
+                const overlaps = overlapPairs
+                    .filter(p => p.day === dia && (p.a === seccion || p.b === seccion))
+                    .map(p => ({ start: p.startMin, end: p.endMin }));
+
+                // Subtract pair windows from the section's range
+                const segments = [{ start: iniMin, end: finMin }];
+                for (const ov of overlaps) {
+                    const next = [];
+                    for (const seg of segments) {
+                        if (ov.end <= seg.start || ov.start >= seg.end) {
+                            next.push(seg);
+                        } else {
+                            if (ov.start > seg.start) next.push({ start: seg.start, end: ov.start });
+                            if (ov.end < seg.end) next.push({ start: ov.end, end: seg.end });
+                        }
+                    }
+                    segments.length = 0;
+                    segments.push(...next);
+                }
+
                 const blockX = gridX + diaIdx * COL_W - 0.5;
                 const bw = COL_W + 1;
-                const bh = blockH + 1;
+
+                for (const seg of segments) {
+                    if (seg.end - seg.start <= 0) continue;
+                    const segStartSlot = Math.floor((seg.start - HORA_INICIO * 60) / slotMinutes);
+                    const segEndSlot   = Math.ceil((seg.end   - HORA_INICIO * 60) / slotMinutes);
+                    let segVisibleRows = 0;
+                    for (let s = segStartSlot; s < segEndSlot; s++) {
+                        if (!collapsedSlotsC.has(s)) segVisibleRows++;
+                        if (collapseMarkersC.has(s)) segVisibleRows++;
+                    }
+                    segVisibleRows = Math.max(1, segVisibleRows);
+                    const segBlockH = segVisibleRows * ROW_H;
+                    const segBlockY = slotYMap.has(segStartSlot) ? slotYMap.get(segStartSlot) : gridY;
+                    const bh = segBlockH + 1;
+                    const blockY = segBlockY;
 
                 const blocksBg = bgImg && bgApply === 'blocks';
 
@@ -755,6 +959,7 @@ export default function ScheduleBuilder() {
 
                 if (isDark) {
                     ctx.restore();
+                }
                 }
             });
         }
