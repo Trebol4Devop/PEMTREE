@@ -225,12 +225,12 @@ export default function Planner({ currentPensum }) {
 
             // Cargar color del segundo pensum
             const basename = file.split('/').pop().replace('.json', '');
-            const base = basename.replace(/_20\d\d|_22/, '');
+            const base = basename.replace(/_\d{2,4}$/, '');
             const colorRes = await fetch(`/pensum_color/${base}_color.json`);
             let colorData = null;
             if (colorRes.ok) {
                 const cJson = await colorRes.json();
-                colorData = cJson[0];
+                colorData = Array.isArray(cJson) ? cJson[0] : cJson;
             }
 
             const cursos = importarCursosDesdeJSON(json);
@@ -245,7 +245,6 @@ export default function Planner({ currentPensum }) {
                     c.colors = c.colors || {};
                     c.colors.leftTop = { fill: colorData.color1 };
                     c.colors.leftBottom = { fill: colorData.color2 };
-                    c.colors.text = { fill: colorData.color3 };
                 }
                 map.set(c.id, c);
             });
