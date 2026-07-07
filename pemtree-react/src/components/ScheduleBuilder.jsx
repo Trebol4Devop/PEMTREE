@@ -248,6 +248,34 @@ export default function ScheduleBuilder() {
         return `${s.codigo}|${s.seccion}|${s.tipo || ''}|${(s.dias || []).join(',')}|${s.inicio || ''}|${s.final || ''}`;
     }
 
+    function seccionGroups(slots) {
+        const groups = {};
+        for (const s of slots) {
+            const key = `${s.seccion}|${s.catedratico || ''}`;
+            if (!groups[key]) groups[key] = [];
+            groups[key].push(s);
+        }
+        return Object.values(groups);
+    }
+
+    function toggleSectionGroup(slots) {
+        if (slots.length === 0) return;
+        const codigo = slots[0].codigo;
+        const allSelected = slots.every(s => isSectionSelected(s));
+
+        setSelectedSections(prev => {
+            const existing = prev[codigo] || [];
+            const slotIds = new Set(slots.map(s => getSectionId(s)));
+            if (allSelected) {
+                return { ...prev, [codigo]: existing.filter(s => !slotIds.has(getSectionId(s))) };
+            } else {
+                const typesInGroup = new Set(slots.map(s => s.tipo || ''));
+                const filtered = existing.filter(s => !typesInGroup.has(s.tipo || ''));
+                return { ...prev, [codigo]: [...filtered, ...slots] };
+            }
+        });
+    }
+
     function toggleSection(seccion) {
         setSelectedSections(prev => {
             const key = seccion.codigo;
@@ -1144,55 +1172,69 @@ export default function ScheduleBuilder() {
 
                 {expandedCourses[curso.codigo] && (
                     <div className="schedule-course-sections">
-                    {curso.secciones.map(sec => {
-                        const selected = isSectionSelected(sec);
-                        const conf = hasConflict(sec);
-                        const hasRestrictions = !!sec.restricciones;
-                        const restrictionDetail = typeof sec.restricciones === 'string' ? sec.restricciones : null;
+                    {seccionGroups(curso.secciones).map((group, gIdx) => {
+                        const first = group[0];
+                        const allSlotsSelected = group.every(s => isSectionSelected(s));
+                        const anySelected = group.some(s => isSectionSelected(s));
+                        const conf = hasConflict(first);
+                        const hasRestrictions = !!first.restricciones;
+                        const restrictionDetail = typeof first.restricciones === 'string' ? first.restricciones : null;
                         const restrictionHover = restrictionDetail || 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC.';
+                        const displaySlots = group.length <= 1 ? group : group;
                         return (
                             <div
-                            key={`${sec.codigo}-${sec.seccion}-${sec.inicio}-${sec.dias[0]||''}`}
-                            className={`schedule-section-item ${selected ? 'selected' : ''}`}
-                            onClick={() => toggleSection(sec)}
+                            key={`${first.codigo}-${first.seccion}-g${gIdx}`}
+                            className={`schedule-section-item schedule-section-group ${allSlotsSelected ? 'selected' : ''} ${anySelected && !allSlotsSelected ? 'schedule-section-partial' : ''}`}
+                            onClick={() => toggleSectionGroup(group)}
                             title={hasRestrictions ? restrictionHover : undefined}
                             >
                             <div className="schedule-section-check">
-                            {selected && <Check size={10} />}
+                            {allSlotsSelected && <Check size={10} />}
                             </div>
-                            {sec.tipo && sec.tipo !== 'MAGISTRAL' && (
-                                <span className={`schedule-section-badge type-${tipoAbrev(sec.tipo).toLowerCase()}`}>{tipoAbrev(sec.tipo)}</span>
-                            )}
-                            <div className="schedule-section-info">
-                            <span className="schedule-section-time">
-                            <span className="schedule-section-label">Sec. {sec.seccion.trim() || '?'}</span> {formatearHorario(sec)} · {sec.salon}
-                            {hasRestrictions && (
-                                <span className="schedule-section-restr" title={restrictionHover}>
-                                    <AlertTriangle size={9} className="inline-block mr-0.5" />Con restricciones
-                                </span>
-                            )}
-                            </span>
-                            <span className="schedule-section-prof">
-                            {sec.catedratico} · {formatearDuracion(sec)}
-                            </span>
-                            {selected && hasRestrictions && (
-                                <div className="schedule-section-restrictions-panel" role="note">
-                                    <AlertTriangle size={11} className="shrink-0 mt-0.5" />
-                                    <span>
-                                        {restrictionDetail
-                                            ? <>Restricciones: <strong>{restrictionDetail}</strong></>
-                                            : 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC antes de confirmar.'}
+                            {displaySlots.map((sec, sIdx) => {
+                                const isFirst = sIdx === 0;
+                                const showBadge = sec.tipo && sec.tipo !== 'MAGISTRAL';
+                                return (
+                                    <Fragment key={`${sec.dias?.[0] || ''}-${sec.inicio}`}>
+                                    {showBadge && (
+                                        <span className={`schedule-section-badge type-${tipoAbrev(sec.tipo).toLowerCase()}`}>{tipoAbrev(sec.tipo)}</span>
+                                    )}
+                                    {!showBadge && !isFirst && (
+                                        <span className="schedule-section-badge-spacer" />
+                                    )}
+                                    <div className="schedule-section-info">
+                                    <span className="schedule-section-time">
+                                    <span className="schedule-section-label">{isFirst ? `Sec. ${first.seccion.trim() || '?'}` : ''}</span> {formatearHorario(sec)} · {sec.salon}
+                                    {isFirst && hasRestrictions && (
+                                        <span className="schedule-section-restr" title={restrictionHover}>
+                                            <AlertTriangle size={9} className="inline-block mr-0.5" />Con restricciones
+                                        </span>
+                                    )}
                                     </span>
-                                </div>
-                            )}
-                            </div>
+                                    <span className="schedule-section-prof">
+                                    {sec.catedratico} · {formatearDuracion(sec)}
+                                    </span>
+                                    {isFirst && anySelected && hasRestrictions && (
+                                        <div className="schedule-section-restrictions-panel" role="note">
+                                            <AlertTriangle size={11} className="shrink-0 mt-0.5" />
+                                            <span>
+                                                {restrictionDetail
+                                                    ? <>Restricciones: <strong>{restrictionDetail}</strong></>
+                                                    : 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC antes de confirmar.'}
+                                            </span>
+                                        </div>
+                                    )}
+                                    </div>
+                                    </Fragment>
+                                );
+                            })}
                             {conf.status !== 'valid' && (
-                                <span className={`schedule-section-status ${conf.status}`}>
+                                <span className={`schedule-section-status ${conf.status}`} style={{ marginTop: 0, alignSelf: 'center' }}>
                                 {conf.status === 'error' ? <X size={10} /> : <AlertTriangle size={10} />}
                                 </span>
                             )}
-                            {conf.status === 'valid' && selected && (
-                                <span className="schedule-section-status valid">
+                            {conf.status === 'valid' && allSlotsSelected && (
+                                <span className="schedule-section-status valid" style={{ marginTop: 0, alignSelf: 'center' }}>
                                 <Check size={10} />
                                 </span>
                             )}

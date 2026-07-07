@@ -2308,6 +2308,39 @@ html.dark .schedule-course-sections {
     margin-right: 0.3rem;
 }
 
+.schedule-section-group {
+    flex-wrap: wrap;
+    padding: 0.4rem 0.6rem;
+    gap: 0.3rem;
+}
+.schedule-section-group .schedule-section-info {
+    flex: 1;
+    min-width: 0;
+    padding-left: 1.2rem;
+    border-top: 1px dashed var(--border);
+    padding-top: 0.2rem;
+    margin-top: 0.1rem;
+}
+.schedule-section-group .schedule-section-info:first-of-type {
+    padding-left: 0;
+    border-top: none;
+    padding-top: 0;
+    margin-top: 0;
+}
+.schedule-section-group .schedule-section-check {
+    margin-bottom: auto;
+}
+.schedule-section-partial .schedule-section-check {
+    background: var(--primary);
+    opacity: 0.35;
+    border-color: var(--border);
+}
+.schedule-section-badge-spacer {
+    display: inline-flex;
+    width: 0;
+    margin-right: 0;
+}
+
 .schedule-section-restr {
     display: inline-flex;
     align-items: center;
