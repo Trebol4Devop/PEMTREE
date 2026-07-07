@@ -2576,6 +2576,27 @@ html.dark .schedule-btn:hover:not(:disabled) {
     );
 }
 
+.schedule-block-merged {
+    box-shadow: 0 0 0 1px rgba(217, 119, 6, 0.25), 0 2px 4px rgba(0,0,0,0.15);
+}
+.schedule-block-merged:hover {
+    filter: brightness(1.08);
+}
+.schedule-block-pair-indicator {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.55rem;
+    font-weight: 800;
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+    background: rgba(0,0,0,0.35);
+    color: #fff;
+    margin-left: 0.3rem;
+    line-height: 1.1;
+    letter-spacing: 0.02em;
+}
+
 /* Responsive */
 @media (max-width: 1024px) {
     .schedule-content {

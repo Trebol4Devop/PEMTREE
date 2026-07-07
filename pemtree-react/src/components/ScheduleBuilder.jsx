@@ -215,6 +215,29 @@ export default function ScheduleBuilder() {
         return validarHorarioCompleto(allSelected, isVacaciones);
     }, [allSelected, isVacaciones]);
 
+    const overlapPairs = useMemo(() => {
+        if (isVacaciones) return [];
+        const pairs = [];
+        for (const dia of DIAS_SEMANA) {
+            const cursosDelDia = allSelected.filter(s => (s.dias || []).includes(dia));
+            for (let i = 0; i < cursosDelDia.length; i++) {
+                for (let j = i + 1; j < cursosDelDia.length; j++) {
+                    const a = cursosDelDia[i];
+                    const b = cursosDelDia[j];
+                    const t = calcularTraslapeMinutos(a, b);
+                    if (t <= 0) continue;
+                    const aLab = esLaboratorio(a);
+                    const bLab = esLaboratorio(b);
+                    if (!(aLab || bLab) && t >= 50) continue;
+                    const iniMin = Math.max(mins(a.inicio), mins(b.inicio));
+                    const finMin = Math.min(mins(a.final), mins(b.final));
+                    pairs.push({ day: dia, a, b, startMin: iniMin, endMin: finMin });
+                }
+            }
+        }
+        return pairs;
+    }, [allSelected, isVacaciones]);
+
     const courseCounts = useMemo(() => {
         const uniqueIds = new Set();
         const counts = { MAG: 0, LAB: 0, PRA: 0, TD: 0, DIB: 0 };
@@ -291,6 +314,27 @@ export default function ScheduleBuilder() {
                 return { ...prev, [codigo]: [...filtered, ...slots] };
             }
         });
+    }
+
+    function cyclePair(pair) {
+        const { a, b } = pair;
+        const aSel = isSectionSelected(a);
+        const bSel = isSectionSelected(b);
+        if (aSel && !bSel) {
+            toggleSection(a);
+            toggleSection(b);
+        } else if (!aSel && bSel) {
+            toggleSection(b);
+            toggleSection(a);
+        } else if (!aSel && !bSel) {
+            toggleSection(a);
+        } else {
+            toggleSection(a);
+        }
+    }
+
+    function pairKey(a, b) {
+        return `${a.codigo}|${a.seccion}|${a.tipo || ''}__${b.codigo}|${b.seccion}|${b.tipo || ''}`;
     }
 
     function toggleSection(seccion) {
@@ -910,6 +954,7 @@ export default function ScheduleBuilder() {
         const slotMinutes = 10;
         const slotsPerHour = 60 / slotMinutes;
         const activePalette = PALETAS[exportSettings.paletteName] || PALETAS.Default;
+        const renderedPairKeys = new Set();
 
         if (allSelected.length === 0) {
             blocks.push(
@@ -959,11 +1004,86 @@ export default function ScheduleBuilder() {
                     const slotStartMin = hora * 60 + minuto;
                     const slotEndMin   = slotStartMin + slotMinutes;
 
+                    // ── Check for a pair starting at this slot+dia ────────────
+                    let pairForSlot = null;
+                    for (const pair of overlapPairs) {
+                        if (pair.day !== dia) continue;
+                        const pk = pairKey(pair.a, pair.b);
+                        if (renderedPairKeys.has(pk)) continue;
+                        if (slotStartMin >= pair.startMin && slotStartMin < pair.endMin) {
+                            pairForSlot = pair;
+                            break;
+                        }
+                    }
+
+                    if (pairForSlot) {
+                        renderedPairKeys.add(pairKey(pairForSlot.a, pairForSlot.b));
+                        const aSel = isSectionSelected(pairForSlot.a);
+                        const bSel = isSectionSelected(pairForSlot.b);
+                        const activo = aSel ? pairForSlot.a : (bSel ? pairForSlot.b : pairForSlot.a);
+                        const otro = activo === pairForSlot.a ? pairForSlot.b : pairForSlot.a;
+
+                        const pairStartSlot = Math.floor((pairForSlot.startMin - HORA_INICIO * 60) / slotMinutes);
+                        const pairEndSlot   = Math.ceil((pairForSlot.endMin   - HORA_INICIO * 60) / slotMinutes);
+
+                        let visibleRowSpan = 0;
+                        for (let s = pairStartSlot; s < pairEndSlot; s++) {
+                            if (!collapsedSlots.has(s)) visibleRowSpan++;
+                            if (collapseMarkers.has(s)) visibleRowSpan++;
+                        }
+                        visibleRowSpan = Math.max(1, visibleRowSpan);
+
+                        const color     = getCursoColor(activo.codigo, activePalette);
+                        const textColor = getTextColor(color);
+
+                        const blockContent = (
+                            <>
+                                <span className="schedule-block-code">{activo.codigo}-{activo.seccion.trim() || '?'}</span>
+                                <span className="schedule-block-name">{truncarNombre(activo.nombre)}</span>
+                                <span className="schedule-block-prof">{nombreCorto(activo.catedratico)}</span>
+                                <span className="schedule-block-bottom">
+                                    <span className="schedule-block-room">{activo.edificio} {activo.salon}</span>
+                                    <span className="schedule-block-tipo">{tipoAbrev(activo.tipo)}</span>
+                                    <span className="schedule-block-pair-indicator" title={`Traslape permitido con ${otro.codigo}-${otro.seccion.trim() || '?'}`}>↔ {otro.codigo}</span>
+                                </span>
+                            </>
+                        );
+
+                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\nTraslape permitido (${pairForSlot.endMin - pairForSlot.startMin} min) con:\n${otro.codigo} - ${otro.seccion} · ${otro.nombre}\n${otro.inicio}-${otro.final} · ${otro.catedratico}`;
+
+                        blocks.push(
+                            <div key={`pair-block-${pairKey(pairForSlot.a, pairForSlot.b)}`}
+                                className={`schedule-block schedule-block-merged ${esLaboratorio(activo) ? 'lab' : ''}`}
+                                title={blockTitle}
+                                style={{
+                                    gridColumn: diaIdx + 2,
+                                    gridRow: `${row} / span ${visibleRowSpan}`,
+                                    backgroundColor: color,
+                                    color: textColor,
+                                    border: '2px solid #d97706',
+                                    zIndex: 2,
+                                    position: 'relative'
+                                }}
+                                onClick={() => cyclePair(pairForSlot)}>
+                                {blockContent}
+                            </div>
+                        );
+                        return;
+                    }
+
                     const cursosEnSlot = allSelected.filter(h => {
                         if (!h.dias.includes(dia)) return false;
                         const ini = mins(h.inicio);
                         const fin = mins(h.final);
-                        return slotEndMin > ini && slotStartMin < fin;
+                        if (!(slotEndMin > ini && slotStartMin < fin)) return false;
+                        for (const pair of overlapPairs) {
+                            if (pair.day !== dia) continue;
+                            if (pair.a !== h && pair.b !== h) continue;
+                            if (slotEndMin > pair.startMin && slotStartMin < pair.endMin) {
+                                return false;
+                            }
+                        }
+                        return true;
                     });
 
                     if (cursosEnSlot.length === 0) {
