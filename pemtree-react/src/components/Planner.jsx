@@ -59,12 +59,16 @@ function getMaxCredits(promedio, simultaneous) {
     return simultaneous ? base + SIMULTANEOUS_BONUS : base;
 }
 
-function buildBlocks(semesterCount) {
+function buildBlocks(semesterCount, hiddenVacations = []) {
     const blocks = [];
     for (let i = 1; i <= semesterCount; i++) {
         blocks.push({ id: `sem-${i}`, type: 'semester', semester: i });
         if (i < semesterCount) {
-            blocks.push({ id: `vac-${i}`, type: 'vacation', vacNum: i });
+            if (!hiddenVacations.includes(i)) {
+                blocks.push({ id: `vac-${i}`, type: 'vacation', vacNum: i });
+            } else {
+                blocks.push({ id: `vac-${i}`, type: 'vacation_hidden', vacNum: i });
+            }
         }
     }
     return blocks;
@@ -105,6 +109,7 @@ function loadLinesFromStorage() {
                     name: l.name || 'Línea',
                     plan: (l.plan && typeof l.plan === 'object') ? l.plan : {},
                     semesterCount: typeof l.semesterCount === 'number' ? l.semesterCount : INITIAL_SEMESTERS,
+                    hiddenVacations: Array.isArray(l.hiddenVacations) ? l.hiddenVacations : [],
                 }));
             }
         }
@@ -118,6 +123,7 @@ function loadLinesFromStorage() {
             name: 'Línea 1',
             plan: oldPlan,
             semesterCount: inferSemesterCount(oldPlan),
+            hiddenVacations: [],
         }];
     }
 
@@ -126,6 +132,7 @@ function loadLinesFromStorage() {
         name: 'Línea 1',
         plan: {},
         semesterCount: INITIAL_SEMESTERS,
+        hiddenVacations: [],
     }];
 }
 
@@ -215,9 +222,32 @@ export default function Planner({ currentPensum }) {
             const res = await fetch(file);
             if (!res.ok) throw new Error('No se pudo cargar el pensum');
             const json = await res.json();
+
+            // Cargar color del segundo pensum
+            const basename = file.split('/').pop().replace('.json', '');
+            const base = basename.replace(/_\d{2,4}$/, '');
+            const colorRes = await fetch(`/pensum_color/${base}_color.json`);
+            let colorData = null;
+            if (colorRes.ok) {
+                const cJson = await colorRes.json();
+                colorData = Array.isArray(cJson) ? cJson[0] : cJson;
+            }
+
             const cursos = importarCursosDesdeJSON(json);
             const map = new Map();
-            cursos.forEach(c => map.set(c.id, c));
+            cursos.forEach(c => {
+                c.id += 10000;
+                if (c.prerequisitos) {
+                    c.prerequisitos = c.prerequisitos.map(p => typeof p === 'number' ? p + 10000 : p);
+                }
+                c.isSimultaneous = true;
+                if (colorData) {
+                    c.colors = c.colors || {};
+                    c.colors.leftTop = { fill: colorData.color1 };
+                    c.colors.leftBottom = { fill: colorData.color2 };
+                }
+                map.set(c.id, c);
+            });
             setSecondCursoMap(map);
             setSecondPensum(file);
         } catch (e) {
@@ -254,16 +284,20 @@ export default function Planner({ currentPensum }) {
     const currentCursos = useMemo(() => {
         const primary = Array.from(cursoMap.values());
         if (!simultaneous || secondCursoMap.size === 0) return primary;
-        const seen = new Set(primary.map(c => c.codigo));
-        const extra = [];
-        for (const c of secondCursoMap.values()) {
-            if (!seen.has(c.codigo)) {
-                seen.add(c.codigo);
-                extra.push(c);
-            }
-        }
+        // Mostrar cursos de ambas carreras (cursos comunes aparecerán con IDs diferentes)
+        const extra = Array.from(secondCursoMap.values());
         return [...primary, ...extra];
     }, [simultaneous, secondCursoMap]);
+
+    const allPlannedIds = useMemo(() => {
+        const ids = new Set();
+        for (const line of lines) {
+            for (const courseIds of Object.values(line.plan || {})) {
+                for (const id of courseIds) ids.add(id);
+            }
+        }
+        return ids;
+    }, [lines]);
 
     const mergedCursoMap = useMemo(() => {
         const map = new Map();
@@ -298,6 +332,7 @@ export default function Planner({ currentPensum }) {
             name: `Línea ${lines.length + 1}`,
             plan: {},
             semesterCount: INITIAL_SEMESTERS,
+            hiddenVacations: [],
         };
         setLines(prev => [...prev, newLine]);
     }, [lines.length]);
@@ -313,6 +348,7 @@ export default function Planner({ currentPensum }) {
                 name: `${source.name} (copia)`,
                 plan: JSON.parse(JSON.stringify(source.plan || {})),
                 semesterCount: source.semesterCount || INITIAL_SEMESTERS,
+                hiddenVacations: [...(source.hiddenVacations || [])],
             };
             const next = prev.slice();
             next.splice(idx + 1, 0, copy);
@@ -350,7 +386,7 @@ export default function Planner({ currentPensum }) {
         if (!line) return;
         const linePlan = line.plan || {};
         const lineSemesterCount = line.semesterCount || INITIAL_SEMESTERS;
-        const lineBlocks = buildBlocks(lineSemesterCount);
+        const lineBlocks = buildBlocks(lineSemesterCount, line.hiddenVacations || []);
 
         const isVac = targetBlockId.startsWith('vac');
         const targetCourses = linePlan[targetBlockId] || [];
@@ -450,6 +486,21 @@ export default function Planner({ currentPensum }) {
                 nextPlan[blockId] = ids;
             }
             return { ...l, semesterCount: nextCount, plan: nextPlan };
+        });
+    }, [updateLine]);
+
+    const makeHandleToggleVacation = useCallback((lineId) => (vacNum) => {
+        updateLine(lineId, l => {
+            const hidden = l.hiddenVacations || [];
+            if (hidden.includes(vacNum)) {
+                // Show vacation
+                return { ...l, hiddenVacations: hidden.filter(n => n !== vacNum) };
+            } else {
+                // Hide vacation
+                const nextPlan = { ...l.plan };
+                delete nextPlan[`vac-${vacNum}`]; // Remove courses from that block just in case
+                return { ...l, plan: nextPlan, hiddenVacations: [...hidden, vacNum] };
+            }
         });
     }, [updateLine]);
 
@@ -628,7 +679,7 @@ export default function Planner({ currentPensum }) {
                         <X size={18} />
                     </button>
                 </div>
-                <CoursePool cursos={currentCursos} plannedIds={new Set()} mergedMap={simultaneous ? mergedCursoMap : null} />
+                <CoursePool cursos={currentCursos} plannedIds={allPlannedIds} mergedMap={simultaneous ? mergedCursoMap : null} />
             </div>
 
             <div className="planner-content">
@@ -695,7 +746,7 @@ export default function Planner({ currentPensum }) {
                     {lines.map(line => {
                         const credits = lineCredits(line);
                         const lineSemesterCount = line.semesterCount || INITIAL_SEMESTERS;
-                        const lineBlocks = buildBlocks(lineSemesterCount);
+                        const lineBlocks = buildBlocks(lineSemesterCount, line.hiddenVacations || []);
                         const isRenaming = renamingLineId === line.id;
                         return (
                             <div key={line.id} className="planner-line-section" data-line-id={line.id}>
@@ -783,7 +834,7 @@ export default function Planner({ currentPensum }) {
                                                     mergedMap={simultaneous ? mergedCursoMap : null}
                                                 />
                                             );
-                                        } else {
+                                        } else if (block.type === 'vacation') {
                                             el = (
                                                 <VacationBlock
                                                     key={block.id}
@@ -792,11 +843,25 @@ export default function Planner({ currentPensum }) {
                                                     onDrop={makeHandleDrop(line.id)}
                                                     onRemoveChip={makeHandleRemoveChip(line.id)}
                                                     mergedMap={simultaneous ? mergedCursoMap : null}
+                                                    onToggle={makeHandleToggleVacation(line.id)}
                                                 />
+                                            );
+                                        } else if (block.type === 'vacation_hidden') {
+                                            el = (
+                                                <div key={block.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.5rem' }}>
+                                                    <button 
+                                                        className="planner-add-semester"
+                                                        style={{ padding: '0.3rem 0.5rem', fontSize: '0.75rem', height: 'fit-content' }}
+                                                        onClick={() => makeHandleToggleVacation(line.id)(block.vacNum)}
+                                                        title={`Agregar Vacaciones ${block.vacNum}`}
+                                                    >
+                                                        <Plus size={14} /> Vac
+                                                    </button>
+                                                </div>
                                             );
                                         }
 
-                                        const isYearEnd = block.type === 'vacation';
+                                        const isYearEnd = block.type === 'vacation' || block.type === 'vacation_hidden';
                                         const isLastBlock = idx === lineBlocks.length - 1;
 
                                         if (isYearEnd && !isLastBlock) {
