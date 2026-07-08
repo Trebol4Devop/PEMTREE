@@ -84,7 +84,8 @@ async function processFile(fileName) {
     for (const h of sectionsWithRestr) {
         const seccionInfo = `${h.codigo}-${h.seccion}`;
         try {
-            const html = await fetchRestriccion(h.codigo, h.seccion, '2026', h.fuente === 'semestre2' ? '02' : h.fuente === 'vacaciones1' ? '03' : h.fuente === 'vacaciones2' ? '04' : '01');
+            const periodo = h.periodo_restriccion || (h.fuente === 'semestre2' ? '05' : h.fuente === 'vacaciones1' ? '03' : h.fuente === 'vacaciones2' ? '04' : '01');
+            const html = await fetchRestriccion(h.codigo, h.seccion, '2026', periodo);
             const result = extractRestriccion(html, seccionInfo);
 
             if (result === false) {

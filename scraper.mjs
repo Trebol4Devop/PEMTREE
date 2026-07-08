@@ -11,14 +11,6 @@ const URLS = {
     vacaciones2: 'https://usuarios.ingenieria.usac.edu.gt/horarios/vacaciones/2',
 };
 
-const BADGE_TO_TIPO = {
-    'badge-blue': 'LABORATORIO',
-    'badge-info': 'TRABAJO_DIRIGIDO',
-    'badge-success': 'DIBUJO',
-    'badge-danger': 'PRACTICA',
-    null: 'MAGISTRAL',
-};
-
 const DIAS_MAP = {
     'LU': 'lunes', 'MA': 'martes', 'MI': 'miercoles',
     'JU': 'jueves', 'VI': 'viernes', 'SA': 'sabado', 'DO': 'domingo'
@@ -75,12 +67,44 @@ function extractRestriccionDetalle(detalleCell) {
     return true;
 }
 
+function extractPeriodoFromOnclick(detalleCell) {
+    const match = detalleCell.match(/verRestricciones\s*\([^)]*'(\d+)'\s*\)/);
+    return match ? match[1] : null;
+}
+
 function parseDias(diasTexto) {
     const dias = [];
     for (const [abrev, nombre] of Object.entries(DIAS_MAP)) {
         if (diasTexto.includes(abrev)) dias.push(nombre);
     }
     return dias;
+}
+
+function normalizeHeader(text) {
+    return text.toLowerCase()
+        .replace(/\s+/g, ' ')
+        .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+        .trim();
+}
+
+function parseTheadColumns(tableHtml) {
+    const theadMatch = tableHtml.match(/<thead[^>]*>([\s\S]*?)<\/thead>/);
+    if (!theadMatch) return null;
+    const thMatches = theadMatch[1].match(/<th[^>]*>([\s\S]*?)<\/th>/g);
+    if (!thMatches) return null;
+    return thMatches.map(th => normalizeHeader(th.replace(/<[^>]*>/g, '')));
+}
+
+function buildColumnMap(columns) {
+    const map = new Map();
+    columns.forEach((name, i) => map.set(name, i));
+    return map;
+}
+
+function getCell(cells, colMap, headerName) {
+    const idx = colMap.get(headerName);
+    if (idx == null || !cells[idx]) return '';
+    return cells[idx].replace(/<[^>]*>/g, '').trim();
 }
 
 function minutos(hora) {
@@ -95,39 +119,21 @@ function parseRows(html, fuente) {
 
     const tableHtml = html.substring(tableStart, tableEnd + 8);
 
-    // ── Detect if the table has a "Modalidad" column ──────────────────
-    // Semester pages have it; vacation pages do NOT.
-    const theadMatch = tableHtml.match(/<thead[^>]*>([\s\S]*?)<\/thead>/);
-    const hasModalidadCol = theadMatch
-        ? /Modalidad/i.test(theadMatch[1])
-        : true; // default to true for backward compatibility
-
     const tbodyMatch = tableHtml.match(/<tbody[^>]*>([\s\S]*?)<\/tbody>/);
     const tbody = tbodyMatch ? tbodyMatch[1] : tableHtml;
 
-    const rows = tbody.match(/<tr\s*>[\s\S]*?<\/tr>/g) || [];
+    const columns = parseTheadColumns(tableHtml);
+    const colMap = columns ? buildColumnMap(columns) : new Map();
+
+    const rows = tbody.match(/<tr[^>]*>[\s\S]*?<\/tr>/g) || [];
     const horarios = [];
     const errores = [];
 
-    // Column indices depend on whether Modalidad column is present
-    const IDX_SECCION   = 1;
-    const IDX_MODALIDAD = hasModalidadCol ? 2 : null;
-    const IDX_EDIFICIO  = hasModalidadCol ? 3 : 2;
-    const IDX_SALON     = hasModalidadCol ? 4 : 3;
-    const IDX_INICIO    = hasModalidadCol ? 5 : 4;
-    const IDX_FINAL     = hasModalidadCol ? 6 : 5;
-    const IDX_DIAS      = hasModalidadCol ? 7 : 6;
-    const IDX_CATEDRATICO = hasModalidadCol ? 8 : 7;
-    const IDX_AUXILIAR  = hasModalidadCol ? 9 : 8;
-    const IDX_DETALLE   = hasModalidadCol ? 10 : 9;
-
-    const MIN_CELLS = hasModalidadCol ? 10 : 9;
-
     for (const row of rows) {
         const cells = row.match(/<td[^>]*>([\s\S]*?)<\/td>/g) || [];
-        if (cells.length < MIN_CELLS) continue;
+        if (cells.length < 1) continue;
 
-        const cell0 = cells[0]; // course name + badge
+        const cell0 = cells[0];
         const codigoMatch = cell0.match(/(\d{4})/);
         if (!codigoMatch) continue;
 
@@ -135,17 +141,14 @@ function parseRows(html, fuente) {
         const tipo = extractBadgeType(cell0);
         const nombre = cell0.replace(/<[^>]*>/g, '').replace(codigo, '').trim().replace(/\s+/g, ' ');
 
-        const seccion = (cells[IDX_SECCION] || '').replace(/<[^>]*>/g, '').trim();
+        const seccion = getCell(cells, colMap, 'seccion');
 
-        // Modalidad: from dedicated column if present, otherwise infer
         let modalidad;
-        if (hasModalidadCol) {
-            const modalidadRaw = (cells[IDX_MODALIDAD] || '').replace(/<[^>]*>/g, '').trim();
+        const modalidadRaw = getCell(cells, colMap, 'modalidad');
+        if (colMap.has('modalidad')) {
             modalidad = normalizeModalidad(modalidadRaw);
         } else {
-            // Vacaciones: no Modalidad column. The edificio cell often contains
-            // "MEET" or "VIRTUAL" for virtual courses — use that to infer.
-            const edificioCell = (cells[IDX_EDIFICIO] || '').replace(/<[^>]*>/g, '').trim().toUpperCase();
+            const edificioCell = getCell(cells, colMap, 'edificio').toUpperCase();
             if (edificioCell === 'MEET' || edificioCell === 'VIRTUAL') {
                 modalidad = 'VIRTUAL';
             } else {
@@ -153,16 +156,17 @@ function parseRows(html, fuente) {
             }
         }
 
-        const edificio = (cells[IDX_EDIFICIO] || '').replace(/<[^>]*>/g, '').trim();
-        const salon = (cells[IDX_SALON] || '').replace(/<[^>]*>/g, '').trim();
-        const inicioRaw = (cells[IDX_INICIO] || '').replace(/<[^>]*>/g, '').trim();
-        const finalRaw = (cells[IDX_FINAL] || '').replace(/<[^>]*>/g, '').trim();
-        const diasRaw = (cells[IDX_DIAS] || '').replace(/<[^>]*>/g, '').trim();
+        const edificio = getCell(cells, colMap, 'edificio');
+        const salon = getCell(cells, colMap, 'salon');
+        const inicioRaw = getCell(cells, colMap, 'inicio');
+        const finalRaw = getCell(cells, colMap, 'final');
+        const diasRaw = getCell(cells, colMap, 'dias');
         const dias = parseDias(diasRaw);
-        const catedratico = (cells[IDX_CATEDRATICO] || '').replace(/<[^>]*>/g, '').trim();
-        const auxiliar = (cells[IDX_AUXILIAR] || '').replace(/<[^>]*>/g, '').trim();
-        const detalleCell = cells[IDX_DETALLE] || '';
+        const catedratico = getCell(cells, colMap, 'catedratico');
+        const auxiliar = getCell(cells, colMap, 'auxiliar');
+        const detalleCell = cells[colMap.get('detalle')] || '';
         const restricciones = extractRestriccionDetalle(detalleCell);
+        const periodoRestr = restricciones === true ? extractPeriodoFromOnclick(detalleCell) : null;
 
         const [inicio, final, esCorrupto] = corregirHorario(inicioRaw, finalRaw, diasRaw, dias);
 
@@ -186,7 +190,8 @@ function parseRows(html, fuente) {
             catedratico,
             auxiliar,
             restricciones,
-            fuente
+            fuente,
+            ...(periodoRestr ? { periodo_restriccion: periodoRestr } : {}),
         });
     }
 
