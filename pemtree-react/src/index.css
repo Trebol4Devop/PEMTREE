@@ -334,6 +334,24 @@ html.dark .planner-pool-wrapper {
 html.dark .planner-pool-header {
     border-color: #2D333B;
 }
+.planner-pool-header-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    gap: 2px;
+}
+.planner-pool-subtitle {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #172B4D;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+html.dark .planner-pool-subtitle {
+    color: #f1f5f9;
+}
 
 .planner-pool-title {
     margin: 0;
@@ -977,11 +995,21 @@ html.dark .planner-line-rename-input {
     background: #FFFFFF;
     overflow: hidden;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
 }
 html.dark .planner-line-section {
     border-color: #3E4C5E;
     background: #1C2636;
     box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+.planner-line-section-active {
+    border-color: #0052CC;
+    box-shadow: 0 0 0 2px rgba(0, 82, 204, 0.18), 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+html.dark .planner-line-section-active {
+    border-color: #4C9AFF;
+    box-shadow: 0 0 0 2px rgba(76, 154, 255, 0.25), 0 1px 2px rgba(0, 0, 0, 0.2);
 }
 .planner-line-header {
     display: flex;

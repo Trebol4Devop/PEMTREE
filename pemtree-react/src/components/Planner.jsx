@@ -177,6 +177,7 @@ export default function Planner({ currentPensum }) {
     });
 
     const [lines, setLines] = useState(() => loadLinesFromStorage());
+    const [selectedLineId, setSelectedLineId] = useState(() => lines[0]?.id ?? null);
     const [renamingLineId, setRenamingLineId] = useState(null);
     const [renameValue, setRenameValue] = useState('');
 
@@ -289,15 +290,14 @@ export default function Planner({ currentPensum }) {
         return [...primary, ...extra];
     }, [simultaneous, secondCursoMap]);
 
-    const allPlannedIds = useMemo(() => {
-        const ids = new Set();
-        for (const line of lines) {
-            for (const courseIds of Object.values(line.plan || {})) {
-                for (const id of courseIds) ids.add(id);
-            }
-        }
-        return ids;
-    }, [lines]);
+    const selectedLine = useMemo(
+        () => lines.find(l => l.id === selectedLineId) || lines[0] || null,
+        [lines, selectedLineId]
+    );
+
+    const selectedLinePlannedIds = useMemo(() => {
+        return getPlannedIds(selectedLine?.plan || {});
+    }, [selectedLine]);
 
     const mergedCursoMap = useMemo(() => {
         const map = new Map();
@@ -335,6 +335,7 @@ export default function Planner({ currentPensum }) {
             hiddenVacations: [],
         };
         setLines(prev => [...prev, newLine]);
+        setSelectedLineId(newId);
     }, [lines.length]);
 
     const handleDuplicateLine = useCallback((lineId) => {
@@ -364,7 +365,11 @@ export default function Planner({ currentPensum }) {
             }
             return prev.filter(l => l.id !== lineId);
         });
-    }, [addToast]);
+        if (lineId === selectedLineId) {
+            const remaining = lines.filter(l => l.id !== lineId);
+            setSelectedLineId(remaining[0]?.id ?? null);
+        }
+    }, [addToast, selectedLineId, lines]);
 
     const handleStartRename = useCallback((line) => {
         setRenamingLineId(line.id);
@@ -679,7 +684,7 @@ export default function Planner({ currentPensum }) {
                         <X size={18} />
                     </button>
                 </div>
-                <CoursePool cursos={currentCursos} plannedIds={allPlannedIds} mergedMap={simultaneous ? mergedCursoMap : null} />
+                <CoursePool cursos={currentCursos} plannedIds={selectedLinePlannedIds} lineName={selectedLine?.name} mergedMap={simultaneous ? mergedCursoMap : null} />
             </div>
 
             <div className="planner-content">
@@ -748,8 +753,17 @@ export default function Planner({ currentPensum }) {
                         const lineSemesterCount = line.semesterCount || INITIAL_SEMESTERS;
                         const lineBlocks = buildBlocks(lineSemesterCount, line.hiddenVacations || []);
                         const isRenaming = renamingLineId === line.id;
+                        const isSelected = line.id === (selectedLine?.id ?? null);
                         return (
-                            <div key={line.id} className="planner-line-section" data-line-id={line.id}>
+                            <div
+                                key={line.id}
+                                className={`planner-line-section ${isSelected ? 'planner-line-section-active' : ''}`}
+                                data-line-id={line.id}
+                                onClick={(e) => {
+                                    if (e.target.closest('button, input, .planner-block')) return;
+                                    setSelectedLineId(line.id);
+                                }}
+                            >
                                 <div className="planner-line-header">
                                     <div className="planner-line-header-left">
                                         {isRenaming ? (
