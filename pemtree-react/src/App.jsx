@@ -4,6 +4,8 @@ import { ThemeProvider, useTheme } from './theme/ThemeContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Visualizer from './pages/Visualizer';
+import Forum from './pages/Forum';
+import WhatsAppGroups from './pages/WhatsAppGroups';
 
 function AppLayout() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -15,6 +17,8 @@ function AppLayout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/visualizador" element={<Visualizer />} />
+          <Route path="/foro" element={<Forum />} />
+          <Route path="/grupos" element={<WhatsAppGroups />} />
         </Routes>
       </main>
     </div>

@@ -99,12 +99,12 @@ const DISCLAIMER = {
     text: 'PEMTREE no es una pagina oficial de la Universidad de San Carlos de Guatemala ni de la Facultad de Ingenieria. Es una herramienta informativa creada por estudiantes para estudiantes.',
     points: [
         'Los datos de pensum se basan en informacion publica disponible.',
-        'Las reglas mostradas provienen del Normativo General de Evaluacion y Promocion de la FIUSAC (Acta 33-2021).',
+        'Las reglas mostradas provienen del Normativo General de Evaluacion y Promocion de la Facultad (Acta 33-2021).',
         'Para informacion oficial, consulta siempre los portales de la Facultad de Ingenieria.',
         'Esta herramienta no almacena ni comparte tus datos personales.',
     ],
     links: [
-        { label: 'Portal FIUSAC', url: 'https://portal.ingenieria.usac.edu.gt' },
+        { label: 'Portal de Ingeniería', url: 'https://portal.ingenieria.usac.edu.gt' },
         { label: 'Redes de Estudio', url: 'https://redesestudio.ingenieria.usac.edu.gt/redesDeEstudio' },
         { label: 'Normativo PDF (Acta 33-2021)', url: 'https://portal.ingenieria.usac.edu.gt/reglamentos/NormativoGeneral_Evaluacion_y_Promocion.pdf' },
     ],
