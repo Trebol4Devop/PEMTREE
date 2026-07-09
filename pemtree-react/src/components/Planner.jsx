@@ -666,8 +666,8 @@ export default function Planner({ currentPensum }) {
                 <div className="planner-warning-banner">
                     <AlertTriangle size={18} className="planner-warning-icon" />
                     <div className="planner-warning-text">
-                        <strong>Este sitio no es oficial de FIUSAC.</strong>
-                        <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://fiusac.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">fiusac.ingenieria.usac.edu.gt</a>.</span>
+                        <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
+                        <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
                     </div>
                     <button className="planner-warning-close" onClick={dismissWarning} title="Cerrar">
                         <X size={16} />

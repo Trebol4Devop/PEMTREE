@@ -6,17 +6,18 @@
 // Lista masiva de palabras ofensivas, insultos y groserías en español e inglés (y coloquialismos de Guatemala/Latinoamérica)
 const BAD_WORDS = [
     // Español & Guatemaltequismos / Centroamérica
-    'cerote', 'cerotes', 'cerota', 'mula', 'mulas', 'mulada', 'muladas', 'pendejo', 'pendeja', 'pendejos', 'pendejas',
+    'cerote', 'cerotes', 'cerota', 'cerotas', 'mula', 'mulas', 'mulada', 'muladas', 'pendejo', 'pendeja', 'pendejos', 'pendejas',
+    'pisado', 'pisada', 'pisados', 'pisadas', 'shumo', 'shuma', 'marote', 'taliche', 'huevon', 'huevona', 'huevones',
     'estupido', 'estupida', 'estupidos', 'estupidas', 'idiota', 'idiotas', 'imbecil', 'imbeciles',
     'mierda', 'mierdas', 'mierdero', 'caca', 'cacas', 'cagada', 'cagadas', 'cagar', 'cagon', 'cagona',
     'puta', 'putas', 'puto', 'putos', 'putazo', 'putazos', 'putero', 'cabron', 'cabrona', 'cabrones',
-    'malparido', 'malparida', 'malparidos', 'hijueputa', 'hijueputas', 'hijo de puta', 'hp', 'ptm', 'alv', 'vtl',
+    'malparido', 'malparida', 'malparidos', 'hijueputa', 'hijueputas', 'hijo de puta', 'hp', 'hdp', 'ptm', 'alv', 'vtl',
     'pija', 'pijas', 'pijazo', 'verga', 'vergas', 'vergazo', 'verguiza', 'culero', 'culeros', 'culera', 'culo', 'culito',
     'mongol', 'mongoles', 'mongolito', 'mongolita', 'bastardo', 'bastarda', 'maricon', 'maricones', 'marica', 'maricas',
-    'hdp', 'joder', 'jodido', 'jodida', 'chingar', 'chinga', 'chingada', 'chingadazo', 'pinche', 'pinches',
+    'joder', 'jodido', 'jodida', 'chingar', 'chinga', 'chingada', 'chingadazo', 'pinche', 'pinches',
     'gonorrea', 'mamahuevos', 'mamada', 'mamadas', 'tarado', 'tarada', 'tarados', 'zorete', 'zorra', 'zorras',
-    'perra', 'perras', 'perro maldito', 'asqueroso', 'asquerosa', 'puerco', 'puerca', 'huevon', 'huevona', 'huevones',
-    'pito', 'pitos', 'pitero', 'chupala', 'chupalo', 'chupame', 'imbecil', 'imbeciles', 'subnormal', 'subnormales',
+    'perra', 'perras', 'perro maldito', 'asqueroso', 'asquerosa', 'puerco', 'puerca',
+    'pito', 'pitos', 'pitero', 'chupala', 'chupalo', 'chupame', 'subnormal', 'subnormales',
     'lacra', 'lacras', 'maldito', 'maldita', 'miserable', 'baboso', 'babosa', 'babosos', 'mamon', 'mamona',
     // Inglés (Curse words, slurs, acronyms, insults & variations)
     'fuck', 'fucked', 'fucker', 'fuckers', 'fucking', 'motherfucker', 'motherfuckers', 'motherfucking', 'fucktard',
@@ -34,9 +35,8 @@ const BAD_WORDS = [
 // Dominios, extensiones y palabras clave en URLs que están prohibidos (adultos, apuestas, acortadores, malware)
 const BLOCKED_LINK_KEYWORDS = [
     'porn', 'xxx', 'xvideos', 'pornhub', 'onlyfans', 'xhamster', 'redtube', 'brazzers', 'chaturbate',
-    'casino', 'bet', 'bet365', '1xbet', 'poker', 'slots', 'apuestas',
+    'casino', 'bet365', '1xbet', 'poker', 'slots', 'apuestas', 'rushbet', 'betway', 'sportingbet', 'betfair',
     'bit.ly', 'tinyurl.com', 't.co/', 'is.gd', 'cutt.ly', 'shorte.st', 'adf.ly', 'shrinkme',
-    'telegram.me', 't.me/', 'wa.me/', 'whatsapp.com', 'discord.gg/',
     '.exe', '.apk', '.bat', '.scr', '.vbs', '.msi', '.xyz', '.top', '.ru', '.tk', '.biz'
 ];
 
@@ -147,6 +147,79 @@ export function updateCooldown(actionType = 'post') {
 }
 
 /**
+ * Verifica si el texto contiene palabras ofensivas o intentos de evasión (leetspeak, espaciados, acentos)
+ */
+export function checkBadWords(text) {
+    if (!text || typeof text !== 'string') return { valid: true };
+
+    // 1. Normalizar texto: minúsculas y sin acentos (diacríticos)
+    const normalized = text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+
+    // 2. Checar leetspeak básico y sin espacios ni símbolos
+    const leetNormalized = normalized
+        .replace(/0/g, 'o')
+        .replace(/1/g, 'i')
+        .replace(/3/g, 'e')
+        .replace(/4/g, 'a')
+        .replace(/5/g, 's')
+        .replace(/7/g, 't')
+        .replace(/@/g, 'a')
+        .replace(/\$/g, 's')
+        .replace(/!/g, 'i');
+
+    const compactLeet = leetNormalized.replace(/[\s\-_\\.*+?!]/g, '');
+
+    // 3. Comprobar contra lista masiva (tanto palabra exacta como en subcadena compacta para palabras graves/largas)
+    for (const word of BAD_WORDS) {
+        if (word.length >= 4) {
+            if (compactLeet.includes(word)) {
+                return {
+                    valid: false,
+                    reason: `Tu mensaje contiene lenguaje inapropiado u ofensivo ("${word}"). Por favor mantén un ambiente de respeto en la comunidad.`
+                };
+            }
+            const letters = word.split('');
+            const regexPattern = '\\b' + letters.join('[\\s\\-_\\.*+?!]*') + '\\b';
+            try {
+                if (new RegExp(regexPattern, 'i').test(normalized)) {
+                    return {
+                        valid: false,
+                        reason: `Tu mensaje contiene lenguaje inapropiado u ofensivo ("${word}"). Por favor mantén un ambiente de respeto en la comunidad.`
+                    };
+                }
+            } catch {
+                // Ignore invalid regex
+            }
+        } else {
+            const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            if (new RegExp(`\\b${escaped}\\b`, 'i').test(normalized)) {
+                return {
+                    valid: false,
+                    reason: `Tu mensaje contiene lenguaje inapropiado u ofensivo ("${word}"). Por favor mantén un ambiente de respeto en la comunidad.`
+                };
+            }
+        }
+    }
+
+    const SEVERE_WORDS = [
+        'cerote', 'cerota', 'pisado', 'pisada', 'shumo', 'shuma', 'taliche', 'pendejo', 'pendeja', 'mierda', 'caca',
+        'hijueputa', 'malparido', 'culero', 'culera', 'puta', 'puto', 'verga', 'pija', 'gonorrea', 'bastardo', 'maricon',
+        'idiota', 'estupido', 'imbecil', 'chingar', 'pinche', 'zorra', 'perra', 'fuck', 'shit', 'bitch', 'asshole',
+        'cunt', 'nigger', 'faggot', 'retard'
+    ];
+    for (const sWord of SEVERE_WORDS) {
+        if (compactLeet.includes(sWord)) {
+            return {
+                valid: false,
+                reason: 'Hemos detectado un intento de evasión de filtro de lenguaje inapropiado. Por favor utiliza un lenguaje respetuoso.'
+            };
+        }
+    }
+
+    return { valid: true };
+}
+
+/**
  * Función principal para moderar y limpiar texto antes de publicar
  */
 export function moderateSubmission({ title = '', content = '' }) {
@@ -156,14 +229,21 @@ export function moderateSubmission({ title = '', content = '' }) {
     const linkCheck = checkInappropriateLinks(combined);
     if (!linkCheck.valid) return { valid: false, reason: linkCheck.reason };
 
-    // 2. Verificar patrones de spam (teclado golpeado, mayúsculas)
+    // 2. Verificar palabras ofensivas o intentos de evasión (leetspeak, espaciado, acentos)
+    const titleWords = checkBadWords(title);
+    if (!titleWords.valid) return { valid: false, reason: titleWords.reason };
+
+    const contentWords = checkBadWords(content);
+    if (!contentWords.valid) return { valid: false, reason: contentWords.reason };
+
+    // 3. Verificar patrones de spam (teclado golpeado, mayúsculas)
     const titleSpam = checkSpamPatterns(title);
     if (!titleSpam.valid) return { valid: false, reason: titleSpam.reason };
 
     const contentSpam = checkSpamPatterns(content);
     if (!contentSpam.valid) return { valid: false, reason: contentSpam.reason };
 
-    // 3. Censurar palabras ofensivas manteniendo la estructura original
+    // 4. Censurar palabras ofensivas manteniendo la estructura original
     const censoredTitle = censorText(title);
     const censoredContent = censorText(content);
 

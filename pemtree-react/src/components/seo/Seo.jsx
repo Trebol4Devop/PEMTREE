@@ -33,7 +33,7 @@ export default function Seo({
     : fullTitle;
 
   const pensumDescription = pensum && pensumNames[pensum]
-    ? `Explora el pensum ${pensumNames[pensum]} de la FIUSAC. Visualiza prerrequisitos, créditos y rutas académicas interactivas.`
+    ? `Explora el pensum ${pensumNames[pensum]} de Ingeniería. Visualiza prerrequisitos, créditos y rutas académicas interactivas.`
     : description;
 
   const jsonLdBase = {

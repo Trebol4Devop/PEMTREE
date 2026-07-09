@@ -4,7 +4,7 @@ import {
     Lock, BarChart4, GitBranch, Mail, Link as LinkIcon,
     Compass, Calendar, Clock, Search, CheckCircle2,
     Copy, AlertTriangle, Download, Pin, Filter,
-    Sparkles, GitMerge, ChevronDown
+    Sparkles, GitMerge, ChevronDown, Coffee
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
@@ -99,7 +99,7 @@ export default function Home() {
     const faqs = [
         {
             question: '¿Qué es PEMTREE y para quién está diseñado?',
-            answer: 'PEMTREE es una plataforma académica interactiva desarrollada para estudiantes de Ingeniería de la Universidad de San Carlos de Guatemala (USAC / FIUSAC). Te permite explorar tu pensum, verificar la lógica de prerrequisitos, simular semestres y diseñar tus horarios.'
+            answer: 'PEMTREE es una plataforma académica interactiva desarrollada para estudiantes de Ingeniería de la Universidad de San Carlos de Guatemala (USAC). Te permite explorar tu pensum, verificar la lógica de prerrequisitos, simular semestres y diseñar tus horarios.'
         },
         {
             question: '¿Cómo se guarda mi progreso o planificación en la plataforma?',
@@ -110,8 +110,8 @@ export default function Home() {
             answer: 'El Planificador determina de manera automática cuántos créditos puedes asignarte según tu promedio (32, 37 o 42 créditos por semestre, con el bono de +5 créditos para carreras simultáneas o cierre de pensum) para que siempre planifiques dentro del marco reglamentario.'
         },
         {
-            question: '¿Los datos de horarios de FIUSAC están actualizados?',
-            answer: 'Los datos de secciones, horarios, docentes y salones se renuevan periódicamente basándose en las publicaciones oficiales emitidas por la facultad en cada semestre y escuela de vacaciones para facilitarte la detección en vivo de traslapes de horario.'
+            question: '¿Los datos de horarios están actualizados?',
+            answer: 'Los datos de secciones, horarios, docentes y salones se renuevan periódicamente basándose en las publicaciones oficiales emitidas en cada semestre y escuela de vacaciones para facilitarte la detección en vivo de traslapes de horario.'
         },
         {
             question: '¿Al planificar puedo llevar dos carreras de forma simultánea?',
@@ -207,7 +207,7 @@ export default function Home() {
                     </h1>
 
                     <p className="text-[17px] md:text-[20px] text-[#5E6C84] dark:text-slate-400 mt-10 max-w-2xl leading-relaxed font-normal">
-                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> todas la carrreras de FIUSAC mediante un tablero interactivo.
+                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> de todas las carreras de Ingeniería mediante un tablero interactivo.
                     </p>
 
                     <div className="mt-10 w-full mx-auto flex flex-wrap justify-center gap-10 sm:gap-12 lg:gap-16">
@@ -311,7 +311,7 @@ export default function Home() {
                                     <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Armador de Horarios</h3>
                                 </div>
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
-                                    Visualiza, combina y exporta tus horarios por semestre o vacaciones con datos actualizados de FIUSAC.
+                                    Visualiza, combina y exporta tus horarios por semestre o vacaciones con datos actualizados de la facultad.
                                 </p>
                                 <Link to="/visualizador?view=schedule" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Horarios
@@ -389,6 +389,40 @@ export default function Home() {
                         {faqs.map(faq => (
                             <FaqItem key={faq.question} question={faq.question} answer={faq.answer} />
                         ))}
+                    </div>
+                </div>
+            </section>
+
+            <section className="w-full bg-white dark:bg-[#0F1726] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-14 px-4 shrink-0">
+                <div className="max-w-3xl mx-auto text-center">
+                    <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
+                        Apoya el desarrollo de PEMTREE
+                    </h2>
+                    <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 max-w-xl mx-auto leading-relaxed mb-8">
+                        PEMTREE es un proyecto académico de código abierto y gratuito, creado para la comunidad estudiantil de Ingeniería sin publicidad. Si deseas colaborar con el mantenimiento de los servidores y el desarrollo continuo de nuevas herramientas, puedes realizar una aportación voluntaria.
+                    </p>
+
+                    <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 max-w-md mx-auto">
+                        <a
+                            href="https://buymeacoffee.com/trebol4devop"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
+                        >
+                            <Coffee size={16} className="text-[#5E6C84] dark:text-slate-400 shrink-0" />
+                            <span>Buy Me a Coffee</span>
+                        </a>
+                        <a
+                            href="https://www.paypal.com/paypalme/TrebolDevop"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
+                        >
+                            <svg className="w-4 h-4 fill-[#5E6C84] dark:fill-slate-400 shrink-0" viewBox="0 0 24 24">
+                                <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.641.641 0 0 1 .632-.54H11.2c2.478 0 4.414.53 5.753 1.577 1.343 1.049 1.954 2.651 1.819 4.763-.15 2.34-1.123 4.184-2.894 5.483-1.768 1.298-4.148 1.956-7.074 1.956H7.818l-.742 4.378z"/>
+                            </svg>
+                            <span>Donar con PayPal</span>
+                        </a>
                     </div>
                 </div>
             </section>

@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
     MessageSquare, Plus, Search, ThumbsUp, User, ShieldCheck, 
     Send, LogOut, ChevronDown, BookOpen, Clock, Trash2, Edit3,
-    AlertCircle, Info, CheckCircle2, AlertTriangle
+    AlertCircle, Info, CheckCircle2, AlertTriangle, Flag, CornerDownRight
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { moderateSubmission, checkCooldown, updateCooldown } from '../lib/moderation';
@@ -29,12 +29,240 @@ const CARRERAS = [
 
 const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
 
+const buildCommentTree = (comments = []) => {
+    const map = {};
+    const roots = [];
+
+    comments.forEach(c => {
+        map[c.id] = { ...c, children: [] };
+    });
+
+    const getDepthAndAncestor5 = (id, visited = new Set()) => {
+        if (!id || !map[id] || visited.has(id)) return { depth: 0, ancestor5: null };
+        visited.add(id);
+        const parentId = map[id].parent_id;
+        if (!parentId || !map[parentId]) return { depth: 0, ancestor5: null };
+
+        const parentInfo = getDepthAndAncestor5(parentId, visited);
+        const myDepth = parentInfo.depth + 1;
+        let myAncestor5 = parentInfo.ancestor5;
+        if (myDepth === 5) {
+            myAncestor5 = id;
+        }
+        return { depth: myDepth, ancestor5: myAncestor5 };
+    };
+
+    comments.forEach(c => {
+        const { depth, ancestor5 } = getDepthAndAncestor5(c.id);
+        if (depth === 0) {
+            roots.push(map[c.id]);
+        } else if (depth <= 6) {
+            if (map[c.parent_id]) {
+                map[c.parent_id].children.push(map[c.id]);
+            } else {
+                roots.push(map[c.id]);
+            }
+        } else {
+            // depth > 6: Límite máximo de 6 capas.
+            // Para que se queden en la misma capa 6 sin seguir anidándose en padding ni márgenes,
+            // los colocamos en el array de children de su ancestro de capa 5 (como hermanos en capa 6).
+            if (ancestor5 && map[ancestor5]) {
+                map[ancestor5].children.push(map[c.id]);
+            } else if (map[c.parent_id]) {
+                map[c.parent_id].children.push(map[c.id]);
+            } else {
+                roots.push(map[c.id]);
+            }
+        }
+    });
+
+    return roots;
+};
+
+const CommentLayerItem = ({
+    comment,
+    post,
+    depth = 0,
+    user,
+    isAdmin,
+    reportedUserIds,
+    openReplyBoxes,
+    setOpenReplyBoxes,
+    commentReplyTexts,
+    setCommentReplyTexts,
+    handleAddComment,
+    handleDeleteComment,
+    handleOpenReportModal,
+    formatTimeAgo,
+    showAlert
+}) => {
+    const isReplying = openReplyBoxes[comment.id] || false;
+
+    return (
+        <div 
+            className={`flex flex-col gap-1.5 transition-all ${
+                depth === 0 
+                    ? 'bg-white dark:bg-[#1C2636] rounded-xl p-3.5 border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 shadow-2xs' 
+                    : 'mt-2.5 ml-3 sm:ml-5 pl-3 sm:pl-4 border-l-2 border-[#0052CC]/70 dark:border-[#4C9AFF]/70 bg-[#F4F5F7]/90 dark:bg-[#0E1624]/70 rounded-r-xl p-3 border-y border-r border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50'
+            }`}
+        >
+            <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">
+                        {comment.author_alias}
+                    </span>
+                    {depth === 6 && comment.parent_id && (() => {
+                        const parentComment = (post?.comments || []).find(c => c.id === comment.parent_id);
+                        if (parentComment && parentComment.parent_id) {
+                            let curr = parentComment;
+                            let d = 0;
+                            while (curr && curr.parent_id && d < 10) {
+                                curr = (post?.comments || []).find(c => c.id === curr.parent_id);
+                                d++;
+                            }
+                            if (d >= 5) {
+                                return (
+                                    <span className="text-[10px] text-[#7A869A] dark:text-slate-400 font-semibold flex items-center gap-0.5">
+                                        <span>↳ a {parentComment.author_alias}</span>
+                                    </span>
+                                );
+                            }
+                        }
+                        return null;
+                    })()}
+                </div>
+                <div className="flex items-center gap-1.5">
+                    <span className="text-[10px] text-[#7A869A] dark:text-slate-500 font-semibold">
+                        {formatTimeAgo(comment.created_at)}
+                    </span>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            if (!user) {
+                                showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para responder a un comentario.', 'warning');
+                                return;
+                            }
+                            setOpenReplyBoxes(prev => ({ ...prev, [comment.id]: !prev[comment.id] }));
+                        }}
+                        className={`p-1 rounded-md transition cursor-pointer flex items-center gap-1 text-[10px] font-bold ${
+                            isReplying 
+                                ? 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]' 
+                                : 'text-[#0052CC] hover:bg-[#DEEBFF] dark:text-[#4C9AFF] dark:hover:bg-[#0C295E]'
+                        }`}
+                        title="Comentar sobre esta respuesta"
+                    >
+                        <CornerDownRight size={12} />
+                        <span>Responder</span>
+                    </button>
+                    {user && (comment.user_id === user.id || isAdmin) && (
+                        <button
+                            onClick={(e) => handleDeleteComment(post.id, comment.id, e)}
+                            className={`p-0.5 rounded transition cursor-pointer ${isAdmin && comment.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
+                            title={isAdmin && comment.user_id !== user.id ? "Admin: Eliminar este comentario y sus sub-capas" : "Eliminar mi comentario y sub-capas"}
+                        >
+                            <Trash2 size={13} />
+                        </button>
+                    )}
+                    {comment.user_id && (!user || comment.user_id !== user.id) && (
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handleOpenReportModal(comment.user_id, comment.author_alias);
+                            }}
+                            className={`p-0.5 rounded transition cursor-pointer ml-0.5 ${
+                                reportedUserIds.includes(comment.user_id)
+                                    ? 'text-[#D97706] dark:text-[#FBBF24] bg-amber-500/10 hover:bg-amber-500/20'
+                                    : 'text-[#7A869A] hover:text-[#D97706] dark:hover:text-[#FBBF24]'
+                            }`}
+                            title={
+                                reportedUserIds.includes(comment.user_id)
+                                    ? "Ya has reportado a este usuario (Solo se permite 1 reporte)"
+                                    : "Reportar usuario por mal comportamiento"
+                            }
+                        >
+                            <Flag size={13} />
+                        </button>
+                    )}
+                </div>
+            </div>
+            <p className="text-xs text-[#172B4D] dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
+                {comment.content}
+            </p>
+
+            {/* Inline Reply Box for this comment */}
+            {isReplying && (
+                <div className="mt-2 pt-2.5 border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 flex flex-col gap-2 bg-[#FAFBFC] dark:bg-[#1C2636] p-3 rounded-xl animate-in fade-in duration-150 shadow-xs border border-[#0052CC]/20 dark:border-[#4C9AFF]/20">
+                    <div className="flex items-center justify-between">
+                        <span className="text-[11px] font-extrabold text-[#0052CC] dark:text-[#4C9AFF] flex items-center gap-1.5">
+                            <CornerDownRight size={13} /> Responder a {comment.author_alias}:
+                        </span>
+                        <button 
+                            onClick={() => setOpenReplyBoxes(prev => ({ ...prev, [comment.id]: false }))}
+                            className="text-[10px] text-[#7A869A] hover:text-[#E5484D] transition cursor-pointer font-bold px-1.5 py-0.5 rounded hover:bg-red-500/10"
+                        >
+                            ✕ Cancelar
+                        </button>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <input
+                            type="text"
+                            placeholder={`Escribe tu sub-comentario para ${comment.author_alias}...`}
+                            value={commentReplyTexts[comment.id] || ''}
+                            onChange={(e) => setCommentReplyTexts(prev => ({ ...prev, [comment.id]: e.target.value }))}
+                            onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(post.id, comment.id); }}
+                            className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-1.5 text-xs text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
+                        />
+                        <button
+                            onClick={() => handleAddComment(post.id, comment.id)}
+                            className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white p-2 rounded-xl transition cursor-pointer shrink-0 shadow-xs font-bold flex items-center gap-1 text-xs px-3"
+                            title="Enviar respuesta en capa"
+                        >
+                            <Send size={13} />
+                            <span>Enviar</span>
+                        </button>
+                    </div>
+                </div>
+            )}
+
+            {/* Render nested children layers */}
+            {comment.children && comment.children.length > 0 && (
+                <div className="flex flex-col gap-1.5 mt-1">
+                    {comment.children.map(child => (
+                        <CommentLayerItem
+                            key={child.id}
+                            comment={child}
+                            post={post}
+                            depth={Math.min(6, depth + 1)}
+                            user={user}
+                            isAdmin={isAdmin}
+                            reportedUserIds={reportedUserIds}
+                            openReplyBoxes={openReplyBoxes}
+                            setOpenReplyBoxes={setOpenReplyBoxes}
+                            commentReplyTexts={commentReplyTexts}
+                            setCommentReplyTexts={setCommentReplyTexts}
+                            handleAddComment={handleAddComment}
+                            handleDeleteComment={handleDeleteComment}
+                            handleOpenReportModal={handleOpenReportModal}
+                            formatTimeAgo={formatTimeAgo}
+                            showAlert={showAlert}
+                        />
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+};
+
 export default function Forum() {
     const [user, setUser] = useState(null);
     const isAdmin = user && user.id === ADMIN_UID;
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [userLikes, setUserLikes] = useState([]); // Array con los IDs de posts a los que el usuario dio like
+    const [reportedUserIds, setReportedUserIds] = useState([]); // IDs de usuarios ya reportados por el usuario actual
+    const [adminReports, setAdminReports] = useState([]); // Lista de reportes para el admin
+    const [reportModal, setReportModal] = useState({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' });
+    const [isAdminReportsModalOpen, setIsAdminReportsModalOpen] = useState(false);
     const [selectedCategory, setSelectedCategory] = useState('todos');
     const [selectedCarrera, setSelectedCarrera] = useState('todas');
     const [searchQuery, setSearchQuery] = useState('');
@@ -67,6 +295,8 @@ export default function Forum() {
     
     // New comment form per post
     const [commentTexts, setCommentTexts] = useState({});
+    const [commentReplyTexts, setCommentReplyTexts] = useState({}); // Textos por cada ID de comentario al responder
+    const [openReplyBoxes, setOpenReplyBoxes] = useState({}); // Qué cajas de respuesta (por ID de comentario) están abiertas
 
     const fetchSupabasePosts = useCallback(async () => {
         if (!isSupabaseConfigured || !supabase) return;
@@ -112,6 +342,112 @@ export default function Forum() {
         }
     }, []);
 
+    const fetchUserReports = useCallback(async (userId) => {
+        if (!isSupabaseConfigured || !supabase || !userId) {
+            setReportedUserIds([]);
+            return;
+        }
+        try {
+            const { data } = await supabase.from('user_reports').select('reported_user_id').eq('reporter_id', userId);
+            if (data) setReportedUserIds(data.map(item => item.reported_user_id));
+        } catch (err) {
+            console.error('Error cargando reportes de usuario:', err.message);
+        }
+    }, []);
+
+    const fetchAdminReports = useCallback(async () => {
+        if (!isSupabaseConfigured || !supabase || !isAdmin) return;
+        try {
+            const { data } = await supabase.from('user_reports').select('*').order('created_at', { ascending: false });
+            if (data) setAdminReports(data);
+        } catch (err) {
+            console.error('Error cargando reportes admin:', err.message);
+        }
+    }, [isAdmin]);
+
+    const handleOpenReportModal = (targetUserId, targetAlias) => {
+        if (!user) {
+            showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para poder reportar a un usuario.', 'warning');
+            return;
+        }
+        if (user.id === targetUserId) return;
+        if (reportedUserIds.includes(targetUserId)) {
+            showAlert('Usuario ya reportado', `Ya has enviado un reporte anteriormente sobre "${targetAlias}". Nuestro equipo de moderación tiene registrado el caso. Solo se permite un reporte por usuario.`, 'info');
+            return;
+        }
+        setReportModal({
+            isOpen: true,
+            reportedUserId: targetUserId,
+            reportedUserAlias: targetAlias || 'Usuario anónimo',
+            reason: ''
+        });
+    };
+
+    const handleSubmitReport = async (e) => {
+        e.preventDefault();
+        const reasonText = reportModal.reason.trim();
+        if (!reasonText) {
+            showAlert('Descripción requerida', 'Por favor detalla en la descripción la razón del reporte (ej. spam, lenguaje ofensivo, acoso, contenido inapropiado).', 'warning');
+            return;
+        }
+        if (!user) return;
+        if (reportedUserIds.includes(reportModal.reportedUserId)) {
+            showAlert('Usuario ya reportado', 'Ya has reportado anteriormente a este usuario. Solo se puede reportar una vez al mismo usuario.', 'warning');
+            return;
+        }
+
+        if (!isSupabaseConfigured || !supabase) {
+            showAlert('Servicio no disponible temporalmente', 'La conexión con el servidor del foro no se encuentra activa en este momento. Por favor, intenta más tarde.', 'error');
+            return;
+        }
+
+        try {
+            const { error } = await supabase
+                .from('user_reports')
+                .insert([{
+                    reporter_id: user.id,
+                    reported_user_id: reportModal.reportedUserId,
+                    reported_user_alias: reportModal.reportedUserAlias,
+                    reason: reasonText,
+                    created_at: new Date().toISOString()
+                }]);
+
+            if (error) {
+                if (error.code === '23505' || error.message?.toLowerCase().includes('unique')) {
+                    setReportedUserIds(prev => [...prev, reportModal.reportedUserId]);
+                    setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' });
+                    showAlert('Reporte ya registrado', 'El sistema ya tenía registrado un reporte tuyo sobre este usuario. Solo puedes reportar una vez al mismo usuario.', 'info');
+                } else {
+                    showAlert('Error al enviar reporte', 'No pudimos registrar tu reporte en este momento. Por favor, verifica tu conexión e inténtalo de nuevo.', 'error');
+                }
+                return;
+            }
+
+            setReportedUserIds(prev => [...prev, reportModal.reportedUserId]);
+            setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' });
+            if (isAdmin) fetchAdminReports();
+            showAlert('Reporte enviado con éxito', `Hemos recibido tu reporte sobre "${reportModal.reportedUserAlias}". Nuestro equipo de moderación revisará su comportamiento. Gracias por ayudar a mantener la comunidad segura.`, 'success');
+        } catch {
+            showAlert('Error al enviar reporte', 'No se pudo procesar tu reporte. Por favor, intenta de nuevo en unos momentos.', 'error');
+        }
+    };
+
+    const handleDeleteReportAdmin = async (reportId) => {
+        if (!isSupabaseConfigured || !supabase || !isAdmin) return;
+        showConfirm('¿Descartar reporte?', '¿Confirmas que deseas eliminar este reporte del sistema?', async () => {
+            try {
+                const { error } = await supabase.from('user_reports').delete().eq('id', reportId);
+                if (error) {
+                    showAlert('Error al eliminar', 'No pudimos eliminar el reporte en este momento. Inténtalo más tarde.', 'error');
+                } else {
+                    setAdminReports(prev => prev.filter(r => r.id !== reportId));
+                }
+            } catch {
+                showAlert('Error en la solicitud', 'No se pudo completar la operación. Inténtalo más tarde.', 'error');
+            }
+        });
+    };
+
     const checkAndPromptProfile = useCallback((u) => {
         if (!u) return;
         const existing = localStorage.getItem('pemtree_forum_alias');
@@ -133,6 +469,8 @@ export default function Forum() {
                 setUser(u);
                 if (u) {
                     fetchUserLikes(u.id);
+                    fetchUserReports(u.id);
+                    if (u.id === ADMIN_UID) fetchAdminReports();
                     checkAndPromptProfile(u);
                 }
             });
@@ -142,9 +480,17 @@ export default function Forum() {
                 setUser(u);
                 if (u) {
                     fetchUserLikes(u.id);
+                    fetchUserReports(u.id);
+                    if (u.id === ADMIN_UID) {
+                        fetchAdminReports();
+                    } else {
+                        setAdminReports([]);
+                    }
                     checkAndPromptProfile(u);
                 } else {
                     setUserLikes([]);
+                    setReportedUserIds([]);
+                    setAdminReports([]);
                 }
             });
 
@@ -154,11 +500,11 @@ export default function Forum() {
 
             return () => subscription.unsubscribe();
         }
-    }, [fetchSupabasePosts, fetchUserLikes, checkAndPromptProfile]);
+    }, [fetchSupabasePosts, fetchUserLikes, fetchUserReports, fetchAdminReports, checkAndPromptProfile]);
 
     const handleGoogleLogin = async () => {
         if (!isSupabaseConfigured || !supabase) {
-            showAlert('Configuración requerida', 'Para iniciar sesión con Google, configura VITE_SUPABASE_URL y VITE_SUPABASE_ANON_KEY en tu archivo .env con tu proyecto de Supabase.', 'warning');
+            showAlert('Inicio de sesión temporalmente deshabilitado', 'El servicio de autenticación se encuentra en mantenimiento en este momento. Por favor, intenta más tarde.', 'warning');
             return;
         }
         try {
@@ -205,12 +551,17 @@ export default function Forum() {
             try {
                 await supabase
                     .from('posts')
-                    .update({ author_alias: trimmed })
+                    .update({ author_alias: cleanAlias })
                     .eq('user_id', user.id);
 
                 await supabase
                     .from('comments')
-                    .update({ author_alias: trimmed })
+                    .update({ author_alias: cleanAlias })
+                    .eq('user_id', user.id);
+
+                await supabase
+                    .from('whatsapp_groups')
+                    .update({ author_alias: cleanAlias })
                     .eq('user_id', user.id);
 
                 // Recargar todo desde la BD para que los cambios se reflejen de inmediato
@@ -264,7 +615,7 @@ export default function Forum() {
         };
 
         if (!isSupabaseConfigured || !supabase) {
-            showAlert('Desconectado', 'Supabase no está conectado o sus credenciales faltan en .env.', 'error');
+            showAlert('Servicio no disponible', 'No se pudo conectar con el servidor para publicar. Verificando tu conexión e inténtalo más tarde.', 'error');
             return;
         }
 
@@ -275,7 +626,7 @@ export default function Forum() {
                 .select();
 
             if (error) {
-                showAlert('Error de publicación', 'Hubo un error en Supabase al publicar: ' + error.message, 'error');
+                showAlert('No se pudo publicar', 'Ocurrió un problema temporal al guardar tu publicación. Inténtalo de nuevo en unos momentos.', 'error');
                 return;
             }
 
@@ -284,8 +635,8 @@ export default function Forum() {
                 setPosts(prev => [{ ...data[0], comments: [] }, ...prev]);
                 resetModal();
             }
-        } catch (err) {
-            showAlert('Error de publicación', 'Hubo un error al intentar publicar: ' + err.message, 'error');
+        } catch {
+            showAlert('No se pudo publicar', 'Ocurrió un inconveniente al procesar tu publicación. Por favor, inténtalo de nuevo.', 'error');
         }
     };
 
@@ -344,8 +695,8 @@ export default function Forum() {
         showConfirm(
             isAdmin && targetPost?.user_id !== user.id ? 'Moderador: ¿Eliminar publicación?' : '¿Eliminar publicación?',
             isAdmin && targetPost?.user_id !== user.id 
-                ? '¿Confirmas la eliminación administrativa de esta publicación y todas sus respuestas de la base de datos?'
-                : '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas de la base de datos de Supabase? Esta acción no se puede deshacer.',
+                ? '¿Confirmas la eliminación administrativa de esta publicación y todas sus respuestas?'
+                : '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas? Esta acción no se puede deshacer.',
             async () => {
                 if (isSupabaseConfigured && supabase) {
                     try {
@@ -355,12 +706,12 @@ export default function Forum() {
                         }
                         const { error } = await query;
                         if (error) {
-                            showAlert('Error al eliminar', 'No se pudo eliminar en la base de datos: ' + error.message, 'error');
+                            showAlert('No se pudo eliminar', 'Ocurrió un problema al intentar eliminar la publicación. Inténtalo más tarde.', 'error');
                             return;
                         }
                         await fetchSupabasePosts();
-                    } catch (err) {
-                        showAlert('Error al eliminar', 'Hubo un error en la solicitud: ' + err.message, 'error');
+                    } catch {
+                        showAlert('No se pudo eliminar', 'Ocurrió un problema al procesar la solicitud de eliminación. Inténtalo de nuevo.', 'error');
                         return;
                     }
                 }
@@ -382,31 +733,44 @@ export default function Forum() {
         }
 
         showConfirm(
-            isAdmin && targetComment?.user_id !== user.id ? 'Moderador: ¿Eliminar comentario?' : '¿Eliminar comentario?',
+            isAdmin && targetComment?.user_id !== user.id ? 'Moderador: ¿Eliminar comentario y respuestas?' : '¿Eliminar comentario y respuestas?',
             isAdmin && targetComment?.user_id !== user.id 
-                ? '¿Confirmas la eliminación administrativa de este comentario de la comunidad?'
-                : '¿Estás seguro de que deseas eliminar permanentemente tu comentario de la base de datos de Supabase?',
+                ? '¿Confirmas la eliminación administrativa de este comentario y de TODAS sus respuestas anidadas en la comunidad?'
+                : '¿Estás seguro de que deseas eliminar permanentemente tu comentario junto con todas las respuestas que dependen de él? Esta acción no se puede deshacer.',
             async () => {
+                const idsToDelete = new Set([commentId]);
+                let added = true;
+                while (added) {
+                    added = false;
+                    (targetPost?.comments || []).forEach(c => {
+                        if (c.parent_id && idsToDelete.has(c.parent_id) && !idsToDelete.has(c.id)) {
+                            idsToDelete.add(c.id);
+                            added = true;
+                        }
+                    });
+                }
+                const idsArray = Array.from(idsToDelete);
+
                 if (isSupabaseConfigured && supabase) {
                     try {
-                        let query = supabase.from('comments').delete().eq('id', commentId);
+                        let query = supabase.from('comments').delete().in('id', idsArray);
                         if (!isAdmin) {
-                            query = query.eq('user_id', user.id);
+                            query = query.in('id', idsArray);
                         }
                         const { error } = await query;
                         if (error) {
-                            showAlert('Error al eliminar', 'No se pudo eliminar en la base de datos: ' + error.message, 'error');
+                            showAlert('No se pudo eliminar', 'Ocurrió un problema temporal al intentar eliminar el comentario. Inténtalo más tarde.', 'error');
                             return;
                         }
                         await fetchSupabasePosts();
-                    } catch (err) {
-                        showAlert('Error al eliminar', 'Hubo un error al eliminar: ' + err.message, 'error');
+                    } catch {
+                        showAlert('No se pudo eliminar', 'Ocurrió un inconveniente al procesar la eliminación. Por favor, inténtalo de nuevo.', 'error');
                         return;
                     }
                 }
                 setPosts(prev => prev.map(p => {
                     if (p.id === postId) {
-                        return { ...p, comments: (p.comments || []).filter(c => c.id !== commentId) };
+                        return { ...p, comments: (p.comments || []).filter(c => !idsToDelete.has(c.id)) };
                     }
                     return p;
                 }));
@@ -414,8 +778,8 @@ export default function Forum() {
         );
     };
 
-    const handleAddComment = async (postId) => {
-        const text = (commentTexts[postId] || '').trim();
+    const handleAddComment = async (postId, parentId = null) => {
+        const text = (parentId ? commentReplyTexts[parentId] : commentTexts[postId] || '').trim();
         if (!text) return;
         if (!user) {
             showAlert('Acceso necesario', 'Debes iniciar sesión con Google (Anónimo) en la barra superior para poder comentar u aportar una respuesta.', 'warning');
@@ -442,6 +806,7 @@ export default function Forum() {
             author_alias: activeAlias,
             content: modResult.censoredContent,
             user_id: user?.id || null,
+            parent_id: parentId || null,
             created_at: new Date().toISOString()
         };
 
@@ -452,16 +817,21 @@ export default function Forum() {
                 .select();
 
             if (error) {
-                showAlert('Error al comentar', 'No se pudo guardar la respuesta: ' + error.message, 'error');
+                showAlert('No se pudo enviar el comentario', 'Ocurrió un problema técnico temporal al guardar tu comentario o respuesta. Por favor, verifica tu conexión e inténtalo más tarde.', 'error');
                 return;
             }
             if (data && data[0]) {
                 updateCooldown('comment');
                 setPosts(prev => prev.map(p => p.id === postId ? { ...p, comments: [...(p.comments || []), data[0]] } : p));
-                setCommentTexts(prev => ({ ...prev, [postId]: '' }));
+                if (parentId) {
+                    setCommentReplyTexts(prev => ({ ...prev, [parentId]: '' }));
+                    setOpenReplyBoxes(prev => ({ ...prev, [parentId]: false }));
+                } else {
+                    setCommentTexts(prev => ({ ...prev, [postId]: '' }));
+                }
             }
-        } catch (err) {
-            showAlert('Error al comentar', 'No se pudo guardar el comentario: ' + err.message, 'error');
+        } catch {
+            showAlert('No se pudo enviar el comentario', 'Ocurrió un inconveniente al procesar tu comentario. Por favor, inténtalo de nuevo en unos momentos.', 'error');
         }
     };
 
@@ -582,6 +952,16 @@ export default function Forum() {
                             <Plus size={16} />
                             <span>Crear Publicación</span>
                         </button>
+                        {isAdmin && (
+                            <button
+                                onClick={() => setIsAdminReportsModalOpen(true)}
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-[#FFD700] hover:bg-[#FACC15] text-[#172B4D] font-extrabold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
+                                title="Panel de Administración de Reportes"
+                            >
+                                <Flag size={16} />
+                                <span>Reportes ({adminReports.length})</span>
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -720,6 +1100,26 @@ export default function Forum() {
                                                         <Trash2 size={14} />
                                                     </button>
                                                 )}
+                                                {post.user_id && (!user || post.user_id !== user.id) && (
+                                                    <button
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleOpenReportModal(post.user_id, post.author_alias);
+                                                        }}
+                                                        className={`p-1 rounded-lg transition cursor-pointer ml-1 ${
+                                                            reportedUserIds.includes(post.user_id)
+                                                                ? 'text-[#D97706] dark:text-[#FBBF24] bg-amber-500/10 hover:bg-amber-500/20'
+                                                                : 'text-[#7A869A] hover:text-[#D97706] dark:hover:text-[#FBBF24]'
+                                                        }`}
+                                                        title={
+                                                            reportedUserIds.includes(post.user_id)
+                                                                ? "Ya has reportado a este usuario (Solo se permite 1 reporte)"
+                                                                : "Reportar usuario por mal comportamiento"
+                                                        }
+                                                    >
+                                                        <Flag size={14} />
+                                                    </button>
+                                                )}
                                             </div>
 
                                             <div className="flex items-center gap-1.5 flex-wrap">
@@ -776,10 +1176,6 @@ export default function Forum() {
                                                     <ChevronDown size={14} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                                                 </button>
                                             </div>
-
-                                            <div className="text-[11px] font-semibold text-[#7A869A] dark:text-slate-500 hidden sm:block">
-                                                Identidad anónima protegida
-                                            </div>
                                         </div>
 
                                         {/* Comments Expandable Section */}
@@ -795,31 +1191,25 @@ export default function Forum() {
                                                     </p>
                                                 ) : (
                                                     <div className="flex flex-col gap-2.5">
-                                                        {post.comments.map((comment, idx) => (
-                                                            <div key={comment.id || idx} className="bg-white dark:bg-[#1C2636] rounded-xl p-3.5 border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 flex flex-col gap-1.5 shadow-2xs">
-                                                                <div className="flex items-center justify-between gap-2">
-                                                                    <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">
-                                                                        {comment.author_alias}
-                                                                    </span>
-                                                                    <div className="flex items-center gap-2">
-                                                                        <span className="text-[10px] text-[#7A869A] dark:text-slate-500 font-semibold">
-                                                                            {formatTimeAgo(comment.created_at)}
-                                                                        </span>
-                                                                        {user && (comment.user_id === user.id || isAdmin) && (
-                                                                            <button
-                                                                                onClick={(e) => handleDeleteComment(post.id, comment.id, e)}
-                                                                                className={`p-0.5 rounded transition cursor-pointer ${isAdmin && comment.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
-                                                                                title={isAdmin && comment.user_id !== user.id ? "Admin: Eliminar este comentario" : "Eliminar mi comentario"}
-                                                                            >
-                                                                                <Trash2 size={13} />
-                                                                            </button>
-                                                                        )}
-                                                                    </div>
-                                                                </div>
-                                                                <p className="text-xs text-[#172B4D] dark:text-slate-200 leading-relaxed">
-                                                                    {comment.content}
-                                                                </p>
-                                                            </div>
+                                                        {buildCommentTree(post.comments).map(rootComment => (
+                                                            <CommentLayerItem
+                                                                key={rootComment.id}
+                                                                comment={rootComment}
+                                                                post={post}
+                                                                depth={0}
+                                                                user={user}
+                                                                isAdmin={isAdmin}
+                                                                reportedUserIds={reportedUserIds}
+                                                                openReplyBoxes={openReplyBoxes}
+                                                                setOpenReplyBoxes={setOpenReplyBoxes}
+                                                                commentReplyTexts={commentReplyTexts}
+                                                                setCommentReplyTexts={setCommentReplyTexts}
+                                                                handleAddComment={handleAddComment}
+                                                                handleDeleteComment={handleDeleteComment}
+                                                                handleOpenReportModal={handleOpenReportModal}
+                                                                formatTimeAgo={formatTimeAgo}
+                                                                showAlert={showAlert}
+                                                            />
                                                         ))}
                                                     </div>
                                                 )}
@@ -1009,7 +1399,7 @@ export default function Forum() {
                                 <input
                                     type="text"
                                     required
-                                    placeholder="Ej. Estudiante FIUSAC #315..."
+                                    placeholder="Ej. Estudiante CS #315..."
                                     value={profileInputText}
                                     onChange={(e) => setProfileInputText(e.target.value)}
                                     className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
@@ -1107,6 +1497,141 @@ export default function Forum() {
                                     Eliminar
                                 </button>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Report User Modal */}
+            {reportModal.isOpen && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-md w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-[#D97706] dark:text-[#FBBF24] flex items-center justify-center">
+                                    <Flag size={18} />
+                                </div>
+                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Reportar Usuario</h3>
+                            </div>
+                            <button onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
+                                ✕
+                            </button>
+                        </div>
+
+                        <form onSubmit={handleSubmitReport} className="p-6 flex flex-col gap-4">
+                            <div>
+                                <div className="flex items-center justify-between mb-2">
+                                    <span className="text-xs font-bold text-[#172B4D] dark:text-slate-300">
+                                        Usuario reportado:
+                                    </span>
+                                    <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-2.5 py-0.5 rounded-md">
+                                        {reportModal.reportedUserAlias}
+                                    </span>
+                                </div>
+                                <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
+                                    Para mantener la comunidad libre de spam, insultos o mal comportamiento, detalla el motivo del reporte. <strong className="text-[#D97706] dark:text-[#FBBF24]">Recuerda que solo se permite reportar una vez al mismo usuario.</strong>
+                                </p>
+                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
+                                    Descripción del mal comportamiento <span className="text-red-500">*</span>
+                                </label>
+                                <textarea
+                                    rows="4"
+                                    required
+                                    placeholder="Explica en detalle el motivo de tu denuncia (ej: utiliza lenguaje ofensivo y acoso en sus respuestas, publica enlaces de spam o publicidad)..."
+                                    value={reportModal.reason}
+                                    onChange={(e) => setReportModal(prev => ({ ...prev, reason: e.target.value }))}
+                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl p-3 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#D97706] dark:focus:border-[#FBBF24] resize-none"
+                                />
+                            </div>
+
+                            <div className="flex items-center justify-end gap-3 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
+                                    className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5E6C84] hover:bg-[#F4F5F7] dark:text-slate-400 dark:hover:bg-[#0E1624] transition cursor-pointer"
+                                >
+                                    Cancelar
+                                </button>
+                                <button
+                                    type="submit"
+                                    className="bg-[#D97706] hover:bg-[#B45309] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md cursor-pointer"
+                                >
+                                    Enviar Reporte
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            )}
+
+            {/* Admin Reports Modal */}
+            {isAdminReportsModalOpen && (
+                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-2xl w-full max-h-[80vh] flex flex-col border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between shrink-0">
+                            <div className="flex items-center gap-2.5">
+                                <div className="w-8 h-8 rounded-xl bg-[#FFD700]/20 text-[#D97706] dark:text-[#FBBF24] flex items-center justify-center">
+                                    <Flag size={18} />
+                                </div>
+                                <div>
+                                    <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Panel de Administración de Reportes</h3>
+                                    <p className="text-[11px] text-[#7A869A] dark:text-slate-400">Moderación de usuarios reportados por mal comportamiento</p>
+                                </div>
+                            </div>
+                            <button onClick={() => setIsAdminReportsModalOpen(false)} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
+                                ✕
+                            </button>
+                        </div>
+
+                        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-3">
+                            {adminReports.length === 0 ? (
+                                <div className="text-center py-10 flex flex-col items-center gap-2">
+                                    <CheckCircle2 size={36} className="text-[#12A150]" />
+                                    <p className="text-sm font-bold text-[#172B4D] dark:text-slate-200">¡Todo en orden!</p>
+                                    <p className="text-xs text-[#7A869A] dark:text-slate-400">Actualmente no hay reportes de mal comportamiento registrados en la base de datos.</p>
+                                </div>
+                            ) : (
+                                adminReports.map((report) => (
+                                    <div key={report.id} className="bg-[#F4F5F7] dark:bg-[#0E1624] rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2.5">
+                                        <div className="flex items-center justify-between gap-2 flex-wrap">
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[11px] font-extrabold px-2 py-0.5 rounded bg-red-500/10 text-[#E5484D] dark:text-[#FF6369]">
+                                                    Reportado: {report.reported_user_alias || 'Anónimo'}
+                                                </span>
+                                                <span className="text-[10px] text-[#7A869A] dark:text-slate-400 font-semibold">
+                                                    ID: {report.reported_user_id?.slice(0, 8)}...
+                                                </span>
+                                            </div>
+                                            <div className="flex items-center gap-2">
+                                                <span className="text-[10px] text-[#7A869A] dark:text-slate-400 font-semibold">
+                                                    {formatTimeAgo(report.created_at)}
+                                                </span>
+                                                <button
+                                                    onClick={() => handleDeleteReportAdmin(report.id)}
+                                                    className="text-xs text-[#E5484D] hover:underline font-bold cursor-pointer flex items-center gap-1 ml-2"
+                                                    title="Eliminar o descartar reporte"
+                                                >
+                                                    <Trash2 size={13} /> Descartar
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="bg-white dark:bg-[#1C2636] p-3 rounded-xl border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50">
+                                            <p className="text-[11px] font-bold text-[#7A869A] dark:text-slate-400 uppercase mb-1">Motivo del reporte:</p>
+                                            <p className="text-xs text-[#172B4D] dark:text-slate-200 whitespace-pre-wrap leading-relaxed">{report.reason}</p>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
+                        </div>
+
+                        <div className="p-4 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex justify-end shrink-0">
+                            <button
+                                type="button"
+                                onClick={() => setIsAdminReportsModalOpen(false)}
+                                className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition cursor-pointer"
+                            >
+                                Cerrar Panel
+                            </button>
                         </div>
                     </div>
                 </div>

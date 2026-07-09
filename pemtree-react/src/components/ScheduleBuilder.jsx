@@ -15,8 +15,6 @@ import ExportModal from './ExportModal';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 const HORA_INICIO = 6;
-const HORA_FIN = 22;
-const TOTAL_SLOTS = (HORA_FIN - HORA_INICIO) * 6;
 
 const PERIODS = [
     { id: 'semestre1', label: 'Semestre 1', shortLabel: 'Sem 1' },
@@ -154,8 +152,8 @@ export default function ScheduleBuilder() {
             const saved = localStorage.getItem(getScheduleStorageKey(periodId));
             setSelectedSections(saved ? JSON.parse(saved) : {});
             sectionsPeriodRef.current = periodId;
-        } catch (e) {
-            setError('Error cargando horarios: ' + e.message);
+        } catch {
+            setError('No pudimos cargar los horarios disponibles en este momento. Por favor, intenta de nuevo más tarde.');
             setHorarios([]);
         }
         setLoading(false);
@@ -417,7 +415,7 @@ export default function ScheduleBuilder() {
         // Use the same compact-layout logic as the DOM grid
         const layout = computeCompactLayout(allSelected);
         if (!layout) return null;
-        const { clusters, collapsedSlots: collapsedSlotsC, collapseMarkers: collapseMarkersC, slotToRow: slotToRowC, rowMeta: rowMetaC } = layout;
+        const { clusters, collapsedSlots: collapsedSlotsC, collapseMarkers: collapseMarkersC, rowMeta: rowMetaC } = layout;
 
         // Calculate canvas height: each rowMeta entry is 1 visual row.
         // cluster-sep rows use SEP_H; everything else (slot + collapse-marker) uses ROW_H.
@@ -649,73 +647,6 @@ export default function ScheduleBuilder() {
             }
         }
 
-        function drawBlockContent(seccion, blockX, blockY, bw, bh, tc) {
-            const padX = 3;
-            const padY = 1;
-            const fSize = 10;
-            const tcProf = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
-            const tcRoom = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
-            const tcTipo = tc === '#ffffff' ? 'rgba(255,255,255,0.75)' : 'rgba(30,41,59,0.65)';
-
-            if (isDark) {
-                ctx.save();
-                ctx.shadowColor = 'rgba(0,0,0,0.3)';
-                ctx.shadowBlur = 2;
-                ctx.shadowOffsetY = 1;
-            }
-
-            if (bh >= 50) {
-                const lineH = fSize * 1.1;
-                drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
-                    blockX + padX, blockY + padY + fSize * 0.6,
-                    bw - padX * 2, fSize, tc, 'left', 'bold');
-                drawText(truncarNombre(seccion.nombre),
-                    blockX + padX, blockY + padY + fSize * 0.6 + lineH,
-                    bw - padX * 2, fSize * 0.65, tc, 'left');
-                drawText(nombreCorto(seccion.catedratico),
-                    blockX + padX, blockY + padY + fSize * 0.6 + lineH * 2,
-                    bw - padX * 2, fSize * 0.8, tcProf, 'left');
-                const bottomY = blockY + bh - padY - fSize * 0.6;
-                drawText(seccion.salon,
-                    blockX + padX, bottomY,
-                    bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
-                drawText(tipoAbrev(seccion.tipo),
-                    blockX + bw - padX, bottomY,
-                    16, fSize * 0.8, tcTipo, 'right', 'bold');
-            } else if (bh >= 30) {
-                const lineH = fSize * 1.05;
-                drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
-                    blockX + padX, blockY + padY + fSize * 0.6,
-                    bw - padX * 2, fSize, tc, 'left', 'bold');
-                drawText(truncarNombre(seccion.nombre),
-                    blockX + padX, blockY + padY + fSize * 0.6 + lineH,
-                    bw - padX * 2, fSize * 0.65, tc, 'left');
-                const bottomY = blockY + bh - padY - fSize * 0.6;
-                drawText(seccion.salon,
-                    blockX + padX, bottomY,
-                    bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
-                drawText(tipoAbrev(seccion.tipo),
-                    blockX + bw - padX, bottomY,
-                    16, fSize * 0.75, tcTipo, 'right', 'bold');
-            } else if (bh >= 25) {
-                const midY = blockY + bh / 2;
-                drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
-                    blockX + padX, midY - fSize * 0.5,
-                    bw - padX * 2, fSize, tc, 'left', 'bold');
-                drawText(seccion.salon,
-                    blockX + padX, midY + fSize * 0.5,
-                    bw - padX * 2, fSize * 0.85, tcRoom, 'left');
-            } else {
-                const midY = blockY + bh / 2;
-                drawText(seccion.codigo,
-                    blockX + padX, midY,
-                    bw - padX * 2, fSize, tc, 'left', 'bold');
-            }
-
-            if (isDark) {
-                ctx.restore();
-            }
-        }
 
         function drawBlockShell(blockX, blockY, bw, bh, color) {
             ctx.save();
@@ -839,18 +770,7 @@ export default function ScheduleBuilder() {
             const color = getCursoColor(seccion.codigo, activePalette);
             const iniMin = mins(seccion.inicio);
             const finMin = mins(seccion.final);
-            const startSlot = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes);
-            const endSlot   = Math.ceil((finMin  - HORA_INICIO * 60) / slotMinutes);
-            const originalRowSpan = Math.max(1, endSlot - startSlot);
-            // Calculate block pixel height from visible rows in slotYMap
-            let visibleRows = 0;
-            for (let s = startSlot; s < endSlot; s++) {
-                if (!collapsedSlotsC.has(s)) visibleRows++;
-                if (collapseMarkersC.has(s)) visibleRows++; // marker row is inside block
-            }
-            visibleRows = Math.max(1, visibleRows);
-            const blockH = visibleRows * ROW_H;
-            const blockY = slotYMap.has(startSlot) ? slotYMap.get(startSlot) : gridY;
+
 
             seccion.dias.forEach(dia => {
                 const diaIdx = DIAS_SEMANA.indexOf(dia);
@@ -1074,7 +994,6 @@ export default function ScheduleBuilder() {
      */
     function computeCompactLayout(sections) {
         const slotMinutes = 10;
-        const TOTAL_SLOTS_LOCAL = (HORA_FIN - HORA_INICIO) * 6;
 
         // ── 1. occupied slots ──────────────────────────────────────────────────
         const occupiedSlots = new Set();
@@ -1227,7 +1146,7 @@ export default function ScheduleBuilder() {
         const layout = computeCompactLayout(allSelected);
         if (!layout) return blocks;
 
-        const { clusters, collapsedSlots, collapseMarkers, slotToRow, rowMeta } = layout;
+        const { collapsedSlots, collapseMarkers, rowMeta } = layout;
 
         // ── render meta rows (separators, collapse markers, time cells) ────────
         for (const meta of rowMeta) {
@@ -1449,8 +1368,8 @@ export default function ScheduleBuilder() {
             <div className="planner-warning-banner">
                 <AlertTriangle size={18} className="planner-warning-icon" />
                 <div className="planner-warning-text">
-                    <strong>Este sitio no es oficial de FIUSAC.</strong>
-                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://fiusac.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">fiusac.ingenieria.usac.edu.gt</a>.</span>
+                    <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
+                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
                 </div>
                 <button className="planner-warning-close" onClick={dismissWarning} title="Cerrar">
                     <X size={16} />
@@ -1615,7 +1534,7 @@ export default function ScheduleBuilder() {
                         const conf = hasConflict(first);
                         const hasRestrictions = !!first.restricciones;
                         const restrictionDetail = typeof first.restricciones === 'string' ? first.restricciones : null;
-                        const restrictionHover = restrictionDetail || 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC.';
+                        const restrictionHover = restrictionDetail || 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de la Facultad.';
                         const displaySlots = group.length <= 1 ? group : group;
                         return (
                             <div
@@ -1656,7 +1575,7 @@ export default function ScheduleBuilder() {
                                             <span>
                                                 {restrictionDetail
                                                     ? <>Restricciones: <strong>{restrictionDetail}</strong></>
-                                                    : 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de FIUSAC antes de confirmar.'}
+                                                    : 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de la Facultad antes de confirmar.'}
                                             </span>
                                         </div>
                                     )}
