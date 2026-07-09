@@ -16,12 +16,27 @@ const CATEGORIES = [
     { id: 'general', label: 'Consultas Generales' }
 ];
 
+const CARRERAS = [
+    { id: 'todas', label: 'Todas las Carreras / Áreas' },
+    { id: 'area_comun', label: 'Área Común (1er - 3er Sem)' },
+    { id: 'sistemas', label: 'Ciencias y Sistemas' },
+    { id: 'civil', label: 'Ingeniería Civil' },
+    { id: 'industrial', label: 'Ingeniería Industrial' },
+    { id: 'mecanica', label: 'Mecánica & M. Industrial' },
+    { id: 'electronica', label: 'Ingeniería Electrónica' },
+    { id: 'quimica', label: 'Ingeniería Química' }
+];
+
+const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
+
 export default function Forum() {
     const [user, setUser] = useState(null);
+    const isAdmin = user && user.id === ADMIN_UID;
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [userLikes, setUserLikes] = useState([]); // Array con los IDs de posts a los que el usuario dio like
     const [selectedCategory, setSelectedCategory] = useState('todos');
+    const [selectedCarrera, setSelectedCarrera] = useState('todas');
     const [searchQuery, setSearchQuery] = useState('');
     const [sortBy, setSortBy] = useState('recent'); // 'recent' | 'likes'
     
@@ -43,6 +58,7 @@ export default function Forum() {
     // New post form
     const [newTitle, setNewTitle] = useState('');
     const [newCategory, setNewCategory] = useState('prerrequisitos');
+    const [newCarrera, setNewCarrera] = useState('sistemas');
     const [newContent, setNewContent] = useState('');
     
     // Profile / Pseudonym state
@@ -239,6 +255,7 @@ export default function Forum() {
         const newPostObj = {
             title: modResult.censoredTitle,
             category: newCategory,
+            carrera: newCarrera,
             content: modResult.censoredContent,
             author_alias: activeAlias,
             likes: 0,
@@ -275,6 +292,7 @@ export default function Forum() {
     const resetModal = () => {
         setNewTitle('');
         setNewContent('');
+        setNewCarrera('sistemas');
         setIsCreateModalOpen(false);
     };
 
@@ -315,13 +333,27 @@ export default function Forum() {
     const handleDeletePost = async (postId, e) => {
         if (e) e.stopPropagation();
         if (!user) return;
+        
+        const targetPost = posts.find(p => p.id === postId);
+        const canDelete = isAdmin || targetPost?.user_id === user.id;
+        if (!canDelete) {
+            showAlert('Acceso denegado', 'No tienes permisos para eliminar esta publicación.', 'error');
+            return;
+        }
+
         showConfirm(
-            '¿Eliminar publicación?',
-            '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas de la base de datos de Supabase? Esta acción no se puede deshacer.',
+            isAdmin && targetPost?.user_id !== user.id ? 'Moderador: ¿Eliminar publicación?' : '¿Eliminar publicación?',
+            isAdmin && targetPost?.user_id !== user.id 
+                ? '¿Confirmas la eliminación administrativa de esta publicación y todas sus respuestas de la base de datos?'
+                : '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas de la base de datos de Supabase? Esta acción no se puede deshacer.',
             async () => {
                 if (isSupabaseConfigured && supabase) {
                     try {
-                        const { error } = await supabase.from('posts').delete().eq('id', postId).eq('user_id', user.id);
+                        let query = supabase.from('posts').delete().eq('id', postId);
+                        if (!isAdmin) {
+                            query = query.eq('user_id', user.id);
+                        }
+                        const { error } = await query;
                         if (error) {
                             showAlert('Error al eliminar', 'No se pudo eliminar en la base de datos: ' + error.message, 'error');
                             return;
@@ -340,13 +372,28 @@ export default function Forum() {
     const handleDeleteComment = async (postId, commentId, e) => {
         if (e) e.stopPropagation();
         if (!user) return;
+        
+        const targetPost = posts.find(p => p.id === postId);
+        const targetComment = targetPost?.comments?.find(c => c.id === commentId);
+        const canDeleteComment = isAdmin || targetComment?.user_id === user.id;
+        if (!canDeleteComment) {
+            showAlert('Acceso denegado', 'No tienes permisos para eliminar este comentario.', 'error');
+            return;
+        }
+
         showConfirm(
-            '¿Eliminar comentario?',
-            '¿Estás seguro de que deseas eliminar permanentemente tu comentario de la base de datos de Supabase?',
+            isAdmin && targetComment?.user_id !== user.id ? 'Moderador: ¿Eliminar comentario?' : '¿Eliminar comentario?',
+            isAdmin && targetComment?.user_id !== user.id 
+                ? '¿Confirmas la eliminación administrativa de este comentario de la comunidad?'
+                : '¿Estás seguro de que deseas eliminar permanentemente tu comentario de la base de datos de Supabase?',
             async () => {
                 if (isSupabaseConfigured && supabase) {
                     try {
-                        const { error } = await supabase.from('comments').delete().eq('id', commentId).eq('user_id', user.id);
+                        let query = supabase.from('comments').delete().eq('id', commentId);
+                        if (!isAdmin) {
+                            query = query.eq('user_id', user.id);
+                        }
+                        const { error } = await query;
                         if (error) {
                             showAlert('Error al eliminar', 'No se pudo eliminar en la base de datos: ' + error.message, 'error');
                             return;
@@ -420,11 +467,20 @@ export default function Forum() {
 
     const filteredPosts = posts.filter(p => {
         const matchesCategory = selectedCategory === 'todos' || p.category === selectedCategory;
-        const matchesSearch = !searchQuery.trim() || 
-            p.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-            p.content.toLowerCase().includes(searchQuery.toLowerCase()) ||
-            p.author_alias.toLowerCase().includes(searchQuery.toLowerCase());
-        return matchesCategory && matchesSearch;
+        const matchesCarrera = selectedCarrera === 'todas' || p.carrera === selectedCarrera || (!p.carrera && selectedCarrera === 'todas');
+        
+        if (!searchQuery.trim()) return matchesCategory && matchesCarrera;
+
+        const query = searchQuery.toLowerCase().trim();
+        const matchesTitle = (p.title || '').toLowerCase().includes(query);
+        const matchesContent = (p.content || '').toLowerCase().includes(query);
+        const matchesAuthor = (p.author_alias || '').toLowerCase().includes(query);
+        const matchesComments = (p.comments || []).some(c => 
+            (c.content || '').toLowerCase().includes(query) || 
+            (c.author_alias || '').toLowerCase().includes(query)
+        );
+
+        return matchesCategory && matchesCarrera && (matchesTitle || matchesContent || matchesAuthor || matchesComments);
     }).sort((a, b) => {
         if (sortBy === 'likes') return (b.likes || 0) - (a.likes || 0);
         return new Date(b.created_at || 0) - new Date(a.created_at || 0);
@@ -470,9 +526,11 @@ export default function Forum() {
                         {user ? (
                             <div className="flex-1 sm:flex-initial flex items-center justify-between sm:justify-start gap-2 bg-white/15 dark:bg-[#0E1624]/80 px-3.5 py-2 rounded-xl border border-white/20">
                                 <div className="flex items-center gap-2">
-                                    <ShieldCheck size={16} className="text-[#79F2B8] shrink-0" />
+                                    <ShieldCheck size={16} className={`${isAdmin ? 'text-[#FFD700]' : 'text-[#79F2B8]'} shrink-0`} />
                                     <div className="text-left min-w-0">
-                                        <p className="text-[10px] uppercase font-bold text-blue-200 dark:text-slate-400">Sesión Verificada</p>
+                                        <p className="text-[10px] uppercase font-bold text-blue-200 dark:text-slate-400">
+                                            {isAdmin ? 'Admin PEMTREE' : 'Sesión Verificada'}
+                                        </p>
                                         <p className="text-xs font-extrabold truncate max-w-[130px] sm:max-w-none">{activeAlias}</p>
                                     </div>
                                 </div>
@@ -532,19 +590,30 @@ export default function Forum() {
             <div className="max-w-5xl w-full mx-auto px-4 py-8 flex flex-col gap-6">
                 
                 {/* Search and Filters Bar */}
-                <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-3.5 sm:p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3 sm:gap-4">
+                <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-3.5 sm:p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-3 sm:gap-4">
                     <div className="relative flex-1">
                         <Search size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-[#7A869A] dark:text-slate-400" />
                         <input
                             type="text"
-                            placeholder="Buscar por palabra clave, curso, catedrático o alias..."
+                            placeholder="Buscar por curso, catedrático, palabra en comentarios o alias..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
                             className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border border-transparent focus:border-[#0052CC] dark:focus:border-[#4C9AFF] focus:outline-none transition"
                         />
                     </div>
 
-                    <div className="flex items-center gap-3 justify-between md:justify-end shrink-0">
+                    <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 sm:gap-3 shrink-0">
+                        {/* Selector de Carrera */}
+                        <select
+                            value={selectedCarrera}
+                            onChange={(e) => setSelectedCarrera(e.target.value)}
+                            className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer"
+                        >
+                            {CARRERAS.map(c => (
+                                <option key={c.id} value={c.id}>{c.label}</option>
+                            ))}
+                        </select>
+
                         <div className="flex items-center gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 text-xs font-bold w-full sm:w-auto">
                             <button
                                 onClick={() => setSortBy('recent')}
@@ -617,6 +686,11 @@ export default function Forum() {
                         filteredPosts.map(post => {
                             const isExpanded = expandedPostId === post.id;
                             const catLabel = CATEGORIES.find(c => c.id === post.category)?.label || post.category;
+                            const carreraObj = CARRERAS.find(c => c.id === post.carrera);
+                            const hasCommentMatch = searchQuery.trim() && (post.comments || []).some(c => 
+                                (c.content || '').toLowerCase().includes(searchQuery.toLowerCase().trim()) || 
+                                (c.author_alias || '').toLowerCase().includes(searchQuery.toLowerCase().trim())
+                            );
                             return (
                                 <div 
                                     key={post.id}
@@ -637,20 +711,33 @@ export default function Forum() {
                                                 <span className="text-xs font-semibold text-[#7A869A] dark:text-slate-400">
                                                     {formatTimeAgo(post.created_at)}
                                                 </span>
-                                                {user && post.user_id === user.id && (
+                                                {user && (post.user_id === user.id || isAdmin) && (
                                                     <button
                                                         onClick={(e) => handleDeletePost(post.id, e)}
-                                                        className="text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369] p-1 rounded-lg transition cursor-pointer ml-1"
-                                                        title="Eliminar mi publicación"
+                                                        className={`p-1 rounded-lg transition cursor-pointer ml-1 ${isAdmin && post.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
+                                                        title={isAdmin && post.user_id !== user.id ? "Admin: Eliminar publicación de la comunidad" : "Eliminar mi publicación"}
                                                     >
                                                         <Trash2 size={14} />
                                                     </button>
                                                 )}
                                             </div>
 
-                                            <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] text-[#42526E] dark:text-[#94A3B8] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50">
-                                                {catLabel}
-                                            </span>
+                                            <div className="flex items-center gap-1.5 flex-wrap">
+                                                {carreraObj && post.carrera !== 'todas' && (
+                                                    <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50">
+                                                        {carreraObj.label}
+                                                    </span>
+                                                )}
+                                                <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] text-[#42526E] dark:text-[#94A3B8] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50">
+                                                    {catLabel}
+                                                </span>
+                                                {hasCommentMatch && (
+                                                    <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#FFF3C4] dark:bg-[#5E4C1C] text-[#D97706] dark:text-[#FBBF24] flex items-center gap-1">
+                                                        <Search size={11} />
+                                                        <span>Encontrado en comentarios</span>
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
 
                                         {/* Title and Content */}
@@ -718,11 +805,11 @@ export default function Forum() {
                                                                         <span className="text-[10px] text-[#7A869A] dark:text-slate-500 font-semibold">
                                                                             {formatTimeAgo(comment.created_at)}
                                                                         </span>
-                                                                        {user && comment.user_id === user.id && (
+                                                                        {user && (comment.user_id === user.id || isAdmin) && (
                                                                             <button
                                                                                 onClick={(e) => handleDeleteComment(post.id, comment.id, e)}
-                                                                                className="text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369] p-0.5 rounded transition cursor-pointer"
-                                                                                title="Eliminar mi comentario"
+                                                                                className={`p-0.5 rounded transition cursor-pointer ${isAdmin && comment.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
+                                                                                title={isAdmin && comment.user_id !== user.id ? "Admin: Eliminar este comentario" : "Eliminar mi comentario"}
                                                                             >
                                                                                 <Trash2 size={13} />
                                                                             </button>
@@ -792,19 +879,36 @@ export default function Forum() {
                         </div>
 
                         <form onSubmit={handleCreatePost} className="p-6 flex flex-col gap-4">
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Categoría temática
-                                </label>
-                                <select
-                                    value={newCategory}
-                                    onChange={(e) => setNewCategory(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                >
-                                    {CATEGORIES.filter(c => c.id !== 'todos').map(c => (
-                                        <option key={c.id} value={c.id}>{c.label}</option>
-                                    ))}
-                                </select>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
+                                        Carrera / Área
+                                    </label>
+                                    <select
+                                        value={newCarrera}
+                                        onChange={(e) => setNewCarrera(e.target.value)}
+                                        className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
+                                    >
+                                        {CARRERAS.filter(c => c.id !== 'todas').map(c => (
+                                            <option key={c.id} value={c.id}>{c.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
+
+                                <div>
+                                    <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
+                                        Categoría temática
+                                    </label>
+                                    <select
+                                        value={newCategory}
+                                        onChange={(e) => setNewCategory(e.target.value)}
+                                        className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
+                                    >
+                                        {CATEGORIES.filter(c => c.id !== 'todos').map(c => (
+                                            <option key={c.id} value={c.id}>{c.label}</option>
+                                        ))}
+                                    </select>
+                                </div>
                             </div>
 
                             <div>

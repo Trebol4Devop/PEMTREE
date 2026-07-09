@@ -3,15 +3,32 @@
  * Protege contra lenguaje ofensivo, spam/flooding y enlaces inapropiados.
  */
 
-// Lista de palabras ofensivas y groserías comunes en español e inglés (y coloquialismos guatemaltecos/latinoamericanos)
+// Lista masiva de palabras ofensivas, insultos y groserías en español e inglés (y coloquialismos de Guatemala/Latinoamérica)
 const BAD_WORDS = [
-    'cerote', 'cerotes', 'mula', 'mulas', 'pendejo', 'pendeja', 'pendejos', 'pendejas',
+    // Español & Guatemaltequismos / Centroamérica
+    'cerote', 'cerotes', 'cerota', 'mula', 'mulas', 'mulada', 'muladas', 'pendejo', 'pendeja', 'pendejos', 'pendejas',
     'estupido', 'estupida', 'estupidos', 'estupidas', 'idiota', 'idiotas', 'imbecil', 'imbeciles',
-    'mierda', 'mierdas', 'puta', 'putas', 'puto', 'putos', 'cabron', 'cabrona', 'cabrones',
-    'malparido', 'malparida', 'pija', 'verga', 'vergas', 'culero', 'culeros', 'mongol', 'mongoles',
-    'bastardo', 'bastarda', 'maricon', 'maricones', 'hdp', 'joder', 'jodido', 'chingar', 'chinga',
-    'chingada', 'pinche', 'fuck', 'fucking', 'shit', 'bitch', 'asshole', 'dick', 'pussy', 'cunt',
-    'whore', 'slut', 'retard', 'retarded', 'nigger', 'faggot'
+    'mierda', 'mierdas', 'mierdero', 'caca', 'cacas', 'cagada', 'cagadas', 'cagar', 'cagon', 'cagona',
+    'puta', 'putas', 'puto', 'putos', 'putazo', 'putazos', 'putero', 'cabron', 'cabrona', 'cabrones',
+    'malparido', 'malparida', 'malparidos', 'hijueputa', 'hijueputas', 'hijo de puta', 'hp', 'ptm', 'alv', 'vtl',
+    'pija', 'pijas', 'pijazo', 'verga', 'vergas', 'vergazo', 'verguiza', 'culero', 'culeros', 'culera', 'culo', 'culito',
+    'mongol', 'mongoles', 'mongolito', 'mongolita', 'bastardo', 'bastarda', 'maricon', 'maricones', 'marica', 'maricas',
+    'hdp', 'joder', 'jodido', 'jodida', 'chingar', 'chinga', 'chingada', 'chingadazo', 'pinche', 'pinches',
+    'gonorrea', 'mamahuevos', 'mamada', 'mamadas', 'tarado', 'tarada', 'tarados', 'zorete', 'zorra', 'zorras',
+    'perra', 'perras', 'perro maldito', 'asqueroso', 'asquerosa', 'puerco', 'puerca', 'huevon', 'huevona', 'huevones',
+    'pito', 'pitos', 'pitero', 'chupala', 'chupalo', 'chupame', 'imbecil', 'imbeciles', 'subnormal', 'subnormales',
+    'lacra', 'lacras', 'maldito', 'maldita', 'miserable', 'baboso', 'babosa', 'babosos', 'mamon', 'mamona',
+    // Inglés (Curse words, slurs, acronyms, insults & variations)
+    'fuck', 'fucked', 'fucker', 'fuckers', 'fucking', 'motherfucker', 'motherfuckers', 'motherfucking', 'fucktard',
+    'shit', 'shits', 'shitty', 'shitting', 'bullshit', 'horseshit', 'dipshit', 'shithead', 'shitbag',
+    'bitch', 'bitches', 'bitching', 'bitchy', 'son of a bitch',
+    'ass', 'asses', 'asshole', 'assholes', 'jackass', 'dumbass', 'smartass', 'fatass', 'assclown', 'asswipe',
+    'bastard', 'bastards', 'crap', 'crappy', 'scum', 'scumbag',
+    'dick', 'dicks', 'dickhead', 'dickheads', 'dickbag', 'cock', 'cocks', 'cocky', 'cocksucker', 'cocksuckers',
+    'pussy', 'pussies', 'cunt', 'cunts', 'twat', 'twats', 'wanker', 'wankers', 'prick', 'pricks',
+    'whore', 'whores', 'slut', 'sluts', 'slutty', 'douche', 'douchebag', 'douchebags', 'skank',
+    'retard', 'retards', 'retarded', 'tard', 'nigger', 'niggers', 'nigga', 'niggas', 'faggot', 'faggots', 'fag', 'fags',
+    'stfu', 'gtfo', 'wtf', 'lmfao', 'ffs', 'bs', 'kms'
 ];
 
 // Dominios, extensiones y palabras clave en URLs que están prohibidos (adultos, apuestas, acortadores, malware)
