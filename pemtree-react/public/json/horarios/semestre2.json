@@ -585,8 +585,8 @@
     "tipo": "LABORATORIO",
     "edificio": "",
     "salon": "",
-    "inicio": "17:20",
-    "final": "19:00",
+    "inicio": "07:10",
+    "final": "08:50",
     "dias": [
       "lunes"
     ],
@@ -3103,8 +3103,9 @@
     ],
     "catedratico": "AURELIA ANABELA CORDOVA ESTRADA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -3123,8 +3124,9 @@
     ],
     "catedratico": "JULIO CÉSAR VILLATORO SANABRIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0608",
@@ -4735,24 +4737,6 @@
     "fuente": "semestre2"
   },
   {
-    "codigo": "0775",
-    "nombre": "SISTEMAS DE BASES DE DATOS 2",
-    "seccion": "A",
-    "modalidad": "SEMIPRESENCIAL",
-    "tipo": "LABORATORIO",
-    "edificio": "",
-    "salon": "",
-    "inicio": "17:20",
-    "final": "19:00",
-    "dias": [
-      "miercoles"
-    ],
-    "catedratico": "JOSHUA ALEXANDER VÁSQUEZ DEL AGUILA",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
     "codigo": "0778",
     "nombre": "ARQUITECTURA DE COMPUTADORES Y ENSAMBLADORES 1",
     "seccion": "A",
@@ -5003,8 +4987,9 @@
     ],
     "catedratico": "JULIO CÉSAR VILLATORO SANABRIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -5022,8 +5007,9 @@
     ],
     "catedratico": "JAVIER ANTONIO CERÓN ROSALES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0632",
@@ -7305,6 +7291,25 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0522",
+    "nombre": "PROCESOS DE MANUFACTURA 2",
+    "seccion": "B",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "12:20",
+    "final": "13:10",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "MILTON ALEXANDER FUENTES OROZCO",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0601",
     "nombre": "INVESTIGACION DE OPERACIONES I",
     "seccion": "B",
@@ -7321,8 +7326,9 @@
     ],
     "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -7341,8 +7347,9 @@
     ],
     "catedratico": "AURELIA ANABELA CORDOVA ESTRADA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0634",
@@ -8534,8 +8541,9 @@
     ],
     "catedratico": "JULIO CÉSAR VILLATORO SANABRIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -8553,8 +8561,9 @@
     ],
     "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0634",
@@ -10201,8 +10210,9 @@
     ],
     "catedratico": "NORA LEONOR GARCIA TOBAR",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -10221,8 +10231,9 @@
     ],
     "catedratico": "NORA LEONOR GARCIA TOBAR",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0634",
@@ -10798,8 +10809,9 @@
     ],
     "catedratico": "JULIO CÉSAR VILLATORO SANABRIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -10817,8 +10829,9 @@
     ],
     "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0634",
@@ -12321,24 +12334,6 @@
     "fuente": "semestre2"
   },
   {
-    "codigo": "0454",
-    "nombre": "METALURGIA Y METALOGRAFIA",
-    "seccion": "_E",
-    "modalidad": "PRESENCIAL",
-    "tipo": "LABORATORIO",
-    "edificio": "",
-    "salon": "",
-    "inicio": "17:20",
-    "final": "19:00",
-    "dias": [
-      "viernes"
-    ],
-    "catedratico": "HUGO LEONEL RAMIREZ ORTIZ",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
     "codigo": "0462",
     "nombre": "ELECTRICIDAD Y ELECTRONICA BASICA",
     "seccion": "_E",
@@ -12352,60 +12347,6 @@
       "viernes"
     ],
     "catedratico": "MARIO ALBERTO REYES CALDERÓN",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
-    "codigo": "0502",
-    "nombre": "REFRIGERACION Y AIRE ACONDICIONADO",
-    "seccion": "_E",
-    "modalidad": "PRESENCIAL",
-    "tipo": "LABORATORIO",
-    "edificio": "",
-    "salon": "",
-    "inicio": "16:30",
-    "final": "18:10",
-    "dias": [
-      "viernes"
-    ],
-    "catedratico": "LUIS ALFREDO ASTURIAS ZUNIGA",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
-    "codigo": "0504",
-    "nombre": "MOTORES DE COMBUSTION INTERNA",
-    "seccion": "_E",
-    "modalidad": "PRESENCIAL",
-    "tipo": "LABORATORIO",
-    "edificio": "",
-    "salon": "",
-    "inicio": "18:10",
-    "final": "19:50",
-    "dias": [
-      "viernes"
-    ],
-    "catedratico": "BYRON GIOVANNI PALACIOS COLINDRES",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
-    "codigo": "0510",
-    "nombre": "INSTALACIONES MECANICAS",
-    "seccion": "_E",
-    "modalidad": "PRESENCIAL",
-    "tipo": "LABORATORIO",
-    "edificio": "",
-    "salon": "",
-    "inicio": "18:10",
-    "final": "19:50",
-    "dias": [
-      "viernes"
-    ],
-    "catedratico": "PABLO RODOLFO ZUÑIGA RAMIREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -13908,6 +13849,24 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0462",
+    "nombre": "ELECTRICIDAD Y ELECTRONICA BASICA",
+    "seccion": "_G",
+    "modalidad": "PRESENCIAL",
+    "tipo": "LABORATORIO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "13:10",
+    "final": "14:50",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "CARLOS EDUARDO GUZMAN SALAZAR",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0504",
     "nombre": "MOTORES DE COMBUSTION INTERNA",
     "seccion": "_G",
@@ -14714,6 +14673,24 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0462",
+    "nombre": "ELECTRICIDAD Y ELECTRONICA BASICA",
+    "seccion": "_I",
+    "modalidad": "PRESENCIAL",
+    "tipo": "LABORATORIO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "13:10",
+    "final": "14:50",
+    "dias": [
+      "jueves"
+    ],
+    "catedratico": "CARLOS EDUARDO GUZMAN SALAZAR",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0504",
     "nombre": "MOTORES DE COMBUSTION INTERNA",
     "seccion": "_I",
@@ -14989,24 +14966,6 @@
     ],
     "catedratico": "ADELA MARIA MARROQUIN GONZALEZ",
     "auxiliar": "FÁTIMA LISSETTE ICU LÓPEZ",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
-    "codigo": "0504",
-    "nombre": "MOTORES DE COMBUSTION INTERNA",
-    "seccion": "_J",
-    "modalidad": "PRESENCIAL",
-    "tipo": "LABORATORIO",
-    "edificio": "",
-    "salon": "",
-    "inicio": "11:30",
-    "final": "13:10",
-    "dias": [
-      "viernes"
-    ],
-    "catedratico": "BYRON GIOVANNI PALACIOS COLINDRES",
-    "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -17662,6 +17621,42 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0211",
+    "nombre": "TEORIA ELECTROMAGNETICA 2",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "19:50",
+    "final": "20:40",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "HELMUNT FEDERICO CHICOL CABRERA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0211",
+    "nombre": "TEORIA ELECTROMAGNETICA 2",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "19:00",
+    "final": "20:40",
+    "dias": [
+      "jueves"
+    ],
+    "catedratico": "HELMUNT FEDERICO CHICOL CABRERA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0212",
     "nombre": "CONVERSION DE ENERGIA ELECTROMECANICA 1",
     "seccion": "N",
@@ -18129,6 +18124,42 @@
       "jueves"
     ],
     "catedratico": "LUIS EDUARDO DURAN CORDOVA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0248",
+    "nombre": "ELECTRONICA 5",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "16:30",
+    "final": "18:10",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "INGRID SALOME RODRIGUEZ DE LOUKOTA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0248",
+    "nombre": "ELECTRONICA 5",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "17:20",
+    "final": "18:10",
+    "dias": [
+      "jueves"
+    ],
+    "catedratico": "INGRID SALOME RODRIGUEZ DE LOUKOTA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -19059,6 +19090,25 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0439",
+    "nombre": "INGENIERIA TEXTIL 2",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "14:00",
+    "final": "14:50",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "NORA LEONOR GARCIA TOBAR",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0440",
     "nombre": "MICROBIOLOGIA",
     "seccion": "N",
@@ -19371,6 +19421,26 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0506",
+    "nombre": "PLANTAS DE VAPOR",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "18:10",
+    "final": "19:00",
+    "dias": [
+      "lunes",
+      "miercoles",
+      "viernes"
+    ],
+    "catedratico": "ROBERTO GUZMAN ORTIZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0511",
     "nombre": "MANTENIMIENTO DE HOSPITALES 1",
     "seccion": "N",
@@ -19386,6 +19456,26 @@
       "viernes"
     ],
     "catedratico": "BYRON GIOVANNI PALACIOS COLINDRES",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0513",
+    "nombre": "MANTENIMIENTO DE HOSPITALES 2",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "14:00",
+    "final": "14:50",
+    "dias": [
+      "lunes",
+      "miercoles",
+      "viernes"
+    ],
+    "catedratico": "ROBERTO GUZMAN ORTIZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -19581,8 +19671,9 @@
     ],
     "catedratico": "JUAN CARLOS JEREZ  JUAREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0606",
@@ -19600,6 +19691,26 @@
       "viernes"
     ],
     "catedratico": "JULIO  OSWALDO ROJAS  ARGUETA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0609",
+    "nombre": "INNOVACION Y EMPRENDIMIENTO",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "17:20",
+    "final": "18:10",
+    "dias": [
+      "lunes",
+      "miercoles",
+      "viernes"
+    ],
+    "catedratico": "MIRIAM PATRICIA RUBIO CONTRERAS DE AKU",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -21161,6 +21272,25 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "7913",
+    "nombre": "SEMINARIO DE INVESTIGACION ELECTRONICA",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "18:10",
+    "final": "19:00",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "CARLOS EDUARDO GUZMAN SALAZAR",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "7935",
     "nombre": "SEMINARIO DE INVESTIGACION AMBIENTAL",
     "seccion": "N",
@@ -21400,6 +21530,24 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0775",
+    "nombre": "SISTEMAS DE BASES DE DATOS 2",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "LABORATORIO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "17:20",
+    "final": "19:00",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "JOSHUA ALEXANDER VÁSQUEZ DEL AGUILA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0777",
     "nombre": "ORGANIZACION DE LENGUAJES Y COMPILADORES 1",
     "seccion": "N",
@@ -21544,6 +21692,25 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0506",
+    "nombre": "PLANTAS DE VAPOR",
+    "seccion": "N",
+    "modalidad": "PRESENCIAL",
+    "tipo": "TRABAJO_DIRIGIDO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "19:50",
+    "final": "20:40",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "ROBERTO GUZMAN ORTIZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0603",
     "nombre": "INVESTIGACION DE OPERACIONES II",
     "seccion": "N",
@@ -21557,6 +21724,26 @@
       "jueves"
     ],
     "catedratico": "JAVIER ANTONIO CERÓN ROSALES",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
+  },
+  {
+    "codigo": "0609",
+    "nombre": "INNOVACION Y EMPRENDIMIENTO",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "17:20",
+    "final": "18:10",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "MIRIAM PATRICIA RUBIO CONTRERAS DE AKU",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -22228,6 +22415,27 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0550",
+    "nombre": "VIAS TERRESTRES 1",
+    "seccion": "N+",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "16:30",
+    "final": "17:20",
+    "dias": [
+      "lunes",
+      "miercoles",
+      "viernes"
+    ],
+    "catedratico": "MARIO ESTUARDO ARRIOLA AVILA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
+  },
+  {
     "codigo": "0654",
     "nombre": "CONTABILIDAD 3",
     "seccion": "N+",
@@ -22733,6 +22941,27 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0550",
+    "nombre": "VIAS TERRESTRES 1",
+    "seccion": "N-",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "16:30",
+    "final": "17:20",
+    "dias": [
+      "lunes",
+      "miercoles",
+      "viernes"
+    ],
+    "catedratico": "JORGE ALEJANDRO AREVALO VALDEZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
+  },
+  {
     "codigo": "0654",
     "nombre": "CONTABILIDAD 3",
     "seccion": "N-",
@@ -22932,27 +23161,6 @@
     "periodo_restriccion": "05"
   },
   {
-    "codigo": "0152",
-    "nombre": "FISICA 2",
-    "seccion": "N1",
-    "modalidad": "SEMIPRESENCIAL",
-    "tipo": "MAGISTRAL",
-    "edificio": "",
-    "salon": "",
-    "inicio": "14:00",
-    "final": "14:50",
-    "dias": [
-      "lunes",
-      "martes",
-      "miercoles",
-      "viernes"
-    ],
-    "catedratico": "EDGAR DARIO ALVAREZ COTI",
-    "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
     "codigo": "7902",
     "nombre": "SEMINARIO DE INVESTIGACION QUIMICA",
     "seccion": "N1",
@@ -22987,8 +23195,9 @@
     ],
     "catedratico": "DIANA ORALIA SALGUERO ESPANA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0200",
@@ -23045,8 +23254,9 @@
     ],
     "catedratico": "DIANA ORALIA SALGUERO ESPANA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "7902",
@@ -23083,8 +23293,9 @@
     ],
     "catedratico": "DIANA ORALIA SALGUERO ESPANA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0522",
@@ -23236,8 +23447,9 @@
     ],
     "catedratico": "NORA LEONOR GARCIA TOBAR",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0655",
@@ -23444,8 +23656,9 @@
     ],
     "catedratico": "DIEGO ALEJANDRO AQUECHE PERALTA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0674",
@@ -24155,26 +24368,6 @@
       "viernes"
     ],
     "catedratico": "BRIAN  ENRIQUE CHICOL  MORALES",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
-  },
-  {
-    "codigo": "0202",
-    "nombre": "INGENIERIA ELECTRICA 2",
-    "seccion": "P",
-    "modalidad": "SEMIPRESENCIAL",
-    "tipo": "MAGISTRAL",
-    "edificio": "",
-    "salon": "",
-    "inicio": "17:20",
-    "final": "18:10",
-    "dias": [
-      "lunes",
-      "miercoles",
-      "viernes"
-    ],
-    "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -25061,8 +25254,9 @@
     ],
     "catedratico": "ALBERTO EULALIO HERNANDEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0632",
@@ -26017,8 +26211,9 @@
     ],
     "catedratico": "JAVIER ANTONIO CERÓN ROSALES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0632",
@@ -27024,8 +27219,9 @@
     ],
     "catedratico": "SELVIN ESTUARDO JOACHIN JUAREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -27044,8 +27240,9 @@
     ],
     "catedratico": "SELVIN ESTUARDO JOACHIN JUAREZ",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0638",
@@ -27506,8 +27703,9 @@
     ],
     "catedratico": "DIEGO ALEJANDRO AQUECHE PERALTA",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0603",
@@ -27524,8 +27722,9 @@
     ],
     "catedratico": "JAVIER ANTONIO CERÓN ROSALES",
     "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
+    "restricciones": true,
+    "fuente": "semestre2",
+    "periodo_restriccion": "05"
   },
   {
     "codigo": "0638",
@@ -29301,7 +29500,7 @@
     "codigo": "0348",
     "nombre": "QUIMICA GENERAL 1",
     "seccion": "S2",
-    "modalidad": "SEMIPRESENCIAL",
+    "modalidad": "PRESENCIAL",
     "tipo": "LABORATORIO",
     "edificio": "",
     "salon": "",
