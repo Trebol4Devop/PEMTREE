@@ -686,7 +686,7 @@ export default function ScheduleBuilder() {
             {
                 const yStart = blockY;
                 const yCode = yStart + padY + fSize * 0.5;
-                const codeText = `${activo.codigo}-${activo.seccion.trim() || '?'}`;
+                const codeText = `${activo.codigo}-${(activo.seccion || '').trim() || '?'}`;
                 drawText(codeText, blockX + padX, yCode, bw - padX * 2 - 24, fSize, tcActive, 'left', 'bold');
 
                 ctx.save();
@@ -736,7 +736,7 @@ export default function ScheduleBuilder() {
             {
                 const yStart = blockY + bhActive;
                 const yCode = yStart + padY + fSize * 0.5;
-                const codeText = `${otro.codigo}-${otro.seccion.trim() || '?'}`;
+                const codeText = `${otro.codigo}-${(otro.seccion || '').trim() || '?'}`;
                 drawText(codeText, blockX + padX, yCode, bw - padX * 2, fSize, tcActive, 'left', 'bold');
 
                 if (bhInactive >= 45) {
@@ -761,6 +761,7 @@ export default function ScheduleBuilder() {
 
         // ── 1. Render merged pair blocks ────────────────────────────────────
         for (const pair of overlapPairs) {
+          try {
             const pk = pairKey(pair.a, pair.b);
             if (renderedPairKeysCanvas.has(pk)) continue;
             const diaIdx = DIAS_SEMANA.indexOf(pair.day);
@@ -818,6 +819,9 @@ export default function ScheduleBuilder() {
             drawPairContent(activo, otro, blockX, blockY, bw, bh, tc);
 
             renderedPairKeysCanvas.add(pk);
+          } catch (err) {
+            console.warn('Exportación de horario: no se pudo dibujar un bloque combinado por datos incompletos.', err, pair);
+          }
         }
 
         // ── 2. Render individual sections, excluding pair-overlap windows ──
@@ -826,8 +830,17 @@ export default function ScheduleBuilder() {
             const iniMin = mins(seccion.inicio);
             const finMin = mins(seccion.final);
 
+            // Algunas secciones pueden traer datos incompletos (horas mal
+            // formadas, sin días, etc.). Si no se puede calcular su horario,
+            // se omite solo esa sección — el resto del horario exportado no
+            // debe verse afectado por un dato faltante en un curso puntual.
+            if (!Number.isFinite(iniMin) || !Number.isFinite(finMin)) {
+                console.warn(`Exportación de horario: se omitió ${seccion.codigo || 'un curso'} por tener horas incompletas o inválidas.`, seccion);
+                continue;
+            }
 
-            seccion.dias.forEach(dia => {
+            (seccion.dias || []).forEach(dia => {
+              try {
                 const diaIdx = DIAS_SEMANA.indexOf(dia);
                 if (diaIdx === -1) return;
 
@@ -940,7 +953,7 @@ export default function ScheduleBuilder() {
 
                 if (bh >= 50) {
                     const lineH = fSize * 1.1;
-                    drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                    drawText(`${seccion.codigo}-${(seccion.seccion || '').trim() || '?'}`,
                         blockX + padX, blockY + padY + fSize * 0.6,
                         bw - padX * 2, fSize, tc, 'left', 'bold');
                     drawText(truncarNombre(seccion.nombre),
@@ -958,7 +971,7 @@ export default function ScheduleBuilder() {
                         22, fSize * 1.2, tcTipo, 'right', 'bold');
                 } else if (bh >= 30) {
                     const lineH = fSize * 1.05;
-                    drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                    drawText(`${seccion.codigo}-${(seccion.seccion || '').trim() || '?'}`,
                         blockX + padX, blockY + padY + fSize * 0.6,
                         bw - padX * 2, fSize, tc, 'left', 'bold');
                     drawText(truncarNombre(seccion.nombre),
@@ -973,7 +986,7 @@ export default function ScheduleBuilder() {
                         20, fSize * 1.1, tcTipo, 'right', 'bold');
                 } else if (bh >= 25) {
                     const midY = blockY + bh / 2;
-                    drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
+                    drawText(`${seccion.codigo}-${(seccion.seccion || '').trim() || '?'}`,
                         blockX + padX, midY - fSize * 0.5,
                         bw - padX * 2, fSize, tc, 'left', 'bold');
                     drawText(`${seccion.edificio} ${seccion.salon}`.trim(),
@@ -996,6 +1009,9 @@ export default function ScheduleBuilder() {
                     ctx.restore();
                 }
                 }
+              } catch (err) {
+                console.warn(`Exportación de horario: no se pudo dibujar ${seccion.codigo || 'un curso'} (${dia}) por datos incompletos.`, err);
+              }
             });
         }
 
@@ -1003,29 +1019,38 @@ export default function ScheduleBuilder() {
     }
 
     async function doPreview(settingsOverride) {
-        const canvas = await renderToCanvas(settingsOverride, 1.5);
-        if (!canvas) return null;
-        return canvas.toDataURL('image/png');
+        try {
+            const canvas = await renderToCanvas(settingsOverride, 1.5);
+            if (!canvas) return null;
+            return canvas.toDataURL('image/png');
+        } catch (err) {
+            console.error('No se pudo generar la vista previa del horario:', err);
+            return null;
+        }
     }
 
     async function doExport() {
         setShowExportModal(false);
-        const canvas = await renderToCanvas(exportSettings, 3);
-        if (!canvas) return;
+        try {
+            const canvas = await renderToCanvas(exportSettings, 3);
+            if (!canvas) return;
 
-        // Use blob + object URL for reliable cross-browser download
-        canvas.toBlob(blob => {
-            if (!blob) return;
-            const url = URL.createObjectURL(blob);
-            const link = document.createElement('a');
-            link.href = url;
-            link.download = `horario_${currentPeriod}.png`;
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-            // revoke after a short delay to ensure the download starts
-            setTimeout(() => URL.revokeObjectURL(url), 5000);
-        }, 'image/png');
+            // Use blob + object URL for reliable cross-browser download
+            canvas.toBlob(blob => {
+                if (!blob) return;
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `horario_${currentPeriod}.png`;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+                // revoke after a short delay to ensure the download starts
+                setTimeout(() => URL.revokeObjectURL(url), 5000);
+            }, 'image/png');
+        } catch (err) {
+            console.error('No se pudo generar la imagen del horario:', err);
+        }
     }
 
     /**
@@ -1279,8 +1304,8 @@ export default function ScheduleBuilder() {
                             <>
                                 <div className="schedule-block-pair-half schedule-block-pair-active">
                                     <div className="schedule-block-pair-row">
-                                        <span className="schedule-block-code">{activo.codigo}-{activo.seccion.trim() || '?'}</span>
-                                        <span className="schedule-block-pair-badge" title={`Traslape permitido con ${otro.codigo}-${otro.seccion.trim() || '?'}`}>↔ {otro.codigo}</span>
+                                        <span className="schedule-block-code">{activo.codigo}-{(activo.seccion || '').trim() || '?'}</span>
+                                        <span className="schedule-block-pair-badge" title={`Traslape permitido con ${otro.codigo}-${(otro.seccion || '').trim() || '?'}`}>↔ {otro.codigo}</span>
                                     </div>
                                     <span className="schedule-block-name">{truncarNombre(activo.nombre)}</span>
                                     <span className="schedule-block-prof">{nombreCorto(activo.catedratico)}</span>
@@ -1292,7 +1317,7 @@ export default function ScheduleBuilder() {
                                 <div className="schedule-block-pair-divider" />
                                 <div className="schedule-block-pair-half schedule-block-pair-inactive">
                                     <div className="schedule-block-pair-row">
-                                        <span className="schedule-block-code">{otro.codigo}-{otro.seccion.trim() || '?'}</span>
+                                        <span className="schedule-block-code">{otro.codigo}-{(otro.seccion || '').trim() || '?'}</span>
                                     </div>
                                     <span className="schedule-block-name">{truncarNombre(otro.nombre)}</span>
                                     <span className="schedule-block-prof">{nombreCorto(otro.catedratico)}</span>
@@ -1329,7 +1354,7 @@ export default function ScheduleBuilder() {
                     }
 
                     const cursosEnSlot = allSelected.filter(h => {
-                        if (!h.dias.includes(dia)) return false;
+                        if (!(h.dias || []).includes(dia)) return false;
                         const ini = mins(h.inicio);
                         const fin = mins(h.final);
                         if (!(slotEndMin > ini && slotStartMin < fin)) return false;
@@ -1386,7 +1411,7 @@ export default function ScheduleBuilder() {
 
                     const blockContent = (
                         <>
-                            <span className="schedule-block-code">{seccion.codigo}-{seccion.seccion.trim() || '?'}</span>
+                            <span className="schedule-block-code">{seccion.codigo}-{(seccion.seccion || '').trim() || '?'}</span>
                             <span className="schedule-block-name">{truncarNombre(seccion.nombre)}</span>
                             <span className="schedule-block-prof">{nombreCorto(seccion.catedratico)}</span>
                             <span className="schedule-block-bottom">
@@ -1617,7 +1642,7 @@ export default function ScheduleBuilder() {
                                     )}
                                     <div className="schedule-section-info">
                                     <span className="schedule-section-time">
-                                    <span className="schedule-section-label">{isFirst ? `Sec. ${first.seccion.trim() || '?'}` : ''}</span> {formatearHorario(sec)} · {sec.salon}
+                                    <span className="schedule-section-label">{isFirst ? `Sec. ${(first.seccion || '').trim() || '?'}` : ''}</span> {formatearHorario(sec)} · {sec.salon}
                                     {isFirst && hasRestrictions && (
                                         <span className="schedule-section-restr" title={restrictionHover}>
                                             <AlertTriangle size={9} className="inline-block mr-0.5" />Con restricciones
