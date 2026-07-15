@@ -12,6 +12,7 @@ import {
 import { getPensumKey } from '../modules/data/cursos';
 import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
 import ExportModal from './ExportModal';
+import { WarningBanner } from './ui';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 const HORA_INICIO = 6;
@@ -37,6 +38,8 @@ function tipoAbrev(tipo) {
     : tipo === 'PRACTICA' ? 'PRA'
     : 'MAG';
 }
+
+
 
 function truncarNombre(nombre) {
     if (!nombre) return '';
@@ -659,14 +662,19 @@ export default function ScheduleBuilder() {
         }
 
         function drawPairContent(activo, otro, blockX, blockY, bw, bh, tc) {
-            const padX = 3;
-            const padY = 2;
+            const padX = 6.4;
+            const padY = 4;
             const fSize = 9;
             const lineH = fSize * 1.1;
-            const isLight = tc === '#ffffff' ? false : true;
+            const isLight = tc !== '#ffffff';
             const tcActive = tc;
-            const tcDim = isLight ? 'rgba(30,41,59,0.55)' : 'rgba(255,255,255,0.55)';
-            const tcProf = isLight ? 'rgba(30,41,59,0.75)' : 'rgba(255,255,255,0.75)';
+            const tcName = isLight ? 'rgba(30,41,59,0.9)' : 'rgba(255,255,255,0.9)';
+            const tcProf = isLight ? 'rgba(30,41,59,0.85)' : 'rgba(255,255,255,0.85)';
+            const tcRoom = isLight ? 'rgba(30,41,59,0.85)' : 'rgba(255,255,255,0.85)';
+            const tcTipo = isLight ? 'rgba(30,41,59,1.0)' : 'rgba(255,255,255,1.0)';
+
+            const bhActive = bh * 0.6;
+            const bhInactive = bh * 0.4;
 
             if (isDark) {
                 ctx.save();
@@ -675,43 +683,76 @@ export default function ScheduleBuilder() {
                 ctx.shadowOffsetY = 1;
             }
 
-            // Active course: code + name on one line, prof on second line
-            const codeText = `${activo.codigo}-${activo.seccion.trim() || '?'}`;
-            drawText(codeText, blockX + padX, blockY + padY + fSize * 0.6,
-                bw - padX * 2 - 22, fSize, tcActive, 'left', 'bold');
-            drawText(truncarNombre(activo.nombre),
-                blockX + padX, blockY + padY + fSize * 0.6 + lineH,
-                bw - padX * 2, fSize * 0.85, tcActive, 'left');
-            drawText(`${nombreCorto(activo.catedratico)} · ${activo.edificio} ${activo.salon}`,
-                blockX + padX, blockY + padY + fSize * 0.6 + lineH * 2,
-                bw - padX * 2, fSize * 0.7, tcProf, 'left');
+            {
+                const yStart = blockY;
+                const yCode = yStart + padY + fSize * 0.5;
+                const codeText = `${activo.codigo}-${activo.seccion.trim() || '?'}`;
+                drawText(codeText, blockX + padX, yCode, bw - padX * 2 - 24, fSize, tcActive, 'left', 'bold');
 
-            // Pair indicator badge in top-right of active section
-            drawText(`↔${otro.codigo}`,
-                blockX + bw - padX - 20, blockY + padY + fSize * 0.6,
-                18, fSize * 0.7, tcActive, 'right', 'bold');
+                ctx.save();
+                ctx.font = `800 8px "${font}", sans-serif`;
+                const badgeText = `↔ ${otro.codigo}`;
+                const textW = ctx.measureText(badgeText).width;
+                const badgeW = textW + 5;
+                const badgeH = 11;
+                const badgeX = blockX + bw - padX - badgeW;
+                const badgeY = yCode - 5.5;
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                roundRect(badgeX, badgeY, badgeW, badgeH, 3);
+                ctx.fill();
+                ctx.fillStyle = '#ffffff';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
+                ctx.restore();
 
-            // Divider line
-            const dividerY = blockY + padY + fSize * 0.6 + lineH * 3 + 2;
+                if (bhActive >= 45) {
+                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
+                    drawText(nombreCorto(activo.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.8, tcProf, 'left');
+                } else if (bhActive >= 32) {
+                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
+                }
+
+                if (bhActive >= 32) {
+                    const yBottom = yStart + bhActive - padY - fSize * 0.5;
+                    drawText(`${activo.edificio} ${activo.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.8, tcRoom, 'left');
+                    drawText(tipoAbrev(activo.tipo), blockX + bw - padX, yBottom, 22, fSize * 1.0, tcTipo, 'right', 'bold');
+                }
+            }
+
+            const dividerY = blockY + bhActive;
             ctx.save();
-            ctx.strokeStyle = isLight ? 'rgba(0,0,0,0.15)' : 'rgba(255,255,255,0.2)';
-            ctx.lineWidth = 0.5;
+            ctx.strokeStyle = tc;
+            ctx.globalAlpha = 0.25;
+            ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(blockX + padX, dividerY);
-            ctx.lineTo(blockX + bw - padX, dividerY);
+            ctx.moveTo(blockX + 6.4, dividerY);
+            ctx.lineTo(blockX + bw - 6.4, dividerY);
             ctx.stroke();
             ctx.restore();
 
-            // Inactive course: dimmed
-            const codeText2 = `${otro.codigo}-${otro.seccion.trim() || '?'}`;
-            drawText(codeText2, blockX + padX, dividerY + 4 + fSize * 0.6,
-                bw - padX * 2 - 22, fSize, tcDim, 'left', 'bold');
-            drawText(truncarNombre(otro.nombre),
-                blockX + padX, dividerY + 4 + fSize * 0.6 + lineH,
-                bw - padX * 2, fSize * 0.85, tcDim, 'left');
-            drawText(`${nombreCorto(otro.catedratico)} · ${otro.edificio} ${otro.salon}`,
-                blockX + padX, dividerY + 4 + fSize * 0.6 + lineH * 2,
-                bw - padX * 2, fSize * 0.7, tcProf, 'left');
+            ctx.save();
+            ctx.globalAlpha = 0.55;
+            {
+                const yStart = blockY + bhActive;
+                const yCode = yStart + padY + fSize * 0.5;
+                const codeText = `${otro.codigo}-${otro.seccion.trim() || '?'}`;
+                drawText(codeText, blockX + padX, yCode, bw - padX * 2, fSize, tcActive, 'left', 'bold');
+
+                if (bhInactive >= 45) {
+                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
+                    drawText(nombreCorto(otro.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.8, tcProf, 'left');
+                } else if (bhInactive >= 32) {
+                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
+                }
+
+                if (bhInactive >= 32) {
+                    const yBottom = yStart + bhInactive - padY - fSize * 0.5;
+                    drawText(`${otro.edificio} ${otro.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.8, tcRoom, 'left');
+                    drawText(tipoAbrev(otro.tipo), blockX + bw - padX, yBottom, 22, fSize * 1.0, tcTipo, 'right', 'bold');
+                }
+            }
+            ctx.restore();
 
             if (isDark) {
                 ctx.restore();
@@ -744,14 +785,28 @@ export default function ScheduleBuilder() {
             const blockX = gridX + diaIdx * COL_W - 0.5;
             const bw = COL_W + 1;
             const bh = blockH + 1;
+            const bhActive = bh * 0.6;
 
             const color = getCursoColor(activo.codigo, activePalette);
+            
+            ctx.save();
+            ctx.shadowColor = 'rgba(0,0,0,0.15)';
+            ctx.shadowBlur = 4;
+            ctx.shadowOffsetY = 2;
             drawBlockShell(blockX, blockY, bw, bh, color);
+            ctx.restore();
+
             if (esLaboratorio(activo)) {
-                drawLabStripes(blockX, blockY, bw, bh);
+                drawLabStripes(blockX, blockY, bw, bhActive);
             }
 
-            // Warning border (pair overlap indicator)
+            ctx.save();
+            roundRect(blockX - 1, blockY - 1.5, bw + 2, bh + 2, 0);
+            ctx.strokeStyle = 'rgba(217,119,6,0.25)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+            ctx.restore();
+
             ctx.save();
             roundRect(blockX, blockY - 0.5, bw, bh, 0);
             ctx.strokeStyle = '#d97706';
@@ -874,7 +929,7 @@ export default function ScheduleBuilder() {
                 const tc = getTextColor(color);
                 const tcProf = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
                 const tcRoom = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
-                const tcTipo = tc === '#ffffff' ? 'rgba(255,255,255,0.75)' : 'rgba(30,41,59,0.65)';
+                const tcTipo = tc === '#ffffff' ? 'rgba(255,255,255,1.0)' : 'rgba(30,41,59,1.0)';
 
                 if (isDark) {
                     ctx.save();
@@ -895,12 +950,12 @@ export default function ScheduleBuilder() {
                         blockX + padX, blockY + padY + fSize * 0.6 + lineH * 2,
                         bw - padX * 2, fSize * 0.8, tcProf, 'left');
                     const bottomY = blockY + bh - padY - fSize * 0.6;
-                    drawText(seccion.salon,
+                    drawText(`${seccion.edificio} ${seccion.salon}`.trim(),
                         blockX + padX, bottomY,
                         bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, bottomY,
-                        16, fSize * 0.8, tcTipo, 'right', 'bold');
+                        22, fSize * 1.2, tcTipo, 'right', 'bold');
                 } else if (bh >= 30) {
                     const lineH = fSize * 1.05;
                     drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
@@ -910,25 +965,31 @@ export default function ScheduleBuilder() {
                         blockX + padX, blockY + padY + fSize * 0.6 + lineH,
                         bw - padX * 2, fSize * 0.65, tc, 'left');
                     const bottomY = blockY + bh - padY - fSize * 0.6;
-                    drawText(seccion.salon,
+                    drawText(`${seccion.edificio} ${seccion.salon}`.trim(),
                         blockX + padX, bottomY,
                         bw - padX * 2 - 18, fSize * 0.8, tcRoom, 'left');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, bottomY,
-                        16, fSize * 0.75, tcTipo, 'right', 'bold');
+                        20, fSize * 1.1, tcTipo, 'right', 'bold');
                 } else if (bh >= 25) {
                     const midY = blockY + bh / 2;
                     drawText(`${seccion.codigo}-${seccion.seccion.trim() || '?'}`,
                         blockX + padX, midY - fSize * 0.5,
                         bw - padX * 2, fSize, tc, 'left', 'bold');
-                    drawText(seccion.salon,
+                    drawText(`${seccion.edificio} ${seccion.salon}`.trim(),
                         blockX + padX, midY + fSize * 0.5,
-                        bw - padX * 2, fSize * 0.85, tcRoom, 'left');
+                        bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
+                    drawText(tipoAbrev(seccion.tipo),
+                        blockX + bw - padX, midY + fSize * 0.5,
+                        20, fSize * 1.0, tcTipo, 'right', 'bold');
                 } else {
                     const midY = blockY + bh / 2;
                     drawText(seccion.codigo,
                         blockX + padX, midY,
-                        bw - padX * 2, fSize, tc, 'left', 'bold');
+                        bw - padX * 2 - 24, fSize * 0.85, tc, 'left', 'bold');
+                    drawText(tipoAbrev(seccion.tipo),
+                        blockX + bw - padX, midY,
+                        22, fSize * 0.9, tcTipo, 'right', 'bold');
                 }
 
                 if (isDark) {
@@ -1365,16 +1426,13 @@ export default function ScheduleBuilder() {
     return (
         <div className="schedule-container">
         {showWarning && (
-            <div className="planner-warning-banner">
-                <AlertTriangle size={18} className="planner-warning-icon" />
-                <div className="planner-warning-text">
-                    <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
-                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
-                </div>
-                <button className="planner-warning-close" onClick={dismissWarning} title="Cerrar">
-                    <X size={16} />
-                </button>
-            </div>
+            <WarningBanner
+                onDismiss={dismissWarning}
+                className="mb-3"
+            >
+                <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
+                <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline font-extrabold text-[#BF2600] dark:text-[#FF6369]">portal.ingenieria.usac.edu.gt</a>.</span>
+            </WarningBanner>
         )}
         <div className="schedule-toolbar">
         <div className="schedule-toolbar-title">

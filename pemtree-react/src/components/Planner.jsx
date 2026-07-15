@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, X, BookOpen, AlertTriangle, Copy, Pencil, Trash2 } from 'lucide-react';
+import { Plus, X, BookOpen, Copy, Pencil, Trash2 } from 'lucide-react';
 import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
 import { importarCursosDesdeJSON } from '../modules/data/importFromJSON';
 import CoursePool from './CoursePool';
@@ -7,6 +7,7 @@ import SemesterBlock from './SemesterBlock';
 import VacationBlock from './VacationBlock';
 import ToastNotification from './ToastNotification';
 import { useToast } from '../hooks/useToast';
+import { WarningBanner } from './ui';
 
 const INITIAL_SEMESTERS = 3;
 const SIMULTANEOUS_BONUS = 5;
@@ -663,16 +664,13 @@ export default function Planner({ currentPensum }) {
             <ToastNotification toasts={toasts} onRemove={removeToast} />
 
             {showWarning && (
-                <div className="planner-warning-banner">
-                    <AlertTriangle size={18} className="planner-warning-icon" />
-                    <div className="planner-warning-text">
-                        <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
-                        <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
-                    </div>
-                    <button className="planner-warning-close" onClick={dismissWarning} title="Cerrar">
-                        <X size={16} />
-                    </button>
-                </div>
+                <WarningBanner
+                    onDismiss={dismissWarning}
+                    className="mb-3"
+                >
+                    <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
+                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline font-extrabold text-[#BF2600] dark:text-[#FF6369]">portal.ingenieria.usac.edu.gt</a>.</span>
+                </WarningBanner>
             )}
 
             {/* Pool sidebar / bottom sheet */}

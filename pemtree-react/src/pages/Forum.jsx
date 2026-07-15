@@ -6,6 +6,7 @@ import {
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { moderateSubmission, checkCooldown, updateCooldown } from '../lib/moderation';
+import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
 
 const CATEGORIES = [
     { id: 'todos', label: 'Todas las áreas' },
@@ -947,7 +948,7 @@ export default function Forum() {
                                 }
                                 setIsCreateModalOpen(true);
                             }}
-                            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#79F2B8] hover:bg-[#57D99A] text-[#0A3622] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
+                            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
                         >
                             <Plus size={16} />
                             <span>Crear Publicación</span>
@@ -1041,27 +1042,19 @@ export default function Forum() {
                             <p className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando consultas de la comunidad...</p>
                         </div>
                     ) : filteredPosts.length === 0 ? (
-                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-12 border border-[#DFE1E6] dark:border-[#3E4C5E] text-center flex flex-col items-center justify-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
-                                <BookOpen size={24} />
-                            </div>
-                            <h3 className="font-bold text-base text-[#172B4D] dark:text-white">No se encontraron consultas</h3>
-                            <p className="text-xs text-[#5E6C84] dark:text-slate-400 max-w-md">
-                                Sé el primero en hacer una pregunta en esta categoría o intenta con otros términos en la búsqueda.
-                            </p>
-                            <button
-                                onClick={() => {
-                                    if (!user) {
-                                        showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para poder crear una consulta o publicación en el foro.', 'warning');
-                                        return;
-                                    }
-                                    setIsCreateModalOpen(true);
-                                }}
-                                className="mt-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl transition cursor-pointer"
-                            >
-                                Crear Nueva Publicación
-                            </button>
-                        </div>
+                        <EmptyState
+                            icon={BookOpen}
+                            title="No se encontraron consultas"
+                            description="Sé el primero en hacer una pregunta en esta categoría o intenta con otros términos en la búsqueda."
+                            actionLabel="Crear Nueva Publicación"
+                            onAction={() => {
+                                if (!user) {
+                                    showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para poder crear una consulta o publicación en el foro.', 'warning');
+                                    return;
+                                }
+                                setIsCreateModalOpen(true);
+                            }}
+                        />
                     ) : (
                         filteredPosts.map(post => {
                             const isExpanded = expandedPostId === post.id;
@@ -1081,7 +1074,7 @@ export default function Forum() {
                                         {/* Meta Header */}
                                         <div className="flex items-center justify-between gap-3 flex-wrap">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-7 h-7 rounded-full bg-[#E0F2FE] dark:bg-[#0C4A6E] text-[#0369A1] dark:text-[#7DD3FC] flex items-center justify-center text-xs font-bold shrink-0">
+                                                <div className="w-7 h-7 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-bold shrink-0">
                                                     <User size={14} />
                                                 </div>
                                                 <span className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200">
@@ -1155,7 +1148,7 @@ export default function Forum() {
                                                     onClick={() => handleLike(post.id)}
                                                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition font-bold text-xs cursor-pointer border ${
                                                         userLikes.includes(post.id)
-                                                            ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/40 shadow-2xs'
+                                                            ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 shadow-sm'
                                                             : 'bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#42526E] hover:text-[#0052CC] dark:text-slate-300 dark:hover:text-[#4C9AFF] border-transparent'
                                                     }`}
                                                 >
@@ -1252,350 +1245,286 @@ export default function Forum() {
 
             </div>
 
-            {/* Create Post Modal */}
             {isCreateModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-lg w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
-                                    <Plus size={18} />
-                                </div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Nueva Publicación en la Comunidad</h3>
-                            </div>
-                            <button onClick={resetModal} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                ✕
-                            </button>
+                <Modal
+                    isOpen={isCreateModalOpen}
+                    onClose={resetModal}
+                    title="Nueva Publicación en la Comunidad"
+                    icon={Plus}
+                    size="md"
+                >
+                    <form onSubmit={handleCreatePost} className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <Select
+                                label="Carrera / Área"
+                                value={newCarrera}
+                                onChange={(e) => setNewCarrera(e.target.value)}
+                            >
+                                {CARRERAS.filter(c => c.id !== 'todas').map(c => (
+                                    <option key={c.id} value={c.id}>{c.label}</option>
+                                ))}
+                            </Select>
+
+                            <Select
+                                label="Categoría temática"
+                                value={newCategory}
+                                onChange={(e) => setNewCategory(e.target.value)}
+                            >
+                                {CATEGORIES.filter(c => c.id !== 'todos').map(c => (
+                                    <option key={c.id} value={c.id}>{c.label}</option>
+                                ))}
+                            </Select>
                         </div>
 
-                        <form onSubmit={handleCreatePost} className="p-6 flex flex-col gap-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                        Carrera / Área
-                                    </label>
-                                    <select
-                                        value={newCarrera}
-                                        onChange={(e) => setNewCarrera(e.target.value)}
-                                        className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                    >
-                                        {CARRERAS.filter(c => c.id !== 'todas').map(c => (
-                                            <option key={c.id} value={c.id}>{c.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                        <Input
+                            label="Título de tu consulta o recomendación"
+                            required
+                            placeholder="Ej. ¿Opiniones de la sección A de Lenguajes Formales?"
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
+                        />
 
-                                <div>
-                                    <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                        Categoría temática
-                                    </label>
-                                    <select
-                                        value={newCategory}
-                                        onChange={(e) => setNewCategory(e.target.value)}
-                                        className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                    >
-                                        {CATEGORIES.filter(c => c.id !== 'todos').map(c => (
-                                            <option key={c.id} value={c.id}>{c.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
+                        <Textarea
+                            label="Detalle del aporte o pregunta"
+                            required
+                            rows={4}
+                            placeholder="Describe tu duda, comparte tu experiencia sobre proyectos, exámenes o cátedra..."
+                            value={newContent}
+                            onChange={(e) => setNewContent(e.target.value)}
+                        />
 
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Título de tu consulta o recomendación
-                                </label>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="Ej. ¿Opiniones de la sección A de Lenguajes Formales?"
-                                    value={newTitle}
-                                    onChange={(e) => setNewTitle(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                />
-                            </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Detalle del aporte o pregunta
-                                </label>
-                                <textarea
-                                    required
-                                    rows={4}
-                                    placeholder="Describe tu duda, comparte tu experiencia sobre proyectos, exámenes o cátedra..."
-                                    value={newContent}
-                                    onChange={(e) => setNewContent(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] resize-none"
-                                ></textarea>
-                            </div>
-
-                            {/* Active Profile Info */}
-                            <div className="bg-[#FAFBFC] dark:bg-[#0E1624]/60 p-3.5 rounded-2xl border border-[#DFE1E6]/80 dark:border-[#3E4C5E]/80 flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-2">
-                                    <ShieldCheck size={16} className="text-[#0052CC] dark:text-[#4C9AFF]" />
-                                    <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-300">
-                                        Publicando bajo tu perfil: <strong className="text-[#0052CC] dark:text-[#4C9AFF]">{activeAlias}</strong>
-                                    </span>
-                                </div>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setProfileInputText(activeAlias);
-                                        setIsProfileModalOpen(true);
-                                    }}
-                                    className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer flex items-center gap-1"
-                                >
-                                    <Edit3 size={12} />
-                                    <span>Cambiar</span>
-                                </button>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-3 pt-2">
-                                <button
-                                    type="button"
-                                    onClick={resetModal}
-                                    className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5E6C84] hover:bg-[#F4F5F7] dark:text-slate-400 dark:hover:bg-[#0E1624] transition cursor-pointer"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white text-xs sm:text-sm font-extrabold px-5 py-2.5 rounded-xl transition shadow-md cursor-pointer"
-                                >
-                                    Publicar ahora
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* Profile / Pseudonym Setup Modal */}
-            {isProfileModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-md w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
-                                    <ShieldCheck size={18} />
-                                </div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Perfil Estudiantil Anónimo</h3>
-                            </div>
-                            {savedAlias && (
-                                <button onClick={() => setIsProfileModalOpen(false)} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                    ✕
-                                </button>
-                            )}
-                        </div>
-
-                        <form onSubmit={handleSaveProfile} className="p-6 flex flex-col gap-4">
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Elige tu Seudónimo de Estudiante
-                                </label>
-                                <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-2 leading-relaxed">
-                                    Este es el apodo único e irrepetible con el que publicarás dudas y comentarás en el foro. Tu nombre y correo de Google permanecerán 100% ocultos.
-                                </p>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="Ej. Estudiante CS #315..."
-                                    value={profileInputText}
-                                    onChange={(e) => setProfileInputText(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-end gap-3 pt-2">
-                                {savedAlias && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsProfileModalOpen(false)}
-                                        className="px-4 py-2 rounded-xl text-xs font-bold text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] transition cursor-pointer"
-                                    >
-                                        Cancelar
-                                    </button>
-                                )}
-                                <button
-                                    type="submit"
-                                    className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer shadow-md"
-                                >
-                                    Guardar Seudónimo
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* Custom Alert Modal */}
-            {customAlert.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-sm w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 flex flex-col items-center text-center gap-4">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                                customAlert.type === 'error' ? 'bg-[#FFD5D2] dark:bg-[#5E1C1C] text-[#E5484D] dark:text-[#FF6369]' :
-                                customAlert.type === 'warning' ? 'bg-[#FFF3C4] dark:bg-[#5E4C1C] text-[#D97706] dark:text-[#FBBF24]' :
-                                customAlert.type === 'success' ? 'bg-[#D2FDEB] dark:bg-[#0C3E26] text-[#12A150] dark:text-[#57D99A]' :
-                                'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
-                            }`}>
-                                {customAlert.type === 'error' ? <AlertCircle size={28} /> :
-                                 customAlert.type === 'warning' ? <AlertTriangle size={28} /> :
-                                 customAlert.type === 'success' ? <CheckCircle2 size={28} /> :
-                                 <Info size={28} />}
-                            </div>
-                            <div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white mb-1.5">
-                                    {customAlert.title}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
-                                    {customAlert.message}
-                                </p>
+                        <div className="bg-[#F4F5F7] dark:bg-[#0E1624]/60 p-3.5 rounded-2xl border border-[#DFE1E6]/80 dark:border-[#3E4C5E]/80 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                                <ShieldCheck size={16} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-300">
+                                    Publicando bajo tu perfil: <strong className="text-[#0052CC] dark:text-[#4C9AFF]">{activeAlias}</strong>
+                                </span>
                             </div>
                             <button
-                                onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
-                                className="w-full mt-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs sm:text-sm py-3 rounded-xl transition cursor-pointer shadow-md"
+                                type="button"
+                                onClick={() => {
+                                    setProfileInputText(activeAlias);
+                                    setIsProfileModalOpen(true);
+                                }}
+                                className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer flex items-center gap-1 bg-transparent border-none"
                             >
-                                Entendido
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Custom Confirm Modal */}
-            {customConfirm.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-sm w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 flex flex-col items-center text-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-[#FFD5D2] dark:bg-[#5E1C1C] text-[#E5484D] dark:text-[#FF6369] flex items-center justify-center">
-                                <Trash2 size={28} />
-                            </div>
-                            <div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white mb-1.5">
-                                    {customConfirm.title}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
-                                    {customConfirm.message}
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-3 w-full mt-2">
-                                <button
-                                    onClick={() => setCustomConfirm(prev => ({ ...prev, isOpen: false }))}
-                                    className="flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] transition cursor-pointer border border-[#DFE1E6] dark:border-[#3E4C5E]"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        const callback = customConfirm.onConfirm;
-                                        setCustomConfirm(prev => ({ ...prev, isOpen: false }));
-                                        if (callback) callback();
-                                    }}
-                                    className="flex-1 bg-[#E5484D] hover:bg-[#CD2B31] text-white font-extrabold text-xs sm:text-sm py-3 rounded-xl transition cursor-pointer shadow-md"
-                                >
-                                    Eliminar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Report User Modal */}
-            {reportModal.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-md w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-[#D97706] dark:text-[#FBBF24] flex items-center justify-center">
-                                    <Flag size={18} />
-                                </div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Reportar Usuario</h3>
-                            </div>
-                            <button onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                ✕
+                                <Edit3 size={12} />
+                                <span>Cambiar</span>
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmitReport} className="p-6 flex flex-col gap-4">
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs font-bold text-[#172B4D] dark:text-slate-300">
-                                        Usuario reportado:
-                                    </span>
-                                    <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-2.5 py-0.5 rounded-md">
-                                        {reportModal.reportedUserAlias}
-                                    </span>
-                                </div>
-                                <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
-                                    Para mantener la comunidad libre de spam, insultos o mal comportamiento, detalla el motivo del reporte. <strong className="text-[#D97706] dark:text-[#FBBF24]">Recuerda que solo se permite reportar una vez al mismo usuario.</strong>
-                                </p>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Descripción del mal comportamiento <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    rows="4"
-                                    required
-                                    placeholder="Explica en detalle el motivo de tu denuncia (ej: utiliza lenguaje ofensivo y acoso en sus respuestas, publica enlaces de spam o publicidad)..."
-                                    value={reportModal.reason}
-                                    onChange={(e) => setReportModal(prev => ({ ...prev, reason: e.target.value }))}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl p-3 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#D97706] dark:focus:border-[#FBBF24] resize-none"
-                                />
-                            </div>
+                        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={resetModal}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                size="sm"
+                            >
+                                Publicar ahora
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
 
-                            <div className="flex items-center justify-end gap-3 pt-2">
-                                <button
+            {isProfileModalOpen && (
+                <Modal
+                    isOpen={isProfileModalOpen}
+                    onClose={() => { if (savedAlias) setIsProfileModalOpen(false); }}
+                    title="Perfil Estudiantil Anónimo"
+                    icon={ShieldCheck}
+                    size="sm"
+                >
+                    <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+                        <div>
+                            <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
+                                Este es el apodo único con el que publicarás dudas y comentarás en el foro. Tu nombre y correo de Google permanecerán 100% ocultos.
+                            </p>
+                            <Input
+                                label="Elige tu Seudónimo de Estudiante"
+                                required
+                                placeholder="Ej. Estudiante CS #315..."
+                                value={profileInputText}
+                                onChange={(e) => setProfileInputText(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            {savedAlias && (
+                                <Button
                                     type="button"
-                                    onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
-                                    className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5E6C84] hover:bg-[#F4F5F7] dark:text-slate-400 dark:hover:bg-[#0E1624] transition cursor-pointer"
+                                    variant="secondary"
+                                    onClick={() => setIsProfileModalOpen(false)}
+                                    size="sm"
                                 >
                                     Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="bg-[#D97706] hover:bg-[#B45309] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md cursor-pointer"
-                                >
-                                    Enviar Reporte
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                                </Button>
+                            )}
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                size="sm"
+                            >
+                                Guardar Seudónimo
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
             )}
 
-            {/* Admin Reports Modal */}
-            {isAdminReportsModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-2xl w-full max-h-[80vh] flex flex-col border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#FFD700]/20 text-[#D97706] dark:text-[#FBBF24] flex items-center justify-center">
-                                    <Flag size={18} />
-                                </div>
-                                <div>
-                                    <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Panel de Administración de Reportes</h3>
-                                    <p className="text-[11px] text-[#7A869A] dark:text-slate-400">Moderación de usuarios reportados por mal comportamiento</p>
-                                </div>
+            {customAlert.isOpen && (
+                <Modal
+                    isOpen={customAlert.isOpen}
+                    onClose={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
+                    title={customAlert.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col items-center text-center gap-4">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                            customAlert.type === 'error' ? 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]' :
+                            customAlert.type === 'warning' ? 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]' :
+                            customAlert.type === 'success' ? 'bg-[#E3FCEF] dark:bg-[#0A3622] text-[#059669] dark:text-[#10b981]' :
+                            'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
+                        }`}>
+                            {customAlert.type === 'error' ? <AlertCircle size={28} /> :
+                             customAlert.type === 'warning' ? <AlertTriangle size={28} /> :
+                             customAlert.type === 'success' ? <CheckCircle2 size={28} /> :
+                             <Info size={28} />}
+                        </div>
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                            {customAlert.message}
+                        </p>
+                        <Button
+                            variant="primary"
+                            onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
+                            className="w-full mt-2"
+                        >
+                            Entendido
+                        </Button>
+                    </div>
+                </Modal>
+            )}
+
+            {customConfirm.isOpen && (
+                <Modal
+                    isOpen={customConfirm.isOpen}
+                    onClose={() => setCustomConfirm(prev => ({ ...prev, isOpen: false }))}
+                    title={customConfirm.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col items-center text-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369] flex items-center justify-center">
+                            <Trash2 size={28} />
+                        </div>
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                            {customConfirm.message}
+                        </p>
+                        <div className="flex items-center gap-3 w-full mt-2">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setCustomConfirm(prev => ({ ...prev, isOpen: false }))}
+                                className="flex-grow"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    const callback = customConfirm.onConfirm;
+                                    setCustomConfirm(prev => ({ ...prev, isOpen: false }));
+                                    if (callback) callback();
+                                }}
+                                className="flex-grow"
+                            >
+                                Eliminar
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {reportModal.isOpen && (
+                <Modal
+                    isOpen={reportModal.isOpen}
+                    onClose={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
+                    title="Reportar Usuario"
+                    icon={Flag}
+                    size="md"
+                >
+                    <form onSubmit={handleSubmitReport} className="flex flex-col gap-4">
+                        <div>
+                            <div className="flex items-center justify-between mb-2.5">
+                                <span className="text-xs font-bold text-[#172B4D] dark:text-slate-300">
+                                    Usuario reportado:
+                                </span>
+                                <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-2.5 py-0.5 rounded-full">
+                                    {reportModal.reportedUserAlias}
+                                </span>
                             </div>
-                            <button onClick={() => setIsAdminReportsModalOpen(false)} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                ✕
-                            </button>
+                            <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
+                                Para mantener la comunidad libre de spam, insultos o mal comportamiento, detalla el motivo del reporte. <strong className="text-[#B45309] dark:text-[#FBBF24]">Recuerda que solo se permite reportar una vez al mismo usuario.</strong>
+                            </p>
+                            <Textarea
+                                label="Descripción del mal comportamiento"
+                                required
+                                rows={4}
+                                placeholder="Explica en detalle el motivo de tu denuncia (ej: utiliza lenguaje ofensivo y acoso en sus respuestas, publica enlaces de spam o publicidad)..."
+                                value={reportModal.reason}
+                                onChange={(e) => setReportModal(prev => ({ ...prev, reason: e.target.value }))}
+                            />
                         </div>
 
-                        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-3">
+                        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="danger"
+                                size="sm"
+                            >
+                                Enviar Reporte
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
+
+            {isAdminReportsModalOpen && (
+                <Modal
+                    isOpen={isAdminReportsModalOpen}
+                    onClose={() => setIsAdminReportsModalOpen(false)}
+                    title="Panel de Administración de Reportes"
+                    icon={Flag}
+                    size="lg"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-xs text-[#7A869A] dark:text-slate-400 -mt-2">Moderación de usuarios reportados por mal comportamiento</p>
+                        <div className="max-h-[60vh] overflow-y-auto flex flex-col gap-3 pr-1">
                             {adminReports.length === 0 ? (
                                 <div className="text-center py-10 flex flex-col items-center gap-2">
-                                    <CheckCircle2 size={36} className="text-[#12A150]" />
+                                    <CheckCircle2 size={36} className="text-[#059669] dark:text-[#10b981]" />
                                     <p className="text-sm font-bold text-[#172B4D] dark:text-slate-200">¡Todo en orden!</p>
                                     <p className="text-xs text-[#7A869A] dark:text-slate-400">Actualmente no hay reportes de mal comportamiento registrados en la base de datos.</p>
                                 </div>
                             ) : (
                                 adminReports.map((report) => (
-                                    <div key={report.id} className="bg-[#F4F5F7] dark:bg-[#0E1624] rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2.5">
+                                    <div key={report.id} className="bg-[#F4F5F7] dark:bg-[#0E1624]/60 rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2.5">
                                         <div className="flex items-center justify-between gap-2 flex-wrap">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[11px] font-extrabold px-2 py-0.5 rounded bg-red-500/10 text-[#E5484D] dark:text-[#FF6369]">
+                                                <span className="text-[11px] font-extrabold px-2 py-0.5 rounded bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]">
                                                     Reportado: {report.reported_user_alias || 'Anónimo'}
                                                 </span>
                                                 <span className="text-[10px] text-[#7A869A] dark:text-slate-400 font-semibold">
@@ -1608,7 +1537,7 @@ export default function Forum() {
                                                 </span>
                                                 <button
                                                     onClick={() => handleDeleteReportAdmin(report.id)}
-                                                    className="text-xs text-[#E5484D] hover:underline font-bold cursor-pointer flex items-center gap-1 ml-2"
+                                                    className="text-xs text-[#BF2600] dark:text-[#FF6369] hover:underline font-bold cursor-pointer flex items-center gap-1 ml-2 bg-transparent border-none"
                                                     title="Eliminar o descartar reporte"
                                                 >
                                                     <Trash2 size={13} /> Descartar
@@ -1624,17 +1553,17 @@ export default function Forum() {
                             )}
                         </div>
 
-                        <div className="p-4 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex justify-end shrink-0">
-                            <button
-                                type="button"
+                        <div className="flex justify-end pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                variant="primary"
                                 onClick={() => setIsAdminReportsModalOpen(false)}
-                                className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition cursor-pointer"
+                                size="sm"
                             >
                                 Cerrar Panel
-                            </button>
+                            </Button>
                         </div>
                     </div>
-                </div>
+                </Modal>
             )}
 
         </div>

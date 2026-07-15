@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff, Clock } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, EyeOff } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
@@ -64,16 +64,9 @@ export default function Visualizer() {
     const [showGuia, setShowGuia] = useState(() => {
         return !localStorage.getItem('pemtree_guia_visto');
     });
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const viewParam = searchParams.get('view');
     const activeView = (viewParam === 'planner' || viewParam === 'schedule') ? viewParam : 'graph';
-    const setActiveView = (view) => {
-        if (view === 'graph') {
-            setSearchParams({});
-        } else {
-            setSearchParams({ view });
-        }
-    };
 
     const [scheduleTimestamps, setScheduleTimestamps] = useState({});
     const [schedulePeriod, setSchedulePeriod] = useState(() => {

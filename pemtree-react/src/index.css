@@ -385,7 +385,7 @@ html.dark .planner-pool-count {
     margin: 8px 10px;
     padding: 6px 10px;
     border: 1px solid #DFE1E6;
-    border-radius: 6px;
+    border-radius: 12px;
     background: #FAFBFC;
 }
 html.dark .planner-pool-search {
@@ -548,7 +548,7 @@ html.dark .planner-year-separator {
     min-width: 280px;
     max-width: 320px;
     flex-shrink: 0;
-    border-radius: 10px;
+    border-radius: 16px;
     border: 1px solid #DFE1E6;
     background: #fff;
     transition: border-color 0.15s, box-shadow 0.15s;
@@ -1746,12 +1746,12 @@ html.dark .schedule-container {
     --text-primary: #f1f5f9;
     --text-secondary: #cbd5e1;
     --text-muted: #94a3b8;
-    --bg-primary: #0E1624;
-    --bg-secondary: #1c2636;
-    --bg-elevated: #1c2636;
+    --bg-primary: #1C2636;
+    --bg-secondary: #0E1624;
+    --bg-elevated: #2D333B;
     --bg-overlay: #0E1624;
-    --border: #334155;
-    --border-subtle: #334155;
+    --border: #3E4C5E;
+    --border-subtle: #3E4C5E;
 }
 
 /* Toolbar */
@@ -1762,7 +1762,7 @@ html.dark .schedule-container {
     padding: 0.5rem 0.75rem;
     background: var(--bg-secondary);
     border: 1px solid var(--border);
-    border-radius: 8px;
+    border-radius: 16px;
     flex-wrap: wrap;
     gap: 0.5rem;
 }
@@ -1834,7 +1834,7 @@ html.dark .schedule-count-lab {
     gap: 0.25rem;
     background: var(--bg-primary);
     padding: 0.25rem;
-    border-radius: 6px;
+    border-radius: 12px;
     border: 1px solid var(--border);
 }
 
@@ -1842,7 +1842,7 @@ html.dark .schedule-count-lab {
     padding: 0.35rem 0.75rem;
     border: none;
     background: transparent;
-    border-radius: 4px;
+    border-radius: 8px;
     font-size: 0.7rem;
     font-weight: 500;
     color: var(--text-secondary);
@@ -1883,7 +1883,7 @@ html.dark .schedule-period-tab.active {
     padding: 0.4rem 0.6rem;
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 12px;
 }
 
 .schedule-search input {
@@ -1907,7 +1907,7 @@ html.dark .schedule-search input {
     padding: 0.4rem 0.6rem;
     background: var(--bg-primary);
     border: 1px solid var(--border);
-    border-radius: 6px;
+    border-radius: 12px;
     font-size: 0.8rem;
     color: var(--text-primary);
     cursor: pointer;
