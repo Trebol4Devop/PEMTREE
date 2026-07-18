@@ -1133,7 +1133,7 @@ export default function Planner({ currentPensum }) {
             <Modal
                 isOpen={showShareModal}
                 onClose={() => { setShowShareModal(false); setLinkCopied(false); }}
-                title="📤 Compartir y Exportar tu Planificación"
+                title="Compartir y Exportar tu Planificación"
             >
                 <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-4">
                     <p className="leading-relaxed">
@@ -1182,7 +1182,7 @@ export default function Planner({ currentPensum }) {
                     {/* Copiar enlace directo */}
                     <div className="pt-2">
                         <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                            🔗 Enlace de acceso directo a tu planificación:
+                            Enlace de acceso directo a tu planificación:
                         </label>
                         <div className="flex gap-2">
                             <input
@@ -1229,13 +1229,13 @@ export default function Planner({ currentPensum }) {
             <Modal
                 isOpen={showImportModal}
                 onClose={() => { setShowImportModal(false); setSharedPlanData(null); }}
-                title="📥 Importar o Cargar Planificación"
+                title="Importar o Cargar Planificación"
             >
                 {sharedPlanData ? (
                     <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-4">
                         <div className="p-4 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] border border-[#0052CC]/30">
                             <h4 className="font-bold text-sm text-[#0052CC] dark:text-[#4C9AFF] flex items-center gap-2 mb-1">
-                                <Check size={18} /> ¡Planificación encontrada lista para importar!
+                                <Check size={18} /> Planificación encontrada lista para importar
                             </h4>
                             <p className="text-xs text-[#172B4D] dark:text-slate-200 mt-1">
                                 <strong>Carrera:</strong> {sharedPlanData.pk || currentPensum}<br />
@@ -1253,13 +1253,13 @@ export default function Planner({ currentPensum }) {
                                 variant="secondary"
                                 onClick={() => handleConfirmImport(false)}
                             >
-                                ➕ Sumar a mis líneas actuales
+                                Sumar a mis líneas actuales
                             </Button>
                             <Button
                                 variant="primary"
                                 onClick={() => handleConfirmImport(true)}
                             >
-                                ✅ Reemplazar mi plan actual
+                                Reemplazar mi plan actual
                             </Button>
                         </div>
                     </div>

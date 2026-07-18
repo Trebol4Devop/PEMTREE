@@ -108,7 +108,7 @@ export const uploadOrCompressImage = async (file, folder = 'comunidad') => {
                         .from(bucket)
                         .getPublicUrl(fileName);
                     if (publicUrlData && publicUrlData.publicUrl) {
-                        console.log(`✅ [Supabase Storage] Imagen subida exitosamente al bucket "${bucket}":`, publicUrlData.publicUrl);
+                        console.log(`[Supabase Storage] Imagen subida exitosamente al bucket "${bucket}":`, publicUrlData.publicUrl);
                         return publicUrlData.publicUrl;
                     }
                 } else {
@@ -120,7 +120,7 @@ export const uploadOrCompressImage = async (file, folder = 'comunidad') => {
         }
     }
 
-    console.info('ℹ️ Utilizando Data URL comprimido como alternativa de almacenamiento local.');
+    console.info('Utilizando Data URL comprimido como alternativa de almacenamiento local.');
     // Retorno alternativo (Fallback robusto): Data URL Base64
     return compressedDataUrl;
 };

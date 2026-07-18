@@ -459,7 +459,7 @@ export default function WhatsAppGroups() {
             '"Física 1 - Sección B",area_comun,"Física 1",B,https://chat.whatsapp.com/ejemplo_fisica1,"Apoyo general del curso",Moderador PEMTREE'
         ].join('\n');
 
-        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
@@ -480,7 +480,7 @@ export default function WhatsAppGroups() {
         const reader = new FileReader();
         reader.onload = (evt) => {
             try {
-                const text = evt.target?.result || '';
+                const text = (evt.target?.result || '').replace(/^\uFEFF/, '');
                 if (typeof text !== 'string' || !text.trim()) {
                     setCsvError('El archivo CSV está vacío.');
                     return;
