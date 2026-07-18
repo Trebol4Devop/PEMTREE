@@ -1539,11 +1539,11 @@ export default function ScheduleBuilder() {
         <div className="schedule-container">
         {showWarning && (
             <WarningBanner
-                onDismiss={dismissWarning}
+                onClose={dismissWarning}
                 className="mb-3"
             >
                 <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
-                <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline font-extrabold text-[#BF2600] dark:text-[#FF6369]">portal.ingenieria.usac.edu.gt</a>.</span>
+                <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
             </WarningBanner>
         )}
         <div className="schedule-toolbar bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-100 transition-colors duration-300">

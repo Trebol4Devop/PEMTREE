@@ -829,11 +829,11 @@ export default function Planner({ currentPensum }) {
 
             {showWarning && (
                 <WarningBanner
-                    onDismiss={dismissWarning}
+                    onClose={dismissWarning}
                     className="mb-3"
                 >
                     <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
-                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline font-extrabold text-[#BF2600] dark:text-[#FF6369]">portal.ingenieria.usac.edu.gt</a>.</span>
+                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
                 </WarningBanner>
             )}
 

@@ -230,14 +230,12 @@ export default function WelcomeModal({ isDarkMode, guiaSrc, onClose }) {
 
         {activeTab === 'descargo' && (
           <div className="space-y-4">
-            <WarningBanner
-              message={
-                <div>
-                  <h3 className="font-bold text-sm mb-1">{DISCLAIMER.title}</h3>
-                  <p className="text-xs sm:text-sm leading-relaxed">{DISCLAIMER.text}</p>
-                </div>
-              }
-            />
+            <WarningBanner>
+              <div>
+                <h3 className="font-bold text-sm mb-1">{DISCLAIMER.title}</h3>
+                <p className="text-xs sm:text-sm leading-relaxed">{DISCLAIMER.text}</p>
+              </div>
+            </WarningBanner>
 
             <div className={`rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] ${isDarkMode ? 'bg-[#1C2636]' : 'bg-[#F4F5F7]'}`}>
               <h4 className={`font-bold text-sm mb-2.5 ${isDarkMode ? 'text-white' : 'text-[#172B4D]'}`}>Lo que debes saber:</h4>
