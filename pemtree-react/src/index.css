@@ -2635,14 +2635,20 @@ html.dark .schedule-error {
 }
 
 .schedule-btn:hover:not(:disabled) {
-    background: var(--primary);
-    border-color: var(--border);
+    background: #0052CC;
+    border-color: #0052CC;
     color: white;
 }
 
 .schedule-btn.cluster-active {
-    background: var(--primary);
-    border-color: var(--primary);
+    background: #0052CC;
+    border-color: #0052CC;
+    color: white;
+}
+
+.schedule-btn.cluster-active:hover:not(:disabled) {
+    background: #0747A6;
+    border-color: #0747A6;
     color: white;
 }
 
@@ -2656,11 +2662,20 @@ html.dark .schedule-btn {
     color: var(--text-primary);
 }
 
-html.dark .schedule-btn:hover:not(:disabled),
+html.dark .schedule-btn:hover:not(:disabled) {
+    background: #4C9AFF;
+    border-color: #4C9AFF;
+    color: #0E1624;
+}
 html.dark .schedule-btn.cluster-active {
-    background: var(--primary);
-    border-color: var(--border);
-    color: white;
+    background: #4C9AFF;
+    border-color: #4C9AFF;
+    color: #0E1624;
+}
+html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
+    background: #2684FF;
+    border-color: #2684FF;
+    color: #0E1624;
 }
 
 /* ── Schedule toolbar: mobile layout ────────────────────────── */

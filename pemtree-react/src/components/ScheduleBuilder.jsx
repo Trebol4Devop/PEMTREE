@@ -5,6 +5,7 @@ import {
     minutos as mins,
     calcularTraslapeMinutos,
     esLaboratorio,
+    esTraslapePermitido,
     validarHorarioCompleto,
     formatearHorario,
         formatearDuracion
@@ -227,9 +228,9 @@ export default function ScheduleBuilder() {
                     const b = cursosDelDia[j];
                     const t = calcularTraslapeMinutos(a, b);
                     if (t <= 0) continue;
-                    const aLab = esLaboratorio(a);
-                    const bLab = esLaboratorio(b);
-                    if (!(aLab || bLab) && t >= 50) continue;
+                    const aFlex = esTraslapePermitido(a);
+                    const bFlex = esTraslapePermitido(b);
+                    if (!(aFlex || bFlex) && t >= 50) continue;
                     const iniMin = Math.min(mins(a.inicio), mins(b.inicio));
                     const finMin = Math.max(mins(a.final), mins(b.final));
                     const overlapStart = Math.max(mins(a.inicio), mins(b.inicio));
@@ -261,7 +262,7 @@ export default function ScheduleBuilder() {
         const others = allSelected.filter(s => s !== seccion && s.codigo !== seccion.codigo);
 
         for (const other of others) {
-            if (esLaboratorio(seccion) || esLaboratorio(other)) continue;
+            if (esTraslapePermitido(seccion) || esTraslapePermitido(other)) continue;
 
             const traslape = calcularTraslapeMinutos(seccion, other);
             if (traslape >= 50) {
@@ -276,7 +277,7 @@ export default function ScheduleBuilder() {
         }
 
         if (isVacaciones) {
-            const noLabs = allSelected.filter(s => !esLaboratorio(s) && s !== seccion);
+            const noLabs = allSelected.filter(s => !esTraslapePermitido(s) && s !== seccion);
             for (const other of noLabs) {
                 if (calcularTraslapeMinutos(seccion, other) > 0) {
                     return { status: 'error', reason: 'No permitido en vacaciones' };
@@ -1220,7 +1221,7 @@ export default function ScheduleBuilder() {
                     }
                 }
 
-                if (hasSameDayOverlap || span <= 2) {
+                if (hasSameDayOverlap || span <= 5) {
                     candidateRange.set(s, null);
                 } else {
                     // Collapse half of the course's slots so it gets half the height (`la mitad del tamaño`)
