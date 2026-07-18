@@ -483,7 +483,7 @@ export async function applyPensumColors(relPensumPath) {
             c.colors.text = c.colors.text || { fill: textForSecondary };
         });
 
-        console.log(`🎨 Colores aplicados desde ${colorRel}: primary=${primary}, secondary=${secondary}, text=${textForSecondary}`);
+        console.log(`Colores aplicados desde ${colorRel}: primary=${primary}, secondary=${secondary}, text=${textForSecondary}`);
         // Actualizar caché compartido para NodeRenderer
         currentPensumColors = { primary, secondary };
         // Loguear el primer curso para verificar los cambios

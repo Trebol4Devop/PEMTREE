@@ -2,10 +2,14 @@ import { useState, useEffect, useCallback, useMemo } from 'react';
 import { 
     MessageSquare, Plus, Search, ThumbsUp, User, ShieldCheck, 
     Send, LogOut, ChevronDown, BookOpen, Clock, Trash2, Edit3,
-    AlertCircle, Info, CheckCircle2, AlertTriangle, Flag, CornerDownRight
+    AlertCircle, Info, CheckCircle2, AlertTriangle, Flag, CornerDownRight,
+    Image as ImageIcon, X
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { moderateSubmission, checkCooldown, updateCooldown } from '../lib/moderation';
+import { checkCooldown, updateCooldown, formatUserError } from '../lib/moderation';
+import { sendFormspreeNotification } from '../lib/notification';
+import { uploadOrCompressImage } from '../lib/imageUtils';
+import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
 
 const CATEGORIES = [
     { id: 'todos', label: 'Todas las áreas' },
@@ -85,6 +89,7 @@ const CommentLayerItem = ({
     depth = 0,
     user,
     isAdmin,
+    canModerate,
     reportedUserIds,
     openReplyBoxes,
     setOpenReplyBoxes,
@@ -97,132 +102,114 @@ const CommentLayerItem = ({
     showAlert
 }) => {
     const isReplying = openReplyBoxes[comment.id] || false;
+    const isOwner = user && comment.user_id === user.id;
 
     return (
-        <div 
-            className={`flex flex-col gap-1.5 transition-all ${
+        <div className={`flex flex-col ${depth > 0 ? 'ml-3 pl-2.5 border-l-2 border-[#DFE1E6] dark:border-[#2D3A4F]' : ''}`}>
+            {/* Main comment pill container */}
+            <div className={`p-2.5 rounded-xl transition text-xs flex flex-col gap-1.5 ${
                 depth === 0 
-                    ? 'bg-white dark:bg-[#1C2636] rounded-xl p-3.5 border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 shadow-2xs' 
-                    : 'mt-2.5 ml-3 sm:ml-5 pl-3 sm:pl-4 border-l-2 border-[#0052CC]/70 dark:border-[#4C9AFF]/70 bg-[#F4F5F7]/90 dark:bg-[#0E1624]/70 rounded-r-xl p-3 border-y border-r border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50'
-            }`}
-        >
-            <div className="flex items-center justify-between gap-2 flex-wrap">
-                <div className="flex items-center gap-1.5 flex-wrap">
-                    <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">
-                        {comment.author_alias}
-                    </span>
-                    {depth === 6 && comment.parent_id && (() => {
-                        const parentComment = (post?.comments || []).find(c => c.id === comment.parent_id);
-                        if (parentComment && parentComment.parent_id) {
-                            let curr = parentComment;
-                            let d = 0;
-                            while (curr && curr.parent_id && d < 10) {
-                                curr = (post?.comments || []).find(c => c.id === curr.parent_id);
-                                d++;
-                            }
-                            if (d >= 5) {
-                                return (
-                                    <span className="text-[10px] text-[#7A869A] dark:text-slate-400 font-semibold flex items-center gap-0.5">
-                                        <span>↳ a {parentComment.author_alias}</span>
-                                    </span>
-                                );
-                            }
-                        }
-                        return null;
-                    })()}
-                </div>
-                <div className="flex items-center gap-1.5">
-                    <span className="text-[10px] text-[#7A869A] dark:text-slate-500 font-semibold">
-                        {formatTimeAgo(comment.created_at)}
-                    </span>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            if (!user) {
-                                showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para responder a un comentario.', 'warning');
-                                return;
-                            }
-                            setOpenReplyBoxes(prev => ({ ...prev, [comment.id]: !prev[comment.id] }));
-                        }}
-                        className={`p-1 rounded-md transition cursor-pointer flex items-center gap-1 text-[10px] font-bold ${
-                            isReplying 
-                                ? 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]' 
-                                : 'text-[#0052CC] hover:bg-[#DEEBFF] dark:text-[#4C9AFF] dark:hover:bg-[#0C295E]'
-                        }`}
-                        title="Comentar sobre esta respuesta"
-                    >
-                        <CornerDownRight size={12} />
-                        <span>Responder</span>
-                    </button>
-                    {user && (comment.user_id === user.id || isAdmin) && (
-                        <button
-                            onClick={(e) => handleDeleteComment(post.id, comment.id, e)}
-                            className={`p-0.5 rounded transition cursor-pointer ${isAdmin && comment.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
-                            title={isAdmin && comment.user_id !== user.id ? "Admin: Eliminar este comentario y sus sub-capas" : "Eliminar mi comentario y sub-capas"}
-                        >
-                            <Trash2 size={13} />
-                        </button>
-                    )}
-                    {comment.user_id && (!user || comment.user_id !== user.id) && (
+                    ? 'bg-[#F4F5F7] dark:bg-[#1E293B]/70 border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 shadow-2xs' 
+                    : depth === 1
+                        ? 'bg-white dark:bg-[#0E1624]/60 border border-[#DFE1E6]/40 dark:border-[#2D3A4F]/40'
+                        : 'bg-[#F4F5F7]/50 dark:bg-[#1E293B]/40'
+            }`}>
+                <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-1.5">
+                        <span className="font-semibold text-[#172B4D] dark:text-[#E2E8F0] tracking-tight flex items-center gap-1">
+                            {comment.author_alias || 'Estudiante'}
+                            {comment.user_id === post.user_id && (
+                                <span className="bg-[#0052CC]/10 text-[#0052CC] dark:bg-[#4C9AFF]/20 dark:text-[#4C9AFF] text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">
+                                    Autor
+                                </span>
+                            )}
+                        </span>
+                    </div>
+                    <div className="flex items-center gap-1.5">
+                        <span className="text-[10px] text-[#7A869A] dark:text-slate-500 font-semibold">
+                            {formatTimeAgo(comment.created_at)}
+                        </span>
                         <button
                             onClick={(e) => {
                                 e.stopPropagation();
-                                handleOpenReportModal(comment.user_id, comment.author_alias);
+                                if (!user) {
+                                    showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para responder a un comentario.', 'warning');
+                                    return;
+                                }
+                                setOpenReplyBoxes(prev => ({ ...prev, [comment.id]: !prev[comment.id] }));
                             }}
-                            className={`p-0.5 rounded transition cursor-pointer ml-0.5 ${
-                                reportedUserIds.includes(comment.user_id)
-                                    ? 'text-[#D97706] dark:text-[#FBBF24] bg-amber-500/10 hover:bg-amber-500/20'
-                                    : 'text-[#7A869A] hover:text-[#D97706] dark:hover:text-[#FBBF24]'
+                            className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer ${
+                                isReplying 
+                                    ? 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]' 
+                                    : 'text-[#0052CC] hover:bg-[#DEEBFF] dark:text-[#4C9AFF] dark:hover:bg-[#0C295E]'
                             }`}
-                            title={
-                                reportedUserIds.includes(comment.user_id)
-                                    ? "Ya has reportado a este usuario (Solo se permite 1 reporte)"
-                                    : "Reportar usuario por mal comportamiento"
-                            }
+                            title="Comentar sobre esta respuesta"
                         >
-                            <Flag size={13} />
+                            <CornerDownRight size={12} />
+                            <span>Responder</span>
                         </button>
-                    )}
-                </div>
-            </div>
-            <p className="text-xs text-[#172B4D] dark:text-slate-200 leading-relaxed whitespace-pre-wrap">
-                {comment.content}
-            </p>
-
-            {/* Inline Reply Box for this comment */}
-            {isReplying && (
-                <div className="mt-2 pt-2.5 border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 flex flex-col gap-2 bg-[#FAFBFC] dark:bg-[#1C2636] p-3 rounded-xl animate-in fade-in duration-150 shadow-xs border border-[#0052CC]/20 dark:border-[#4C9AFF]/20">
-                    <div className="flex items-center justify-between">
-                        <span className="text-[11px] font-extrabold text-[#0052CC] dark:text-[#4C9AFF] flex items-center gap-1.5">
-                            <CornerDownRight size={13} /> Responder a {comment.author_alias}:
-                        </span>
-                        <button 
-                            onClick={() => setOpenReplyBoxes(prev => ({ ...prev, [comment.id]: false }))}
-                            className="text-[10px] text-[#7A869A] hover:text-[#E5484D] transition cursor-pointer font-bold px-1.5 py-0.5 rounded hover:bg-red-500/10"
-                        >
-                            ✕ Cancelar
-                        </button>
+                        {(isOwner || canModerate) && (
+                            <button
+                                onClick={(e) => handleDeleteComment(post.id, comment.id, e)}
+                                className={`p-0.5 rounded transition cursor-pointer ${canModerate && !isOwner ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
+                                title={canModerate && !isOwner ? "Moderación: Eliminar comentario con justificación" : "Eliminar mi comentario y sub-capas"}
+                            >
+                                <Trash2 size={13} />
+                            </button>
+                        )}
+                        {comment.user_id && (!user || comment.user_id !== user.id) && (
+                            <button
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    handleOpenReportModal(comment.user_id, comment.author_alias);
+                                }}
+                                className={`p-0.5 rounded transition cursor-pointer ml-0.5 ${
+                                    reportedUserIds.includes(comment.user_id)
+                                        ? 'text-amber-500 cursor-not-allowed'
+                                        : 'text-[#7A869A] hover:text-amber-500'
+                                }`}
+                                title={reportedUserIds.includes(comment.user_id) ? "Usuario reportado" : "Reportar usuario"}
+                                disabled={reportedUserIds.includes(comment.user_id)}
+                            >
+                                <Flag size={12} />
+                            </button>
+                        )}
                     </div>
-                    <div className="flex items-center gap-2">
+                </div>
+
+                {/* Content */}
+                <p className="text-[#172B4D] dark:text-[#CBD5E1] whitespace-pre-line leading-relaxed font-normal mt-0.5">
+                    {comment.content}
+                </p>
+
+                {/* Reply Form */}
+                {isReplying && (
+                    <div className="mt-2 pt-2 border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 flex items-center gap-1.5">
                         <input
                             type="text"
-                            placeholder={`Escribe tu sub-comentario para ${comment.author_alias}...`}
+                            placeholder="Escribe tu respuesta a este comentario..."
                             value={commentReplyTexts[comment.id] || ''}
                             onChange={(e) => setCommentReplyTexts(prev => ({ ...prev, [comment.id]: e.target.value }))}
-                            onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(post.id, comment.id); }}
-                            className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-1.5 text-xs text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
+                            onKeyDown={(e) => {
+                                if (e.key === 'Enter' && !e.shiftKey) {
+                                    e.preventDefault();
+                                    handleAddComment(post.id, comment.id);
+                                }
+                            }}
+                            className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-lg px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-white placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] transition"
+                            autoFocus
                         />
                         <button
                             onClick={() => handleAddComment(post.id, comment.id)}
-                            className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white p-2 rounded-xl transition cursor-pointer shrink-0 shadow-xs font-bold flex items-center gap-1 text-xs px-3"
+                            className="bg-[#0052CC] hover:bg-[#003D99] text-white px-2.5 py-1.5 rounded-lg font-semibold text-xs transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
                             title="Enviar respuesta en capa"
                         >
                             <Send size={13} />
                             <span>Enviar</span>
                         </button>
                     </div>
-                </div>
-            )}
+                )}
+            </div>
 
             {/* Render nested children layers */}
             {comment.children && comment.children.length > 0 && (
@@ -235,6 +222,7 @@ const CommentLayerItem = ({
                             depth={Math.min(6, depth + 1)}
                             user={user}
                             isAdmin={isAdmin}
+                            canModerate={canModerate}
                             reportedUserIds={reportedUserIds}
                             openReplyBoxes={openReplyBoxes}
                             setOpenReplyBoxes={setOpenReplyBoxes}
@@ -255,7 +243,9 @@ const CommentLayerItem = ({
 
 export default function Forum() {
     const [user, setUser] = useState(null);
-    const isAdmin = user && user.id === ADMIN_UID;
+    const [isAdmin, setIsAdmin] = useState(false);
+    const [isModerator, setIsModerator] = useState(false);
+    const canModerate = isAdmin || isModerator;
     const [posts, setPosts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [userLikes, setUserLikes] = useState([]); // Array con los IDs de posts a los que el usuario dio like
@@ -274,6 +264,7 @@ export default function Forum() {
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [customAlert, setCustomAlert] = useState({ isOpen: false, title: '', message: '', type: 'info' });
     const [customConfirm, setCustomConfirm] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+    const [customPrompt, setCustomPrompt] = useState({ isOpen: false, title: '', message: '', value: '', placeholder: '', onSubmit: null });
 
     const showAlert = useCallback((title, message, type = 'info') => {
         setCustomAlert({ isOpen: true, title, message, type });
@@ -282,12 +273,18 @@ export default function Forum() {
     const showConfirm = useCallback((title, message, onConfirm) => {
         setCustomConfirm({ isOpen: true, title, message, onConfirm });
     }, []);
+
+    const showPrompt = useCallback((title, message, placeholder, onSubmit) => {
+        setCustomPrompt({ isOpen: true, title, message, value: '', placeholder, onSubmit });
+    }, []);
     
     // New post form
     const [newTitle, setNewTitle] = useState('');
     const [newCategory, setNewCategory] = useState('prerrequisitos');
     const [newCarrera, setNewCarrera] = useState('sistemas');
     const [newContent, setNewContent] = useState('');
+    const [newImageUrl, setNewImageUrl] = useState('');
+    const [isCompressingImg, setIsCompressingImg] = useState(false);
     
     // Profile / Pseudonym state
     const [savedAlias, setSavedAlias] = useState(() => localStorage.getItem('pemtree_forum_alias') || '');
@@ -426,6 +423,12 @@ export default function Forum() {
             setReportedUserIds(prev => [...prev, reportModal.reportedUserId]);
             setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' });
             if (isAdmin) fetchAdminReports();
+            sendFormspreeNotification({
+                tipo_evento: 'REPORTE EN FORO DE DISCUSIÓN',
+                a_quien: `Usuario reportado: "${reportModal.reportedUserAlias}" (ID: ${reportModal.reportedUserId})`,
+                por_quien: user?.email || user?.id || 'Estudiante',
+                porque: reasonText
+            });
             showAlert('Reporte enviado con éxito', `Hemos recibido tu reporte sobre "${reportModal.reportedUserAlias}". Nuestro equipo de moderación revisará su comportamiento. Gracias por ayudar a mantener la comunidad segura.`, 'success');
         } catch {
             showAlert('Error al enviar reporte', 'No se pudo procesar tu reporte. Por favor, intenta de nuevo en unos momentos.', 'error');
@@ -462,11 +465,35 @@ export default function Forum() {
         }
     }, []);
 
+    const checkUserRoles = useCallback(async (sessionUser) => {
+        setUser(sessionUser ?? null);
+        let isAdminUser = sessionUser?.id === ADMIN_UID || sessionUser?.email === 'emanu@gmail.com';
+        let isModUser = Boolean(
+            isAdminUser ||
+            sessionUser?.user_metadata?.role === 'moderator' ||
+            sessionUser?.user_metadata?.is_moderator === true ||
+            localStorage.getItem('pemtree_moderator') === 'true'
+        );
+        if (sessionUser && isSupabaseConfigured && supabase) {
+            try {
+                const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', sessionUser.id).maybeSingle();
+                if (roleData?.role === 'admin') {
+                    isAdminUser = true;
+                    isModUser = true;
+                } else if (roleData?.role === 'moderator') {
+                    isModUser = true;
+                }
+            } catch { /* ignorar si la tabla aún no existe */ }
+        }
+        setIsAdmin(Boolean(isAdminUser));
+        setIsModerator(Boolean(isModUser));
+    }, []);
+
     useEffect(() => {
         if (isSupabaseConfigured && supabase) {
             supabase.auth.getSession().then(({ data: { session } }) => {
                 const u = session?.user || null;
-                setUser(u);
+                checkUserRoles(u);
                 if (u) {
                     fetchUserLikes(u.id);
                     fetchUserReports(u.id);
@@ -477,11 +504,11 @@ export default function Forum() {
 
             const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
                 const u = session?.user || null;
-                setUser(u);
+                checkUserRoles(u);
                 if (u) {
                     fetchUserLikes(u.id);
                     fetchUserReports(u.id);
-                    if (u.id === ADMIN_UID) {
+                    if (u.id === ADMIN_UID || isAdmin) {
                         fetchAdminReports();
                     } else {
                         setAdminReports([]);
@@ -534,13 +561,7 @@ export default function Forum() {
         const trimmed = profileInputText.trim();
         if (!trimmed) return;
 
-        // Moderar y censurar groserías en el alias antes de guardarlo
-        const modResult = moderateSubmission({ title: trimmed, content: '' });
-        if (!modResult.valid) {
-            showAlert('Seudónimo no válido', modResult.reason, 'error');
-            return;
-        }
-        const cleanAlias = modResult.censoredTitle;
+        const cleanAlias = trimmed;
 
         localStorage.setItem('pemtree_forum_alias', cleanAlias);
         setSavedAlias(cleanAlias);
@@ -574,11 +595,14 @@ export default function Forum() {
 
     const activeAlias = useMemo(() => {
         if (savedAlias && savedAlias.trim()) return savedAlias.trim();
-        if (user && user.user_metadata?.full_name) {
-            const initials = user.user_metadata.full_name.split(' ').map(n => n[0]).join('').toUpperCase();
+        const name = user?.user_metadata?.full_name || user?.user_metadata?.name || user?.user_metadata?.display_name;
+        if (name && name.trim()) {
+            const initials = name.trim().split(/\s+/).map(n => n[0]).join('').toUpperCase();
             const idCode = user.id ? Math.abs(user.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 900 + 100 : 482;
             return `Estudiante ${initials} #${idCode}`;
         }
+        const idCode = user?.id ? Math.abs(user.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 900 + 100 : 482;
+        return `Estudiante #${idCode}`;
     }, [savedAlias, user]);
 
     const handleCreatePost = async (e) => {
@@ -596,19 +620,13 @@ export default function Forum() {
             return;
         }
 
-        // 2. Moderación de contenido (censura de groserías, links prohibidos y spam)
-        const modResult = moderateSubmission({ title: newTitle.trim(), content: newContent.trim() });
-        if (!modResult.valid) {
-            showAlert('Contenido no permitido', modResult.reason, 'error');
-            return;
-        }
-
         const newPostObj = {
-            title: modResult.censoredTitle,
+            title: newTitle.trim(),
             category: newCategory,
             carrera: newCarrera,
-            content: modResult.censoredContent,
-            author_alias: activeAlias,
+            content: newContent.trim(),
+            image_url: newImageUrl.trim() || null,
+            author_alias: activeAlias || 'Estudiante Anónimo',
             likes: 0,
             user_id: user?.id || null,
             created_at: new Date().toISOString()
@@ -626,7 +644,8 @@ export default function Forum() {
                 .select();
 
             if (error) {
-                showAlert('No se pudo publicar', 'Ocurrió un problema temporal al guardar tu publicación. Inténtalo de nuevo en unos momentos.', 'error');
+                console.error('Error publicando post en Supabase:', error);
+                showAlert('No se pudo publicar', formatUserError(error), 'error');
                 return;
             }
 
@@ -640,10 +659,25 @@ export default function Forum() {
         }
     };
 
+    const handleImageFileSelect = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            setIsCompressingImg(true);
+            const imageUrl = await uploadOrCompressImage(file, 'forum');
+            setNewImageUrl(imageUrl);
+        } catch (err) {
+            showAlert('Error al adjuntar imagen', err.message || 'No se pudo procesar la imagen.', 'error');
+        } finally {
+            setIsCompressingImg(false);
+        }
+    };
+
     const resetModal = () => {
         setNewTitle('');
         setNewContent('');
-        setNewCarrera('sistemas');
+        setNewCarrera('todas');
+        setNewImageUrl('');
         setIsCreateModalOpen(false);
     };
 
@@ -686,38 +720,69 @@ export default function Forum() {
         if (!user) return;
         
         const targetPost = posts.find(p => p.id === postId);
-        const canDelete = isAdmin || targetPost?.user_id === user.id;
+        const canDelete = canModerate || targetPost?.user_id === user.id;
         if (!canDelete) {
             showAlert('Acceso denegado', 'No tienes permisos para eliminar esta publicación.', 'error');
             return;
         }
 
-        showConfirm(
-            isAdmin && targetPost?.user_id !== user.id ? 'Moderador: ¿Eliminar publicación?' : '¿Eliminar publicación?',
-            isAdmin && targetPost?.user_id !== user.id 
-                ? '¿Confirmas la eliminación administrativa de esta publicación y todas sus respuestas?'
-                : '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas? Esta acción no se puede deshacer.',
-            async () => {
-                if (isSupabaseConfigured && supabase) {
-                    try {
+        const isModDeletingOther = canModerate && targetPost?.user_id !== user.id;
+
+        const executeDelete = async (justification = null) => {
+            if (isModDeletingOther && user.id !== ADMIN_UID && (!justification || !justification.trim())) {
+                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+                return;
+            }
+
+            if (isSupabaseConfigured && supabase) {
+                try {
+                    if (isModDeletingOther && justification) {
+                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
+                            p_tabla: 'posts',
+                            p_item_id: postId,
+                            p_justificacion: justification.trim()
+                        });
+                        if (modErr) throw modErr;
+                        sendFormspreeNotification({
+                            tipo_evento: 'MODERADOR ELIMINÓ POST DEL FORO',
+                            a_quien: `Publicación: "${targetPost?.title}" (Autor original: ${targetPost?.author_alias})`,
+                            por_quien: user?.email || user?.id || 'Moderador/Admin',
+                            porque: justification.trim()
+                        });
+                    } else {
                         let query = supabase.from('posts').delete().eq('id', postId);
-                        if (!isAdmin) {
+                        if (!canModerate) {
                             query = query.eq('user_id', user.id);
                         }
                         const { error } = await query;
-                        if (error) {
-                            showAlert('No se pudo eliminar', 'Ocurrió un problema al intentar eliminar la publicación. Inténtalo más tarde.', 'error');
-                            return;
-                        }
-                        await fetchSupabasePosts();
-                    } catch {
-                        showAlert('No se pudo eliminar', 'Ocurrió un problema al procesar la solicitud de eliminación. Inténtalo de nuevo.', 'error');
-                        return;
+                        if (error) throw error;
                     }
+                    await fetchSupabasePosts();
+                } catch (err) {
+                    console.error('Error al eliminar post:', err);
+                    showAlert('No se pudo eliminar', formatUserError(err), 'error');
+                    return;
                 }
-                setPosts(prev => prev.filter(p => p.id !== postId));
             }
-        );
+            setPosts(prev => prev.filter(p => p.id !== postId));
+        };
+
+        if (isModDeletingOther && user.id !== ADMIN_UID) {
+            showPrompt(
+                'Moderación: Justificación obligatoria',
+                `Estás eliminando la publicación "${targetPost?.title}" de ${targetPost?.author_alias}. Ingresa la razón para el registro de auditoría:`,
+                'Ej: Contenido fuera de tema, spam, lenguaje ofensivo...',
+                (justificationText) => executeDelete(justificationText)
+            );
+        } else {
+            showConfirm(
+                isModDeletingOther ? 'Admin: ¿Eliminar publicación?' : '¿Eliminar publicación?',
+                isModDeletingOther 
+                    ? '¿Confirmas la eliminación administrativa de esta publicación y todas sus respuestas?'
+                    : '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas? Esta acción no se puede deshacer.',
+                () => executeDelete(null)
+            );
+        }
     };
 
     const handleDeleteComment = async (postId, commentId, e) => {
@@ -726,56 +791,87 @@ export default function Forum() {
         
         const targetPost = posts.find(p => p.id === postId);
         const targetComment = targetPost?.comments?.find(c => c.id === commentId);
-        const canDeleteComment = isAdmin || targetComment?.user_id === user.id;
+        const canDeleteComment = canModerate || targetComment?.user_id === user.id;
         if (!canDeleteComment) {
             showAlert('Acceso denegado', 'No tienes permisos para eliminar este comentario.', 'error');
             return;
         }
 
-        showConfirm(
-            isAdmin && targetComment?.user_id !== user.id ? 'Moderador: ¿Eliminar comentario y respuestas?' : '¿Eliminar comentario y respuestas?',
-            isAdmin && targetComment?.user_id !== user.id 
-                ? '¿Confirmas la eliminación administrativa de este comentario y de TODAS sus respuestas anidadas en la comunidad?'
-                : '¿Estás seguro de que deseas eliminar permanentemente tu comentario junto con todas las respuestas que dependen de él? Esta acción no se puede deshacer.',
-            async () => {
-                const idsToDelete = new Set([commentId]);
-                let added = true;
-                while (added) {
-                    added = false;
-                    (targetPost?.comments || []).forEach(c => {
-                        if (c.parent_id && idsToDelete.has(c.parent_id) && !idsToDelete.has(c.id)) {
-                            idsToDelete.add(c.id);
-                            added = true;
-                        }
-                    });
-                }
-                const idsArray = Array.from(idsToDelete);
+        const isModDeletingOther = canModerate && targetComment?.user_id !== user.id;
 
-                if (isSupabaseConfigured && supabase) {
-                    try {
+        const executeDelete = async (justification = null) => {
+            if (isModDeletingOther && user.id !== ADMIN_UID && (!justification || !justification.trim())) {
+                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+                return;
+            }
+
+            const idsToDelete = new Set([commentId]);
+            let added = true;
+            while (added) {
+                added = false;
+                (targetPost?.comments || []).forEach(c => {
+                    if (c.parent_id && idsToDelete.has(c.parent_id) && !idsToDelete.has(c.id)) {
+                        idsToDelete.add(c.id);
+                        added = true;
+                    }
+                });
+            }
+            const idsArray = Array.from(idsToDelete);
+
+            if (isSupabaseConfigured && supabase) {
+                try {
+                    if (isModDeletingOther && justification) {
+                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
+                            p_tabla: 'comments',
+                            p_item_id: commentId,
+                            p_justificacion: justification.trim()
+                        });
+                        if (modErr) throw modErr;
+                        sendFormspreeNotification({
+                            tipo_evento: 'MODERADOR ELIMINÓ COMENTARIO DEL FORO',
+                            a_quien: `Comentario de ${targetComment?.author_alias || 'Estudiante'} en post "${targetPost?.title}"`,
+                            por_quien: user?.email || user?.id || 'Moderador/Admin',
+                            porque: justification.trim()
+                        });
+                    } else {
                         let query = supabase.from('comments').delete().in('id', idsArray);
-                        if (!isAdmin) {
+                        if (!canModerate) {
                             query = query.in('id', idsArray);
                         }
                         const { error } = await query;
-                        if (error) {
-                            showAlert('No se pudo eliminar', 'Ocurrió un problema temporal al intentar eliminar el comentario. Inténtalo más tarde.', 'error');
-                            return;
-                        }
-                        await fetchSupabasePosts();
-                    } catch {
-                        showAlert('No se pudo eliminar', 'Ocurrió un inconveniente al procesar la eliminación. Por favor, inténtalo de nuevo.', 'error');
-                        return;
+                        if (error) throw error;
                     }
+                    await fetchSupabasePosts();
+                } catch (err) {
+                    console.error('Error al eliminar comentario:', err);
+                    showAlert('No se pudo eliminar', formatUserError(err), 'error');
+                    return;
                 }
-                setPosts(prev => prev.map(p => {
-                    if (p.id === postId) {
-                        return { ...p, comments: (p.comments || []).filter(c => !idsToDelete.has(c.id)) };
-                    }
-                    return p;
-                }));
             }
-        );
+            setPosts(prev => prev.map(p => {
+                if (p.id === postId) {
+                    return { ...p, comments: (p.comments || []).filter(c => !idsToDelete.has(c.id)) };
+                }
+                return p;
+            }));
+        };
+
+        if (isModDeletingOther && user.id !== ADMIN_UID) {
+            showPrompt(
+                'Moderación: Justificación obligatoria',
+                `Estás eliminando el comentario de ${targetComment?.author_alias}. Ingresa la razón para el registro de auditoría:`,
+                'Ej: Comentario ofensivo, spam, acoso...',
+                (justificationText) => executeDelete(justificationText)
+            );
+        } else {
+            showConfirm(
+                isModDeletingOther ? 'Admin: ¿Eliminar comentario?' : '¿Eliminar comentario y respuestas?',
+                isModDeletingOther 
+                    ? '¿Confirmas la eliminación administrativa de este comentario y de TODAS sus respuestas anidadas en la comunidad?'
+                    : '¿Estás seguro de que deseas eliminar permanentemente tu comentario junto con todas las respuestas que dependen de él? Esta acción no se puede deshacer.',
+                () => executeDelete(null)
+            );
+        }
     };
 
     const handleAddComment = async (postId, parentId = null) => {
@@ -794,17 +890,10 @@ export default function Forum() {
             return;
         }
 
-        // 2. Moderación de contenido (censura de groserías, links prohibidos y spam)
-        const modResult = moderateSubmission({ title: '', content: text });
-        if (!modResult.valid) {
-            showAlert('Contenido no permitido', modResult.reason, 'error');
-            return;
-        }
-
         const newCommentObj = {
             post_id: postId,
-            author_alias: activeAlias,
-            content: modResult.censoredContent,
+            author_alias: activeAlias || 'Estudiante Anónimo',
+            content: text,
             user_id: user?.id || null,
             parent_id: parentId || null,
             created_at: new Date().toISOString()
@@ -817,7 +906,8 @@ export default function Forum() {
                 .select();
 
             if (error) {
-                showAlert('No se pudo enviar el comentario', 'Ocurrió un problema técnico temporal al guardar tu comentario o respuesta. Por favor, verifica tu conexión e inténtalo más tarde.', 'error');
+                console.error('Error publicando comentario en Supabase:', error);
+                showAlert('No se pudo enviar el comentario', formatUserError(error), 'error');
                 return;
             }
             if (data && data[0]) {
@@ -945,9 +1035,10 @@ export default function Forum() {
                                     showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para poder crear una consulta o publicación en el foro.', 'warning');
                                     return;
                                 }
+                                setNewCarrera(selectedCarrera || 'todas');
                                 setIsCreateModalOpen(true);
                             }}
-                            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#79F2B8] hover:bg-[#57D99A] text-[#0A3622] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
+                            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
                         >
                             <Plus size={16} />
                             <span>Crear Publicación</span>
@@ -1041,27 +1132,20 @@ export default function Forum() {
                             <p className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando consultas de la comunidad...</p>
                         </div>
                     ) : filteredPosts.length === 0 ? (
-                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-12 border border-[#DFE1E6] dark:border-[#3E4C5E] text-center flex flex-col items-center justify-center gap-3">
-                            <div className="w-12 h-12 rounded-2xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
-                                <BookOpen size={24} />
-                            </div>
-                            <h3 className="font-bold text-base text-[#172B4D] dark:text-white">No se encontraron consultas</h3>
-                            <p className="text-xs text-[#5E6C84] dark:text-slate-400 max-w-md">
-                                Sé el primero en hacer una pregunta en esta categoría o intenta con otros términos en la búsqueda.
-                            </p>
-                            <button
-                                onClick={() => {
-                                    if (!user) {
-                                        showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para poder crear una consulta o publicación en el foro.', 'warning');
-                                        return;
-                                    }
-                                    setIsCreateModalOpen(true);
-                                }}
-                                className="mt-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs px-4 py-2.5 rounded-xl transition cursor-pointer"
-                            >
-                                Crear Nueva Publicación
-                            </button>
-                        </div>
+                        <EmptyState
+                            icon={BookOpen}
+                            title="No se encontraron consultas"
+                            description="Sé el primero en hacer una pregunta en esta categoría o intenta con otros términos en la búsqueda."
+                            actionLabel="Crear Nueva Publicación"
+                            onAction={() => {
+                                if (!user) {
+                                    showAlert('Acceso necesario', 'Debes iniciar sesión con Google en la barra superior para poder crear una consulta o publicación en el foro.', 'warning');
+                                    return;
+                                }
+                                setNewCarrera(selectedCarrera || 'todas');
+                                setIsCreateModalOpen(true);
+                            }}
+                        />
                     ) : (
                         filteredPosts.map(post => {
                             const isExpanded = expandedPostId === post.id;
@@ -1081,7 +1165,7 @@ export default function Forum() {
                                         {/* Meta Header */}
                                         <div className="flex items-center justify-between gap-3 flex-wrap">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-7 h-7 rounded-full bg-[#E0F2FE] dark:bg-[#0C4A6E] text-[#0369A1] dark:text-[#7DD3FC] flex items-center justify-center text-xs font-bold shrink-0">
+                                                <div className="w-7 h-7 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-bold shrink-0">
                                                     <User size={14} />
                                                 </div>
                                                 <span className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200">
@@ -1091,11 +1175,11 @@ export default function Forum() {
                                                 <span className="text-xs font-semibold text-[#7A869A] dark:text-slate-400">
                                                     {formatTimeAgo(post.created_at)}
                                                 </span>
-                                                {user && (post.user_id === user.id || isAdmin) && (
+                                                {user && (post.user_id === user.id || canModerate) && (
                                                     <button
                                                         onClick={(e) => handleDeletePost(post.id, e)}
-                                                        className={`p-1 rounded-lg transition cursor-pointer ml-1 ${isAdmin && post.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
-                                                        title={isAdmin && post.user_id !== user.id ? "Admin: Eliminar publicación de la comunidad" : "Eliminar mi publicación"}
+                                                        className={`p-1 rounded-lg transition cursor-pointer ml-1 ${canModerate && post.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
+                                                        title={canModerate && post.user_id !== user.id ? "Moderación: Eliminar publicación con justificación" : "Eliminar mi publicación"}
                                                     >
                                                         <Trash2 size={14} />
                                                     </button>
@@ -1148,6 +1232,17 @@ export default function Forum() {
                                             {post.content}
                                         </p>
 
+                                        {post.image_url && (
+                                            <div className="mt-2 rounded-2xl overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] max-h-96 flex items-center justify-center bg-black/5 dark:bg-black/20">
+                                                <img
+                                                    src={post.image_url}
+                                                    alt={post.title}
+                                                    className="max-h-96 w-auto object-contain rounded-xl hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                    onClick={() => window.open(post.image_url, '_blank')}
+                                                />
+                                            </div>
+                                        )}
+
                                         {/* Actions Footer */}
                                         <div className="flex items-center justify-between gap-4 pt-3 border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 mt-1">
                                             <div className="flex items-center gap-2">
@@ -1155,7 +1250,7 @@ export default function Forum() {
                                                     onClick={() => handleLike(post.id)}
                                                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition font-bold text-xs cursor-pointer border ${
                                                         userLikes.includes(post.id)
-                                                            ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/40 shadow-2xs'
+                                                            ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 shadow-sm'
                                                             : 'bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#42526E] hover:text-[#0052CC] dark:text-slate-300 dark:hover:text-[#4C9AFF] border-transparent'
                                                     }`}
                                                 >
@@ -1199,6 +1294,7 @@ export default function Forum() {
                                                                 depth={0}
                                                                 user={user}
                                                                 isAdmin={isAdmin}
+                                                                canModerate={canModerate}
                                                                 reportedUserIds={reportedUserIds}
                                                                 openReplyBoxes={openReplyBoxes}
                                                                 setOpenReplyBoxes={setOpenReplyBoxes}
@@ -1252,350 +1348,367 @@ export default function Forum() {
 
             </div>
 
-            {/* Create Post Modal */}
             {isCreateModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-lg w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
-                                    <Plus size={18} />
-                                </div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Nueva Publicación en la Comunidad</h3>
-                            </div>
-                            <button onClick={resetModal} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                ✕
-                            </button>
+                <Modal
+                    isOpen={isCreateModalOpen}
+                    onClose={resetModal}
+                    title="Nueva Publicación en la Comunidad"
+                    icon={Plus}
+                    size="md"
+                >
+                    <form onSubmit={handleCreatePost} className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <Select
+                                label="Carrera / Área"
+                                value={newCarrera}
+                                onChange={(e) => setNewCarrera(e.target.value)}
+                            >
+                                {CARRERAS.map(c => (
+                                    <option key={c.id} value={c.id}>{c.label}</option>
+                                ))}
+                            </Select>
+
+                            <Select
+                                label="Categoría temática"
+                                value={newCategory}
+                                onChange={(e) => setNewCategory(e.target.value)}
+                            >
+                                {CATEGORIES.filter(c => c.id !== 'todos').map(c => (
+                                    <option key={c.id} value={c.id}>{c.label}</option>
+                                ))}
+                            </Select>
                         </div>
 
-                        <form onSubmit={handleCreatePost} className="p-6 flex flex-col gap-4">
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                <div>
-                                    <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                        Carrera / Área
-                                    </label>
-                                    <select
-                                        value={newCarrera}
-                                        onChange={(e) => setNewCarrera(e.target.value)}
-                                        className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                    >
-                                        {CARRERAS.filter(c => c.id !== 'todas').map(c => (
-                                            <option key={c.id} value={c.id}>{c.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
+                        <Input
+                            label="Título de tu consulta o recomendación"
+                            required
+                            placeholder="Ej. ¿Opiniones de la sección A de Lenguajes Formales?"
+                            value={newTitle}
+                            onChange={(e) => setNewTitle(e.target.value)}
+                        />
 
-                                <div>
-                                    <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                        Categoría temática
-                                    </label>
-                                    <select
-                                        value={newCategory}
-                                        onChange={(e) => setNewCategory(e.target.value)}
-                                        className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                    >
-                                        {CATEGORIES.filter(c => c.id !== 'todos').map(c => (
-                                            <option key={c.id} value={c.id}>{c.label}</option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
+                        <Textarea
+                            label="Detalle del aporte o pregunta"
+                            required
+                            rows={4}
+                            placeholder="Describe tu duda, comparte tu experiencia sobre proyectos, exámenes o cátedra..."
+                            value={newContent}
+                            onChange={(e) => setNewContent(e.target.value)}
+                        />
 
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Título de tu consulta o recomendación
+                        {/* Image upload section */}
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200 flex items-center justify-between">
+                                <span className="flex items-center gap-1.5">
+                                    <ImageIcon size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <span>Adjuntar imagen (Opcional)</span>
+                                </span>
+                                {isCompressingImg && <span className="text-[11px] text-[#0052CC] dark:text-[#4C9AFF] animate-pulse">Procesando imagen...</span>}
+                            </label>
+                            <div className="flex items-center gap-2">
+                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
+                                    <ImageIcon size={15} />
+                                    <span>Seleccionar imagen desde tu dispositivo</span>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageFileSelect}
+                                        disabled={isCompressingImg}
+                                        className="hidden"
+                                    />
                                 </label>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="Ej. ¿Opiniones de la sección A de Lenguajes Formales?"
-                                    value={newTitle}
-                                    onChange={(e) => setNewTitle(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                />
                             </div>
-
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Detalle del aporte o pregunta
-                                </label>
-                                <textarea
-                                    required
-                                    rows={4}
-                                    placeholder="Describe tu duda, comparte tu experiencia sobre proyectos, exámenes o cátedra..."
-                                    value={newContent}
-                                    onChange={(e) => setNewContent(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] resize-none"
-                                ></textarea>
-                            </div>
-
-                            {/* Active Profile Info */}
-                            <div className="bg-[#FAFBFC] dark:bg-[#0E1624]/60 p-3.5 rounded-2xl border border-[#DFE1E6]/80 dark:border-[#3E4C5E]/80 flex items-center justify-between gap-2">
-                                <div className="flex items-center gap-2">
-                                    <ShieldCheck size={16} className="text-[#0052CC] dark:text-[#4C9AFF]" />
-                                    <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-300">
-                                        Publicando bajo tu perfil: <strong className="text-[#0052CC] dark:text-[#4C9AFF]">{activeAlias}</strong>
-                                    </span>
+                            {newImageUrl && (
+                                <div className="relative mt-1.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-black/5 dark:bg-black/20 p-2 flex items-center justify-center max-h-48 overflow-hidden">
+                                    <img src={newImageUrl} alt="Vista previa" className="max-h-44 rounded-lg object-contain" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setNewImageUrl('')}
+                                        className="absolute top-2 right-2 p-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-md transition cursor-pointer"
+                                        title="Quitar imagen"
+                                    >
+                                        <X size={14} />
+                                    </button>
                                 </div>
-                                <button
-                                    type="button"
-                                    onClick={() => {
-                                        setProfileInputText(activeAlias);
-                                        setIsProfileModalOpen(true);
-                                    }}
-                                    className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer flex items-center gap-1"
-                                >
-                                    <Edit3 size={12} />
-                                    <span>Cambiar</span>
-                                </button>
-                            </div>
-
-                            <div className="flex items-center justify-end gap-3 pt-2">
-                                <button
-                                    type="button"
-                                    onClick={resetModal}
-                                    className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5E6C84] hover:bg-[#F4F5F7] dark:text-slate-400 dark:hover:bg-[#0E1624] transition cursor-pointer"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white text-xs sm:text-sm font-extrabold px-5 py-2.5 rounded-xl transition shadow-md cursor-pointer"
-                                >
-                                    Publicar ahora
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* Profile / Pseudonym Setup Modal */}
-            {isProfileModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-md w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
-                                    <ShieldCheck size={18} />
-                                </div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Perfil Estudiantil Anónimo</h3>
-                            </div>
-                            {savedAlias && (
-                                <button onClick={() => setIsProfileModalOpen(false)} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                    ✕
-                                </button>
                             )}
                         </div>
 
-                        <form onSubmit={handleSaveProfile} className="p-6 flex flex-col gap-4">
-                            <div>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Elige tu Seudónimo de Estudiante
-                                </label>
-                                <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-2 leading-relaxed">
-                                    Este es el apodo único e irrepetible con el que publicarás dudas y comentarás en el foro. Tu nombre y correo de Google permanecerán 100% ocultos.
-                                </p>
-                                <input
-                                    type="text"
-                                    required
-                                    placeholder="Ej. Estudiante CS #315..."
-                                    value={profileInputText}
-                                    onChange={(e) => setProfileInputText(e.target.value)}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-end gap-3 pt-2">
-                                {savedAlias && (
-                                    <button
-                                        type="button"
-                                        onClick={() => setIsProfileModalOpen(false)}
-                                        className="px-4 py-2 rounded-xl text-xs font-bold text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] transition cursor-pointer"
-                                    >
-                                        Cancelar
-                                    </button>
-                                )}
-                                <button
-                                    type="submit"
-                                    className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs px-5 py-2.5 rounded-xl transition cursor-pointer shadow-md"
-                                >
-                                    Guardar Seudónimo
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            )}
-
-            {/* Custom Alert Modal */}
-            {customAlert.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-sm w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 flex flex-col items-center text-center gap-4">
-                            <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
-                                customAlert.type === 'error' ? 'bg-[#FFD5D2] dark:bg-[#5E1C1C] text-[#E5484D] dark:text-[#FF6369]' :
-                                customAlert.type === 'warning' ? 'bg-[#FFF3C4] dark:bg-[#5E4C1C] text-[#D97706] dark:text-[#FBBF24]' :
-                                customAlert.type === 'success' ? 'bg-[#D2FDEB] dark:bg-[#0C3E26] text-[#12A150] dark:text-[#57D99A]' :
-                                'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
-                            }`}>
-                                {customAlert.type === 'error' ? <AlertCircle size={28} /> :
-                                 customAlert.type === 'warning' ? <AlertTriangle size={28} /> :
-                                 customAlert.type === 'success' ? <CheckCircle2 size={28} /> :
-                                 <Info size={28} />}
-                            </div>
-                            <div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white mb-1.5">
-                                    {customAlert.title}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
-                                    {customAlert.message}
-                                </p>
+                        <div className="bg-[#F4F5F7] dark:bg-[#0E1624]/60 p-3.5 rounded-2xl border border-[#DFE1E6]/80 dark:border-[#3E4C5E]/80 flex items-center justify-between gap-2">
+                            <div className="flex items-center gap-2">
+                                <ShieldCheck size={16} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-300">
+                                    Publicando bajo tu perfil: <strong className="text-[#0052CC] dark:text-[#4C9AFF]">{activeAlias}</strong>
+                                </span>
                             </div>
                             <button
-                                onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
-                                className="w-full mt-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs sm:text-sm py-3 rounded-xl transition cursor-pointer shadow-md"
+                                type="button"
+                                onClick={() => {
+                                    setProfileInputText(activeAlias);
+                                    setIsProfileModalOpen(true);
+                                }}
+                                className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer flex items-center gap-1 bg-transparent border-none"
                             >
-                                Entendido
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Custom Confirm Modal */}
-            {customConfirm.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-sm w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 flex flex-col items-center text-center gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-[#FFD5D2] dark:bg-[#5E1C1C] text-[#E5484D] dark:text-[#FF6369] flex items-center justify-center">
-                                <Trash2 size={28} />
-                            </div>
-                            <div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white mb-1.5">
-                                    {customConfirm.title}
-                                </h3>
-                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
-                                    {customConfirm.message}
-                                </p>
-                            </div>
-                            <div className="flex items-center gap-3 w-full mt-2">
-                                <button
-                                    onClick={() => setCustomConfirm(prev => ({ ...prev, isOpen: false }))}
-                                    className="flex-1 py-3 rounded-xl text-xs sm:text-sm font-bold text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] transition cursor-pointer border border-[#DFE1E6] dark:border-[#3E4C5E]"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    onClick={() => {
-                                        const callback = customConfirm.onConfirm;
-                                        setCustomConfirm(prev => ({ ...prev, isOpen: false }));
-                                        if (callback) callback();
-                                    }}
-                                    className="flex-1 bg-[#E5484D] hover:bg-[#CD2B31] text-white font-extrabold text-xs sm:text-sm py-3 rounded-xl transition cursor-pointer shadow-md"
-                                >
-                                    Eliminar
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            )}
-
-            {/* Report User Modal */}
-            {reportModal.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-md w-full border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-amber-500/10 text-[#D97706] dark:text-[#FBBF24] flex items-center justify-center">
-                                    <Flag size={18} />
-                                </div>
-                                <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Reportar Usuario</h3>
-                            </div>
-                            <button onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                ✕
+                                <Edit3 size={12} />
+                                <span>Cambiar</span>
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmitReport} className="p-6 flex flex-col gap-4">
-                            <div>
-                                <div className="flex items-center justify-between mb-2">
-                                    <span className="text-xs font-bold text-[#172B4D] dark:text-slate-300">
-                                        Usuario reportado:
-                                    </span>
-                                    <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-2.5 py-0.5 rounded-md">
-                                        {reportModal.reportedUserAlias}
-                                    </span>
-                                </div>
-                                <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
-                                    Para mantener la comunidad libre de spam, insultos o mal comportamiento, detalla el motivo del reporte. <strong className="text-[#D97706] dark:text-[#FBBF24]">Recuerda que solo se permite reportar una vez al mismo usuario.</strong>
-                                </p>
-                                <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
-                                    Descripción del mal comportamiento <span className="text-red-500">*</span>
-                                </label>
-                                <textarea
-                                    rows="4"
-                                    required
-                                    placeholder="Explica en detalle el motivo de tu denuncia (ej: utiliza lenguaje ofensivo y acoso en sus respuestas, publica enlaces de spam o publicidad)..."
-                                    value={reportModal.reason}
-                                    onChange={(e) => setReportModal(prev => ({ ...prev, reason: e.target.value }))}
-                                    className="w-full bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl p-3 text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-100 focus:outline-none focus:border-[#D97706] dark:focus:border-[#FBBF24] resize-none"
-                                />
-                            </div>
+                        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={resetModal}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                size="sm"
+                            >
+                                Publicar ahora
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
 
-                            <div className="flex items-center justify-end gap-3 pt-2">
-                                <button
+            {isProfileModalOpen && (
+                <Modal
+                    isOpen={isProfileModalOpen}
+                    onClose={() => { if (savedAlias) setIsProfileModalOpen(false); }}
+                    title="Perfil Estudiantil Anónimo"
+                    icon={ShieldCheck}
+                    size="sm"
+                >
+                    <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+                        <div>
+                            <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
+                                Este es el apodo único con el que publicarás dudas y comentarás en el foro. Tu nombre y correo de Google permanecerán 100% ocultos.
+                            </p>
+                            <Input
+                                label="Elige tu Seudónimo de Estudiante"
+                                required
+                                placeholder="Ej. Estudiante CS #315..."
+                                value={profileInputText}
+                                onChange={(e) => setProfileInputText(e.target.value)}
+                            />
+                        </div>
+
+                        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            {savedAlias && (
+                                <Button
                                     type="button"
-                                    onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
-                                    className="px-4 py-2.5 rounded-xl text-xs font-bold text-[#5E6C84] hover:bg-[#F4F5F7] dark:text-slate-400 dark:hover:bg-[#0E1624] transition cursor-pointer"
+                                    variant="secondary"
+                                    onClick={() => setIsProfileModalOpen(false)}
+                                    size="sm"
                                 >
                                     Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="bg-[#D97706] hover:bg-[#B45309] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md cursor-pointer"
-                                >
-                                    Enviar Reporte
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                                </Button>
+                            )}
+                            <Button
+                                type="submit"
+                                variant="primary"
+                                size="sm"
+                            >
+                                Guardar Seudónimo
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
             )}
 
-            {/* Admin Reports Modal */}
-            {isAdminReportsModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] rounded-3xl max-w-2xl w-full max-h-[80vh] flex flex-col border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
-                        <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between shrink-0">
-                            <div className="flex items-center gap-2.5">
-                                <div className="w-8 h-8 rounded-xl bg-[#FFD700]/20 text-[#D97706] dark:text-[#FBBF24] flex items-center justify-center">
-                                    <Flag size={18} />
-                                </div>
-                                <div>
-                                    <h3 className="font-extrabold text-lg text-[#172B4D] dark:text-white">Panel de Administración de Reportes</h3>
-                                    <p className="text-[11px] text-[#7A869A] dark:text-slate-400">Moderación de usuarios reportados por mal comportamiento</p>
-                                </div>
+            {customAlert.isOpen && (
+                <Modal
+                    isOpen={customAlert.isOpen}
+                    onClose={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
+                    title={customAlert.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col items-center text-center gap-4">
+                        <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
+                            customAlert.type === 'error' ? 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]' :
+                            customAlert.type === 'warning' ? 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]' :
+                            customAlert.type === 'success' ? 'bg-[#E3FCEF] dark:bg-[#0A3622] text-[#059669] dark:text-[#10b981]' :
+                            'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
+                        }`}>
+                            {customAlert.type === 'error' ? <AlertCircle size={28} /> :
+                             customAlert.type === 'warning' ? <AlertTriangle size={28} /> :
+                             customAlert.type === 'success' ? <CheckCircle2 size={28} /> :
+                             <Info size={28} />}
+                        </div>
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                            {customAlert.message}
+                        </p>
+                        <Button
+                            variant="primary"
+                            onClick={() => setCustomAlert(prev => ({ ...prev, isOpen: false }))}
+                            className="w-full mt-2"
+                        >
+                            Entendido
+                        </Button>
+                    </div>
+                </Modal>
+            )}
+
+            {customConfirm.isOpen && (
+                <Modal
+                    isOpen={customConfirm.isOpen}
+                    onClose={() => setCustomConfirm(prev => ({ ...prev, isOpen: false }))}
+                    title={customConfirm.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col items-center text-center gap-4">
+                        <div className="w-14 h-14 rounded-2xl bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369] flex items-center justify-center">
+                            <Trash2 size={28} />
+                        </div>
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                            {customConfirm.message}
+                        </p>
+                        <div className="flex items-center gap-3 w-full mt-2">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setCustomConfirm(prev => ({ ...prev, isOpen: false }))}
+                                className="flex-grow"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    const callback = customConfirm.onConfirm;
+                                    setCustomConfirm(prev => ({ ...prev, isOpen: false }));
+                                    if (callback) callback();
+                                }}
+                                className="flex-grow"
+                            >
+                                Eliminar
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {customPrompt.isOpen && (
+                <Modal
+                    isOpen={customPrompt.isOpen}
+                    onClose={() => setCustomPrompt(prev => ({ ...prev, isOpen: false }))}
+                    title={customPrompt.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                            {customPrompt.message}
+                        </p>
+                        <Textarea
+                            placeholder={customPrompt.placeholder || "Escribe tu justificación aquí..."}
+                            value={customPrompt.value}
+                            onChange={(e) => setCustomPrompt(prev => ({ ...prev, value: e.target.value }))}
+                            rows={3}
+                            className="text-xs sm:text-sm"
+                            autoFocus
+                        />
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setCustomPrompt(prev => ({ ...prev, isOpen: false }))}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="danger"
+                                onClick={() => {
+                                    const val = customPrompt.value;
+                                    const cb = customPrompt.onSubmit;
+                                    setCustomPrompt(prev => ({ ...prev, isOpen: false }));
+                                    if (cb) cb(val);
+                                }}
+                                size="sm"
+                            >
+                                Confirmar y Eliminar
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {reportModal.isOpen && (
+                <Modal
+                    isOpen={reportModal.isOpen}
+                    onClose={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
+                    title="Reportar Usuario"
+                    icon={Flag}
+                    size="md"
+                >
+                    <form onSubmit={handleSubmitReport} className="flex flex-col gap-4">
+                        <div>
+                            <div className="flex items-center justify-between mb-2.5">
+                                <span className="text-xs font-bold text-[#172B4D] dark:text-slate-300">
+                                    Usuario reportado:
+                                </span>
+                                <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-2.5 py-0.5 rounded-full">
+                                    {reportModal.reportedUserAlias}
+                                </span>
                             </div>
-                            <button onClick={() => setIsAdminReportsModalOpen(false)} className="text-[#7A869A] hover:text-[#172B4D] dark:hover:text-white p-1 rounded-lg transition cursor-pointer">
-                                ✕
-                            </button>
+                            <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mb-3 leading-relaxed">
+                                Para mantener la comunidad libre de spam, insultos o mal comportamiento, detalla el motivo del reporte. <strong className="text-[#B45309] dark:text-[#FBBF24]">Recuerda que solo se permite reportar una vez al mismo usuario.</strong>
+                            </p>
+                            <Textarea
+                                label="Descripción del mal comportamiento"
+                                required
+                                rows={4}
+                                placeholder="Explica en detalle el motivo de tu denuncia (ej: utiliza lenguaje ofensivo y acoso en sus respuestas, publica enlaces de spam o publicidad)..."
+                                value={reportModal.reason}
+                                onChange={(e) => setReportModal(prev => ({ ...prev, reason: e.target.value }))}
+                            />
                         </div>
 
-                        <div className="p-6 overflow-y-auto flex-1 flex flex-col gap-3">
+                        <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => setReportModal({ isOpen: false, reportedUserId: null, reportedUserAlias: '', reason: '' })}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="danger"
+                                size="sm"
+                            >
+                                Enviar Reporte
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
+            )}
+
+            {isAdminReportsModalOpen && (
+                <Modal
+                    isOpen={isAdminReportsModalOpen}
+                    onClose={() => setIsAdminReportsModalOpen(false)}
+                    title="Panel de Administración de Reportes"
+                    icon={Flag}
+                    size="lg"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-xs text-[#7A869A] dark:text-slate-400 -mt-2">Moderación de usuarios reportados por mal comportamiento</p>
+                        <div className="max-h-[60vh] overflow-y-auto flex flex-col gap-3 pr-1">
                             {adminReports.length === 0 ? (
                                 <div className="text-center py-10 flex flex-col items-center gap-2">
-                                    <CheckCircle2 size={36} className="text-[#12A150]" />
+                                    <CheckCircle2 size={36} className="text-[#059669] dark:text-[#10b981]" />
                                     <p className="text-sm font-bold text-[#172B4D] dark:text-slate-200">¡Todo en orden!</p>
                                     <p className="text-xs text-[#7A869A] dark:text-slate-400">Actualmente no hay reportes de mal comportamiento registrados en la base de datos.</p>
                                 </div>
                             ) : (
                                 adminReports.map((report) => (
-                                    <div key={report.id} className="bg-[#F4F5F7] dark:bg-[#0E1624] rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2.5">
+                                    <div key={report.id} className="bg-[#F4F5F7] dark:bg-[#0E1624]/60 rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2.5">
                                         <div className="flex items-center justify-between gap-2 flex-wrap">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-[11px] font-extrabold px-2 py-0.5 rounded bg-red-500/10 text-[#E5484D] dark:text-[#FF6369]">
+                                                <span className="text-[11px] font-extrabold px-2 py-0.5 rounded bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]">
                                                     Reportado: {report.reported_user_alias || 'Anónimo'}
                                                 </span>
                                                 <span className="text-[10px] text-[#7A869A] dark:text-slate-400 font-semibold">
@@ -1608,7 +1721,7 @@ export default function Forum() {
                                                 </span>
                                                 <button
                                                     onClick={() => handleDeleteReportAdmin(report.id)}
-                                                    className="text-xs text-[#E5484D] hover:underline font-bold cursor-pointer flex items-center gap-1 ml-2"
+                                                    className="text-xs text-[#BF2600] dark:text-[#FF6369] hover:underline font-bold cursor-pointer flex items-center gap-1 ml-2 bg-transparent border-none"
                                                     title="Eliminar o descartar reporte"
                                                 >
                                                     <Trash2 size={13} /> Descartar
@@ -1624,17 +1737,17 @@ export default function Forum() {
                             )}
                         </div>
 
-                        <div className="p-4 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex justify-end shrink-0">
-                            <button
-                                type="button"
+                        <div className="flex justify-end pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                variant="primary"
                                 onClick={() => setIsAdminReportsModalOpen(false)}
-                                className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition cursor-pointer"
+                                size="sm"
                             >
                                 Cerrar Panel
-                            </button>
+                            </Button>
                         </div>
                     </div>
-                </div>
+                </Modal>
             )}
 
         </div>

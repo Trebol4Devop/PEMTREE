@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, Calendar, EyeOff, Clock } from 'lucide-react';
+import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, EyeOff } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
@@ -64,16 +64,10 @@ export default function Visualizer() {
     const [showGuia, setShowGuia] = useState(() => {
         return !localStorage.getItem('pemtree_guia_visto');
     });
-    const [searchParams, setSearchParams] = useSearchParams();
+    const [searchParams] = useSearchParams();
     const viewParam = searchParams.get('view');
-    const activeView = (viewParam === 'planner' || viewParam === 'schedule') ? viewParam : 'graph';
-    const setActiveView = (view) => {
-        if (view === 'graph') {
-            setSearchParams({});
-        } else {
-            setSearchParams({ view });
-        }
-    };
+    const hasSharePlan = searchParams.has('sharePlan') || searchParams.has('plan') || window.location.hash.includes('sharePlan=') || window.location.hash.includes('plan=');
+    const activeView = (viewParam === 'planner' || viewParam === 'schedule' || hasSharePlan) ? (viewParam === 'schedule' ? 'schedule' : 'planner') : 'graph';
 
     const [scheduleTimestamps, setScheduleTimestamps] = useState({});
     const [schedulePeriod, setSchedulePeriod] = useState(() => {
@@ -828,16 +822,6 @@ export default function Visualizer() {
                         {!selectedCourse.completado && selectedCourse.enRutaCritica && (
                             <span className="bg-[#FFFAE6] text-[#FF8B00] border border-[#FFAB00] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
                                  Crítico
-                            </span>
-                        )}
-                        {!selectedCourse.completado && showCriticalPath && selectedCourse.esSocialHum && (
-                            <span className="bg-[#DBEAFE] text-[#2563EB] border border-[#60A5FA] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
-                                SH
-                            </span>
-                        )}
-                        {!selectedCourse.completado && showCriticalPath && selectedCourse.esIdiomaTecnico && (
-                            <span className="bg-[#FEF3C7] text-[#D97706] border border-[#FBBF24] px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider flex items-center gap-1">
-                                ID
                             </span>
                         )}
                     </div>

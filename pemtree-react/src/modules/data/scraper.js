@@ -3,7 +3,8 @@ let cachedData = {};
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
 const TIPO_LAB = 'LABORATORIO';
-const TIPOS_NO_LAB = ['MAGISTRAL', 'TRABAJO_DIRIGIDO', 'DIBUJO', 'PRACTICA'];
+const TIPO_PRACTICA = 'PRACTICA';
+const TIPOS_NO_LAB = ['MAGISTRAL', 'TRABAJO_DIRIGIDO', 'DIBUJO'];
 
 export async function cargarHorarios(periodId) {
     if (cachedData[periodId]) return cachedData[periodId];
@@ -33,6 +34,15 @@ export function getTipo(horario) {
 
 export function esLaboratorio(horario) {
     return getTipo(horario) === TIPO_LAB;
+}
+
+export function esPractica(horario) {
+    return getTipo(horario) === TIPO_PRACTICA;
+}
+
+export function esTraslapePermitido(horario) {
+    const t = getTipo(horario);
+    return t === TIPO_LAB || t === TIPO_PRACTICA;
 }
 
 export function esNoLaboratorio(horario) {
@@ -92,8 +102,8 @@ export function detectarConflictosSemestral(horarios) {
                 const a = cursos[i];
                 const b = cursos[j];
                 
-                // Labs siempre permitidos
-                if (esLaboratorio(a) || esLaboratorio(b)) continue;
+                // Labs y prácticas siempre permitidos
+                if (esTraslapePermitido(a) || esTraslapePermitido(b)) continue;
                 
                 const traslape = calcularTraslapeMinutos(a, b);
                 if (traslape === 0) continue;
@@ -122,9 +132,9 @@ export function validarReglasVacaciones(horarios) {
     const porDia = agruparPorDia(horarios);
     
     for (const [dia, cursos] of Object.entries(porDia)) {
-        const noLabs = cursos.filter(esNoLaboratorio);
-        
-        // Verificar traslapes entre no-labs (no permitido ninguno)
+        const noLabs = cursos.filter(s => !esTraslapePermitido(s));
+
+        // Verificar traslapes entre clases que sí requieren validación (no permitido ninguno)
         for (let i = 0; i < noLabs.length; i++) {
             for (let j = i + 1; j < noLabs.length; j++) {
                 if (hayTraslape(noLabs[i], noLabs[j])) {

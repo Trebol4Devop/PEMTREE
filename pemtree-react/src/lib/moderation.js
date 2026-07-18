@@ -220,36 +220,40 @@ export function checkBadWords(text) {
 }
 
 /**
- * Función principal para moderar y limpiar texto antes de publicar
+ * Formatea errores técnicos de base de datos a mensajes amigables para el usuario final.
+ */
+export function formatUserError(error) {
+    if (!error) return 'Ocurrió un problema técnico temporal al procesar tu solicitud. Por favor, inténtalo de nuevo.';
+    const msg = (typeof error === 'string' ? error : error.message || '').toLowerCase();
+
+    if (msg.includes('inapropiado') || msg.includes('ofensivo') || msg.includes('grosería') || msg.includes('moderación') || msg.includes('prohibido')) {
+        return 'No pudimos publicar tu contenido porque nuestro sistema detectó palabras u oraciones que podrían no cumplir con las normas de convivencia de la comunidad. Por favor, revisa tu redacción e inténtalo de nuevo.';
+    }
+    if (msg.includes('enlace') || msg.includes('link') || msg.includes('url')) {
+        return 'El contenido incluye enlaces no permitidos. Por favor, retira o verifica la dirección web antes de publicar.';
+    }
+    if (msg.includes('repetidos') || msg.includes('excesivamente') || msg.includes('flooding')) {
+        return 'El mensaje contiene demasiados caracteres repetidos. Por favor, ajústalo antes de enviar.';
+    }
+    if (msg.includes('unique') || msg.includes('23505') || msg.includes('ya registrado') || msg.includes('duplicado')) {
+        return 'Ya existe un registro o reporte con esta información en el sistema.';
+    }
+    if (msg.includes('row-level security') || msg.includes('policy') || msg.includes('permiso') || msg.includes('42501') || msg.includes('unauthorized')) {
+        return 'No cuentas con los permisos necesarios para realizar esta acción o tu sesión ha expirado. Intenta iniciar sesión nuevamente.';
+    }
+    if (msg.includes('not null') || msg.includes('violates') || msg.includes('required') || msg.includes('obligatorio')) {
+        return 'Por favor asegúrate de completar todos los campos obligatorios correctamente.';
+    }
+    return 'No se pudo completar la solicitud en este momento. Por favor, verifica tu conexión e inténtalo más tarde.';
+}
+
+/**
+ * Función principal para moderar y limpiar texto (paso directo al backend DB).
  */
 export function moderateSubmission({ title = '', content = '' }) {
-    const combined = `${title} ${content}`;
-
-    // 1. Verificar enlaces peligrosos o inapropiados
-    const linkCheck = checkInappropriateLinks(combined);
-    if (!linkCheck.valid) return { valid: false, reason: linkCheck.reason };
-
-    // 2. Verificar palabras ofensivas o intentos de evasión (leetspeak, espaciado, acentos)
-    const titleWords = checkBadWords(title);
-    if (!titleWords.valid) return { valid: false, reason: titleWords.reason };
-
-    const contentWords = checkBadWords(content);
-    if (!contentWords.valid) return { valid: false, reason: contentWords.reason };
-
-    // 3. Verificar patrones de spam (teclado golpeado, mayúsculas)
-    const titleSpam = checkSpamPatterns(title);
-    if (!titleSpam.valid) return { valid: false, reason: titleSpam.reason };
-
-    const contentSpam = checkSpamPatterns(content);
-    if (!contentSpam.valid) return { valid: false, reason: contentSpam.reason };
-
-    // 4. Censurar palabras ofensivas manteniendo la estructura original
-    const censoredTitle = censorText(title);
-    const censoredContent = censorText(content);
-
     return {
         valid: true,
-        censoredTitle,
-        censoredContent
+        censoredTitle: title,
+        censoredContent: content
     };
 }

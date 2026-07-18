@@ -2,23 +2,33 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
     AlertTriangle, Trash2, LogOut, Check, 
-    Filter, BookOpen, X, AlertCircle, Edit3, ShieldCheck, UserCheck
+    Filter, BookOpen, X, Edit3, ShieldCheck, UserCheck,
+    Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles,
+    Image as ImageIcon
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { moderateSubmission } from '../lib/moderation';
+import { formatUserError } from '../lib/moderation';
+import { sendFormspreeNotification } from '../lib/notification';
+import { uploadOrCompressImage } from '../lib/imageUtils';
 import { cursos } from '../modules/data/cursos';
+import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
 
 const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
 
+// UIDs y/o emails de Moderadores autorizados para la gestión y carga masiva por CSV de grupos estudiantiles
+const MODERATOR_UIDS = [
+    // Puedes agregar UIDs o correos de moderadores aquí
+];
+
 const CARRERAS = [
-    { id: 'todas', label: 'Todas las Carreras / Áreas', badgeBg: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 border-slate-300 dark:border-slate-700' },
-    { id: 'area_comun', label: 'Área Común (1er - 3er Sem)', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
-    { id: 'sistemas', label: 'Ciencias y Sistemas', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
-    { id: 'civil', label: 'Ingeniería Civil', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
-    { id: 'industrial', label: 'Ingeniería Industrial', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
-    { id: 'mecanica', label: 'Mecánica & M. Industrial', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
-    { id: 'electronica', label: 'Ingeniería Electrónica', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' },
-    { id: 'quimica', label: 'Ingeniería Química', badgeBg: 'bg-slate-100 dark:bg-slate-800/80 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-700' }
+    { id: 'todas', label: 'Todas las Carreras / Áreas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'area_comun', label: 'Área Común (1er - 3er Sem)', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'sistemas', label: 'Ciencias y Sistemas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'civil', label: 'Ingeniería Civil', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'industrial', label: 'Ingeniería Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica', label: 'Mecánica & M. Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'electronica', label: 'Ingeniería Electrónica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'quimica', label: 'Ingeniería Química', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' }
 ];
 
 export default function WhatsAppGroups() {
@@ -58,6 +68,8 @@ export default function WhatsAppGroups() {
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isModerator, setIsModerator] = useState(false);
+    const canModerate = isAdmin || isModerator;
     const [upvotedGroupIds, setUpvotedGroupIds] = useState(new Set());
     const [reportedGroupIds, setReportedGroupIds] = useState(new Set());
     const [copiedId, setCopiedId] = useState(null);
@@ -73,9 +85,17 @@ export default function WhatsAppGroups() {
     const [reportTarget, setReportTarget] = useState(null);
     const [reportReason, setReportReason] = useState('');
 
-    // Custom Alert / Confirm
+    // CSV Bulk Upload states
+    const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+    const [csvFile, setCsvFile] = useState(null);
+    const [csvParsedRows, setCsvParsedRows] = useState([]);
+    const [csvError, setCsvError] = useState('');
+    const [csvIsUploading, setCsvIsUploading] = useState(false);
+
+    // Custom Alert / Confirm / Prompt
     const [customAlert, setCustomAlert] = useState({ isOpen: false, title: '', message: '', type: 'info' });
     const [customConfirm, setCustomConfirm] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+    const [customPrompt, setCustomPrompt] = useState({ isOpen: false, title: '', message: '', value: '', placeholder: '', onSubmit: null });
 
     const showAlert = useCallback((title, message, type = 'info') => {
         setCustomAlert({ isOpen: true, title, message, type });
@@ -85,6 +105,10 @@ export default function WhatsAppGroups() {
         setCustomConfirm({ isOpen: true, title, message, onConfirm });
     }, []);
 
+    const showPrompt = useCallback((title, message, placeholder, onSubmit) => {
+        setCustomPrompt({ isOpen: true, title, message, value: '', placeholder, onSubmit });
+    }, []);
+
     // Form inputs
     const [newTitle, setNewTitle] = useState('');
     const [newCarrera, setNewCarrera] = useState('area_comun');
@@ -92,6 +116,8 @@ export default function WhatsAppGroups() {
     const [newSection, setNewSection] = useState('A');
     const [newLink, setNewLink] = useState('');
     const [newDescription, setNewDescription] = useState('');
+    const [newImageUrl, setNewImageUrl] = useState('');
+    const [isCompressingImg, setIsCompressingImg] = useState(false);
     const [cursoSearchText, setCursoSearchText] = useState('');
     const [showCursoDropdown, setShowCursoDropdown] = useState(false);
 
@@ -110,21 +136,48 @@ export default function WhatsAppGroups() {
         return 'Estudiante Anónimo';
     }, [savedAlias, user]);
 
+    const checkUserRoles = useCallback(async (sessionUser) => {
+        setUser(sessionUser ?? null);
+        let isAdminUser = sessionUser?.id === ADMIN_UID || sessionUser?.email === 'emanu@gmail.com';
+        let isModUser = Boolean(
+            isAdminUser ||
+            (sessionUser?.id && MODERATOR_UIDS.includes(sessionUser.id)) ||
+            (sessionUser?.email && MODERATOR_UIDS.includes(sessionUser.email)) ||
+            sessionUser?.user_metadata?.role === 'moderator' ||
+            sessionUser?.user_metadata?.is_moderator === true ||
+            localStorage.getItem('pemtree_moderator') === 'true'
+        );
+        if (sessionUser && isSupabaseConfigured && supabase) {
+            try {
+                const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', sessionUser.id).maybeSingle();
+                if (roleData?.role === 'admin') {
+                    isAdminUser = true;
+                    isModUser = true;
+                } else if (roleData?.role === 'moderator') {
+                    isModUser = true;
+                }
+            } catch { /* ignorar si la tabla aún no existe */ }
+        }
+        setIsAdmin(Boolean(isAdminUser));
+        setIsModerator(Boolean(isModUser));
+    }, []);
+
     // Check auth state
     useEffect(() => {
-        if (!isSupabaseConfigured || !supabase) return;
+        if (!isSupabaseConfigured || !supabase) {
+            const timer = setTimeout(() => checkUserRoles(null), 0);
+            return () => clearTimeout(timer);
+        }
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
-            setIsAdmin(session?.user?.id === ADMIN_UID);
+            checkUserRoles(session?.user ?? null);
         });
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-            setIsAdmin(session?.user?.id === ADMIN_UID);
+            checkUserRoles(session?.user ?? null);
         });
 
         return () => subscription.unsubscribe();
-    }, []);
+    }, [checkUserRoles]);
 
     // Load groups, upvotes, and reports
     const fetchGroups = useCallback(async () => {
@@ -204,12 +257,7 @@ export default function WhatsAppGroups() {
         const trimmed = profileInputText.trim();
         if (!trimmed) return;
 
-        const modResult = moderateSubmission({ title: trimmed, content: '' });
-        if (!modResult.valid) {
-            showAlert('Seudónimo no válido', modResult.reason, 'error');
-            return;
-        }
-        const cleanAlias = modResult.censoredTitle;
+        const cleanAlias = trimmed;
 
         localStorage.setItem('pemtree_forum_alias', cleanAlias);
         setSavedAlias(cleanAlias);
@@ -236,6 +284,25 @@ export default function WhatsAppGroups() {
             .slice(0, 8);
     }, [cursoSearchText]);
 
+    // Check limit before opening modal
+    const handleOpenAddModal = useCallback(() => {
+        if (!canModerate) {
+            const userGroupsCount = user 
+                ? groups.filter(g => g.user_id === user.id).length 
+                : groups.filter(g => g.is_local).length;
+            if (userGroupsCount >= 5) {
+                showAlert(
+                    'Límite de Grupos Alcanzado (5/5)',
+                    'Un usuario normal no puede publicar más de 5 grupos en el directorio. Si necesitas agregar más grupos o eres representante de curso, por favor comunícate con los administradores o moderadores del sitio para solicitar asistencia o permisos especiales.',
+                    'warning'
+                );
+                return;
+            }
+        }
+        setNewCarrera(selectedCarrera || 'todas');
+        setIsAddModalOpen(true);
+    }, [canModerate, user, groups, showAlert, selectedCarrera]);
+
     // Create Group Handler
     const handleCreateGroup = async (e) => {
         e.preventDefault();
@@ -259,22 +326,12 @@ export default function WhatsAppGroups() {
             return;
         }
 
-        const modResult = moderateSubmission({ title: `${newTitle.trim()} ${newCurso.trim()} ${newSection.trim()}`, content: `${newDescription.trim()} ${cleanLink} ${activeAlias || ''}` });
-        if (!modResult.valid) {
-            showAlert('Contenido no permitido', modResult.reason, 'error');
-            return;
-        }
-
-        if (!user && isSupabaseConfigured) {
-            showAlert('Acceso requerido', 'Debes iniciar sesión con Google (Anónima y segura) en la esquina superior para agregar un nuevo grupo a la comunidad.', 'warning');
-            return;
-        }
-
-        const finalTitle = moderateSubmission({ title: newTitle.trim(), content: '' }).censoredTitle;
-        const finalCurso = moderateSubmission({ title: newCurso.trim(), content: '' }).censoredTitle;
-        const finalSection = moderateSubmission({ title: newSection.trim() || 'General', content: '' }).censoredTitle;
-        const finalAlias = moderateSubmission({ title: activeAlias || 'Anónimo', content: '' }).censoredTitle;
-        const finalDesc = newDescription.trim() ? moderateSubmission({ title: '', content: newDescription.trim() }).censoredContent : null;
+        const finalTitle = newTitle.trim();
+        const finalCurso = newCurso.trim();
+        const finalSection = newSection.trim() || 'General';
+        const finalAlias = activeAlias || 'Anónimo';
+        const finalDesc = newDescription.trim() || null;
+        const finalImageUrl = newImageUrl.trim() || null;
 
         if (isSupabaseConfigured && supabase) {
             try {
@@ -285,14 +342,15 @@ export default function WhatsAppGroups() {
                     section: finalSection,
                     link: cleanLink,
                     description: finalDesc,
+                    image_url: finalImageUrl,
                     user_id: user?.id || null,
                     author_alias: finalAlias,
-                    upvotes: 1
+                    upvotes: 0
                 }]);
 
                 if (error) {
-                    console.warn('Detalle interno de base de datos Supabase al insertar grupo:', error);
-                    showAlert('No se pudo guardar el grupo', 'Ocurrió un problema temporal al publicar tu grupo estudiantil. Por favor, verifica tu conexión e inténtalo de nuevo.', 'error');
+                    console.warn('Error al insertar grupo:', error);
+                    showAlert('No se pudo guardar el grupo', formatUserError(error), 'error');
                     return;
                 }
                 await fetchGroups();
@@ -310,9 +368,10 @@ export default function WhatsAppGroups() {
                 section: newSection.trim() || 'General',
                 link: cleanLink,
                 description: newDescription.trim() || null,
+                image_url: finalImageUrl,
                 user_id: user?.id || 'anon',
                 author_alias: activeAlias,
-                upvotes: 1,
+                upvotes: 0,
                 reported_count: 0,
                 created_at: new Date().toISOString()
             };
@@ -325,8 +384,24 @@ export default function WhatsAppGroups() {
         setCursoSearchText('');
         setNewLink('');
         setNewDescription('');
+        setNewCarrera('todas');
+        setNewImageUrl('');
         setIsAddModalOpen(false);
         showAlert('¡Grupo Agregado!', 'Tu grupo estudiantil se ha publicado correctamente y está listo para que otros estudiantes se unan.', 'success');
+    };
+
+    const handleImageFileSelect = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            setIsCompressingImg(true);
+            const imageUrl = await uploadOrCompressImage(file, 'groups');
+            setNewImageUrl(imageUrl);
+        } catch (err) {
+            showAlert('Error al adjuntar imagen', err.message || 'No se pudo procesar la imagen.', 'error');
+        } finally {
+            setIsCompressingImg(false);
+        }
     };
 
     // Toggle Upvote / Verificado
@@ -376,33 +451,270 @@ export default function WhatsAppGroups() {
         setTimeout(() => setCopiedId(null), 2500);
     };
 
+    const handleDownloadTemplate = useCallback(() => {
+        const csvContent = [
+            'titulo,carrera,curso,seccion,enlace,descripcion,seudonimo',
+            '"Matemática Básica 1 - Sección A",area_comun,"Matemática Básica 1",A,https://chat.whatsapp.com/ejemplo_mate1,"Grupo oficial para resolución de dudas y tareas",Moderador PEMTREE',
+            '"Estructuras de Datos - Sección Única",sistemas,"Estructuras de Datos",A,https://chat.whatsapp.com/ejemplo_edd,"Discusión de laboratorio de EDD y proyectos",Moderador PEMTREE',
+            '"Física 1 - Sección B",area_comun,"Física 1",B,https://chat.whatsapp.com/ejemplo_fisica1,"Apoyo general del curso",Moderador PEMTREE'
+        ].join('\n');
+
+        const blob = new Blob(['\uFEFF' + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.setAttribute('download', 'plantilla_grupos_pemtree.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, []);
+
+    const handleFileChange = useCallback((e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setCsvFile(file);
+        setCsvError('');
+        setCsvParsedRows([]);
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const text = (evt.target?.result || '').replace(/^\uFEFF/, '');
+                if (typeof text !== 'string' || !text.trim()) {
+                    setCsvError('El archivo CSV está vacío.');
+                    return;
+                }
+
+                const lines = [];
+                let curLine = [];
+                let curField = '';
+                let inQuotes = false;
+
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i];
+                    const nextChar = text[i + 1];
+
+                    if (char === '"') {
+                        if (inQuotes && nextChar === '"') {
+                            curField += '"';
+                            i++;
+                        } else {
+                            inQuotes = !inQuotes;
+                        }
+                    } else if ((char === ',' || char === ';') && !inQuotes) {
+                        curLine.push(curField.trim());
+                        curField = '';
+                    } else if (char === '\n' && !inQuotes) {
+                        curLine.push(curField.trim());
+                        if (curLine.some(f => f !== '')) lines.push(curLine);
+                        curLine = [];
+                        curField = '';
+                    } else if (char === '\r' && !inQuotes) {
+                        // ignore
+                    } else {
+                        curField += char;
+                    }
+                }
+                if (curField || curLine.length > 0) {
+                    curLine.push(curField.trim());
+                    if (curLine.some(f => f !== '')) lines.push(curLine);
+                }
+
+                if (lines.length < 2) {
+                    setCsvError('El archivo CSV debe contener una fila de encabezados y al menos una fila de datos.');
+                    return;
+                }
+
+                const headers = lines[0].map(h => h.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim());
+                const findIndex = (...names) => headers.findIndex(h => names.some(n => h.includes(n)));
+
+                const titleIdx = findIndex('titulo', 'title', 'nombre');
+                const carreraIdx = findIndex('carrera', 'area', 'program');
+                const cursoIdx = findIndex('curso', 'materia', 'subject');
+                const sectionIdx = findIndex('seccion', 'section', 'sec');
+                const linkIdx = findIndex('enlace', 'link', 'url', 'whatsapp', 'telegram', 'discord');
+                const descIdx = findIndex('descrip', 'description', 'detalle');
+                const aliasIdx = findIndex('alias', 'autor', 'author', 'seudonimo');
+
+                if (cursoIdx === -1 && titleIdx === -1) {
+                    setCsvError('El CSV debe incluir una columna para el nombre del curso ("curso" o "título"). Encabezados leídos: ' + headers.join(', '));
+                    return;
+                }
+                if (linkIdx === -1) {
+                    setCsvError('El CSV debe incluir una columna con los enlaces/URLs del grupo ("enlace" o "link"). Encabezados leídos: ' + headers.join(', '));
+                    return;
+                }
+
+                const parsed = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i];
+                    if (!row || row.length === 0 || row.every(c => !c)) continue;
+
+                    const rawCurso = cursoIdx !== -1 ? (row[cursoIdx] || '').trim() : '';
+                    const rawSection = sectionIdx !== -1 ? (row[sectionIdx] || 'A').trim() || 'A' : 'A';
+                    const rawTitle = titleIdx !== -1 && row[titleIdx] ? row[titleIdx].trim() : `${rawCurso || 'Curso Estudiantil'} - Sección ${rawSection}`;
+                    const rawLink = linkIdx !== -1 ? (row[linkIdx] || '').trim() : '';
+                    const rawDesc = descIdx !== -1 ? (row[descIdx] || '').trim() : '';
+                    const rawAlias = aliasIdx !== -1 && row[aliasIdx] ? row[aliasIdx].trim() : (isAdmin ? 'Admin PEMTREE' : 'Moderador PEMTREE');
+
+                    let rawCarrera = carreraIdx !== -1 ? (row[carreraIdx] || '').toLowerCase().trim() : 'area_comun';
+                    const matchedCarrera = CARRERAS.find(c => c.id === rawCarrera || c.label.toLowerCase().includes(rawCarrera) || rawCarrera.includes(c.id));
+                    const finalCarrera = matchedCarrera ? matchedCarrera.id : 'area_comun';
+
+                    const isValidUrl = Boolean(rawLink && (rawLink.startsWith('http://') || rawLink.startsWith('https://')));
+                    const isValidTitle = Boolean(rawCurso || rawTitle);
+
+                    parsed.push({
+                        id: 'csv-row-' + i,
+                        rowNum: i + 1,
+                        title: rawTitle,
+                        carrera: finalCarrera,
+                        curso: rawCurso || rawTitle,
+                        section: rawSection,
+                        link: rawLink,
+                        description: rawDesc || null,
+                        author_alias: rawAlias,
+                        isValid: isValidUrl && isValidTitle,
+                        errorMsg: !isValidUrl ? 'URL inválida (debe iniciar con http:// o https://)' : (!isValidTitle ? 'Título o Curso faltante' : '')
+                    });
+                }
+
+                if (parsed.length === 0) {
+                    setCsvError('No se encontraron filas de datos en el CSV.');
+                } else {
+                    setCsvParsedRows(parsed);
+                }
+            } catch (err) {
+                setCsvError('Error al procesar el archivo: ' + (err.message || err));
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
+    }, [isAdmin]);
+
+    const handleCsvUploadSubmit = useCallback(async () => {
+        const validRows = csvParsedRows.filter(r => r.isValid);
+        if (validRows.length === 0) {
+            setCsvError('No hay filas válidas listas para importar. Por favor verifica tu archivo.');
+            return;
+        }
+
+        setCsvIsUploading(true);
+        setCsvError('');
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const recordsToInsert = validRows.map(r => ({
+                    title: r.title,
+                    carrera: r.carrera,
+                    curso: r.curso,
+                    section: r.section,
+                    link: r.link,
+                    description: r.description,
+                    user_id: user?.id || null,
+                    author_alias: r.author_alias || (isAdmin ? 'Admin PEMTREE' : 'Moderador PEMTREE'),
+                    upvotes: 0
+                }));
+
+                const { error } = await supabase.from('whatsapp_groups').insert(recordsToInsert);
+                if (error) {
+                    console.warn('Detalle interno al insertar CSV en Supabase:', error);
+                    setCsvError('Error de base de datos de Supabase: ' + (error.message || 'Error desconocido'));
+                    setCsvIsUploading(false);
+                    return;
+                }
+                await fetchGroups();
+            } catch (e) {
+                setCsvError('Ocurrió un error al cargar masivamente: ' + (e.message || e));
+                setCsvIsUploading(false);
+                return;
+            }
+        } else {
+            const newEntries = validRows.map((r, idx) => ({
+                id: 'local-csv-' + Date.now() + '-' + idx,
+                title: r.title,
+                carrera: r.carrera,
+                curso: r.curso,
+                section: r.section,
+                link: r.link,
+                description: r.description,
+                user_id: user?.id || 'mod-' + Date.now(),
+                author_alias: r.author_alias || (isAdmin ? 'Admin PEMTREE' : 'Moderador PEMTREE'),
+                upvotes: 0,
+                reported_count: 0,
+                created_at: new Date().toISOString()
+            }));
+            setGroups(prev => [...newEntries, ...prev]);
+        }
+
+        setCsvIsUploading(false);
+        setIsCsvModalOpen(false);
+        setCsvFile(null);
+        setCsvParsedRows([]);
+        showAlert('¡Carga Masiva Exitosa!', `Se importaron ${validRows.length} cursos/grupos estudiantiles correctamente al directorio.`, 'success');
+    }, [csvParsedRows, user, isAdmin, fetchGroups, showAlert]);
+
     // Delete group
     const handleDeleteGroup = async (groupId) => {
         const target = groups.find(g => g.id === groupId);
         if (!target) return;
-        const canDelete = isAdmin || (user && target.user_id === user.id);
+        const canDelete = canModerate || (user && target.user_id === user.id);
         if (!canDelete) {
-            showAlert('Acceso denegado', 'Solo el autor del grupo o un moderador pueden eliminar este enlace.', 'error');
+            showAlert('Acceso denegado', 'Solo el autor del grupo, un administrador o un moderador pueden eliminar este enlace.', 'error');
             return;
         }
 
-        showConfirm(
-            isAdmin && target.user_id !== user?.id ? 'Moderador: ¿Eliminar grupo estudiantil?' : '¿Eliminar grupo estudiantil?',
-            `¿Estás seguro de que deseas eliminar permanentemente el grupo "${target.title}" de la plataforma?`,
-            async () => {
-                if (isSupabaseConfigured && supabase) {
-                    try {
+        const isModDeletingOther = isModerator && !isAdmin && target.user_id !== user?.id;
+
+        const executeDelete = async (justification = null) => {
+            if (isModDeletingOther && (!justification || !justification.trim())) {
+                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+                return;
+            }
+
+            if (isSupabaseConfigured && supabase) {
+                try {
+                    if (isModDeletingOther && justification) {
+                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
+                            p_tabla: 'whatsapp_groups',
+                            p_item_id: groupId,
+                            p_justificacion: justification.trim()
+                        });
+                        if (modErr) throw modErr;
+                        sendFormspreeNotification({
+                            tipo_evento: 'MODERADOR ELIMINÓ GRUPO',
+                            a_quien: `Grupo: "${target.title}" (Autor: ${target.author_alias})`,
+                            por_quien: user?.email || user?.id || 'Moderador',
+                            porque: justification.trim()
+                        });
+                    } else {
                         const { error } = await supabase.from('whatsapp_groups').delete().eq('id', groupId);
                         if (error) throw error;
-                        await fetchGroups();
-                    } catch {
-                        showAlert('No se pudo eliminar el grupo', 'Ocurrió un problema temporal al intentar eliminar el grupo. Por favor, inténtalo de nuevo más tarde.', 'error');
-                        return;
                     }
+                    await fetchGroups();
+                } catch (e) {
+                    console.error('Error al eliminar grupo:', e);
+                    showAlert('No se pudo eliminar el grupo', formatUserError(e), 'error');
+                    return;
                 }
-                setGroups(prev => prev.filter(g => g.id !== groupId));
             }
-        );
+            setGroups(prev => prev.filter(g => g.id !== groupId));
+        };
+
+        if (isModDeletingOther) {
+            showPrompt(
+                'Moderación: Justificación obligatoria',
+                `Estás eliminando el grupo "${target.title}" (de ${target.author_alias}). Como moderador, ingresa la justificación para la auditoría y notificación:`,
+                'Ej: Spam, enlace roto, contenido inapropiado...',
+                (justificationText) => executeDelete(justificationText)
+            );
+        } else {
+            showConfirm(
+                '¿Eliminar grupo estudiantil?',
+                `¿Estás seguro de que deseas eliminar permanentemente el grupo "${target.title}" de la plataforma?`,
+                () => executeDelete(null)
+            );
+        }
     };
 
     // Submit Report
@@ -442,13 +754,19 @@ export default function WhatsAppGroups() {
                 console.error('Error al registrar reporte:', err);
             }
         }
+        sendFormspreeNotification({
+            tipo_evento: 'REPORTE DE GRUPO ESTUDIANTIL',
+            a_quien: `Grupo reportado: "${reportTarget.title}" (${reportTarget.curso}) - Autor original: ${reportTarget.author_alias}`,
+            por_quien: user?.email || user?.id || 'Estudiante',
+            porque: reportReason
+        });
         showAlert('Reporte Enviado', `Gracias por notificar. Hemos registrado el reporte sobre "${reportTarget.title}".`, 'success');
     };
 
     // Filtered lists
     const displayedGroups = useMemo(() => {
         return groups.filter(g => {
-            if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera) {
+            if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera && g.carrera !== 'todas') {
                 return false;
             }
             if (selectedCursoFilter && selectedCursoFilter !== 'todos') {
@@ -518,10 +836,10 @@ export default function WhatsAppGroups() {
                         {user ? (
                             <div className="flex items-center gap-3.5 bg-white/15 dark:bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
                                 <div className="flex items-center gap-2">
-                                    <ShieldCheck size={16} className={`${isAdmin ? 'text-[#FFD700]' : 'text-[#79F2B8]'} shrink-0`} />
+                                    <ShieldCheck size={16} className={`${isAdmin ? 'text-[#FFD700]' : isModerator ? 'text-[#38BDF8]' : 'text-[#79F2B8]'} shrink-0`} />
                                     <div className="text-left min-w-0">
                                         <p className="text-[10px] uppercase font-bold text-blue-200 dark:text-slate-400">
-                                            {isAdmin ? 'Admin PEMTREE' : 'Sesión Verificada'}
+                                            {isAdmin ? 'Admin PEMTREE' : isModerator ? 'Moderador PEMTREE' : 'Sesión Verificada'}
                                         </p>
                                         <p className="text-xs font-extrabold truncate max-w-[130px] sm:max-w-none text-white">{activeAlias}</p>
                                     </div>
@@ -562,7 +880,7 @@ export default function WhatsAppGroups() {
                         )}
 
                         <button
-                            onClick={() => setIsAddModalOpen(true)}
+                            onClick={handleOpenAddModal}
                             className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-white/30 backdrop-blur-xs"
                         >
                             <Plus size={18} strokeWidth={3} />
@@ -595,18 +913,36 @@ export default function WhatsAppGroups() {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                        <Filter size={16} className="text-[#7A869A] dark:text-slate-400 hidden sm:block" />
-                        <select
-                            value={selectedCursoFilter}
-                            onChange={(e) => setSelectedCursoFilter(e.target.value)}
-                            className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
-                        >
-                            <option value="">Todos los Cursos</option>
-                            {availableCursosInGroups.map(cursoName => (
-                                <option key={cursoName} value={cursoName}>{cursoName}</option>
-                            ))}
-                        </select>
+                    <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 flex-wrap sm:flex-nowrap">
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <Filter size={16} className="text-[#7A869A] dark:text-slate-400 hidden sm:block shrink-0" />
+                            <select
+                                value={selectedCursoFilter}
+                                onChange={(e) => setSelectedCursoFilter(e.target.value)}
+                                className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
+                            >
+                                <option value="">Todos los Cursos</option>
+                                {availableCursosInGroups.map(cursoName => (
+                                    <option key={cursoName} value={cursoName}>{cursoName}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {canModerate && (
+                            <button
+                                onClick={() => {
+                                    setCsvFile(null);
+                                    setCsvParsedRows([]);
+                                    setCsvError('');
+                                    setIsCsvModalOpen(true);
+                                }}
+                                className="flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0043A4] dark:bg-[#0C295E] dark:hover:bg-[#1A3A75] text-white dark:text-[#4C9AFF] border border-transparent dark:border-[#4C9AFF]/30 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer w-full sm:w-auto"
+                                title="Cargar masivamente cursos desde archivo CSV"
+                            >
+                                <FileSpreadsheet size={16} strokeWidth={2.5} />
+                                <span>Cargar CSV</span>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -632,7 +968,6 @@ export default function WhatsAppGroups() {
                         );
                     })}
                 </div>
-
                 {/* Groups Grid / List */}
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3">
@@ -640,146 +975,133 @@ export default function WhatsAppGroups() {
                         <span className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando grupos disponibles...</span>
                     </div>
                 ) : displayedGroups.length === 0 ? (
-                    <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-10 border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col items-center justify-center text-center gap-4 shadow-sm">
-                        <div className="w-16 h-16 rounded-full bg-[#EAE6FF] dark:bg-[#201E36] flex items-center justify-center text-[#6554C0] dark:text-[#9F8FEF]">
-                            <MessageSquare size={32} />
-                        </div>
-                        <div className="flex flex-col gap-1 max-w-md">
-                            <h3 className="text-lg font-bold text-[#172B4D] dark:text-slate-100">
-                                {searchQuery || selectedCursoFilter ? 'No se encontraron grupos para tu búsqueda' : 'Aún no hay grupos clasificados en esta carrera'}
-                            </h3>
-                            <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400">
-                                ¿Tienes el enlace (WhatsApp, Telegram, Discord, Drive) del grupo de tu sección o curso? ¡Agrégalo ahora para ayudar a tus compañeros!
-                            </p>
-                        </div>
-                        <button
-                            onClick={() => setIsAddModalOpen(true)}
-                            className="mt-2 flex items-center gap-2 bg-[#25D366] hover:bg-[#1EBE5D] text-white font-bold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-md transition cursor-pointer border-none"
-                        >
-                            <Plus size={16} />
-                            <span>Agregar Enlace Ahora</span>
-                        </button>
-                    </div>
+                    <EmptyState
+                        icon={MessageSquare}
+                        title={searchQuery || selectedCursoFilter ? 'No se encontraron grupos para tu búsqueda' : 'Aún no hay grupos clasificados en esta carrera'}
+                        description="¿Tienes el enlace (WhatsApp, Telegram, Discord, Drive) del grupo de tu sección o curso? ¡Agrégalo ahora para ayudar a tus compañeros!"
+                        actionLabel="Agregar Enlace Ahora"
+                        onAction={handleOpenAddModal}
+                    />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {displayedGroups.map(group => {
                             const carreraObj = CARRERAS.find(c => c.id === group.carrera) || CARRERAS[0];
                             const isUpvoted = upvotedGroupIds.has(group.id);
-                            const canDelete = isAdmin || (user && group.user_id === user.id);
+                            const canDelete = canModerate || (user && group.user_id === user.id);
 
                             return (
                                 <div
                                     key={group.id}
-                                    className="bg-white dark:bg-[#161F2E] rounded-2xl p-5 border border-slate-200 dark:border-slate-800 hover:border-slate-300 dark:hover:border-slate-700 shadow-xs hover:shadow-sm transition-all duration-150 flex flex-col justify-between gap-4"
+                                    className="bg-white dark:bg-[#1C2636] rounded-2xl p-5 border border-[#DFE1E6] dark:border-[#3E4C5E] hover:border-[#DFE1E6]/80 dark:hover:border-[#3E4C5E]/80 shadow-sm transition-all duration-150 flex flex-col justify-between gap-4"
                                 >
                                     <div className="flex flex-col gap-2.5">
-                                        {/* Top Badges */}
                                         <div className="flex items-center justify-between gap-2 flex-wrap">
                                             <div className="flex items-center gap-1.5 flex-wrap">
                                                 <span className={`text-[10px] font-semibold px-2.5 py-0.5 rounded-full border ${carreraObj.badgeBg}`}>
                                                     {carreraObj.label}
                                                 </span>
                                                 {group.section && (
-                                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800/80 text-slate-600 dark:text-slate-300 border border-slate-200 dark:border-slate-700">
+                                                    <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F4F5F7] dark:bg-[#0E1624] text-[#5E6C84] dark:text-slate-350 border border-[#DFE1E6] dark:border-[#3E4C5E]">
                                                         Secc. {group.section}
                                                     </span>
                                                 )}
                                             </div>
-                                            <span className="text-[11px] text-slate-400 dark:text-slate-500 font-medium">
+                                            <span className="text-[11px] text-[#7A869A] dark:text-slate-400 font-medium">
                                                 {formatTimeAgo(group.created_at)}
                                             </span>
                                         </div>
 
-                                        {/* Course Name & Group Title */}
                                         <div className="flex flex-col gap-1">
-                                            <span className="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                                            <span className="text-xs font-bold uppercase tracking-wider text-[#5E6C84] dark:text-slate-400 flex items-center gap-1">
                                                 <BookOpen size={13} />
                                                 <span>{group.curso}</span>
                                             </span>
-                                            <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-slate-100 leading-snug">
+                                            <h3 className="text-base sm:text-lg font-bold text-[#172B4D] dark:text-slate-100 leading-snug">
                                                 {group.title}
                                             </h3>
                                         </div>
 
-                                        {/* Description */}
                                         {group.description && (
-                                            <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2">
+                                            <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2">
                                                 {group.description}
                                             </p>
                                         )}
+
+                                        {group.image_url && (
+                                            <div className="mt-1 rounded-xl overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] max-h-48 flex items-center justify-center bg-black/5 dark:bg-black/20">
+                                                <img
+                                                    src={group.image_url}
+                                                    alt={group.title}
+                                                    className="max-h-48 w-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                    onClick={() => window.open(group.image_url, '_blank')}
+                                                />
+                                            </div>
+                                        )}
                                     </div>
 
-                                    {/* Bottom Info & Action Buttons */}
-                                    <div className="flex flex-col gap-3 pt-3 border-t border-slate-100 dark:border-slate-800/80">
-                                        <div className="flex items-center justify-between gap-2 text-xs text-slate-400 dark:text-slate-500">
+                                    <div className="flex flex-col gap-3 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                                        <div className="flex items-center justify-between gap-2 text-xs text-[#7A869A] dark:text-slate-400">
                                             <span className="font-medium flex items-center gap-1">
                                                 <span>Por</span>
-                                                <strong className="text-slate-700 dark:text-slate-300">{group.author_alias}</strong>
+                                                <strong className="text-[#172B4D] dark:text-slate-200">{group.author_alias}</strong>
                                             </span>
 
-                                            {/* Upvotes badge */}
-                                            <div className="flex items-center gap-1 font-semibold text-slate-600 dark:text-slate-400 text-xs">
-                                                <CheckCircle2 size={14} className="text-slate-500" />
+                                            <div className="flex items-center gap-1 font-semibold text-[#5E6C84] dark:text-slate-300 text-xs">
+                                                <CheckCircle2 size={14} className="text-[#059669] dark:text-[#10b981]" />
                                                 <span>{group.upvotes || 0} útiles</span>
                                             </div>
                                         </div>
 
-                                        {/* Actions row */}
                                         <div className="flex items-center gap-2 flex-wrap sm:flex-nowrap pt-1">
-                                            {/* Minimalist Join Button */}
                                             <a
                                                 href={group.link}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex-grow flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-bold text-xs sm:text-sm py-2 px-4 rounded-xl transition no-underline text-center"
+                                                className="flex-grow flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-bold text-xs sm:text-sm py-2 px-4 rounded-xl transition no-underline text-center shadow-sm"
                                             >
                                                 <MessageSquare size={15} />
                                                 <span>Abrir enlace</span>
                                                 <ExternalLink size={13} />
                                             </a>
 
-                                            {/* Copy button */}
                                             <button
                                                 onClick={() => handleCopyLink(group.id, group.link)}
                                                 title="Copiar enlace"
                                                 className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
                                                     copiedId === group.id
-                                                        ? 'bg-slate-100 dark:bg-slate-800 border-slate-400 text-slate-800 dark:text-slate-200'
-                                                        : 'bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-400'
+                                                        ? 'bg-[#F4F5F7] dark:bg-[#2D333B] border-[#0052CC]/50 dark:border-[#4C9AFF]/50 text-[#0052CC] dark:text-[#4C9AFF]'
+                                                        : 'bg-transparent hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] border-[#DFE1E6] dark:border-[#3E4C5E] text-[#5E6C84] dark:text-slate-300'
                                                 }`}
                                             >
                                                 {copiedId === group.id ? <Check size={15} /> : <Copy size={15} />}
                                                 <span className="hidden sm:inline">{copiedId === group.id ? 'Copiado' : 'Copiar'}</span>
                                             </button>
 
-                                            {/* Verify/Confirm Button */}
                                             <button
                                                 onClick={() => handleToggleUpvote(group.id)}
                                                 title={isUpvoted ? 'Quitar confirmación' : 'Confirmar que este enlace funciona y es útil'}
                                                 className={`py-2 px-2.5 rounded-xl border transition cursor-pointer flex items-center justify-center ${
                                                     isUpvoted
-                                                        ? 'bg-slate-900 dark:bg-white text-white dark:text-slate-900 border-slate-900 dark:border-white font-bold'
-                                                        : 'bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 border-slate-200 dark:border-slate-700 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200'
+                                                        ? 'bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] border-[#0052CC] dark:border-[#4C9AFF] font-bold'
+                                                        : 'bg-transparent hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] border-[#DFE1E6] dark:border-[#3E4C5E] text-[#7A869A] dark:text-slate-400'
                                                 }`}
                                             >
                                                 <CheckCircle2 size={15} />
                                             </button>
 
-                                            {/* Report Button */}
                                             <button
                                                 onClick={() => handleOpenReportModal(group)}
                                                 title="Reportar enlace caído o spam"
-                                                className="py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800/60 text-slate-400 hover:text-rose-500 transition cursor-pointer flex items-center justify-center"
+                                                className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] text-[#7A869A] dark:text-slate-400 hover:text-[#BF2600] dark:hover:text-[#FF6369] transition cursor-pointer flex items-center justify-center"
                                             >
                                                 <AlertTriangle size={15} />
                                             </button>
 
-                                            {/* Delete button for author/admin */}
                                             {canDelete && (
                                                 <button
                                                     onClick={() => handleDeleteGroup(group.id)}
                                                     title="Eliminar grupo"
-                                                    className="py-2 px-2.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-transparent hover:bg-rose-50 dark:hover:bg-rose-950/30 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 transition cursor-pointer flex items-center justify-center"
+                                                    className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#FFEBE6] dark:hover:bg-[#450A0A]/40 text-[#7A869A] dark:text-slate-400 hover:text-[#BF2600] dark:hover:text-[#FF6369] transition cursor-pointer flex items-center justify-center"
                                                 >
                                                     <Trash2 size={15} />
                                                 </button>
@@ -792,300 +1114,442 @@ export default function WhatsAppGroups() {
                     </div>
                 )}
             </div>
-
-            {/* ADD GROUP MODAL */}
             {isAddModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] w-full max-w-lg rounded-2xl p-6 shadow-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-5 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center justify-between pb-3 border-b border-[#DFE1E6] dark:border-[#3E4C5E]">
-                            <div className="flex items-center gap-2">
-                                <div className="w-8 h-8 rounded-lg bg-[#25D366] flex items-center justify-center text-white">
-                                    <MessageSquare size={18} className="fill-white" />
+                <Modal
+                    isOpen={isAddModalOpen}
+                    onClose={() => setIsAddModalOpen(false)}
+                    title="Compartir Grupo Estudiantil"
+                    icon={MessageSquare}
+                    size="md"
+                >
+                    <form onSubmit={handleCreateGroup} className="flex flex-col gap-4">
+                        <Select
+                            label="Carrera o Área"
+                            value={newCarrera}
+                            onChange={(e) => setNewCarrera(e.target.value)}
+                        >
+                            {CARRERAS.map(c => (
+                                <option key={c.id} value={c.id}>{c.label}</option>
+                            ))}
+                        </Select>
+
+                        <div className="flex flex-col gap-1.5 relative w-full">
+                            <Input
+                                label="Curso"
+                                placeholder="Ej. Matemática Básica 1, Estructuras de Datos..."
+                                value={newCurso || cursoSearchText}
+                                onChange={(e) => {
+                                    setNewCurso(e.target.value);
+                                    setCursoSearchText(e.target.value);
+                                    setShowCursoDropdown(true);
+                                }}
+                                onFocus={() => setShowCursoDropdown(true)}
+                            />
+                            {showCursoDropdown && filteredCursoOptions.length > 0 && (
+                                <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl shadow-xl max-h-48 overflow-y-auto z-50 flex flex-col">
+                                    {filteredCursoOptions.map(c => (
+                                        <button
+                                            key={c.id}
+                                            type="button"
+                                            onClick={() => {
+                                                setNewCurso(c.nombre);
+                                                setCursoSearchText('');
+                                                setShowCursoDropdown(false);
+                                            }}
+                                            className="w-full text-left p-2.5 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-xs font-semibold text-[#172B4D] dark:text-slate-200 border-b last:border-b-0 border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 cursor-pointer bg-transparent"
+                                        >
+                                            <span className="text-[#0052CC] dark:text-[#4C9AFF] font-extrabold mr-1.5">[{c.codigo}]</span>
+                                            <span>{c.nombre}</span>
+                                        </button>
+                                    ))}
                                 </div>
-                                <h3 className="text-lg font-black text-[#172B4D] dark:text-slate-100">
-                                    Compartir Grupo Estudiantil
-                                </h3>
-                            </div>
-                            <button
-                                onClick={() => setIsAddModalOpen(false)}
-                                className="p-1 rounded-lg hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300 cursor-pointer border-none bg-transparent"
-                            >
-                                <X size={20} />
-                            </button>
+                            )}
                         </div>
 
-                        <form onSubmit={handleCreateGroup} className="flex flex-col gap-4">
-                            {/* Carrera */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200">
-                                    Carrera o Área <span className="text-rose-500">*</span>
-                                </label>
-                                <select
-                                    value={newCarrera}
-                                    onChange={(e) => setNewCarrera(e.target.value)}
-                                    className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-200 focus:ring-2 focus:ring-[#0052CC] outline-none cursor-pointer"
-                                >
-                                    {CARRERAS.filter(c => c.id !== 'todas').map(c => (
-                                        <option key={c.id} value={c.id}>{c.label}</option>
-                                    ))}
-                                </select>
-                            </div>
+                        <div className="grid grid-cols-3 gap-3">
+                            <Input
+                                label="Sección"
+                                placeholder="Ej. A, B, N, Única"
+                                value={newSection}
+                                onChange={(e) => setNewSection(e.target.value)}
+                            />
+                            <Input
+                                label="Título descriptivo"
+                                placeholder="Ej. Matemática Básica 1 - Secc A (Ing. Pérez)"
+                                value={newTitle}
+                                onChange={(e) => setNewTitle(e.target.value)}
+                                className="col-span-2"
+                            />
+                        </div>
 
-                            {/* Curso Autocomplete / Free text */}
-                            <div className="flex flex-col gap-1.5 relative">
-                                <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200">
-                                    Curso <span className="text-rose-500">*</span>
-                                </label>
-                                <input
-                                    type="text"
-                                    placeholder="Ej. Matemática Básica 1, Estructuras de Datos..."
-                                    value={newCurso || cursoSearchText}
-                                    onChange={(e) => {
-                                        setNewCurso(e.target.value);
-                                        setCursoSearchText(e.target.value);
-                                        setShowCursoDropdown(true);
-                                    }}
-                                    onFocus={() => setShowCursoDropdown(true)}
-                                    className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-200 focus:ring-2 focus:ring-[#0052CC] outline-none"
-                                />
-                                {showCursoDropdown && filteredCursoOptions.length > 0 && (
-                                    <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl shadow-xl max-h-48 overflow-y-auto z-50 flex flex-col">
-                                        {filteredCursoOptions.map(c => (
-                                            <button
-                                                key={c.id}
-                                                type="button"
-                                                onClick={() => {
-                                                    setNewCurso(c.nombre);
-                                                    setCursoSearchText('');
-                                                    setShowCursoDropdown(false);
-                                                }}
-                                                className="w-full text-left p-2.5 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-xs font-semibold text-[#172B4D] dark:text-slate-200 border-b last:border-b-0 border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 cursor-pointer bg-transparent"
-                                            >
-                                                <span className="text-[#0052CC] dark:text-[#4C9AFF] font-extrabold mr-1.5">[{c.codigo}]</span>
-                                                <span>{c.nombre}</span>
-                                            </button>
-                                        ))}
-                                    </div>
-                                )}
-                            </div>
+                        <Input
+                            label="Enlace de Invitación o Recurso"
+                            placeholder="https://chat.whatsapp.com/... o https://t.me/..."
+                            value={newLink}
+                            onChange={(e) => setNewLink(e.target.value)}
+                            type="url"
+                        />
 
-                            {/* Section & Title in grid */}
-                            <div className="grid grid-cols-3 gap-3">
-                                <div className="flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200">
-                                        Sección
-                                    </label>
+                        <Textarea
+                            label="Descripción o notas (Opcional)"
+                            rows={2}
+                            placeholder="Ej. Grupo para compartir resoluciones, información de cortos y laboratorios..."
+                            value={newDescription}
+                            onChange={(e) => setNewDescription(e.target.value)}
+                        />
+
+                        {/* Image upload section */}
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200 flex items-center justify-between">
+                                <span className="flex items-center gap-1.5">
+                                    <ImageIcon size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <span>Adjuntar imagen representativa (Opcional)</span>
+                                </span>
+                                {isCompressingImg && <span className="text-[11px] text-[#0052CC] dark:text-[#4C9AFF] animate-pulse">Procesando imagen...</span>}
+                            </label>
+                            <div className="flex items-center gap-2">
+                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
+                                    <ImageIcon size={15} />
+                                    <span>Seleccionar imagen desde tu dispositivo</span>
                                     <input
-                                        type="text"
-                                        placeholder="Ej. A, B, N, Única"
-                                        value={newSection}
-                                        onChange={(e) => setNewSection(e.target.value)}
-                                        className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-200 focus:ring-2 focus:ring-[#0052CC] outline-none"
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageFileSelect}
+                                        disabled={isCompressingImg}
+                                        className="hidden"
                                     />
-                                </div>
-                                <div className="col-span-2 flex flex-col gap-1.5">
-                                    <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200">
-                                        Título descriptivo <span className="text-rose-500">*</span>
-                                    </label>
-                                    <input
-                                        type="text"
-                                        placeholder="Ej. Matemática Básica 1 - Secc A (Ing. Pérez)"
-                                        value={newTitle}
-                                        onChange={(e) => setNewTitle(e.target.value)}
-                                        className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-200 focus:ring-2 focus:ring-[#0052CC] outline-none"
-                                    />
-                                </div>
-                            </div>
-
-                            {/* Link web / invitación */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200 flex items-center justify-between">
-                                    <span>Enlace de Invitación o Recurso <span className="text-rose-500">*</span></span>
-                                    <span className="text-[10px] text-emerald-600 font-semibold">WhatsApp, Telegram, Discord, Drive, etc.</span>
                                 </label>
-                                <input
-                                    type="url"
-                                    placeholder="https://chat.whatsapp.com/... o https://t.me/..."
-                                    value={newLink}
-                                    onChange={(e) => setNewLink(e.target.value)}
-                                    className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-mono text-[#172B4D] dark:text-slate-200 focus:ring-2 focus:ring-[#25D366] outline-none"
-                                />
                             </div>
+                            {newImageUrl && (
+                                <div className="relative mt-1.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-black/5 dark:bg-black/20 p-2 flex items-center justify-center max-h-48 overflow-hidden">
+                                    <img src={newImageUrl} alt="Vista previa" className="max-h-44 rounded-lg object-contain" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setNewImageUrl('')}
+                                        className="absolute top-2 right-2 p-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-md transition cursor-pointer"
+                                        title="Quitar imagen"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
-                            {/* Description */}
-                            <div className="flex flex-col gap-1.5">
-                                <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200">
-                                    Descripción o notas (Opcional)
-                                </label>
-                                <textarea
-                                    rows={2}
-                                    placeholder="Ej. Grupo para compartir resoluciones, información de cortos y laboratorios..."
-                                    value={newDescription}
-                                    onChange={(e) => setNewDescription(e.target.value)}
-                                    className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-medium text-[#172B4D] dark:text-slate-200 focus:ring-2 focus:ring-[#0052CC] outline-none resize-none"
-                                />
-                            </div>
-
-                            <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsAddModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] text-xs font-bold text-[#5E6C84] dark:text-slate-300 transition cursor-pointer bg-transparent"
-                                >
-                                    Cancelar
-                                </button>
-                                <button
-                                    type="submit"
-                                    className="px-5 py-2.5 rounded-xl bg-[#25D366] hover:bg-[#1EBE5D] text-white text-xs sm:text-sm font-black shadow-md transition transform active:scale-95 cursor-pointer border-none flex items-center gap-1.5"
-                                >
-                                    <Plus size={16} strokeWidth={3} />
-                                    <span>Publicar Grupo Ahora</span>
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
+                        <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                type="button"
+                                variant="secondary"
+                                onClick={() => setIsAddModalOpen(false)}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="success"
+                                size="sm"
+                                className="bg-[#25D366] hover:bg-[#1EBE5D] text-white"
+                            >
+                                <Plus size={16} strokeWidth={3} />
+                                <span>Publicar Grupo Ahora</span>
+                            </Button>
+                        </div>
+                    </form>
+                </Modal>
             )}
 
-            {/* REPORT MODAL */}
             {isReportModalOpen && reportTarget && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] w-full max-w-md rounded-2xl p-6 shadow-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center gap-2.5 text-rose-600 dark:text-rose-400">
-                            <AlertTriangle size={24} />
-                            <h3 className="text-lg font-black text-[#172B4D] dark:text-slate-100">Reportar Grupo</h3>
-                        </div>
+                <Modal
+                    isOpen={isReportModalOpen}
+                    onClose={() => setIsReportModalOpen(false)}
+                    title="Reportar Grupo"
+                    icon={AlertTriangle}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
                         <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300">
                             ¿Por qué razón deseas reportar el grupo <strong className="text-[#172B4D] dark:text-slate-100">"{reportTarget.title}"</strong>?
                         </p>
-                        <select
+                        <Select
                             value={reportReason}
                             onChange={(e) => setReportReason(e.target.value)}
-                            className="w-full p-3 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-xs sm:text-sm font-semibold text-[#172B4D] dark:text-slate-200 outline-none cursor-pointer"
                         >
                             <option value="Enlace expirado o caído">Enlace expirado o caído</option>
                             <option value="Contenido spam o ajeno a los cursos">Contenido spam o ajeno a los cursos</option>
                             <option value="Grupo duplicado">Grupo duplicado</option>
                             <option value="Enlace engañoso o malicioso">Enlace engañoso o malicioso</option>
-                        </select>
+                        </Select>
                         <div className="flex items-center justify-end gap-3 pt-2">
-                            <button
+                            <Button
+                                variant="secondary"
                                 onClick={() => setIsReportModalOpen(false)}
-                                className="px-4 py-2 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] hover:bg-[#F4F5F7] text-xs font-bold text-slate-500 transition cursor-pointer bg-transparent"
+                                size="sm"
                             >
                                 Cancelar
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                variant="danger"
                                 onClick={handleConfirmReport}
-                                className="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold shadow-md transition cursor-pointer border-none"
+                                size="sm"
                             >
                                 Enviar Reporte
-                            </button>
+                            </Button>
                         </div>
                     </div>
-                </div>
+                </Modal>
             )}
 
-            {/* EDIT PROFILE / PSEUDONYM MODAL */}
             {isProfileModalOpen && (
-                <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] w-full max-w-md rounded-2xl p-6 shadow-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-4 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center gap-2.5 text-[#0052CC] dark:text-[#4C9AFF]">
-                            <UserCheck size={24} />
-                            <h3 className="text-lg font-black text-[#172B4D] dark:text-slate-100">Mi Seudónimo en la Comunidad</h3>
-                        </div>
+                <Modal
+                    isOpen={isProfileModalOpen}
+                    onClose={() => setIsProfileModalOpen(false)}
+                    title="Mi Seudónimo en la Comunidad"
+                    icon={UserCheck}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
                         <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300">
                             Tu seudónimo está sincronizado con el Foro Estudiantil y se utilizará cada vez que compartas un nuevo grupo o respondas a la comunidad:
                         </p>
-                        <form onSubmit={handleSaveProfile} className="flex flex-col gap-4 mt-1">
-                            <div>
-                                <label className="text-xs font-bold text-[#172B4D] dark:text-slate-200 block mb-1">
-                                    Seudónimo Público
-                                </label>
-                                <input
-                                    type="text"
-                                    value={profileInputText}
-                                    onChange={(e) => setProfileInputText(e.target.value)}
-                                    placeholder="Ej. Estudiante CS #123, Dev_GT, etc."
-                                    maxLength={30}
-                                    className="w-full p-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-[#F4F5F7] dark:bg-[#0E1624] text-sm font-bold text-[#172B4D] dark:text-slate-200 outline-none focus:ring-2 focus:ring-[#0052CC]"
-                                    autoFocus
-                                />
-                                <span className="text-[10px] text-slate-400 mt-1 block">Los cambios se verán reflejados al instante en el Foro y en tus Grupos compartidos.</span>
-                            </div>
+                        <form onSubmit={handleSaveProfile} className="flex flex-col gap-4">
+                            <Input
+                                label="Seudónimo Público"
+                                value={profileInputText}
+                                onChange={(e) => setProfileInputText(e.target.value)}
+                                placeholder="Ej. Estudiante CS #123, Dev_GT, etc."
+                                maxLength={30}
+                                autoFocus
+                            />
+                            <span className="text-[10px] text-[#7A869A] mt-1 block">Los cambios se verán reflejados al instante en el Foro y en tus Grupos compartidos.</span>
 
                             <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
-                                <button
+                                <Button
                                     type="button"
+                                    variant="secondary"
                                     onClick={() => setIsProfileModalOpen(false)}
-                                    className="px-4 py-2 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] hover:bg-[#F4F5F7] text-xs font-bold text-slate-500 transition cursor-pointer bg-transparent"
+                                    size="sm"
                                 >
                                     Cancelar
-                                </button>
-                                <button
+                                </Button>
+                                <Button
                                     type="submit"
-                                    className="px-5 py-2 rounded-xl bg-[#0052CC] hover:bg-[#0747A6] text-white text-xs font-bold shadow-md transition cursor-pointer border-none"
+                                    variant="primary"
+                                    size="sm"
                                 >
                                     Guardar Seudónimo
-                                </button>
+                                </Button>
                             </div>
                         </form>
                     </div>
-                </div>
+                </Modal>
             )}
 
-            {/* Custom Alert Modal */}
             {customAlert.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] w-full max-w-sm rounded-2xl p-5 shadow-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center gap-2">
-                            {customAlert.type === 'error' && <AlertCircle className="text-rose-500 shrink-0" size={20} />}
-                            {customAlert.type === 'warning' && <AlertTriangle className="text-amber-500 shrink-0" size={20} />}
-                            {customAlert.type === 'success' && <CheckCircle2 className="text-emerald-500 shrink-0" size={20} />}
-                            {customAlert.type === 'info' && <MessageSquare className="text-blue-500 shrink-0" size={20} />}
-                            <h3 className="text-base font-bold text-[#172B4D] dark:text-slate-100">{customAlert.title}</h3>
-                        </div>
+                <Modal
+                    isOpen={customAlert.isOpen}
+                    onClose={() => setCustomAlert({ ...customAlert, isOpen: false })}
+                    title={customAlert.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
                         <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{customAlert.message}</p>
                         <div className="flex justify-end pt-1">
-                            <button
+                            <Button
+                                variant="primary"
                                 onClick={() => setCustomAlert({ ...customAlert, isOpen: false })}
-                                className="px-4 py-1.5 rounded-xl bg-[#0052CC] hover:bg-[#0747A6] text-white font-bold text-xs shadow-xs transition cursor-pointer border-none"
+                                size="sm"
                             >
                                 Entendido
-                            </button>
+                            </Button>
                         </div>
                     </div>
-                </div>
+                </Modal>
             )}
 
-            {/* Custom Confirm Modal */}
-            {customConfirm.isOpen && (
-                <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-xs flex items-center justify-center p-4">
-                    <div className="bg-white dark:bg-[#1C2636] w-full max-w-sm rounded-2xl p-5 shadow-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3 animate-in fade-in zoom-in-95 duration-150">
-                        <div className="flex items-center gap-2 text-rose-600 dark:text-rose-400">
-                            <AlertTriangle size={20} />
-                            <h3 className="text-base font-bold text-[#172B4D] dark:text-slate-100">{customConfirm.title}</h3>
-                        </div>
-                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{customConfirm.message}</p>
-                        <div className="flex justify-end gap-2 pt-2">
+            {/* Modal de Carga Masiva por CSV (Admin & Moderadores) */}
+            {isCsvModalOpen && (
+                <Modal
+                    isOpen={isCsvModalOpen}
+                    onClose={() => !csvIsUploading && setIsCsvModalOpen(false)}
+                    title="Carga Masiva de Cursos / Grupos (CSV)"
+                    size="lg"
+                >
+                    <div className="flex flex-col gap-5">
+                        {/* Guía rápida y Plantilla */}
+                        <div className="bg-gradient-to-r from-amber-50/80 to-amber-100/60 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-300/60 dark:border-amber-700/50 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="flex items-start gap-3">
+                                <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                                <div className="text-xs text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                    <p className="font-bold text-[#172B4D] dark:text-slate-100 mb-1">Permisos de Administrador / Moderador Activos</p>
+                                    <p>Sube un archivo <code className="font-semibold text-amber-700 dark:text-amber-300">.csv</code> para publicar múltiples cursos de golpe. Puedes incluir columnas como: <span className="font-bold">curso, seccion, enlace, carrera, descripcion</span>.</p>
+                                </div>
+                            </div>
                             <button
-                                onClick={() => setCustomConfirm({ ...customConfirm, isOpen: false })}
-                                className="px-3.5 py-1.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624] text-xs font-bold text-[#5E6C84] dark:text-slate-300 transition cursor-pointer bg-transparent"
+                                type="button"
+                                onClick={handleDownloadTemplate}
+                                className="flex items-center gap-2 bg-white dark:bg-[#1C2636] hover:bg-amber-50 dark:hover:bg-[#283548] text-amber-700 dark:text-amber-300 font-extrabold text-xs px-3.5 py-2 rounded-xl border border-amber-300 dark:border-amber-700 shadow-xs transition shrink-0 cursor-pointer"
+                            >
+                                <Download size={14} />
+                                <span>Descargar Plantilla CSV</span>
+                            </button>
+                        </div>
+
+                        {/* Zona de Drop / Input de Archivo */}
+                        <div className="relative border-2 border-dashed border-[#DFE1E6] dark:border-[#3E4C5E] hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-6 transition bg-[#F4F5F7]/50 dark:bg-[#0E1624]/50 flex flex-col items-center justify-center text-center gap-3">
+                            <input
+                                type="file"
+                                accept=".csv,text/csv"
+                                onChange={handleFileChange}
+                                disabled={csvIsUploading}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10"
+                            />
+                            <div className="w-12 h-12 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                <Upload size={24} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-[#172B4D] dark:text-slate-100">
+                                    {csvFile ? csvFile.name : 'Haz clic o arrastra tu archivo CSV aquí'}
+                                </p>
+                                <p className="text-xs text-[#7A869A] dark:text-slate-400 mt-1">
+                                    {csvFile ? `Tamaño: ${(csvFile.size / 1024).toFixed(1)} KB` : 'Formato compatible: .csv (codificado en UTF-8)'}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Mensaje de Error si hay */}
+                        {csvError && (
+                            <div className="bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-xl p-3.5 flex items-center gap-3 text-red-700 dark:text-red-300 text-xs font-semibold">
+                                <AlertCircle size={16} className="shrink-0" />
+                                <span>{csvError}</span>
+                            </div>
+                        )}
+
+                        {/* Vista previa de las filas analizadas */}
+                        {csvParsedRows.length > 0 && (
+                            <div className="flex flex-col gap-2.5 max-h-[280px] overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-2xl bg-white dark:bg-[#1C2636]">
+                                <div className="bg-[#F4F5F7] dark:bg-[#0E1624] px-4 py-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between text-xs font-bold text-[#5E6C84] dark:text-slate-300">
+                                    <span className="flex items-center gap-2">
+                                        <CheckCircle size={14} className="text-emerald-500" />
+                                        <span>Filas listas para importar ({csvParsedRows.filter(r => r.isValid).length} de {csvParsedRows.length} válidas)</span>
+                                    </span>
+                                    <span className="text-[11px] text-[#7A869A]">Vista Previa</span>
+                                </div>
+                                <div className="overflow-y-auto max-h-[230px] p-2 divide-y divide-[#DFE1E6]/60 dark:divide-[#3E4C5E]/60">
+                                    {csvParsedRows.map((row) => (
+                                        <div key={row.id} className="py-2.5 px-3 flex items-center justify-between gap-3 text-xs">
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <span className="w-6 h-6 rounded-md bg-[#F4F5F7] dark:bg-[#0E1624] flex items-center justify-center font-bold text-[#7A869A] shrink-0 text-[10px]">
+                                                    {row.rowNum}
+                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-[#172B4D] dark:text-slate-100 truncate">{row.curso} <span className="text-amber-600 dark:text-amber-400">({row.section})</span></p>
+                                                    <p className="text-[11px] text-[#7A869A] dark:text-slate-400 truncate">{row.link}</p>
+                                                </div>
+                                            </div>
+                                            <div className="shrink-0">
+                                                {row.isValid ? (
+                                                    <span className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-extrabold text-[10px]">Válido</span>
+                                                ) : (
+                                                    <span className="bg-red-500/15 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full font-bold text-[10px]" title={row.errorMsg}>Error: {row.errorMsg}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Footer de Acciones del Modal */}
+                        <div className="flex justify-end items-center gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setIsCsvModalOpen(false)}
+                                disabled={csvIsUploading}
                             >
                                 Cancelar
-                            </button>
-                            <button
+                            </Button>
+                            <Button
+                                onClick={handleCsvUploadSubmit}
+                                disabled={csvIsUploading || csvParsedRows.filter(r => r.isValid).length === 0}
+                                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-extrabold shadow-md border-none"
+                            >
+                                {csvIsUploading ? 'Importando Cursos...' : `Importar ${csvParsedRows.filter(r => r.isValid).length} Grupos Ahora`}
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {customConfirm.isOpen && (
+                <Modal
+                    isOpen={customConfirm.isOpen}
+                    onClose={() => setCustomConfirm({ ...customConfirm, isOpen: false })}
+                    title={customConfirm.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{customConfirm.message}</p>
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setCustomConfirm({ ...customConfirm, isOpen: false })}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="danger"
                                 onClick={() => {
                                     if (customConfirm.onConfirm) customConfirm.onConfirm();
                                     setCustomConfirm({ ...customConfirm, isOpen: false });
                                 }}
-                                className="px-4 py-1.5 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs shadow-xs transition cursor-pointer border-none"
+                                size="sm"
                             >
                                 Confirmar
-                            </button>
+                            </Button>
                         </div>
                     </div>
-                </div>
+                </Modal>
+            )}
+
+            {customPrompt.isOpen && (
+                <Modal
+                    isOpen={customPrompt.isOpen}
+                    onClose={() => setCustomPrompt({ ...customPrompt, isOpen: false })}
+                    title={customPrompt.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{customPrompt.message}</p>
+                        <input
+                            type="text"
+                            value={customPrompt.value}
+                            onChange={(e) => setCustomPrompt({ ...customPrompt, value: e.target.value })}
+                            placeholder={customPrompt.placeholder}
+                            className="w-full px-3 py-2 text-xs sm:text-sm rounded-lg border border-[#DFE1E6] dark:border-[#2D3A4F] bg-white dark:bg-[#0E1624] text-[#172B4D] dark:text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#0052CC]"
+                        />
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setCustomPrompt({ ...customPrompt, isOpen: false })}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    if (!customPrompt.value.trim()) return;
+                                    if (customPrompt.onSubmit) customPrompt.onSubmit(customPrompt.value.trim());
+                                    setCustomPrompt({ ...customPrompt, isOpen: false });
+                                }}
+                                size="sm"
+                            >
+                                Confirmar
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
             )}
         </div>
     );
