@@ -2,14 +2,23 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
     AlertTriangle, Trash2, LogOut, Check, 
-    Filter, BookOpen, X, Edit3, ShieldCheck, UserCheck
+    Filter, BookOpen, X, Edit3, ShieldCheck, UserCheck,
+    Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles,
+    Image as ImageIcon
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { moderateSubmission } from '../lib/moderation';
+import { formatUserError } from '../lib/moderation';
+import { sendFormspreeNotification } from '../lib/notification';
+import { uploadOrCompressImage } from '../lib/imageUtils';
 import { cursos } from '../modules/data/cursos';
 import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
 
 const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
+
+// UIDs y/o emails de Moderadores autorizados para la gestión y carga masiva por CSV de grupos estudiantiles
+const MODERATOR_UIDS = [
+    // Puedes agregar UIDs o correos de moderadores aquí
+];
 
 const CARRERAS = [
     { id: 'todas', label: 'Todas las Carreras / Áreas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
@@ -59,6 +68,8 @@ export default function WhatsAppGroups() {
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isModerator, setIsModerator] = useState(false);
+    const canModerate = isAdmin || isModerator;
     const [upvotedGroupIds, setUpvotedGroupIds] = useState(new Set());
     const [reportedGroupIds, setReportedGroupIds] = useState(new Set());
     const [copiedId, setCopiedId] = useState(null);
@@ -74,9 +85,17 @@ export default function WhatsAppGroups() {
     const [reportTarget, setReportTarget] = useState(null);
     const [reportReason, setReportReason] = useState('');
 
-    // Custom Alert / Confirm
+    // CSV Bulk Upload states
+    const [isCsvModalOpen, setIsCsvModalOpen] = useState(false);
+    const [csvFile, setCsvFile] = useState(null);
+    const [csvParsedRows, setCsvParsedRows] = useState([]);
+    const [csvError, setCsvError] = useState('');
+    const [csvIsUploading, setCsvIsUploading] = useState(false);
+
+    // Custom Alert / Confirm / Prompt
     const [customAlert, setCustomAlert] = useState({ isOpen: false, title: '', message: '', type: 'info' });
     const [customConfirm, setCustomConfirm] = useState({ isOpen: false, title: '', message: '', onConfirm: null });
+    const [customPrompt, setCustomPrompt] = useState({ isOpen: false, title: '', message: '', value: '', placeholder: '', onSubmit: null });
 
     const showAlert = useCallback((title, message, type = 'info') => {
         setCustomAlert({ isOpen: true, title, message, type });
@@ -86,6 +105,10 @@ export default function WhatsAppGroups() {
         setCustomConfirm({ isOpen: true, title, message, onConfirm });
     }, []);
 
+    const showPrompt = useCallback((title, message, placeholder, onSubmit) => {
+        setCustomPrompt({ isOpen: true, title, message, value: '', placeholder, onSubmit });
+    }, []);
+
     // Form inputs
     const [newTitle, setNewTitle] = useState('');
     const [newCarrera, setNewCarrera] = useState('area_comun');
@@ -93,6 +116,8 @@ export default function WhatsAppGroups() {
     const [newSection, setNewSection] = useState('A');
     const [newLink, setNewLink] = useState('');
     const [newDescription, setNewDescription] = useState('');
+    const [newImageUrl, setNewImageUrl] = useState('');
+    const [isCompressingImg, setIsCompressingImg] = useState(false);
     const [cursoSearchText, setCursoSearchText] = useState('');
     const [showCursoDropdown, setShowCursoDropdown] = useState(false);
 
@@ -111,21 +136,48 @@ export default function WhatsAppGroups() {
         return 'Estudiante Anónimo';
     }, [savedAlias, user]);
 
+    const checkUserRoles = useCallback(async (sessionUser) => {
+        setUser(sessionUser ?? null);
+        let isAdminUser = sessionUser?.id === ADMIN_UID || sessionUser?.email === 'emanu@gmail.com';
+        let isModUser = Boolean(
+            isAdminUser ||
+            (sessionUser?.id && MODERATOR_UIDS.includes(sessionUser.id)) ||
+            (sessionUser?.email && MODERATOR_UIDS.includes(sessionUser.email)) ||
+            sessionUser?.user_metadata?.role === 'moderator' ||
+            sessionUser?.user_metadata?.is_moderator === true ||
+            localStorage.getItem('pemtree_moderator') === 'true'
+        );
+        if (sessionUser && isSupabaseConfigured && supabase) {
+            try {
+                const { data: roleData } = await supabase.from('user_roles').select('role').eq('user_id', sessionUser.id).maybeSingle();
+                if (roleData?.role === 'admin') {
+                    isAdminUser = true;
+                    isModUser = true;
+                } else if (roleData?.role === 'moderator') {
+                    isModUser = true;
+                }
+            } catch { /* ignorar si la tabla aún no existe */ }
+        }
+        setIsAdmin(Boolean(isAdminUser));
+        setIsModerator(Boolean(isModUser));
+    }, []);
+
     // Check auth state
     useEffect(() => {
-        if (!isSupabaseConfigured || !supabase) return;
+        if (!isSupabaseConfigured || !supabase) {
+            const timer = setTimeout(() => checkUserRoles(null), 0);
+            return () => clearTimeout(timer);
+        }
         supabase.auth.getSession().then(({ data: { session } }) => {
-            setUser(session?.user ?? null);
-            setIsAdmin(session?.user?.id === ADMIN_UID);
+            checkUserRoles(session?.user ?? null);
         });
 
         const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-            setUser(session?.user ?? null);
-            setIsAdmin(session?.user?.id === ADMIN_UID);
+            checkUserRoles(session?.user ?? null);
         });
 
         return () => subscription.unsubscribe();
-    }, []);
+    }, [checkUserRoles]);
 
     // Load groups, upvotes, and reports
     const fetchGroups = useCallback(async () => {
@@ -205,12 +257,7 @@ export default function WhatsAppGroups() {
         const trimmed = profileInputText.trim();
         if (!trimmed) return;
 
-        const modResult = moderateSubmission({ title: trimmed, content: '' });
-        if (!modResult.valid) {
-            showAlert('Seudónimo no válido', modResult.reason, 'error');
-            return;
-        }
-        const cleanAlias = modResult.censoredTitle;
+        const cleanAlias = trimmed;
 
         localStorage.setItem('pemtree_forum_alias', cleanAlias);
         setSavedAlias(cleanAlias);
@@ -237,6 +284,25 @@ export default function WhatsAppGroups() {
             .slice(0, 8);
     }, [cursoSearchText]);
 
+    // Check limit before opening modal
+    const handleOpenAddModal = useCallback(() => {
+        if (!canModerate) {
+            const userGroupsCount = user 
+                ? groups.filter(g => g.user_id === user.id).length 
+                : groups.filter(g => g.is_local).length;
+            if (userGroupsCount >= 5) {
+                showAlert(
+                    'Límite de Grupos Alcanzado (5/5)',
+                    'Un usuario normal no puede publicar más de 5 grupos en el directorio. Si necesitas agregar más grupos o eres representante de curso, por favor comunícate con los administradores o moderadores del sitio para solicitar asistencia o permisos especiales.',
+                    'warning'
+                );
+                return;
+            }
+        }
+        setNewCarrera(selectedCarrera || 'todas');
+        setIsAddModalOpen(true);
+    }, [canModerate, user, groups, showAlert, selectedCarrera]);
+
     // Create Group Handler
     const handleCreateGroup = async (e) => {
         e.preventDefault();
@@ -260,22 +326,12 @@ export default function WhatsAppGroups() {
             return;
         }
 
-        const modResult = moderateSubmission({ title: `${newTitle.trim()} ${newCurso.trim()} ${newSection.trim()}`, content: `${newDescription.trim()} ${cleanLink} ${activeAlias || ''}` });
-        if (!modResult.valid) {
-            showAlert('Contenido no permitido', modResult.reason, 'error');
-            return;
-        }
-
-        if (!user && isSupabaseConfigured) {
-            showAlert('Acceso requerido', 'Debes iniciar sesión con Google (Anónima y segura) en la esquina superior para agregar un nuevo grupo a la comunidad.', 'warning');
-            return;
-        }
-
-        const finalTitle = moderateSubmission({ title: newTitle.trim(), content: '' }).censoredTitle;
-        const finalCurso = moderateSubmission({ title: newCurso.trim(), content: '' }).censoredTitle;
-        const finalSection = moderateSubmission({ title: newSection.trim() || 'General', content: '' }).censoredTitle;
-        const finalAlias = moderateSubmission({ title: activeAlias || 'Anónimo', content: '' }).censoredTitle;
-        const finalDesc = newDescription.trim() ? moderateSubmission({ title: '', content: newDescription.trim() }).censoredContent : null;
+        const finalTitle = newTitle.trim();
+        const finalCurso = newCurso.trim();
+        const finalSection = newSection.trim() || 'General';
+        const finalAlias = activeAlias || 'Anónimo';
+        const finalDesc = newDescription.trim() || null;
+        const finalImageUrl = newImageUrl.trim() || null;
 
         if (isSupabaseConfigured && supabase) {
             try {
@@ -286,14 +342,15 @@ export default function WhatsAppGroups() {
                     section: finalSection,
                     link: cleanLink,
                     description: finalDesc,
+                    image_url: finalImageUrl,
                     user_id: user?.id || null,
                     author_alias: finalAlias,
-                    upvotes: 1
+                    upvotes: 0
                 }]);
 
                 if (error) {
-                    console.warn('Detalle interno de base de datos Supabase al insertar grupo:', error);
-                    showAlert('No se pudo guardar el grupo', 'Ocurrió un problema temporal al publicar tu grupo estudiantil. Por favor, verifica tu conexión e inténtalo de nuevo.', 'error');
+                    console.warn('Error al insertar grupo:', error);
+                    showAlert('No se pudo guardar el grupo', formatUserError(error), 'error');
                     return;
                 }
                 await fetchGroups();
@@ -311,9 +368,10 @@ export default function WhatsAppGroups() {
                 section: newSection.trim() || 'General',
                 link: cleanLink,
                 description: newDescription.trim() || null,
+                image_url: finalImageUrl,
                 user_id: user?.id || 'anon',
                 author_alias: activeAlias,
-                upvotes: 1,
+                upvotes: 0,
                 reported_count: 0,
                 created_at: new Date().toISOString()
             };
@@ -326,8 +384,24 @@ export default function WhatsAppGroups() {
         setCursoSearchText('');
         setNewLink('');
         setNewDescription('');
+        setNewCarrera('todas');
+        setNewImageUrl('');
         setIsAddModalOpen(false);
         showAlert('¡Grupo Agregado!', 'Tu grupo estudiantil se ha publicado correctamente y está listo para que otros estudiantes se unan.', 'success');
+    };
+
+    const handleImageFileSelect = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        try {
+            setIsCompressingImg(true);
+            const imageUrl = await uploadOrCompressImage(file, 'groups');
+            setNewImageUrl(imageUrl);
+        } catch (err) {
+            showAlert('Error al adjuntar imagen', err.message || 'No se pudo procesar la imagen.', 'error');
+        } finally {
+            setIsCompressingImg(false);
+        }
     };
 
     // Toggle Upvote / Verificado
@@ -377,33 +451,270 @@ export default function WhatsAppGroups() {
         setTimeout(() => setCopiedId(null), 2500);
     };
 
+    const handleDownloadTemplate = useCallback(() => {
+        const csvContent = [
+            'titulo,carrera,curso,seccion,enlace,descripcion,seudonimo',
+            '"Matemática Básica 1 - Sección A",area_comun,"Matemática Básica 1",A,https://chat.whatsapp.com/ejemplo_mate1,"Grupo oficial para resolución de dudas y tareas",Moderador PEMTREE',
+            '"Estructuras de Datos - Sección Única",sistemas,"Estructuras de Datos",A,https://chat.whatsapp.com/ejemplo_edd,"Discusión de laboratorio de EDD y proyectos",Moderador PEMTREE',
+            '"Física 1 - Sección B",area_comun,"Física 1",B,https://chat.whatsapp.com/ejemplo_fisica1,"Apoyo general del curso",Moderador PEMTREE'
+        ].join('\n');
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.setAttribute('download', 'plantilla_grupos_pemtree.csv');
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }, []);
+
+    const handleFileChange = useCallback((e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+        setCsvFile(file);
+        setCsvError('');
+        setCsvParsedRows([]);
+
+        const reader = new FileReader();
+        reader.onload = (evt) => {
+            try {
+                const text = evt.target?.result || '';
+                if (typeof text !== 'string' || !text.trim()) {
+                    setCsvError('El archivo CSV está vacío.');
+                    return;
+                }
+
+                const lines = [];
+                let curLine = [];
+                let curField = '';
+                let inQuotes = false;
+
+                for (let i = 0; i < text.length; i++) {
+                    const char = text[i];
+                    const nextChar = text[i + 1];
+
+                    if (char === '"') {
+                        if (inQuotes && nextChar === '"') {
+                            curField += '"';
+                            i++;
+                        } else {
+                            inQuotes = !inQuotes;
+                        }
+                    } else if ((char === ',' || char === ';') && !inQuotes) {
+                        curLine.push(curField.trim());
+                        curField = '';
+                    } else if (char === '\n' && !inQuotes) {
+                        curLine.push(curField.trim());
+                        if (curLine.some(f => f !== '')) lines.push(curLine);
+                        curLine = [];
+                        curField = '';
+                    } else if (char === '\r' && !inQuotes) {
+                        // ignore
+                    } else {
+                        curField += char;
+                    }
+                }
+                if (curField || curLine.length > 0) {
+                    curLine.push(curField.trim());
+                    if (curLine.some(f => f !== '')) lines.push(curLine);
+                }
+
+                if (lines.length < 2) {
+                    setCsvError('El archivo CSV debe contener una fila de encabezados y al menos una fila de datos.');
+                    return;
+                }
+
+                const headers = lines[0].map(h => h.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim());
+                const findIndex = (...names) => headers.findIndex(h => names.some(n => h.includes(n)));
+
+                const titleIdx = findIndex('titulo', 'title', 'nombre');
+                const carreraIdx = findIndex('carrera', 'area', 'program');
+                const cursoIdx = findIndex('curso', 'materia', 'subject');
+                const sectionIdx = findIndex('seccion', 'section', 'sec');
+                const linkIdx = findIndex('enlace', 'link', 'url', 'whatsapp', 'telegram', 'discord');
+                const descIdx = findIndex('descrip', 'description', 'detalle');
+                const aliasIdx = findIndex('alias', 'autor', 'author', 'seudonimo');
+
+                if (cursoIdx === -1 && titleIdx === -1) {
+                    setCsvError('El CSV debe incluir una columna para el nombre del curso ("curso" o "título"). Encabezados leídos: ' + headers.join(', '));
+                    return;
+                }
+                if (linkIdx === -1) {
+                    setCsvError('El CSV debe incluir una columna con los enlaces/URLs del grupo ("enlace" o "link"). Encabezados leídos: ' + headers.join(', '));
+                    return;
+                }
+
+                const parsed = [];
+                for (let i = 1; i < lines.length; i++) {
+                    const row = lines[i];
+                    if (!row || row.length === 0 || row.every(c => !c)) continue;
+
+                    const rawCurso = cursoIdx !== -1 ? (row[cursoIdx] || '').trim() : '';
+                    const rawSection = sectionIdx !== -1 ? (row[sectionIdx] || 'A').trim() || 'A' : 'A';
+                    const rawTitle = titleIdx !== -1 && row[titleIdx] ? row[titleIdx].trim() : `${rawCurso || 'Curso Estudiantil'} - Sección ${rawSection}`;
+                    const rawLink = linkIdx !== -1 ? (row[linkIdx] || '').trim() : '';
+                    const rawDesc = descIdx !== -1 ? (row[descIdx] || '').trim() : '';
+                    const rawAlias = aliasIdx !== -1 && row[aliasIdx] ? row[aliasIdx].trim() : (isAdmin ? 'Admin PEMTREE' : 'Moderador PEMTREE');
+
+                    let rawCarrera = carreraIdx !== -1 ? (row[carreraIdx] || '').toLowerCase().trim() : 'area_comun';
+                    const matchedCarrera = CARRERAS.find(c => c.id === rawCarrera || c.label.toLowerCase().includes(rawCarrera) || rawCarrera.includes(c.id));
+                    const finalCarrera = matchedCarrera ? matchedCarrera.id : 'area_comun';
+
+                    const isValidUrl = Boolean(rawLink && (rawLink.startsWith('http://') || rawLink.startsWith('https://')));
+                    const isValidTitle = Boolean(rawCurso || rawTitle);
+
+                    parsed.push({
+                        id: 'csv-row-' + i,
+                        rowNum: i + 1,
+                        title: rawTitle,
+                        carrera: finalCarrera,
+                        curso: rawCurso || rawTitle,
+                        section: rawSection,
+                        link: rawLink,
+                        description: rawDesc || null,
+                        author_alias: rawAlias,
+                        isValid: isValidUrl && isValidTitle,
+                        errorMsg: !isValidUrl ? 'URL inválida (debe iniciar con http:// o https://)' : (!isValidTitle ? 'Título o Curso faltante' : '')
+                    });
+                }
+
+                if (parsed.length === 0) {
+                    setCsvError('No se encontraron filas de datos en el CSV.');
+                } else {
+                    setCsvParsedRows(parsed);
+                }
+            } catch (err) {
+                setCsvError('Error al procesar el archivo: ' + (err.message || err));
+            }
+        };
+        reader.readAsText(file, 'UTF-8');
+    }, [isAdmin]);
+
+    const handleCsvUploadSubmit = useCallback(async () => {
+        const validRows = csvParsedRows.filter(r => r.isValid);
+        if (validRows.length === 0) {
+            setCsvError('No hay filas válidas listas para importar. Por favor verifica tu archivo.');
+            return;
+        }
+
+        setCsvIsUploading(true);
+        setCsvError('');
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const recordsToInsert = validRows.map(r => ({
+                    title: r.title,
+                    carrera: r.carrera,
+                    curso: r.curso,
+                    section: r.section,
+                    link: r.link,
+                    description: r.description,
+                    user_id: user?.id || null,
+                    author_alias: r.author_alias || (isAdmin ? 'Admin PEMTREE' : 'Moderador PEMTREE'),
+                    upvotes: 0
+                }));
+
+                const { error } = await supabase.from('whatsapp_groups').insert(recordsToInsert);
+                if (error) {
+                    console.warn('Detalle interno al insertar CSV en Supabase:', error);
+                    setCsvError('Error de base de datos de Supabase: ' + (error.message || 'Error desconocido'));
+                    setCsvIsUploading(false);
+                    return;
+                }
+                await fetchGroups();
+            } catch (e) {
+                setCsvError('Ocurrió un error al cargar masivamente: ' + (e.message || e));
+                setCsvIsUploading(false);
+                return;
+            }
+        } else {
+            const newEntries = validRows.map((r, idx) => ({
+                id: 'local-csv-' + Date.now() + '-' + idx,
+                title: r.title,
+                carrera: r.carrera,
+                curso: r.curso,
+                section: r.section,
+                link: r.link,
+                description: r.description,
+                user_id: user?.id || 'mod-' + Date.now(),
+                author_alias: r.author_alias || (isAdmin ? 'Admin PEMTREE' : 'Moderador PEMTREE'),
+                upvotes: 0,
+                reported_count: 0,
+                created_at: new Date().toISOString()
+            }));
+            setGroups(prev => [...newEntries, ...prev]);
+        }
+
+        setCsvIsUploading(false);
+        setIsCsvModalOpen(false);
+        setCsvFile(null);
+        setCsvParsedRows([]);
+        showAlert('¡Carga Masiva Exitosa!', `Se importaron ${validRows.length} cursos/grupos estudiantiles correctamente al directorio.`, 'success');
+    }, [csvParsedRows, user, isAdmin, fetchGroups, showAlert]);
+
     // Delete group
     const handleDeleteGroup = async (groupId) => {
         const target = groups.find(g => g.id === groupId);
         if (!target) return;
-        const canDelete = isAdmin || (user && target.user_id === user.id);
+        const canDelete = canModerate || (user && target.user_id === user.id);
         if (!canDelete) {
-            showAlert('Acceso denegado', 'Solo el autor del grupo o un moderador pueden eliminar este enlace.', 'error');
+            showAlert('Acceso denegado', 'Solo el autor del grupo, un administrador o un moderador pueden eliminar este enlace.', 'error');
             return;
         }
 
-        showConfirm(
-            isAdmin && target.user_id !== user?.id ? 'Moderador: ¿Eliminar grupo estudiantil?' : '¿Eliminar grupo estudiantil?',
-            `¿Estás seguro de que deseas eliminar permanentemente el grupo "${target.title}" de la plataforma?`,
-            async () => {
-                if (isSupabaseConfigured && supabase) {
-                    try {
+        const isModDeletingOther = isModerator && !isAdmin && target.user_id !== user?.id;
+
+        const executeDelete = async (justification = null) => {
+            if (isModDeletingOther && (!justification || !justification.trim())) {
+                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+                return;
+            }
+
+            if (isSupabaseConfigured && supabase) {
+                try {
+                    if (isModDeletingOther && justification) {
+                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
+                            p_tabla: 'whatsapp_groups',
+                            p_item_id: groupId,
+                            p_justificacion: justification.trim()
+                        });
+                        if (modErr) throw modErr;
+                        sendFormspreeNotification({
+                            tipo_evento: 'MODERADOR ELIMINÓ GRUPO',
+                            a_quien: `Grupo: "${target.title}" (Autor: ${target.author_alias})`,
+                            por_quien: user?.email || user?.id || 'Moderador',
+                            porque: justification.trim()
+                        });
+                    } else {
                         const { error } = await supabase.from('whatsapp_groups').delete().eq('id', groupId);
                         if (error) throw error;
-                        await fetchGroups();
-                    } catch {
-                        showAlert('No se pudo eliminar el grupo', 'Ocurrió un problema temporal al intentar eliminar el grupo. Por favor, inténtalo de nuevo más tarde.', 'error');
-                        return;
                     }
+                    await fetchGroups();
+                } catch (e) {
+                    console.error('Error al eliminar grupo:', e);
+                    showAlert('No se pudo eliminar el grupo', formatUserError(e), 'error');
+                    return;
                 }
-                setGroups(prev => prev.filter(g => g.id !== groupId));
             }
-        );
+            setGroups(prev => prev.filter(g => g.id !== groupId));
+        };
+
+        if (isModDeletingOther) {
+            showPrompt(
+                'Moderación: Justificación obligatoria',
+                `Estás eliminando el grupo "${target.title}" (de ${target.author_alias}). Como moderador, ingresa la justificación para la auditoría y notificación:`,
+                'Ej: Spam, enlace roto, contenido inapropiado...',
+                (justificationText) => executeDelete(justificationText)
+            );
+        } else {
+            showConfirm(
+                '¿Eliminar grupo estudiantil?',
+                `¿Estás seguro de que deseas eliminar permanentemente el grupo "${target.title}" de la plataforma?`,
+                () => executeDelete(null)
+            );
+        }
     };
 
     // Submit Report
@@ -443,13 +754,19 @@ export default function WhatsAppGroups() {
                 console.error('Error al registrar reporte:', err);
             }
         }
+        sendFormspreeNotification({
+            tipo_evento: 'REPORTE DE GRUPO ESTUDIANTIL',
+            a_quien: `Grupo reportado: "${reportTarget.title}" (${reportTarget.curso}) - Autor original: ${reportTarget.author_alias}`,
+            por_quien: user?.email || user?.id || 'Estudiante',
+            porque: reportReason
+        });
         showAlert('Reporte Enviado', `Gracias por notificar. Hemos registrado el reporte sobre "${reportTarget.title}".`, 'success');
     };
 
     // Filtered lists
     const displayedGroups = useMemo(() => {
         return groups.filter(g => {
-            if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera) {
+            if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera && g.carrera !== 'todas') {
                 return false;
             }
             if (selectedCursoFilter && selectedCursoFilter !== 'todos') {
@@ -519,10 +836,10 @@ export default function WhatsAppGroups() {
                         {user ? (
                             <div className="flex items-center gap-3.5 bg-white/15 dark:bg-black/30 backdrop-blur-md px-4 py-2 rounded-xl border border-white/20">
                                 <div className="flex items-center gap-2">
-                                    <ShieldCheck size={16} className={`${isAdmin ? 'text-[#FFD700]' : 'text-[#79F2B8]'} shrink-0`} />
+                                    <ShieldCheck size={16} className={`${isAdmin ? 'text-[#FFD700]' : isModerator ? 'text-[#38BDF8]' : 'text-[#79F2B8]'} shrink-0`} />
                                     <div className="text-left min-w-0">
                                         <p className="text-[10px] uppercase font-bold text-blue-200 dark:text-slate-400">
-                                            {isAdmin ? 'Admin PEMTREE' : 'Sesión Verificada'}
+                                            {isAdmin ? 'Admin PEMTREE' : isModerator ? 'Moderador PEMTREE' : 'Sesión Verificada'}
                                         </p>
                                         <p className="text-xs font-extrabold truncate max-w-[130px] sm:max-w-none text-white">{activeAlias}</p>
                                     </div>
@@ -563,7 +880,7 @@ export default function WhatsAppGroups() {
                         )}
 
                         <button
-                            onClick={() => setIsAddModalOpen(true)}
+                            onClick={handleOpenAddModal}
                             className="flex items-center gap-2 bg-white/20 hover:bg-white/30 text-white font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer border border-white/30 backdrop-blur-xs"
                         >
                             <Plus size={18} strokeWidth={3} />
@@ -596,18 +913,36 @@ export default function WhatsAppGroups() {
                         )}
                     </div>
 
-                    <div className="flex items-center gap-2 shrink-0">
-                        <Filter size={16} className="text-[#7A869A] dark:text-slate-400 hidden sm:block" />
-                        <select
-                            value={selectedCursoFilter}
-                            onChange={(e) => setSelectedCursoFilter(e.target.value)}
-                            className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
-                        >
-                            <option value="">Todos los Cursos</option>
-                            {availableCursosInGroups.map(cursoName => (
-                                <option key={cursoName} value={cursoName}>{cursoName}</option>
-                            ))}
-                        </select>
+                    <div className="flex items-center gap-2.5 sm:gap-3 shrink-0 flex-wrap sm:flex-nowrap">
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
+                            <Filter size={16} className="text-[#7A869A] dark:text-slate-400 hidden sm:block shrink-0" />
+                            <select
+                                value={selectedCursoFilter}
+                                onChange={(e) => setSelectedCursoFilter(e.target.value)}
+                                className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
+                            >
+                                <option value="">Todos los Cursos</option>
+                                {availableCursosInGroups.map(cursoName => (
+                                    <option key={cursoName} value={cursoName}>{cursoName}</option>
+                                ))}
+                            </select>
+                        </div>
+
+                        {canModerate && (
+                            <button
+                                onClick={() => {
+                                    setCsvFile(null);
+                                    setCsvParsedRows([]);
+                                    setCsvError('');
+                                    setIsCsvModalOpen(true);
+                                }}
+                                className="flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0043A4] dark:bg-[#0C295E] dark:hover:bg-[#1A3A75] text-white dark:text-[#4C9AFF] border border-transparent dark:border-[#4C9AFF]/30 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer w-full sm:w-auto"
+                                title="Cargar masivamente cursos desde archivo CSV"
+                            >
+                                <FileSpreadsheet size={16} strokeWidth={2.5} />
+                                <span>Cargar CSV</span>
+                            </button>
+                        )}
                     </div>
                 </div>
 
@@ -645,14 +980,14 @@ export default function WhatsAppGroups() {
                         title={searchQuery || selectedCursoFilter ? 'No se encontraron grupos para tu búsqueda' : 'Aún no hay grupos clasificados en esta carrera'}
                         description="¿Tienes el enlace (WhatsApp, Telegram, Discord, Drive) del grupo de tu sección o curso? ¡Agrégalo ahora para ayudar a tus compañeros!"
                         actionLabel="Agregar Enlace Ahora"
-                        onAction={() => setIsAddModalOpen(true)}
+                        onAction={handleOpenAddModal}
                     />
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         {displayedGroups.map(group => {
                             const carreraObj = CARRERAS.find(c => c.id === group.carrera) || CARRERAS[0];
                             const isUpvoted = upvotedGroupIds.has(group.id);
-                            const canDelete = isAdmin || (user && group.user_id === user.id);
+                            const canDelete = canModerate || (user && group.user_id === user.id);
 
                             return (
                                 <div
@@ -690,6 +1025,17 @@ export default function WhatsAppGroups() {
                                             <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2">
                                                 {group.description}
                                             </p>
+                                        )}
+
+                                        {group.image_url && (
+                                            <div className="mt-1 rounded-xl overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] max-h-48 flex items-center justify-center bg-black/5 dark:bg-black/20">
+                                                <img
+                                                    src={group.image_url}
+                                                    alt={group.title}
+                                                    className="max-h-48 w-auto object-cover rounded-lg hover:scale-105 transition-transform duration-300 cursor-pointer"
+                                                    onClick={() => window.open(group.image_url, '_blank')}
+                                                />
+                                            </div>
                                         )}
                                     </div>
 
@@ -782,7 +1128,7 @@ export default function WhatsAppGroups() {
                             value={newCarrera}
                             onChange={(e) => setNewCarrera(e.target.value)}
                         >
-                            {CARRERAS.filter(c => c.id !== 'todas').map(c => (
+                            {CARRERAS.map(c => (
                                 <option key={c.id} value={c.id}>{c.label}</option>
                             ))}
                         </Select>
@@ -851,6 +1197,43 @@ export default function WhatsAppGroups() {
                             value={newDescription}
                             onChange={(e) => setNewDescription(e.target.value)}
                         />
+
+                        {/* Image upload section */}
+                        <div className="flex flex-col gap-2">
+                            <label className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200 flex items-center justify-between">
+                                <span className="flex items-center gap-1.5">
+                                    <ImageIcon size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <span>Adjuntar imagen representativa (Opcional)</span>
+                                </span>
+                                {isCompressingImg && <span className="text-[11px] text-[#0052CC] dark:text-[#4C9AFF] animate-pulse">Procesando imagen...</span>}
+                            </label>
+                            <div className="flex items-center gap-2">
+                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
+                                    <ImageIcon size={15} />
+                                    <span>Seleccionar imagen desde tu dispositivo</span>
+                                    <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={handleImageFileSelect}
+                                        disabled={isCompressingImg}
+                                        className="hidden"
+                                    />
+                                </label>
+                            </div>
+                            {newImageUrl && (
+                                <div className="relative mt-1.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-black/5 dark:bg-black/20 p-2 flex items-center justify-center max-h-48 overflow-hidden">
+                                    <img src={newImageUrl} alt="Vista previa" className="max-h-44 rounded-lg object-contain" />
+                                    <button
+                                        type="button"
+                                        onClick={() => setNewImageUrl('')}
+                                        className="absolute top-2 right-2 p-1.5 rounded-full bg-red-500 hover:bg-red-600 text-white shadow-md transition cursor-pointer"
+                                        title="Quitar imagen"
+                                    >
+                                        <X size={14} />
+                                    </button>
+                                </div>
+                            )}
+                        </div>
 
                         <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
                             <Button
@@ -983,6 +1366,120 @@ export default function WhatsAppGroups() {
                 </Modal>
             )}
 
+            {/* Modal de Carga Masiva por CSV (Admin & Moderadores) */}
+            {isCsvModalOpen && (
+                <Modal
+                    isOpen={isCsvModalOpen}
+                    onClose={() => !csvIsUploading && setIsCsvModalOpen(false)}
+                    title="Carga Masiva de Cursos / Grupos (CSV)"
+                    size="lg"
+                >
+                    <div className="flex flex-col gap-5">
+                        {/* Guía rápida y Plantilla */}
+                        <div className="bg-gradient-to-r from-amber-50/80 to-amber-100/60 dark:from-amber-950/30 dark:to-amber-900/20 border border-amber-300/60 dark:border-amber-700/50 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                            <div className="flex items-start gap-3">
+                                <Sparkles className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+                                <div className="text-xs text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                    <p className="font-bold text-[#172B4D] dark:text-slate-100 mb-1">Permisos de Administrador / Moderador Activos</p>
+                                    <p>Sube un archivo <code className="font-semibold text-amber-700 dark:text-amber-300">.csv</code> para publicar múltiples cursos de golpe. Puedes incluir columnas como: <span className="font-bold">curso, seccion, enlace, carrera, descripcion</span>.</p>
+                                </div>
+                            </div>
+                            <button
+                                type="button"
+                                onClick={handleDownloadTemplate}
+                                className="flex items-center gap-2 bg-white dark:bg-[#1C2636] hover:bg-amber-50 dark:hover:bg-[#283548] text-amber-700 dark:text-amber-300 font-extrabold text-xs px-3.5 py-2 rounded-xl border border-amber-300 dark:border-amber-700 shadow-xs transition shrink-0 cursor-pointer"
+                            >
+                                <Download size={14} />
+                                <span>Descargar Plantilla CSV</span>
+                            </button>
+                        </div>
+
+                        {/* Zona de Drop / Input de Archivo */}
+                        <div className="relative border-2 border-dashed border-[#DFE1E6] dark:border-[#3E4C5E] hover:border-amber-500 dark:hover:border-amber-500 rounded-2xl p-6 transition bg-[#F4F5F7]/50 dark:bg-[#0E1624]/50 flex flex-col items-center justify-center text-center gap-3">
+                            <input
+                                type="file"
+                                accept=".csv,text/csv"
+                                onChange={handleFileChange}
+                                disabled={csvIsUploading}
+                                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer disabled:cursor-not-allowed z-10"
+                            />
+                            <div className="w-12 h-12 rounded-full bg-amber-500/10 dark:bg-amber-500/20 flex items-center justify-center text-amber-600 dark:text-amber-400">
+                                <Upload size={24} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-bold text-[#172B4D] dark:text-slate-100">
+                                    {csvFile ? csvFile.name : 'Haz clic o arrastra tu archivo CSV aquí'}
+                                </p>
+                                <p className="text-xs text-[#7A869A] dark:text-slate-400 mt-1">
+                                    {csvFile ? `Tamaño: ${(csvFile.size / 1024).toFixed(1)} KB` : 'Formato compatible: .csv (codificado en UTF-8)'}
+                                </p>
+                            </div>
+                        </div>
+
+                        {/* Mensaje de Error si hay */}
+                        {csvError && (
+                            <div className="bg-red-50 dark:bg-red-950/40 border border-red-300 dark:border-red-800 rounded-xl p-3.5 flex items-center gap-3 text-red-700 dark:text-red-300 text-xs font-semibold">
+                                <AlertCircle size={16} className="shrink-0" />
+                                <span>{csvError}</span>
+                            </div>
+                        )}
+
+                        {/* Vista previa de las filas analizadas */}
+                        {csvParsedRows.length > 0 && (
+                            <div className="flex flex-col gap-2.5 max-h-[280px] overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-2xl bg-white dark:bg-[#1C2636]">
+                                <div className="bg-[#F4F5F7] dark:bg-[#0E1624] px-4 py-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between text-xs font-bold text-[#5E6C84] dark:text-slate-300">
+                                    <span className="flex items-center gap-2">
+                                        <CheckCircle size={14} className="text-emerald-500" />
+                                        <span>Filas listas para importar ({csvParsedRows.filter(r => r.isValid).length} de {csvParsedRows.length} válidas)</span>
+                                    </span>
+                                    <span className="text-[11px] text-[#7A869A]">Vista Previa</span>
+                                </div>
+                                <div className="overflow-y-auto max-h-[230px] p-2 divide-y divide-[#DFE1E6]/60 dark:divide-[#3E4C5E]/60">
+                                    {csvParsedRows.map((row) => (
+                                        <div key={row.id} className="py-2.5 px-3 flex items-center justify-between gap-3 text-xs">
+                                            <div className="flex items-center gap-3 min-w-0">
+                                                <span className="w-6 h-6 rounded-md bg-[#F4F5F7] dark:bg-[#0E1624] flex items-center justify-center font-bold text-[#7A869A] shrink-0 text-[10px]">
+                                                    {row.rowNum}
+                                                </span>
+                                                <div className="min-w-0">
+                                                    <p className="font-bold text-[#172B4D] dark:text-slate-100 truncate">{row.curso} <span className="text-amber-600 dark:text-amber-400">({row.section})</span></p>
+                                                    <p className="text-[11px] text-[#7A869A] dark:text-slate-400 truncate">{row.link}</p>
+                                                </div>
+                                            </div>
+                                            <div className="shrink-0">
+                                                {row.isValid ? (
+                                                    <span className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-extrabold text-[10px]">Válido</span>
+                                                ) : (
+                                                    <span className="bg-red-500/15 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full font-bold text-[10px]" title={row.errorMsg}>Error: {row.errorMsg}</span>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        )}
+
+                        {/* Footer de Acciones del Modal */}
+                        <div className="flex justify-end items-center gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setIsCsvModalOpen(false)}
+                                disabled={csvIsUploading}
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                onClick={handleCsvUploadSubmit}
+                                disabled={csvIsUploading || csvParsedRows.filter(r => r.isValid).length === 0}
+                                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-extrabold shadow-md border-none"
+                            >
+                                {csvIsUploading ? 'Importando Cursos...' : `Importar ${csvParsedRows.filter(r => r.isValid).length} Grupos Ahora`}
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
             {customConfirm.isOpen && (
                 <Modal
                     isOpen={customConfirm.isOpen}
@@ -1005,6 +1502,46 @@ export default function WhatsAppGroups() {
                                 onClick={() => {
                                     if (customConfirm.onConfirm) customConfirm.onConfirm();
                                     setCustomConfirm({ ...customConfirm, isOpen: false });
+                                }}
+                                size="sm"
+                            >
+                                Confirmar
+                            </Button>
+                        </div>
+                    </div>
+                </Modal>
+            )}
+
+            {customPrompt.isOpen && (
+                <Modal
+                    isOpen={customPrompt.isOpen}
+                    onClose={() => setCustomPrompt({ ...customPrompt, isOpen: false })}
+                    title={customPrompt.title}
+                    size="sm"
+                >
+                    <div className="flex flex-col gap-4">
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{customPrompt.message}</p>
+                        <input
+                            type="text"
+                            value={customPrompt.value}
+                            onChange={(e) => setCustomPrompt({ ...customPrompt, value: e.target.value })}
+                            placeholder={customPrompt.placeholder}
+                            className="w-full px-3 py-2 text-xs sm:text-sm rounded-lg border border-[#DFE1E6] dark:border-[#2D3A4F] bg-white dark:bg-[#0E1624] text-[#172B4D] dark:text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#0052CC]"
+                        />
+                        <div className="flex justify-end gap-2 pt-2">
+                            <Button
+                                variant="secondary"
+                                onClick={() => setCustomPrompt({ ...customPrompt, isOpen: false })}
+                                size="sm"
+                            >
+                                Cancelar
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => {
+                                    if (!customPrompt.value.trim()) return;
+                                    if (customPrompt.onSubmit) customPrompt.onSubmit(customPrompt.value.trim());
+                                    setCustomPrompt({ ...customPrompt, isOpen: false });
                                 }}
                                 size="sm"
                             >

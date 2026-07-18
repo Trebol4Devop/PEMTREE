@@ -1759,12 +1759,15 @@ html.dark .schedule-container {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0.75rem;
-    background: var(--bg-secondary);
+    padding: 0.6rem 1rem;
+    background: var(--bg-primary, #ffffff);
     border: 1px solid var(--border);
-    border-radius: 16px;
+    border-radius: 4px;
     flex-wrap: wrap;
     gap: 0.5rem;
+    color: var(--text-primary, #1e293b);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    transition: background-color 0.2s, border-color 0.2s, color 0.2s;
 }
 
 .schedule-toolbar-title {
@@ -1776,12 +1779,18 @@ html.dark .schedule-container {
 .schedule-toolbar-title h3 {
     margin: 0;
     font-size: 1rem;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-weight: 700;
+    color: inherit;
+}
+
+html.dark .schedule-toolbar {
+    background: #1C2636 !important;
+    border-color: #3E4C5E !important;
+    color: #f1f5f9 !important;
 }
 
 html.dark .schedule-toolbar-title h3 {
-    color: var(--text-primary);
+    color: #f1f5f9 !important;
 }
 
 .schedule-course-counts {
@@ -1992,10 +2001,14 @@ html.dark .schedule-conflict-banner-text {
     grid-auto-rows: 22px;
     column-gap: 1px;
     row-gap: 0;
-    background: var(--border);
+    background: var(--border) !important;
     flex: 1;
     overflow: auto;
     align-content: start;
+}
+
+html.dark .schedule-grid {
+    background: var(--border) !important;
 }
 
 .schedule-cell {
@@ -2029,37 +2042,123 @@ html.dark .schedule-cell {
     color: var(--text-muted);
     font-size: 0.7rem;
     border: none !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: visible;
+    padding: 0;
 }
 
 html.dark .schedule-time-cell {
     background: var(--bg-overlay) !important;
 }
 
-/* Separator between schedule clusters */
+/* ── Schedule Hour Boundary Lines (Cada hora es una línea / límite - grises también en no exactas) ── */
+.schedule-hour-boundary {
+    border-top: 1.5px solid var(--border) !important;
+}
+
+.schedule-subhour-boundary {
+    border-top: 1px solid var(--border) !important;
+}
+
+.schedule-halfhour-boundary {
+    border-top: none !important;
+}
+
+html.dark .schedule-hour-boundary {
+    border-top: 1.5px solid var(--border) !important;
+}
+
+html.dark .schedule-subhour-boundary {
+    border-top: 1px solid var(--border) !important;
+}
+
+html.dark .schedule-halfhour-boundary {
+    border-top: none !important;
+}
+
+.time-label-hour,
+.time-label-sub {
+    position: absolute;
+    top: 0;
+    transform: translateY(-50%);
+    line-height: 1;
+    background: var(--bg-secondary);
+    padding: 1px 4px;
+    z-index: 5;
+    border-radius: 2px;
+}
+
+html.dark .time-label-hour,
+html.dark .time-label-sub {
+    background: var(--bg-overlay);
+}
+
+.time-label-hour {
+    font-weight: 700;
+    font-size: 0.72rem;
+    color: var(--text-primary);
+}
+
+.time-label-sub {
+    font-weight: 500;
+    font-size: 0.62rem;
+    color: var(--text-muted);
+    opacity: 0.85;
+}
+
+/* Top Spacer before first time slot */
+.schedule-top-spacer {
+    background: var(--bg-primary);
+    height: 22px;
+    min-height: 22px;
+    border: none !important;
+}
+html.dark .schedule-top-spacer {
+    background: var(--bg-elevated);
+}
+
+/* Separator between schedule clusters / dead time compression */
 .schedule-separator {
     display: flex;
     align-items: center;
     justify-content: center;
     background: var(--bg-primary);
-    height: 14px;
-    min-height: 14px;
+    height: 18px;
+    min-height: 18px;
+    position: relative;
+    border-top: 1.5px solid #ffffff !important;
+    border-bottom: 1.5px solid #ffffff !important;
 }
 
 .schedule-separator-dots {
-    font-size: 0.7rem;
-    color: var(--text-muted);
-    letter-spacing: 3px;
+    font-size: 0.75rem;
+    color: #ffffff !important;
+    letter-spacing: 4px;
     line-height: 1;
+    font-weight: 700;
+    z-index: 2;
+    background: var(--bg-primary);
+    padding: 0 8px;
 }
 
 html.dark .schedule-separator {
     background: var(--bg-elevated);
 }
 
+html.dark .schedule-separator-dots {
+    background: var(--bg-elevated);
+}
+
+
+
 /* Course Block in Grid */
 .schedule-block {
-    border-radius: 1px;
-    padding: 1px 3px;
+    border-radius: 6px !important;
+    margin: 2px 3px;
+    padding: 7px 8px;
     font-size: 0.9rem;
     color: white;
     overflow: hidden;
@@ -2068,8 +2167,8 @@ html.dark .schedule-separator {
     justify-content: flex-start;
     cursor: pointer;
     transition: all 0.15s;
-    line-height: 1.1;
-    gap: 0;
+    line-height: 1.3;
+    gap: 5px;
     background: #475569;
 }
 
@@ -2531,11 +2630,19 @@ html.dark .schedule-error {
     color: var(--text-primary);
     cursor: pointer;
     transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .schedule-btn:hover:not(:disabled) {
     background: var(--primary);
     border-color: var(--border);
+    color: white;
+}
+
+.schedule-btn.cluster-active {
+    background: var(--primary);
+    border-color: var(--primary);
     color: white;
 }
 
@@ -2549,9 +2656,11 @@ html.dark .schedule-btn {
     color: var(--text-primary);
 }
 
-html.dark .schedule-btn:hover:not(:disabled) {
+html.dark .schedule-btn:hover:not(:disabled),
+html.dark .schedule-btn.cluster-active {
     background: var(--primary);
     border-color: var(--border);
+    color: white;
 }
 
 /* ── Schedule toolbar: mobile layout ────────────────────────── */
@@ -2616,23 +2725,25 @@ html.dark .schedule-btn:hover:not(:disabled) {
 .schedule-block-pair-half {
     display: flex;
     flex-direction: column;
-    gap: 0.05rem;
-    padding: 0.25rem 0.4rem;
+    gap: 3px;
+    padding: 4px 6px;
     min-width: 0;
     overflow: hidden;
+    flex: 1 1 50%;
 }
 .schedule-block-pair-active {
-    flex: 1 1 auto;
+    flex: 1 1 50%;
 }
 .schedule-block-pair-inactive {
-    flex: 0 0 auto;
-    opacity: 0.55;
+    flex: 1 1 50%;
+    opacity: 0.95;
 }
 .schedule-block-pair-divider {
-    height: 1px;
+    height: 1.5px;
     background: currentColor;
-    opacity: 0.25;
-    margin: 0 0.4rem;
+    opacity: 0.35;
+    margin: 2px 6px;
+    flex-shrink: 0;
 }
 .schedule-block-pair-row {
     display: flex;

@@ -145,7 +145,7 @@ export class NodeRenderer {
 
         this.dibujarTextos(group, curso, nodeWidth, nodeHeight, temaOscuro, sectionColors);
 
-        if (showCriticalPath && (curso.enRutaCritica || (curso.enRuta && !curso.obligatorio)) && !curso.completado) {
+        if (showCriticalPath && curso.enRutaCritica && !curso.completado) {
             this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
         }
 
@@ -170,7 +170,7 @@ export class NodeRenderer {
         const isLocked = !curso.disponible && !curso.completado && !curso.selected && !curso.cursando;
         group.classList.toggle('node-locked', isLocked);
 
-        const showWarning = showCriticalPath && (curso.enRutaCritica || (curso.enRuta && !curso.obligatorio)) && !curso.completado;
+        const showWarning = showCriticalPath && curso.enRutaCritica && !curso.completado;
         const warningEl = group.querySelector('[data-tipo="warning"]');
         if (showWarning && !warningEl) {
             this.dibujarAdvertencia(group, curso, nodeWidth, nodeHeight);
@@ -570,23 +570,14 @@ export class NodeRenderer {
         const centerX = curso.x + squareSize;
         const centerW = nodeWidth - (2 * squareSize);
 
-        const isSH = curso.esSocialHum && !curso.obligatorio && curso.enRuta;
-        const isIdioma = curso.esIdiomaTecnico && curso.enRuta;
-
         const warning = document.createElementNS(this.svgNS, "text");
         warning.setAttribute("data-tipo", "warning");
         warning.setAttribute("x", centerX + centerW - (isMobile ? 12 : 16));
         warning.setAttribute("y", curso.y + (isMobile ? 12 : 16));
-        warning.setAttribute("fill", isSH ? WARNING_COLORS.socialHum : (isIdioma ? WARNING_COLORS.idioma : WARNING_COLORS.critica));
+        warning.setAttribute("fill", WARNING_COLORS.critica);
         warning.setAttribute("font-size", isMobile ? "12" : "16");
         warning.setAttribute("font-weight", "bold");
-        if (isSH) {
-            warning.textContent = "SH";
-        } else if (isIdioma) {
-            warning.textContent = "ID";
-        } else {
-            warning.textContent = "!";
-        }
+        warning.textContent = "!";
         group.appendChild(warning);
     }
 }

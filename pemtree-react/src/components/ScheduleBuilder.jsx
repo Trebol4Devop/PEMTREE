@@ -477,7 +477,8 @@ export default function ScheduleBuilder() {
             ctx.textBaseline = 'middle';
             ctx.textAlign = align;
             ctx.beginPath();
-            ctx.rect(x - (align === 'center' ? maxW / 2 : 0), y - fontSize, maxW, fontSize * 2);
+            const clipX = align === 'center' ? x - maxW / 2 : (align === 'right' ? x - maxW : x);
+            ctx.rect(clipX, y - fontSize * 1.3, maxW, fontSize * 2.6);
             ctx.clip();
             ctx.fillText(text, x, y, maxW);
             ctx.restore();
@@ -541,28 +542,30 @@ export default function ScheduleBuilder() {
         const slotYMap = new Map(); // slotIdx → absolute Y on canvas
         let curY = gridY;
         for (const meta of rowMetaC) {
-            if (meta.type === 'cluster-sep') {
-                // draw separator
+            if (meta.type === 'top-spacer') {
                 ctx.fillStyle = SURFACE;
-                ctx.fillRect(PAD, curY, W - PAD * 2, SEP_H);
-                ctx.fillStyle = TEXT_MUTED;
-                ctx.font = `11px "${font}", sans-serif`;
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText('······', W / 2, curY + SEP_H / 2);
-                curY += SEP_H;
-            } else if (meta.type === 'collapse-marker') {
-                // draw "···" collapse marker row
+                ctx.fillRect(PAD, curY, W - PAD * 2, 14);
+                curY += 14;
+            } else if (meta.type === 'cluster-sep' || meta.type === 'collapse-marker') {
+                const h = meta.type === 'cluster-sep' ? SEP_H : ROW_H;
                 ctx.fillStyle = SURFACE;
-                ctx.globalAlpha = 0.3;
-                ctx.fillRect(PAD, curY, W - PAD * 2, ROW_H);
+                ctx.fillRect(PAD, curY, W - PAD * 2, h);
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 1.5;
+                ctx.globalAlpha = 0.9;
+                ctx.beginPath();
+                ctx.moveTo(PAD, curY + 3);
+                ctx.lineTo(W - PAD, curY + 3);
+                ctx.moveTo(PAD, curY + h - 3);
+                ctx.lineTo(W - PAD, curY + h - 3);
+                ctx.stroke();
                 ctx.globalAlpha = 1;
-                ctx.fillStyle = TEXT_MUTED;
-                ctx.font = `10px "${font}", sans-serif`;
+                ctx.fillStyle = '#ffffff';
+                ctx.font = `bold 11px "${font}", sans-serif`;
                 ctx.textAlign = 'center';
                 ctx.textBaseline = 'middle';
-                ctx.fillText('···', W / 2, curY + ROW_H / 2);
-                curY += ROW_H;
+                ctx.fillText(meta.type === 'cluster-sep' ? '······' : '···', W / 2, curY + h / 2);
+                curY += h;
             } else {
                 // type === 'slot' — store Y and draw time cell
                 const sl = meta.sl;
@@ -570,24 +573,54 @@ export default function ScheduleBuilder() {
 
                 const hora   = HORA_INICIO + Math.floor(sl / 6);
                 const minuto = (sl % 6) * 10;
+                const isHourStart = minuto === 0;
 
-                // horizontal grid line
-                ctx.strokeStyle = BORDER;
-                ctx.lineWidth = minuto === 0 ? 0.8 : 0.3;
-                ctx.beginPath();
-                ctx.moveTo(PAD, curY);
-                ctx.lineTo(W - PAD, curY);
-                ctx.stroke();
+                const anyCourseStartsHere = allSelected.some(h => {
+                    const iniMin = mins(h.inicio);
+                    return Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes) === sl;
+                });
+                const anyCourseEndsHere = allSelected.some(h => {
+                    const finMin = mins(h.final);
+                    return Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes) === sl || Math.floor((finMin - HORA_INICIO * 60) / slotMinutes) === sl;
+                });
+
+                const isCourseBoundary = !isHourStart && (anyCourseStartsHere || anyCourseEndsHere);
 
                 // time cell background
                 ctx.fillStyle = TIME_BG;
                 ctx.fillRect(PAD, curY + 1, TIME_W, ROW_H - 2);
 
-                drawText(
-                    `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`,
-                    PAD + 4, curY + ROW_H / 2,
-                    TIME_W - 6, minuto === 0 ? 9 : 8, TEXT_MUTED
-                );
+                // horizontal grid line (drawn exactly across at Y = curY)
+                if (isHourStart) {
+                    ctx.strokeStyle = BORDER;
+                    ctx.lineWidth = 1.2;
+                    ctx.beginPath();
+                    ctx.moveTo(PAD, curY);
+                    ctx.lineTo(W - PAD, curY);
+                    ctx.stroke();
+                } else if (isCourseBoundary) {
+                    ctx.strokeStyle = BORDER;
+                    ctx.lineWidth = 1.0;
+                    ctx.beginPath();
+                    ctx.moveTo(PAD, curY);
+                    ctx.lineTo(W - PAD, curY);
+                    ctx.stroke();
+                }
+
+                let timeLabel = '';
+                if (isHourStart) {
+                    timeLabel = `${String(hora).padStart(2, '0')}:00`;
+                } else if (isCourseBoundary) {
+                    timeLabel = `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`;
+                }
+
+                if (timeLabel) {
+                    drawText(
+                        timeLabel,
+                        PAD + 4, curY,
+                        TIME_W - 6, isHourStart ? 9 : 7.5, TEXT_MUTED, 'left', isHourStart ? 'bold' : 'normal'
+                    );
+                }
 
                 curY += ROW_H;
             }
@@ -597,7 +630,7 @@ export default function ScheduleBuilder() {
         DIAS_SEMANA.forEach((_, i) => {
             const x = gridX + i * COL_W;
             ctx.strokeStyle = BORDER;
-            ctx.lineWidth = 0.5;
+            ctx.lineWidth = 1.0;
             ctx.beginPath();
             ctx.moveTo(x, gridY);
             ctx.lineTo(x, H - PAD);
@@ -651,21 +684,23 @@ export default function ScheduleBuilder() {
         }
 
 
+        const BLOCK_R = 6;
+
         function drawBlockShell(blockX, blockY, bw, bh, color) {
             ctx.save();
-            roundRect(blockX, blockY - 0.5, bw, bh, 0);
+            roundRect(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1, BLOCK_R);
             ctx.clip();
-            fillBlockBackground(blockX, blockY, bw, bh);
+            fillBlockBackground(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1);
             ctx.fillStyle = blockHasBg ? (color + 'CC') : color;
             ctx.fill();
             ctx.restore();
         }
 
         function drawPairContent(activo, otro, blockX, blockY, bw, bh, tc) {
-            const padX = 6.4;
-            const padY = 4;
+            const padX = 6;
+            const padY = 5;
             const fSize = 9;
-            const lineH = fSize * 1.1;
+            const lineH = fSize * 1.25;
             const isLight = tc !== '#ffffff';
             const tcActive = tc;
             const tcName = isLight ? 'rgba(30,41,59,0.9)' : 'rgba(255,255,255,0.9)';
@@ -673,8 +708,8 @@ export default function ScheduleBuilder() {
             const tcRoom = isLight ? 'rgba(30,41,59,0.85)' : 'rgba(255,255,255,0.85)';
             const tcTipo = isLight ? 'rgba(30,41,59,1.0)' : 'rgba(255,255,255,1.0)';
 
-            const bhActive = bh * 0.6;
-            const bhInactive = bh * 0.4;
+            const bhActive = bh * 0.5;
+            const bhInactive = bh * 0.5;
 
             if (isDark) {
                 ctx.save();
@@ -706,50 +741,56 @@ export default function ScheduleBuilder() {
                 ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
                 ctx.restore();
 
-                if (bhActive >= 45) {
-                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
-                    drawText(nombreCorto(activo.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.8, tcProf, 'left');
-                } else if (bhActive >= 32) {
-                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
+                if (bhActive >= 40) {
+                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
+                    drawText(nombreCorto(activo.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.85, tcProf, 'left');
+                } else if (bhActive >= 26) {
+                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
                 }
 
-                if (bhActive >= 32) {
+                if (bhActive >= 26) {
                     const yBottom = yStart + bhActive - padY - fSize * 0.5;
-                    drawText(`${activo.edificio} ${activo.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.8, tcRoom, 'left');
-                    drawText(tipoAbrev(activo.tipo), blockX + bw - padX, yBottom, 22, fSize * 1.0, tcTipo, 'right', 'bold');
+                    drawText(`${activo.edificio} ${activo.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.85, tcRoom, 'left');
+                    drawText(tipoAbrev(activo.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
+                } else if (bhActive >= 14) {
+                    const yBottom = yStart + bhActive - padY - fSize * 0.5;
+                    drawText(tipoAbrev(activo.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
                 }
             }
 
             const dividerY = blockY + bhActive;
             ctx.save();
             ctx.strokeStyle = tc;
-            ctx.globalAlpha = 0.25;
+            ctx.globalAlpha = 0.35;
             ctx.lineWidth = 1;
             ctx.beginPath();
-            ctx.moveTo(blockX + 6.4, dividerY);
-            ctx.lineTo(blockX + bw - 6.4, dividerY);
+            ctx.moveTo(blockX + 6, dividerY);
+            ctx.lineTo(blockX + bw - 6, dividerY);
             ctx.stroke();
             ctx.restore();
 
             ctx.save();
-            ctx.globalAlpha = 0.55;
+            ctx.globalAlpha = 0.95;
             {
                 const yStart = blockY + bhActive;
                 const yCode = yStart + padY + fSize * 0.5;
                 const codeText = `${otro.codigo}-${(otro.seccion || '').trim() || '?'}`;
                 drawText(codeText, blockX + padX, yCode, bw - padX * 2, fSize, tcActive, 'left', 'bold');
 
-                if (bhInactive >= 45) {
-                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
-                    drawText(nombreCorto(otro.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.8, tcProf, 'left');
-                } else if (bhInactive >= 32) {
-                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.8, tcName, 'left');
+                if (bhInactive >= 40) {
+                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
+                    drawText(nombreCorto(otro.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.85, tcProf, 'left');
+                } else if (bhInactive >= 26) {
+                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
                 }
 
-                if (bhInactive >= 32) {
+                if (bhInactive >= 26) {
                     const yBottom = yStart + bhInactive - padY - fSize * 0.5;
-                    drawText(`${otro.edificio} ${otro.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.8, tcRoom, 'left');
-                    drawText(tipoAbrev(otro.tipo), blockX + bw - padX, yBottom, 22, fSize * 1.0, tcTipo, 'right', 'bold');
+                    drawText(`${otro.edificio} ${otro.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.85, tcRoom, 'left');
+                    drawText(tipoAbrev(otro.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
+                } else if (bhInactive >= 14) {
+                    const yBottom = yStart + bhInactive - padY - fSize * 0.5;
+                    drawText(tipoAbrev(otro.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
                 }
             }
             ctx.restore();
@@ -802,14 +843,14 @@ export default function ScheduleBuilder() {
             }
 
             ctx.save();
-            roundRect(blockX - 1, blockY - 1.5, bw + 2, bh + 2, 0);
+            roundRect(blockX + 0.5, blockY - 0.5, bw - 1, bh + 1, BLOCK_R + 1);
             ctx.strokeStyle = 'rgba(217,119,6,0.25)';
             ctx.lineWidth = 1;
             ctx.stroke();
             ctx.restore();
 
             ctx.save();
-            roundRect(blockX, blockY - 0.5, bw, bh, 0);
+            roundRect(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1, BLOCK_R);
             ctx.strokeStyle = '#d97706';
             ctx.lineWidth = 2;
             ctx.stroke();
@@ -887,7 +928,7 @@ export default function ScheduleBuilder() {
 
                 // block background
                 ctx.save();
-                roundRect(blockX, blockY - 0.5, bw, bh, 0);
+                roundRect(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1, BLOCK_R);
                 ctx.clip();
 
                 if (blocksBg) {
@@ -928,7 +969,7 @@ export default function ScheduleBuilder() {
                 const conf = hasConflict(seccion);
                 if (conf.status !== 'valid') {
                     ctx.save();
-                    roundRect(blockX, blockY - 0.5, bw, bh, 0);
+                    roundRect(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1, BLOCK_R);
                     ctx.strokeStyle = conf.status === 'error' ? '#e74c3c' : '#d97706';
                     ctx.lineWidth = 2;
                     ctx.stroke();
@@ -936,8 +977,8 @@ export default function ScheduleBuilder() {
                 }
 
                 // text content
-                const padX = 3;
-                const padY = 1;
+                const padX = 5;
+                const padY = 3;
                 const fSize = 10;
                 const tc = getTextColor(color);
                 const tcProf = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
@@ -952,7 +993,7 @@ export default function ScheduleBuilder() {
                 }
 
                 if (bh >= 50) {
-                    const lineH = fSize * 1.1;
+                    const lineH = fSize * 1.25;
                     drawText(`${seccion.codigo}-${(seccion.seccion || '').trim() || '?'}`,
                         blockX + padX, blockY + padY + fSize * 0.6,
                         bw - padX * 2, fSize, tc, 'left', 'bold');
@@ -968,9 +1009,9 @@ export default function ScheduleBuilder() {
                         bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, bottomY,
-                        22, fSize * 1.2, tcTipo, 'right', 'bold');
+                        45, fSize * 0.85, tcTipo, 'right', 'bold');
                 } else if (bh >= 30) {
-                    const lineH = fSize * 1.05;
+                    const lineH = fSize * 1.15;
                     drawText(`${seccion.codigo}-${(seccion.seccion || '').trim() || '?'}`,
                         blockX + padX, blockY + padY + fSize * 0.6,
                         bw - padX * 2, fSize, tc, 'left', 'bold');
@@ -983,7 +1024,7 @@ export default function ScheduleBuilder() {
                         bw - padX * 2 - 18, fSize * 0.8, tcRoom, 'left');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, bottomY,
-                        20, fSize * 1.1, tcTipo, 'right', 'bold');
+                        45, fSize * 0.8, tcTipo, 'right', 'bold');
                 } else if (bh >= 25) {
                     const midY = blockY + bh / 2;
                     drawText(`${seccion.codigo}-${(seccion.seccion || '').trim() || '?'}`,
@@ -994,7 +1035,7 @@ export default function ScheduleBuilder() {
                         bw - padX * 2 - 18, fSize * 0.85, tcRoom, 'left');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, midY + fSize * 0.5,
-                        20, fSize * 1.0, tcTipo, 'right', 'bold');
+                        45, fSize * 0.8, tcTipo, 'right', 'bold');
                 } else {
                     const midY = blockY + bh / 2;
                     drawText(seccion.codigo,
@@ -1002,7 +1043,7 @@ export default function ScheduleBuilder() {
                         bw - padX * 2 - 24, fSize * 0.85, tc, 'left', 'bold');
                     drawText(tipoAbrev(seccion.tipo),
                         blockX + bw - padX, midY,
-                        22, fSize * 0.9, tcTipo, 'right', 'bold');
+                        45, fSize * 0.8, tcTipo, 'right', 'bold');
                 }
 
                 if (isDark) {
@@ -1095,49 +1136,52 @@ export default function ScheduleBuilder() {
         const sorted = [...occupiedSlots].sort((a, b) => a - b);
         let clusters;
         if (clusterEnabled) {
-            clusters = [];
-            let cur = { start: sorted[0], end: sorted[0] };
-            for (let i = 1; i < sorted.length; i++) {
-                const sl = sorted[i];
-                if (sl - cur.end <= 12) { cur.end = sl; }
-                else { clusters.push({ ...cur }); cur = { start: sl, end: sl }; }
-            }
-            clusters.push({ ...cur });
+            clusters = [{
+                start: sorted[0],
+                end: Math.min(Math.floor((23 - HORA_INICIO) * 6), sorted[sorted.length - 1] + 1)
+            }];
         } else {
-            clusters = [{ start: sorted[0], end: sorted[sorted.length - 1] }];
+            const firstHourSlot = Math.floor(sorted[0] / 6) * 6;
+            clusters = [{
+                start: firstHourSlot,
+                end: Math.min(Math.floor((23 - HORA_INICIO) * 6), Math.max(86, sorted[sorted.length - 1] + 1))
+            }];
         }
-        // No padding: exact occupied slot bounds, no dead rows around clusters.
 
         // ── 3. collapsed slots ────────────────────────────────────────────────
-        // In compact mode every slot within a cluster that has NO course on ANY
-        // day is hidden. Additionally, the middle rows of long (>6 slot) blocks
-        // are also hidden (keeping 2 head + 3 tail rows visible per block, i.e.
-        // 5 rows total). Hidden runs of slots are replaced by a single "···"
-        // marker row.
         const collapsedSlots  = new Set();
         const collapseMarkers = new Set();
 
         if (clusterEnabled) {
-            // ── 3a. hide unoccupied slots inside clusters ──────────────────────
-            for (const c of clusters) {
-                for (let sl = c.start; sl <= c.end; sl++) {
-                    if (!occupiedSlots.has(sl)) {
-                        collapsedSlots.add(sl);
+            // 3a. Find contiguous runs of unoccupied slots (!occupiedSlots.has(sl)).
+            // If an empty gap is > 1 slot (> 10 minutes), we place exactly 1 small space (1 slot = 22px)
+            // where the top shows the end time of the previous course (`hora de inicio del espacio en blanco`)
+            // and the very next row shows the start time of the new courses (`hora que inician los nuevos cursos`).
+            let runStart = null;
+            for (let sl = clusters[0].start; sl <= clusters[0].end + 1; sl++) {
+                if (sl <= clusters[0].end && !occupiedSlots.has(sl)) {
+                    if (runStart === null) runStart = sl;
+                } else {
+                    if (runStart !== null) {
+                        const runLen = sl - runStart;
+                        if (runLen > 1) {
+                            // Keep exactly 1 small slot (runStart), collapse the rest until sl - 1
+                            for (let k = runStart + 1; k < sl; k++) {
+                                collapsedSlots.add(k);
+                            }
+                        }
+                        runStart = null;
                     }
                 }
             }
 
-            // ── 3b. also hide middle rows of long blocks (>6 slots) ───────────
-            // Keep the first HEAD_ROWS_LONG rows and the last TAIL_ROWS_LONG
-            // rows visible (5 total) — see doc comment above for the "unless
-            // another course is in the middle" exception.
-            const HEAD_ROWS_LONG = 2;
-            const TAIL_ROWS_LONG = 3;
-
-            // Per-section candidate collapse range — the slots THAT section
-            // alone would be happy to hide. null = too short to ever compact.
-            const candidateRange = new Map(); // section → {start,end} | null
-            const slotOccupants  = new Map(); // slotIdx → Set of sections
+            // 3b. In compact mode (`modo compacto`), we only maintain full course height (`ese tamaño`) for slots
+            // where two or more courses overlap simultaneously on the exact same day (`dos cursos al mismo tiempo en un día`).
+            // For all other courses that do not have a same-day overlap (`sin traslape en el mismo día`),
+            // we compress them to half their size (`la mitad del tamaño`), unless another course on another day
+            // shares those time slots and requires them uncollapsed (`a menos que haya un curso otro día a la misma hora que estén dos a la misma hora`).
+            const candidateRange = new Map();
+            const slotOccupants  = new Map();
             for (const s of sections) {
                 const ss = Math.floor((mins(s.inicio) - HORA_INICIO * 60) / slotMinutes);
                 const es = Math.ceil((mins(s.final)  - HORA_INICIO * 60) / slotMinutes);
@@ -1145,16 +1189,48 @@ export default function ScheduleBuilder() {
                     if (!slotOccupants.has(sl)) slotOccupants.set(sl, new Set());
                     slotOccupants.get(sl).add(s);
                 }
-                const span = es - ss;
-                candidateRange.set(s, span <= 6 ? null : { start: ss + HEAD_ROWS_LONG, end: es - TAIL_ROWS_LONG });
             }
 
-            // A slot can only be hidden if EVERY course occupying it (across
-            // all days, since rows are shared) agrees it's hideable for its
-            // own compaction. If two courses share the exact same long block
-            // across different days, both agree and the slot collapses fine.
-            // If a shorter course — or a longer one whose own head/tail
-            // touches this slot — needs it visible, it stays visible for all.
+            // Check if a time slot has multiple courses overlapping on the exact same day
+            const hasSameDayOverlapAtSlot = (sl) => {
+                const occupants = slotOccupants.get(sl);
+                if (!occupants || occupants.size <= 1) return false;
+                const arr = Array.from(occupants);
+                for (let i = 0; i < arr.length; i++) {
+                    for (let j = i + 1; j < arr.length; j++) {
+                        const diasA = arr[i].dias || [];
+                        const diasB = arr[j].dias || [];
+                        if (diasA.some(dia => diasB.includes(dia))) {
+                            return true;
+                        }
+                    }
+                }
+                return false;
+            };
+
+            for (const s of sections) {
+                const ss = Math.floor((mins(s.inicio) - HORA_INICIO * 60) / slotMinutes);
+                const es = Math.ceil((mins(s.final)  - HORA_INICIO * 60) / slotMinutes);
+                const span = es - ss;
+                let hasSameDayOverlap = false;
+                for (let sl = ss; sl < es; sl++) {
+                    if (hasSameDayOverlapAtSlot(sl)) {
+                        hasSameDayOverlap = true;
+                        break;
+                    }
+                }
+
+                if (hasSameDayOverlap || span <= 2) {
+                    candidateRange.set(s, null);
+                } else {
+                    // Collapse half of the course's slots so it gets half the height (`la mitad del tamaño`)
+                    const collapseCount = Math.floor(span / 2);
+                    const headRows = Math.ceil((span - collapseCount) / 2);
+                    const tailRows = span - collapseCount - headRows;
+                    candidateRange.set(s, { start: ss + headRows, end: es - tailRows });
+                }
+            }
+
             for (const [sl, occupants] of slotOccupants) {
                 let canHide = true;
                 for (const o of occupants) {
@@ -1167,41 +1243,29 @@ export default function ScheduleBuilder() {
                 if (canHide) collapsedSlots.add(sl);
             }
 
-            // ── 3c. mark the first slot of each contiguous collapsed run ───────
-            let inRun = false;
-            for (const c of clusters) {
-                for (let sl = c.start; sl <= c.end; sl++) {
-                    if (collapsedSlots.has(sl) && !inRun) {
-                        collapseMarkers.add(sl);
-                        inRun = true;
-                    } else if (!collapsedSlots.has(sl)) {
-                        inRun = false;
-                    }
-                }
-                inRun = false; // reset between clusters
+            // Protect course start and end boundaries so that non-exact end times (e.g. 08:50 vs 09:00) maintain distinct visual rows
+            // without uncollapsing extra surrounding gaps (`es + 1`) that inflate compact mode height.
+            for (const s of sections) {
+                const ss = Math.floor((mins(s.inicio) - HORA_INICIO * 60) / slotMinutes);
+                const es = Math.ceil((mins(s.final)  - HORA_INICIO * 60) / slotMinutes);
+                collapsedSlots.delete(ss);
+                if (es - 1 >= 0) collapsedSlots.delete(es - 1);
+                collapsedSlots.delete(es);
             }
         }
 
         // ── 4. build slot→visualRow map (grid rows, 1-based; row 1 = header) ─
-        // Visual rows start at 2.
         const slotToRow  = new Map(); // slotIdx → CSS gridRow number
         const rowMeta    = [];        // ordered list of { type, sl?, ci, row }
         let   rowCounter = 2;         // CSS grid rows start at 2 (row 1 = header)
 
+        // ALWAYS insert a dedicated blank top-spacer row right below the day header
+        rowMeta.push({ type: 'top-spacer', row: rowCounter++ });
+
         for (let ci = 0; ci < clusters.length; ci++) {
-            if (ci > 0) {
-                rowMeta.push({ type: 'cluster-sep', ci, row: rowCounter });
-                rowCounter++;
-            }
             const c = clusters[ci];
             for (let sl = c.start; sl <= c.end; sl++) {
                 if (collapsedSlots.has(sl)) {
-                    // Emit collapse-marker row at the START of each collapsed run,
-                    // then skip all slots in that run.
-                    if (collapseMarkers.has(sl)) {
-                        rowMeta.push({ type: 'collapse-marker', sl, ci, row: rowCounter });
-                        rowCounter++;
-                    }
                     continue;
                 }
                 slotToRow.set(sl, rowCounter);
@@ -1236,7 +1300,12 @@ export default function ScheduleBuilder() {
 
         // ── render meta rows (separators, collapse markers, time cells) ────────
         for (const meta of rowMeta) {
-            if (meta.type === 'cluster-sep') {
+            if (meta.type === 'top-spacer') {
+                blocks.push(
+                    <div key="top-spacer" className="schedule-cell schedule-top-spacer"
+                        style={{ gridColumn: '1 / -1', gridRow: meta.row }} />
+                );
+            } else if (meta.type === 'cluster-sep') {
                 blocks.push(
                     <div key={`sep-${meta.ci}`} className="schedule-separator"
                         style={{ gridColumn: '1 / -1', gridRow: meta.row }}>
@@ -1246,7 +1315,7 @@ export default function ScheduleBuilder() {
             } else if (meta.type === 'collapse-marker') {
                 blocks.push(
                     <div key={`cm-${meta.ci}-${meta.sl}`} className="schedule-separator"
-                        style={{ gridColumn: '1 / -1', gridRow: meta.row, zIndex: 2, background: 'transparent' }}>
+                        style={{ gridColumn: '1 / -1', gridRow: meta.row, zIndex: 2 }}>
                         <span className="schedule-separator-dots">···</span>
                     </div>
                 );
@@ -1255,12 +1324,33 @@ export default function ScheduleBuilder() {
                 const row = meta.row;
                 const hora   = HORA_INICIO + Math.floor(sl / slotsPerHour);
                 const minuto = (sl % slotsPerHour) * slotMinutes;
-                const timeLabel = `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`;
+                
+                const isHourStart = minuto === 0;
+                const isHalfHour = minuto === 30;
+
+                const anyCourseStartsHere = allSelected.some(h => {
+                    const iniMin = mins(h.inicio);
+                    return Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes) === sl;
+                });
+                const anyCourseEndsHere = allSelected.some(h => {
+                    const finMin = mins(h.final);
+                    return Math.ceil((finMin - HORA_INICIO * 60) / slotMinutes) === sl || Math.floor((finMin - HORA_INICIO * 60) / slotMinutes) === sl;
+                });
+
+                const isCourseBoundary = !isHourStart && (anyCourseStartsHere || anyCourseEndsHere);
+                const boundaryClass = isHourStart ? ' schedule-hour-boundary' : (isCourseBoundary ? ' schedule-subhour-boundary' : (isHalfHour ? ' schedule-halfhour-boundary' : ''));
+
+                let timeLabel = '';
+                if (isHourStart) {
+                    timeLabel = `${String(hora).padStart(2, '0')}:00`;
+                } else if (isCourseBoundary) {
+                    timeLabel = `${String(hora).padStart(2, '0')}:${String(minuto).padStart(2, '0')}`;
+                }
 
                 blocks.push(
-                    <div key={`time-${sl}`} className="schedule-cell schedule-time-cell"
+                    <div key={`time-${sl}`} className={`schedule-cell schedule-time-cell${boundaryClass}`}
                         style={{ gridColumn: 1, gridRow: row }}>
-                        {timeLabel}
+                        {timeLabel && <span className={isHourStart ? 'time-label-hour' : 'time-label-sub'}>{timeLabel}</span>}
                     </div>
                 );
 
@@ -1370,7 +1460,7 @@ export default function ScheduleBuilder() {
 
                     if (cursosEnSlot.length === 0) {
                         blocks.push(
-                            <div key={`cell-${sl}-${dia}`} className="schedule-cell"
+                            <div key={`cell-${sl}-${dia}`} className={`schedule-cell${boundaryClass}`}
                                 style={{ gridColumn: diaIdx + 2, gridRow: row }} />
                         );
                         return;
@@ -1383,7 +1473,7 @@ export default function ScheduleBuilder() {
                     if (!isBlockStart) {
                         // block started on an earlier row — render placeholder so grid stays intact
                         blocks.push(
-                            <div key={`span-${sl}-${dia}`} className="schedule-cell"
+                            <div key={`span-${sl}-${dia}`} className={`schedule-cell${boundaryClass}`}
                                 style={{ gridColumn: diaIdx + 2, gridRow: row, visibility: 'hidden' }} />
                         );
                         return;
@@ -1393,14 +1483,11 @@ export default function ScheduleBuilder() {
                     const finMin       = mins(seccion.final);
                     const startSlotIdx = Math.floor((iniMin - HORA_INICIO * 60) / slotMinutes);
                     const endSlotIdx   = Math.ceil((finMin  - HORA_INICIO * 60) / slotMinutes);
-                    const originalSpan = Math.max(1, endSlotIdx - startSlotIdx);
-                    const isLong       = clusterEnabled && originalSpan > 6;
 
                     // Count visible rows this block will span in the current layout
                     let visibleRowSpan = 0;
                     for (let s = startSlotIdx; s < endSlotIdx; s++) {
                         if (!collapsedSlots.has(s)) visibleRowSpan++;
-                        if (collapseMarkers.has(s)) visibleRowSpan++; // marker row counts
                     }
                     visibleRowSpan = Math.max(1, visibleRowSpan);
 
@@ -1434,7 +1521,7 @@ export default function ScheduleBuilder() {
                                 backgroundColor: color,
                                 color: textColor,
                                 border: `1px solid ${borderColor}`,
-                                zIndex: isLong ? 0 : 1,
+                                zIndex: 2,
                                 position: 'relative'
                             }}
                             onClick={() => toggleSection(seccion)}>
@@ -1459,7 +1546,7 @@ export default function ScheduleBuilder() {
                 <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline font-extrabold text-[#BF2600] dark:text-[#FF6369]">portal.ingenieria.usac.edu.gt</a>.</span>
             </WarningBanner>
         )}
-        <div className="schedule-toolbar">
+        <div className="schedule-toolbar bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-100 transition-colors duration-300">
         <div className="schedule-toolbar-title">
         <Calendar size={18} className="max-sm:hidden" />
         <h3 className="max-sm:hidden">Armador de Horarios</h3>
@@ -1492,9 +1579,9 @@ export default function ScheduleBuilder() {
           className={`schedule-btn ${clusterEnabled ? 'cluster-active' : ''}`}
           onClick={() => setClusterEnabled(!clusterEnabled)}
           title={clusterEnabled ? 'Mostrar horario completo' : 'Compactar tiempo muerto'}
-          style={{ fontSize: '0.7rem', fontWeight: 500 }}
+          style={{ fontSize: '0.72rem', fontWeight: 500, whiteSpace: 'nowrap' }}
         >
-          {clusterEnabled ? 'Compac' : 'Compl'}
+          {clusterEnabled ? 'Compacto' : 'Completo'}
         </button>
         <button className="schedule-btn" onClick={() => loadHorarios(currentPeriod)} title="Recargar">
         <RefreshCw size={14} className={loading ? 'spin' : ''} />
@@ -1561,7 +1648,7 @@ export default function ScheduleBuilder() {
                 </div>
                 </div>
             )}
-            <div className="schedule-grid" style={{ display: 'grid', gridTemplateColumns: `50px repeat(7, 1fr)` }}>
+            <div className={`schedule-grid ${clusterEnabled ? 'cluster-active-grid' : ''}`} style={{ display: 'grid', gridTemplateColumns: `50px repeat(7, 1fr)` }}>
             {(() => {
                 const headerBg = getPaletteAccent(exportSettings.paletteName);
                 const headerColor = getTextColor(headerBg);

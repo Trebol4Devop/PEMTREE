@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
-import { Plus, X, BookOpen, Copy, Pencil, Trash2 } from 'lucide-react';
+import { Plus, X, BookOpen, Copy, Pencil, Trash2, Share2, Upload, Download, Check, MessageCircle, Mail } from 'lucide-react';
 import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
 import { importarCursosDesdeJSON } from '../modules/data/importFromJSON';
 import CoursePool from './CoursePool';
@@ -7,7 +7,7 @@ import SemesterBlock from './SemesterBlock';
 import VacationBlock from './VacationBlock';
 import ToastNotification from './ToastNotification';
 import { useToast } from '../hooks/useToast';
-import { WarningBanner } from './ui';
+import { WarningBanner, Modal, Button } from './ui';
 
 const INITIAL_SEMESTERS = 3;
 const SIMULTANEOUS_BONUS = 5;
@@ -170,6 +170,24 @@ function sumLineCredits(line, resolveMap, suficiencias) {
     return total;
 }
 
+function encodePlanPayload(payload) {
+    try {
+        const str = JSON.stringify(payload);
+        return btoa(unescape(encodeURIComponent(str)));
+    } catch {
+        return '';
+    }
+}
+
+function decodePlanPayload(code) {
+    try {
+        const str = decodeURIComponent(escape(atob(code)));
+        return JSON.parse(str);
+    } catch {
+        return null;
+    }
+}
+
 export default function Planner({ currentPensum }) {
     const { toasts, addToast, removeToast } = useToast();
     const [showPool, setShowPool] = useState(false);
@@ -181,6 +199,35 @@ export default function Planner({ currentPensum }) {
     const [selectedLineId, setSelectedLineId] = useState(() => lines[0]?.id ?? null);
     const [renamingLineId, setRenamingLineId] = useState(null);
     const [renameValue, setRenameValue] = useState('');
+    const [confirmDeleteModal, setConfirmDeleteModal] = useState({ isOpen: false, lineId: null, lineName: '' });
+
+    // Estados para compartir e importar planificación
+    const [showShareModal, setShowShareModal] = useState(false);
+    const [sharedPlanData, setSharedPlanData] = useState(() => {
+        const params = new URLSearchParams(window.location.search);
+        let code = params.get('sharePlan') || params.get('plan');
+        if (!code && window.location.hash) {
+            const hashParts = window.location.hash.split('?');
+            if (hashParts.length > 1) {
+                const hashParams = new URLSearchParams(hashParts[1]);
+                code = hashParams.get('sharePlan') || hashParams.get('plan');
+            } else if (window.location.hash.includes('sharePlan=')) {
+                code = window.location.hash.split('sharePlan=')[1]?.split('&')[0];
+            } else if (window.location.hash.includes('plan=')) {
+                code = window.location.hash.split('plan=')[1]?.split('&')[0];
+            }
+        }
+        if (code) {
+            const decoded = decodePlanPayload(code);
+            if (decoded && (decoded.lines || decoded.plan)) {
+                return decoded;
+            }
+        }
+        return null;
+    });
+    const [showImportModal, setShowImportModal] = useState(() => sharedPlanData !== null);
+    const [linkCopied, setLinkCopied] = useState(false);
+    const [pastedCodeInput, setPastedCodeInput] = useState('');
 
     const [promedio, setPromedio] = useState(() => {
         try {
@@ -282,6 +329,123 @@ export default function Planner({ currentPensum }) {
     useEffect(() => {
         localStorage.setItem(getSuficienciaFailsKey(), JSON.stringify(suficienciaFails));
     }, [suficienciaFails]);
+
+    const currentShareLink = useMemo(() => {
+        const pk = getPensumKey() || currentPensum || 'ciencias_y_sistemas_22.json';
+        const payload = {
+            v: 2,
+            pk,
+            lines: lines.map(l => ({
+                id: l.id,
+                name: l.name,
+                plan: l.plan || {},
+                semesterCount: l.semesterCount || INITIAL_SEMESTERS,
+                hiddenVacations: l.hiddenVacations || []
+            })),
+            prom: promedio || 0,
+            sim: simultaneous || false,
+            spk: secondPensum || null,
+            suf: suficiencias || []
+        };
+        const encoded = encodePlanPayload(payload);
+        return `${window.location.origin}${window.location.pathname}?view=planner&sharePlan=${encodeURIComponent(encoded)}`;
+    }, [lines, promedio, simultaneous, secondPensum, suficiencias, currentPensum]);
+
+    const handleConfirmImport = useCallback((replaceExisting = true) => {
+        if (!sharedPlanData) return;
+        const targetPk = sharedPlanData.pk || getPensumKey() || currentPensum || 'ciencias_y_sistemas_22.json';
+
+        let newLinesToSet = [];
+        if (sharedPlanData.lines && Array.isArray(sharedPlanData.lines) && sharedPlanData.lines.length > 0) {
+            if (replaceExisting) {
+                newLinesToSet = sharedPlanData.lines;
+            } else {
+                const appended = sharedPlanData.lines.map(l => ({
+                    ...l,
+                    id: `line-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
+                    name: `${l.name} (Importada)`
+                }));
+                newLinesToSet = [...lines, ...appended];
+            }
+        } else if (sharedPlanData.plan) {
+            const singleLine = {
+                id: `line-${Date.now()}`,
+                name: 'Plan Importado',
+                plan: sharedPlanData.plan,
+                semesterCount: inferSemesterCount(sharedPlanData.plan),
+                hiddenVacations: []
+            };
+            newLinesToSet = replaceExisting ? [singleLine] : [...lines, singleLine];
+        }
+
+        if (newLinesToSet.length > 0) {
+            setLines(newLinesToSet);
+            setSelectedLineId(newLinesToSet[0].id);
+            localStorage.setItem(`pemtree_plan_lines_${targetPk}`, JSON.stringify(newLinesToSet));
+            localStorage.setItem(`pemtree_plan_updated_${targetPk}`, new Date().toISOString());
+        }
+
+        if (replaceExisting) {
+            if (sharedPlanData.prom !== undefined) {
+                setPromedio(sharedPlanData.prom);
+                localStorage.setItem(`pemtree_promedio_${targetPk}`, String(sharedPlanData.prom));
+            }
+            if (sharedPlanData.sim !== undefined) {
+                setSimultaneous(sharedPlanData.sim);
+                localStorage.setItem(`pemtree_simultaneous_${targetPk}`, String(sharedPlanData.sim));
+            }
+            if (sharedPlanData.spk) {
+                setSecondPensum(sharedPlanData.spk);
+            }
+            if (sharedPlanData.suf) {
+                setSuficiencias(sharedPlanData.suf);
+                localStorage.setItem(`pemtree_suficiencias_${targetPk}`, JSON.stringify(sharedPlanData.suf));
+            }
+        }
+
+        if (targetPk !== currentPensum) {
+            localStorage.setItem('pemtree_pensum_actual', targetPk);
+            addToast('¡Planificación importada! Cargando la carrera correspondiente...');
+            setTimeout(() => {
+                window.location.href = `${window.location.origin}${window.location.pathname}?view=planner`;
+            }, 800);
+            return;
+        }
+
+        const cleanUrl = `${window.location.origin}${window.location.pathname}?view=planner`;
+        window.history.replaceState({}, document.title, cleanUrl);
+
+        setSharedPlanData(null);
+        setShowImportModal(false);
+        addToast('¡Planificación importada y lista en tu pantalla!');
+    }, [sharedPlanData, currentPensum, lines, addToast]);
+
+    const handleDownloadJSON = useCallback(() => {
+        const pk = getPensumKey() || currentPensum || 'ciencias_y_sistemas_22.json';
+        const payload = {
+            v: 2,
+            pk,
+            lines: lines.map(l => ({
+                id: l.id,
+                name: l.name,
+                plan: l.plan || {},
+                semesterCount: l.semesterCount || INITIAL_SEMESTERS,
+                hiddenVacations: l.hiddenVacations || []
+            })),
+            prom: promedio || 0,
+            sim: simultaneous || false,
+            spk: secondPensum || null,
+            suf: suficiencias || []
+        };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `planificacion_pemtree_${pk.replace('.json', '')}.json`;
+        a.click();
+        URL.createObjectURL(url);
+        addToast('¡Archivo JSON descargado exitosamente!');
+    }, [lines, promedio, simultaneous, secondPensum, suficiencias, currentPensum, addToast]);
 
     const currentCursos = useMemo(() => {
         const primary = Array.from(cursoMap.values());
@@ -737,6 +901,24 @@ export default function Planner({ currentPensum }) {
                     )}
                     <span className="planner-promedio-limit">Máx: {maxCredits} cr/sem</span>
                     <button
+                        type="button"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer border shadow-sm bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E]"
+                        onClick={() => setShowShareModal(true)}
+                        title="Compartir o exportar tu planificación"
+                    >
+                        <Share2 size={15} />
+                        <span className="hidden sm:inline">Compartir / Exportar</span>
+                    </button>
+                    <button
+                        type="button"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer border shadow-sm bg-white dark:bg-[#1C2636] text-[#059669] dark:text-[#34D399] border-[#059669]/30 dark:border-[#34D399]/30 hover:bg-[#D1FAE5] dark:hover:bg-[#064E3B]"
+                        onClick={() => { setSharedPlanData(null); setShowImportModal(true); }}
+                        title="Importar planificación"
+                    >
+                        <Upload size={15} />
+                        <span className="hidden sm:inline">Importar</span>
+                    </button>
+                    <button
                         className="planner-pool-toggle-bar"
                         onClick={() => setShowPool(v => !v)}
                         title={showPool ? 'Ocultar cursos' : 'Ver cursos'}
@@ -811,9 +993,7 @@ export default function Planner({ currentPensum }) {
                                                 type="button"
                                                 className="planner-line-action-btn planner-line-action-btn-danger"
                                                 onClick={() => {
-                                                    if (confirm(`¿Eliminar la línea "${line.name}"? Esta acción no se puede deshacer.`)) {
-                                                        handleDeleteLine(line.id);
-                                                    }
+                                                    setConfirmDeleteModal({ isOpen: true, lineId: line.id, lineName: line.name });
                                                 }}
                                                 title="Eliminar línea"
                                                 aria-label="Eliminar línea"
@@ -920,6 +1100,242 @@ export default function Planner({ currentPensum }) {
                 </div>
             </div>
             </div>
+
+            {/* Confirm Delete Line Modal */}
+            <Modal
+                isOpen={confirmDeleteModal.isOpen}
+                onClose={() => setConfirmDeleteModal({ isOpen: false, lineId: null, lineName: '' })}
+                title="¿Eliminar línea de planificación?"
+            >
+                <p className="text-sm text-[#172B4D] dark:text-[#CBD5E1] mb-6 leading-relaxed">
+                    ¿Estás seguro de que deseas eliminar la línea <strong>"{confirmDeleteModal.lineName}"</strong>? Todos los cursos planificados en esta ruta se perderán permanentemente.
+                </p>
+                <div className="flex justify-end gap-2.5">
+                    <Button 
+                        variant="secondary" 
+                        onClick={() => setConfirmDeleteModal({ isOpen: false, lineId: null, lineName: '' })}
+                    >
+                        Cancelar
+                    </Button>
+                    <Button 
+                        variant="danger" 
+                        onClick={() => {
+                            if (confirmDeleteModal.lineId) handleDeleteLine(confirmDeleteModal.lineId);
+                            setConfirmDeleteModal({ isOpen: false, lineId: null, lineName: '' });
+                        }}
+                    >
+                        Sí, eliminar
+                    </Button>
+                </div>
+            </Modal>
+
+            {/* Modal de Compartir y Exportar Planificación */}
+            <Modal
+                isOpen={showShareModal}
+                onClose={() => { setShowShareModal(false); setLinkCopied(false); }}
+                title="📤 Compartir y Exportar tu Planificación"
+            >
+                <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-4">
+                    <p className="leading-relaxed">
+                        Envía tu planificación universitaria y ruta de cursos por tu medio preferido. Al hacer clic en el enlace, <strong>cualquier compañero podrá abrir y cargar tu ruta de estudio exactamente como la armaste</strong>.
+                    </p>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+                        {/* Opción WhatsApp */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const text = encodeURIComponent('¡Hola! Te comparto mi planificación de cursos en PEMTREE. Ábrela directamente aquí: ' + currentShareLink);
+                                window.open('https://api.whatsapp.com/send?text=' + text, '_blank');
+                            }}
+                            className="flex items-center gap-3 p-3.5 rounded-lg border border-[#25D366]/40 bg-[#25D366]/10 dark:bg-[#25D366]/15 hover:bg-[#25D366]/20 transition cursor-pointer text-left"
+                        >
+                            <div className="p-2 rounded-full bg-[#25D366] text-white shrink-0">
+                                <MessageCircle size={20} />
+                            </div>
+                            <div className="min-w-0">
+                                <div className="font-bold text-xs sm:text-sm text-[#172B4D] dark:text-slate-100">Enviar por WhatsApp</div>
+                                <div className="text-[0.68rem] text-slate-600 dark:text-slate-300 leading-tight truncate">Abre chat con enlace prellenado</div>
+                            </div>
+                        </button>
+
+                        {/* Opción Correo */}
+                        <button
+                            type="button"
+                            onClick={() => {
+                                const subject = encodeURIComponent('Mi Planificación de Cursos - PEMTREE');
+                                const body = encodeURIComponent('¡Hola!\n\nTe comparto mi planificación universitaria de cursos en PEMTREE. Puedes abrirla directamente en este enlace:\n\n' + currentShareLink);
+                                window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
+                            }}
+                            className="flex items-center gap-3 p-3.5 rounded-lg border border-[#0052CC]/40 bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 hover:bg-[#0052CC]/20 transition cursor-pointer text-left"
+                        >
+                            <div className="p-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white shrink-0">
+                                <Mail size={20} />
+                            </div>
+                            <div className="min-w-0">
+                                <div className="font-bold text-xs sm:text-sm text-[#172B4D] dark:text-slate-100">Enviar por Correo</div>
+                                <div className="text-[0.68rem] text-slate-600 dark:text-slate-300 leading-tight truncate">Abre app de e-mail lista</div>
+                            </div>
+                        </button>
+                    </div>
+
+                    {/* Copiar enlace directo */}
+                    <div className="pt-2">
+                        <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
+                            🔗 Enlace de acceso directo a tu planificación:
+                        </label>
+                        <div className="flex gap-2">
+                            <input
+                                type="text"
+                                readOnly
+                                value={currentShareLink}
+                                className="flex-1 px-3 py-2 text-xs border rounded-md bg-slate-50 dark:bg-[#1C2636] border-slate-300 dark:border-[#3E4C5E] text-slate-600 dark:text-slate-300 select-all font-mono truncate"
+                                onClick={e => e.target.select()}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    navigator.clipboard.writeText(currentShareLink);
+                                    setLinkCopied(true);
+                                    addToast('¡Enlace copiado al portapapeles!');
+                                    setTimeout(() => setLinkCopied(false), 3000);
+                                }}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer ${linkCopied ? 'bg-[#059669] text-white' : 'bg-[#0052CC] dark:bg-[#4C9AFF] text-white hover:bg-[#003D99]'}`}
+                            >
+                                {linkCopied ? <Check size={14} /> : <Copy size={14} />}
+                                <span>{linkCopied ? '¡Copiado!' : 'Copiar'}</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    {/* Descargar JSON */}
+                    <div className="border-t border-slate-200 dark:border-slate-700 pt-4 mt-4 flex flex-col sm:flex-row items-center justify-between gap-3">
+                        <div className="text-xs text-slate-600 dark:text-slate-300">
+                            ¿O prefieres guardar un archivo físico de respaldo?
+                        </div>
+                        <button
+                            type="button"
+                            onClick={handleDownloadJSON}
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border border-[#059669] text-[#059669] dark:text-[#34D399] dark:border-[#34D399] hover:bg-[#059669]/10 w-full sm:w-auto justify-center"
+                        >
+                            <Download size={15} />
+                            <span>Descargar Archivo (.json)</span>
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            {/* Modal de Importar Planificación */}
+            <Modal
+                isOpen={showImportModal}
+                onClose={() => { setShowImportModal(false); setSharedPlanData(null); }}
+                title="📥 Importar o Cargar Planificación"
+            >
+                {sharedPlanData ? (
+                    <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-4">
+                        <div className="p-4 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] border border-[#0052CC]/30">
+                            <h4 className="font-bold text-sm text-[#0052CC] dark:text-[#4C9AFF] flex items-center gap-2 mb-1">
+                                <Check size={18} /> ¡Planificación encontrada lista para importar!
+                            </h4>
+                            <p className="text-xs text-[#172B4D] dark:text-slate-200 mt-1">
+                                <strong>Carrera:</strong> {sharedPlanData.pk || currentPensum}<br />
+                                <strong>Líneas/Rutas incluidas:</strong> {sharedPlanData.lines ? sharedPlanData.lines.length : 1} línea(s) planificada(s)<br />
+                                {sharedPlanData.prom !== undefined && <span><strong>Promedio meta:</strong> {sharedPlanData.prom} pts</span>}
+                            </p>
+                        </div>
+
+                        <p className="text-xs sm:text-sm leading-relaxed">
+                            Puedes optar por reemplazar toda tu planificación actual o sumar estas rutas importadas a tus líneas existentes.
+                        </p>
+
+                        <div className="flex flex-col sm:flex-row justify-end gap-2.5 pt-3">
+                            <Button
+                                variant="secondary"
+                                onClick={() => handleConfirmImport(false)}
+                            >
+                                ➕ Sumar a mis líneas actuales
+                            </Button>
+                            <Button
+                                variant="primary"
+                                onClick={() => handleConfirmImport(true)}
+                            >
+                                ✅ Reemplazar mi plan actual
+                            </Button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-5">
+                        {/* Subir archivo */}
+                        <div>
+                            <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-2">
+                                1. Selecciona un archivo (.json) descargado previamente:
+                            </label>
+                            <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#CBD5E1] dark:border-[#3E4C5E] rounded-lg p-6 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#1C2636] transition-colors">
+                                <Upload size={28} className="text-[#0052CC] dark:text-[#4C9AFF] mb-2" />
+                                <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-200 text-center">Haz clic para buscar o arrastra tu archivo JSON</span>
+                                <span className="text-[0.68rem] text-slate-500 mt-1">Archivo exportado desde PEMTREE</span>
+                                <input
+                                    type="file"
+                                    accept=".json"
+                                    className="hidden"
+                                    onChange={async (e) => {
+                                        const file = e.target.files?.[0];
+                                        if (!file) return;
+                                        try {
+                                            const text = await file.text();
+                                            const parsed = JSON.parse(text);
+                                            if (parsed && (parsed.lines || parsed.plan)) {
+                                                setSharedPlanData(parsed);
+                                            } else {
+                                                addToast('El archivo no contiene un formato válido de PEMTREE.');
+                                            }
+                                        } catch {
+                                            addToast('Error al leer el archivo JSON.');
+                                        }
+                                    }}
+                                />
+                            </label>
+                        </div>
+
+                        {/* Pegar código o link */}
+                        <div className="border-t border-slate-200 dark:border-slate-700 pt-4">
+                            <label className="block text-xs font-bold text-[#172B4D] dark:text-slate-300 mb-1.5">
+                                2. ¿Recibiste un enlace o código largo? Pégalo aquí:
+                            </label>
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    placeholder="Pega el enlace https://... o código aquí..."
+                                    value={pastedCodeInput}
+                                    onChange={e => setPastedCodeInput(e.target.value)}
+                                    className="flex-1 px-3 py-2 text-xs border rounded-md bg-white dark:bg-[#1C2636] border-slate-300 dark:border-[#3E4C5E] text-slate-800 dark:text-slate-100 font-mono truncate"
+                                />
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        let code = pastedCodeInput.trim();
+                                        if (code.includes('sharePlan=')) {
+                                            code = code.split('sharePlan=')[1]?.split('&')[0] || code;
+                                        } else if (code.includes('plan=')) {
+                                            code = code.split('plan=')[1]?.split('&')[0] || code;
+                                        }
+                                        const decoded = decodePlanPayload(code);
+                                        if (decoded && (decoded.lines || decoded.plan)) {
+                                            setSharedPlanData(decoded);
+                                            setPastedCodeInput('');
+                                        } else {
+                                            addToast('El código no se pudo procesar. Verifica que esté completo.');
+                                        }
+                                    }}
+                                    className="px-3.5 py-2 rounded-md bg-[#0052CC] dark:bg-[#4C9AFF] text-white text-xs font-bold hover:bg-[#003D99] transition cursor-pointer"
+                                >
+                                    Cargar
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
+            </Modal>
         </div>
     );
 }
