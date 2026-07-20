@@ -32144,7 +32144,7 @@
       "lunes"
     ],
     "catedratico": "MERCEDES ESTHER ROQUEL CHAVEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE ALBERTO MEDINA CALGUA",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -33705,6 +33705,25 @@
       "viernes"
     ],
     "catedratico": "HUGO LEONEL ALVARADO DE LEON",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0610",
+    "nombre": "INFORMATICA",
+    "seccion": "A",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "07:10",
+    "final": "08:00",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "YESSENIA JANIRA MARROQUÍN MARTÍNEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -35699,6 +35718,42 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0654",
+    "nombre": "CONTABILIDAD 3",
+    "seccion": "A",
+    "modalidad": "PRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "07:10",
+    "final": "08:50",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "FELIX ALEXANDER ORDONEZ PICHOL",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0655",
+    "nombre": "ADMINISTRACION FINANCIERA",
+    "seccion": "A",
+    "modalidad": "PRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "08:50",
+    "final": "10:30",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "FELIX ALEXANDER ORDONEZ PICHOL",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0659",
     "nombre": "ADMINISTRACION DE RECURSOS HUMANOS",
     "seccion": "A",
@@ -37383,7 +37438,7 @@
       "lunes",
       "martes"
     ],
-    "catedratico": "KENNETH LUBECK CORADO ESQUIVEL",
+    "catedratico": "CARLOS ENRIQUE GÓMEZ DONIS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -37732,7 +37787,7 @@
       "viernes"
     ],
     "catedratico": "TANNIA MAGALY DE LEON MORAN",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "CARLOS AXEL FERNANDO HERNÁNDEZ GONZÁLEZ",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -39120,7 +39175,7 @@
       "martes",
       "jueves"
     ],
-    "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
+    "catedratico": "EMILIO ROLANDO MARROQUIN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
@@ -39176,6 +39231,24 @@
       "sabado"
     ],
     "catedratico": "OWEN TORRES RIVERA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0655",
+    "nombre": "ADMINISTRACION FINANCIERA",
+    "seccion": "B",
+    "modalidad": "PRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "08:50",
+    "final": "10:30",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "FELIX ALEXANDER ORDONEZ PICHOL",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -39605,28 +39678,6 @@
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
-  },
-  {
-    "codigo": "9000",
-    "nombre": "P.A.P. DE MATEMATICA PARA INGENIERIA",
-    "seccion": "B1",
-    "modalidad": "SEMIPRESENCIAL",
-    "tipo": "MAGISTRAL",
-    "edificio": "",
-    "salon": "",
-    "inicio": "08:00",
-    "final": "08:50",
-    "dias": [
-      "lunes",
-      "martes",
-      "miercoles",
-      "jueves",
-      "viernes"
-    ],
-    "catedratico": "TONY YOBANY BARRERA DONIS",
-    "auxiliar": "SIN AUXILIAR",
-    "restricciones": false,
-    "fuente": "semestre2"
   },
   {
     "codigo": "0147",
@@ -40797,6 +40848,25 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0610",
+    "nombre": "INFORMATICA",
+    "seccion": "C",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "08:00",
+    "final": "08:50",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "YESSENIA JANIRA MARROQUÍN MARTÍNEZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0634",
     "nombre": "INGENIERIA DE METODOS",
     "seccion": "C",
@@ -41388,7 +41458,7 @@
       "martes",
       "jueves"
     ],
-    "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
+    "catedratico": "EMILIO ROLANDO MARROQUIN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
@@ -41451,7 +41521,7 @@
       "viernes"
     ],
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
-    "auxiliar": "LUIS ARTURO SABAN LOPEZ",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -41752,7 +41822,7 @@
       "miercoles"
     ],
     "catedratico": "ADELA MARIA MARROQUIN GONZALEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE ALBERTO MEDINA CALGUA",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -42193,6 +42263,25 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0662",
+    "nombre": "LEGISLACION 1",
+    "seccion": "D",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "09:00",
+    "final": "09:50",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "ELSA MARIA ALVARADO JURADO",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0700",
     "nombre": "INGENIERIA ECONOMICA 1",
     "seccion": "D",
@@ -42376,6 +42465,25 @@
       "jueves"
     ],
     "catedratico": "MIRIAM PATRICIA RUBIO CONTRERAS DE AKU",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "3662",
+    "nombre": "LEGISLACION 1 (DIPLOMADO)",
+    "seccion": "D",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "09:00",
+    "final": "09:50",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "ELSA MARIA ALVARADO JURADO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -42854,7 +42962,7 @@
       "viernes"
     ],
     "catedratico": "MERCEDES ESTHER ROQUEL CHAVEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE ALBERTO MEDINA CALGUA",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -42980,7 +43088,7 @@
       "lunes",
       "martes"
     ],
-    "catedratico": "KENNETH LUBECK CORADO ESQUIVEL",
+    "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -43380,7 +43488,7 @@
       "viernes"
     ],
     "catedratico": "RONAL NOE GALVEZ GARCIA",
-    "auxiliar": "LUIS ARTURO SABAN LOPEZ",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -43456,7 +43564,7 @@
       "viernes"
     ],
     "catedratico": "LUIS  ALBERTO BAUTISTA",
-    "auxiliar": "JOSE CARLOS QUINONEZ ARBIZU",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -43496,7 +43604,7 @@
       "viernes"
     ],
     "catedratico": "JOSE ADOLFO TUNA AGUILAR",
-    "auxiliar": "LUIS ARTURO SABAN LOPEZ",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -44070,7 +44178,7 @@
       "viernes"
     ],
     "catedratico": "RODOLFO   ESTUARDO QUIROA  MELENDRES",
-    "auxiliar": "LUIS ARTURO SABAN LOPEZ",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -44133,7 +44241,7 @@
       "viernes"
     ],
     "catedratico": "EDDY  JOSUE SOLARES  ESPINOZA",
-    "auxiliar": "JOSE CARLOS QUINONEZ ARBIZU",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -44405,7 +44513,7 @@
       "jueves"
     ],
     "catedratico": "ADELA MARIA MARROQUIN GONZALEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE ALBERTO MEDINA CALGUA",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -44712,7 +44820,7 @@
     "inicio": "13:10",
     "final": "14:00",
     "dias": [
-      "miercoles"
+      "viernes"
     ],
     "catedratico": "INGRID MARISOL FLORES ESTRADA",
     "auxiliar": "SIN AUXILIAR",
@@ -45988,7 +46096,7 @@
       "viernes"
     ],
     "catedratico": "TANNIA MAGALY DE LEON MORAN",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "CARLOS FERNANDO PAREDES VÉLIZ",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -46059,7 +46167,7 @@
     "dias": [
       "jueves"
     ],
-    "catedratico": "DIANA LISSETH MORALES MORALES",
+    "catedratico": "DENNIS ANDRÉ GONZÁLEZ FLORES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -46113,7 +46221,7 @@
     "dias": [
       "jueves"
     ],
-    "catedratico": "DIANA LISSETH MORALES MORALES",
+    "catedratico": "DENNIS ANDRÉ GONZÁLEZ FLORES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -46386,7 +46494,7 @@
     "codigo": "0254",
     "nombre": "HIDROLOGIA",
     "seccion": "L+",
-    "modalidad": "PRESENCIAL",
+    "modalidad": "SEMIPRESENCIAL",
     "tipo": "LABORATORIO",
     "edificio": "",
     "salon": "",
@@ -46405,7 +46513,7 @@
     "codigo": "0254",
     "nombre": "HIDROLOGIA",
     "seccion": "L-",
-    "modalidad": "PRESENCIAL",
+    "modalidad": "SEMIPRESENCIAL",
     "tipo": "LABORATORIO",
     "edificio": "",
     "salon": "",
@@ -47402,7 +47510,7 @@
       "jueves"
     ],
     "catedratico": "HELEN JEANNETH MARTINEZ SUM",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "PAKAL B&#039;ALAM RODRIGUEZ ESPANTZAY",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -50272,6 +50380,25 @@
       "viernes"
     ],
     "catedratico": "MIRIAM PATRICIA RUBIO CONTRERAS DE AKU",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "0610",
+    "nombre": "INFORMATICA",
+    "seccion": "N",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "18:10",
+    "final": "19:00",
+    "dias": [
+      "martes",
+      "jueves"
+    ],
+    "catedratico": "YESSENIA JANIRA MARROQUÍN MARTÍNEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -53177,6 +53304,24 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0654",
+    "nombre": "CONTABILIDAD 3",
+    "seccion": "N+",
+    "modalidad": "PRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "07:10",
+    "final": "08:50",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "FELIX ALEXANDER ORDONEZ PICHOL",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "7905",
     "nombre": "SEMINARIO DE INVESTIGACION INDUSTRIAL",
     "seccion": "N+",
@@ -53703,6 +53848,24 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0654",
+    "nombre": "CONTABILIDAD 3",
+    "seccion": "N-",
+    "modalidad": "PRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "07:10",
+    "final": "08:50",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "FELIX ALEXANDER ORDONEZ PICHOL",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "7905",
     "nombre": "SEMINARIO DE INVESTIGACION INDUSTRIAL",
     "seccion": "N-",
@@ -54222,6 +54385,24 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0655",
+    "nombre": "ADMINISTRACION FINANCIERA",
+    "seccion": "O",
+    "modalidad": "PRESENCIAL",
+    "tipo": "PRACTICA",
+    "edificio": "",
+    "salon": "",
+    "inicio": "10:30",
+    "final": "12:10",
+    "dias": [
+      "sabado"
+    ],
+    "catedratico": "FELIX ALEXANDER ORDONEZ PICHOL",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0674",
     "nombre": "FUNDAMENTOS DE MERCADOTECNIA",
     "seccion": "O",
@@ -54492,7 +54673,7 @@
       "jueves"
     ],
     "catedratico": "HELEN JEANNETH MARTINEZ SUM",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "PAKAL B&#039;ALAM RODRIGUEZ ESPANTZAY",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -54788,7 +54969,7 @@
       "viernes"
     ],
     "catedratico": "RONAL NOE GALVEZ GARCIA",
-    "auxiliar": "MIGUEL ALEJANDRO CARDONA URIZAR",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -54809,7 +54990,7 @@
       "viernes"
     ],
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
-    "auxiliar": "MIGUEL ALEJANDRO CARDONA URIZAR",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -56897,7 +57078,7 @@
     "dias": [
       "jueves"
     ],
-    "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
+    "catedratico": "EMILIO ROLANDO MARROQUIN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -57303,7 +57484,7 @@
     "dias": [
       "lunes"
     ],
-    "catedratico": "NATALIE GIULIANA ECHEVERRIA CHANG",
+    "catedratico": "DIANA ALEJANDRA PACAY GARCÍA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -57321,7 +57502,7 @@
     "dias": [
       "lunes"
     ],
-    "catedratico": "NATALIE GIULIANA ECHEVERRIA CHANG",
+    "catedratico": "DIANA ALEJANDRA PACAY GARCÍA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -58336,7 +58517,7 @@
     "dias": [
       "jueves"
     ],
-    "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
+    "catedratico": "EMILIO ROLANDO MARROQUIN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -59340,7 +59521,7 @@
     "dias": [
       "jueves"
     ],
-    "catedratico": "EMILIO ROLANDO MARROQUÍN GOLÓN",
+    "catedratico": "EMILIO ROLANDO MARROQUIN GOLÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
@@ -59470,7 +59651,7 @@
       "viernes"
     ],
     "catedratico": "LUIS ADOLFO DE LEON GOMEZ",
-    "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
+    "auxiliar": "SIN AUXILIAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -60697,6 +60878,28 @@
       "miercoles"
     ],
     "catedratico": "DIANA ORALIA SALGUERO ESPANA",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
+    "codigo": "9000",
+    "nombre": "P.A.P. DE MATEMATICA PARA INGENIERIA",
+    "seccion": "X1",
+    "modalidad": "SEMIPRESENCIAL",
+    "tipo": "MAGISTRAL",
+    "edificio": "",
+    "salon": "",
+    "inicio": "17:20",
+    "final": "18:10",
+    "dias": [
+      "lunes",
+      "martes",
+      "miercoles",
+      "jueves",
+      "viernes"
+    ],
+    "catedratico": "TONY YOBANY BARRERA DONIS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
     "fuente": "semestre2"
