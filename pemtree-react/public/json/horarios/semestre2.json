@@ -1637,7 +1637,7 @@
       "martes"
     ],
     "catedratico": "MERCEDES ESTHER ROQUEL CHAVEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "ADRIAN JOSUE GIL GONZALEZ",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -2755,7 +2755,7 @@
       "viernes"
     ],
     "catedratico": "ANA RUFINA HERRERA SOTO",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "SEBASTIAN GONZALEZ ARRIAZA",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -2775,7 +2775,7 @@
       "viernes"
     ],
     "catedratico": "WILLIAM EDUARDO FAGIANI CRUZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "ISIS PAMELA GONZÁLEZ MARTÍNEZ",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -2851,7 +2851,7 @@
       "viernes"
     ],
     "catedratico": "ANA RUFINA HERRERA SOTO",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "GABRIELA PAOLA OLIVA VALDEZ",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -3362,7 +3362,7 @@
       "viernes"
     ],
     "catedratico": "JUAN CARLOS JEREZ  JUAREZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "PAUL SEBASTIÁN TABLAS SOTO",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -3419,7 +3419,7 @@
       "jueves"
     ],
     "catedratico": "JUAN CARLOS JEREZ  JUAREZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "PAUL SEBASTIÁN TABLAS SOTO",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -5461,7 +5461,7 @@
       "viernes"
     ],
     "catedratico": "CESAR ALFONSO GARCIA GUERRA",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "YASMÍN DEL ROSARIO BAUTISTA AGUILAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -5666,7 +5666,7 @@
       "viernes"
     ],
     "catedratico": "GERSON JOÉL ORTEGA MORALES",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "YASMÍN DEL ROSARIO BAUTISTA AGUILAR",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -9015,7 +9015,7 @@
       "viernes"
     ],
     "catedratico": "ADELA MARIA MARROQUIN GONZALEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "ADRIAN JOSUE GIL GONZALEZ",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -13003,7 +13003,7 @@
       "viernes"
     ],
     "catedratico": "LUIS  ALBERTO BAUTISTA",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE CARLOS QUINONEZ ARBIZU",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -13658,7 +13658,7 @@
       "viernes"
     ],
     "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE CARLOS QUINONEZ ARBIZU",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -13680,7 +13680,7 @@
       "viernes"
     ],
     "catedratico": "EDDY  JOSUE SOLARES  ESPINOZA",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "JOSE CARLOS QUINONEZ ARBIZU",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
@@ -18886,7 +18886,7 @@
       "viernes"
     ],
     "catedratico": "ANA RUFINA HERRERA SOTO",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "DIEGO ALEJANDRO VELÁSQUEZ LÓPEZ",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -22703,6 +22703,24 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0314",
+    "nombre": "CONCRETO ARMADO 1",
+    "seccion": "N+",
+    "modalidad": "PRESENCIAL",
+    "tipo": "LABORATORIO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "14:00",
+    "final": "14:50",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "OSWALDO ROMEO ESCOBAR ALVAREZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0390",
     "nombre": "TERMODINAMICA 1",
     "seccion": "N+",
@@ -23247,6 +23265,24 @@
     "periodo_restriccion": "05"
   },
   {
+    "codigo": "0314",
+    "nombre": "CONCRETO ARMADO 1",
+    "seccion": "N-",
+    "modalidad": "PRESENCIAL",
+    "tipo": "LABORATORIO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "14:00",
+    "final": "14:50",
+    "dias": [
+      "martes"
+    ],
+    "catedratico": "YEFRY VALENTIN ROSALES JUAREZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0390",
     "nombre": "TERMODINAMICA 1",
     "seccion": "N-",
@@ -23589,7 +23625,7 @@
       "viernes"
     ],
     "catedratico": "EDGAR DARIO ALVAREZ COTI",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -24022,6 +24058,24 @@
     "fuente": "semestre2"
   },
   {
+    "codigo": "0314",
+    "nombre": "CONCRETO ARMADO 1",
+    "seccion": "_P",
+    "modalidad": "PRESENCIAL",
+    "tipo": "LABORATORIO",
+    "edificio": "",
+    "salon": "",
+    "inicio": "15:40",
+    "final": "16:30",
+    "dias": [
+      "jueves"
+    ],
+    "catedratico": "OSWALDO ROMEO ESCOBAR ALVAREZ",
+    "auxiliar": "SIN AUXILIAR",
+    "restricciones": false,
+    "fuente": "semestre2"
+  },
+  {
     "codigo": "0316",
     "nombre": "CONCRETO ARMADO 2",
     "seccion": "_P",
@@ -24408,7 +24462,7 @@
       "viernes"
     ],
     "catedratico": "RONAL NOE GALVEZ GARCIA",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "MIGUEL ALEJANDRO CARDONA URIZAR",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -24429,7 +24483,7 @@
       "viernes"
     ],
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "MIGUEL ALEJANDRO CARDONA URIZAR",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -27218,7 +27272,7 @@
       "viernes"
     ],
     "catedratico": "ANGELICA BECILIA PACHECO MAZARIEGOS",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "MIGUEL ALEJANDRO CARDONA URIZAR",
     "restricciones": false,
     "fuente": "semestre2"
   },
@@ -29090,7 +29144,7 @@
       "viernes"
     ],
     "catedratico": "LUIS ADOLFO DE LEON GOMEZ",
-    "auxiliar": "SIN AUXILIAR",
+    "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
     "restricciones": true,
     "fuente": "semestre2",
     "periodo_restriccion": "05"
