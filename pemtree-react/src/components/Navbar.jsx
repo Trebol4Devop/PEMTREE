@@ -17,6 +17,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
         }
         if (location.pathname === '/foro') return 'forum';
         if (location.pathname === '/grupos') return 'groups';
+        if (location.pathname === '/mis-publicaciones') return 'myposts';
         return 'home';
     })();
 
@@ -54,6 +55,9 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/grupos" className={boardLinkClass(currentView === 'groups')}>
                         Grupos Estudiantiles
+                    </Link>
+                    <Link to="/mis-publicaciones" className={boardLinkClass(currentView === 'myposts')}>
+                        Mis Publicaciones
                     </Link>
                 </div>
             </div>
@@ -132,6 +136,9 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/grupos" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'groups' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Grupos Estudiantiles
+                    </Link>
+                    <Link to="/mis-publicaciones" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'myposts' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
+                        Mis Publicaciones
                     </Link>
                     <div className="border-t border-[#DFE1E6] dark:border-[#3E4C5E] my-1 pt-2 px-1 flex items-center gap-1.5">
                         <a

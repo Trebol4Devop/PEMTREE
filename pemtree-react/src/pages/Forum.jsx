@@ -1,8 +1,9 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
+import { Link } from 'react-router-dom';
 import { 
     MessageSquare, Plus, Search, ThumbsUp, User, ShieldCheck, 
     Send, LogOut, ChevronDown, BookOpen, Clock, Trash2, Edit3,
-    AlertCircle, Info, CheckCircle2, AlertTriangle, Flag, CornerDownRight,
+    AlertCircle, Info, CheckCircle2, AlertTriangle, Flag, CornerDownRight, BarChart3,
     Image as ImageIcon, X
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
@@ -1085,6 +1086,17 @@ export default function Forum() {
                                 </svg>
                                 <span>Acceder</span>
                             </button>
+                        )}
+
+                        {user && (
+                            <Link
+                                to="/mis-publicaciones"
+                                className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-white/15 hover:bg-white/25 dark:bg-[#0E1624]/80 dark:hover:bg-[#1C2636] text-white dark:text-slate-200 font-extrabold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition cursor-pointer no-underline border border-white/25 dark:border-[#3E4C5E] shrink-0"
+                                title="Administrar mis publicaciones y ver mis interacciones"
+                            >
+                                <BarChart3 size={15} />
+                                <span className="hidden sm:inline">Mis Publicaciones</span>
+                            </Link>
                         )}
 
                         <button
