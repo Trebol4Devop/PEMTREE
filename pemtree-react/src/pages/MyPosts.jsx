@@ -2,10 +2,11 @@ import { useState, useEffect, useMemo, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 import {
     BarChart3, MessageSquare, ThumbsUp, Users, Clock, Trash2, ExternalLink,
-    ShieldCheck, LogOut, AlertTriangle, Info, Plus, CornerDownRight, Activity
+    ShieldCheck, LogOut, AlertTriangle, Info, Plus, CornerDownRight, Activity, EyeOff, RotateCcw
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { getModerationInfo } from '../lib/moderation';
+import { getModerationInfo, MODERATION_STATUS } from '../lib/moderation';
+import { hideContent, restoreContent } from '../lib/moderationApi';
 import { useTheme } from '../theme/ThemeContext';
 import Seo from '../components/seo/Seo';
 import SimpleBars from '../components/charts/SimpleBars';
@@ -145,24 +146,33 @@ export default function MyPosts() {
         setUser(null);
     };
 
-    const handleDeletePost = (postId) => {
+    const handleHidePost = (postId) => {
         const target = myPosts.find(p => p.id === postId);
         if (!target) return;
         showConfirm(
-            '¿Eliminar publicación?',
-            `¿Estás seguro de que deseas eliminar permanentemente tu publicación «${target.title}» y todas sus respuestas? Esta acción no se puede deshacer.`,
+            '¿Ocultar publicación?',
+            `¿Confirmas que deseas ocultar tu publicación «${target.title}»? Quedará oculta para la comunidad, pero podrás restaurarla cuando quieras. Solo el equipo de administración puede eliminarla definitivamente desde su panel.`,
             async () => {
                 if (!isSupabaseConfigured || !supabase) return;
                 try {
-                    const { error } = await supabase.from('posts').delete().eq('id', postId).eq('user_id', user.id);
-                    if (error) throw error;
+                    await hideContent('posts', postId, null);
                     await loadData();
                 } catch (err) {
-                    console.error('Error al eliminar publicación:', err);
-                    showAlert('No se pudo eliminar', 'Ocurrió un problema al eliminar la publicación. Por favor, inténtalo de nuevo.', 'error');
+                    console.error('Error al ocultar publicación:', err);
+                    showAlert('No se pudo ocultar', 'Ocurrió un problema al ocultar la publicación. Por favor, inténtalo de nuevo.', 'error');
                 }
             }
         );
+    };
+
+    const handleRestorePost = (postId) => {
+        if (!isSupabaseConfigured || !supabase) return;
+        restoreContent('posts', postId)
+            .then(() => loadData())
+            .catch(err => {
+                console.error('Error al restaurar publicación:', err);
+                showAlert('No se pudo restaurar', 'Ocurrió un problema al restaurar la publicación. Por favor, inténtalo de nuevo.', 'error');
+            });
     };
 
     // Interacciones de OTROS participantes (excluyendo al usuario actual)
@@ -561,9 +571,15 @@ export default function MyPosts() {
                                                         <Link to="/foro" className="p-2 rounded-lg text-[#7A869A] hover:text-[#0052CC] dark:text-slate-400 dark:hover:text-[#4C9AFF] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] transition cursor-pointer" title="Ver en el foro">
                                                             <ExternalLink size={15} />
                                                         </Link>
-                                                        <button onClick={() => handleDeletePost(post.id)} className="p-2 rounded-lg text-[#7A869A] hover:text-[#E5484D] dark:text-slate-400 dark:hover:text-[#FF6369] hover:bg-red-500/10 transition cursor-pointer" title="Eliminar publicación">
-                                                            <Trash2 size={15} />
-                                                        </button>
+                                                        {Number(post.moderation_status) === MODERATION_STATUS.INAPPROPRIATE ? (
+                                                            <button onClick={() => handleRestorePost(post.id)} className="p-2 rounded-lg text-[#059669] hover:text-[#047857] dark:text-[#10b981] dark:hover:text-[#34d399] hover:bg-[#E3FCEF] dark:hover:bg-[#0A3622] transition cursor-pointer" title="Restaurar publicación">
+                                                                <RotateCcw size={15} />
+                                                            </button>
+                                                        ) : (
+                                                            <button onClick={() => handleHidePost(post.id)} className="p-2 rounded-lg text-[#7A869A] hover:text-[#B45309] dark:text-slate-400 dark:hover:text-[#FBBF24] hover:bg-amber-500/10 transition cursor-pointer" title="Ocultar publicación">
+                                                                <EyeOff size={15} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                             </Card>

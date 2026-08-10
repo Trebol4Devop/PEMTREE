@@ -1,13 +1,14 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { 
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
-    AlertTriangle, Trash2, LogOut, Check, 
+    AlertTriangle, LogOut, Check, 
     Filter, BookOpen, X, Edit3, ShieldCheck, UserCheck,
     Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles, Info,
-    Image as ImageIcon
+    Image as ImageIcon, EyeOff, RotateCcw
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { formatUserError, getModerationInfo, isContentBlocked, MODERATION_STATUS } from '../lib/moderation';
+import { hideContent, restoreContent } from '../lib/moderationApi';
 import { sendFormspreeNotification } from '../lib/notification';
 import { uploadOrCompressImage } from '../lib/imageUtils';
 import { cursos } from '../modules/data/cursos';
@@ -667,66 +668,76 @@ export default function WhatsAppGroups() {
         showAlert('¡Carga Masiva Exitosa!', `Se importaron ${validRows.length} cursos/grupos estudiantiles correctamente al directorio.`, 'success');
     }, [csvParsedRows, user, isAdmin, fetchGroups, showAlert]);
 
-    // Delete group
-    const handleDeleteGroup = async (groupId) => {
+    // Hide group (autor, moderador o admin) — nadie borra desde la página principal
+    const handleHideGroup = async (groupId) => {
         const target = groups.find(g => g.id === groupId);
         if (!target) return;
-        const canDelete = canModerate || (user && target.user_id === user.id);
-        if (!canDelete) {
-            showAlert('Acceso denegado', 'Solo el autor del grupo, un administrador o un moderador pueden eliminar este enlace.', 'error');
+        const isOwner = user && target.user_id === user.id;
+        const canHide = canModerate || isOwner;
+        if (!canHide) {
+            showAlert('Acceso denegado', 'Solo el autor del grupo, un moderador o un administrador pueden quitar este enlace.', 'error');
             return;
         }
 
-        const isModDeletingOther = isModerator && !isAdmin && target.user_id !== user?.id;
+        const isModeratingOther = canModerate && !isOwner;
 
-        const executeDelete = async (justification = null) => {
-            if (isModDeletingOther && (!justification || !justification.trim())) {
-                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+        const executeHide = async (justification = null) => {
+            if (isModeratingOther && (!justification || !justification.trim())) {
+                showAlert('Ocultado cancelado', 'Como moderador, es obligatorio ingresar una justificación para quitar contenido de otros usuarios.', 'warning');
                 return;
             }
 
             if (isSupabaseConfigured && supabase) {
                 try {
-                    if (isModDeletingOther && justification) {
-                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
-                            p_tabla: 'whatsapp_groups',
-                            p_item_id: groupId,
-                            p_justificacion: justification.trim()
-                        });
-                        if (modErr) throw modErr;
+                    await hideContent('whatsapp_groups', groupId, justification ? justification.trim() : null);
+                    if (isModeratingOther) {
                         sendFormspreeNotification({
-                            tipo_evento: 'MODERADOR ELIMINÓ GRUPO',
+                            tipo_evento: 'MODERADOR OCULTÓ GRUPO',
                             a_quien: `Grupo: "${target.title}" (Autor: ${target.author_alias})`,
                             por_quien: user?.email || user?.id || 'Moderador',
-                            porque: justification.trim()
+                            porque: (justification || '').trim()
                         });
-                    } else {
-                        const { error } = await supabase.from('whatsapp_groups').delete().eq('id', groupId);
-                        if (error) throw error;
                     }
                     await fetchGroups();
                 } catch (e) {
-                    console.error('Error al eliminar grupo:', e);
-                    showAlert('No se pudo eliminar el grupo', formatUserError(e), 'error');
+                    console.error('Error al quitar grupo:', e);
+                    showAlert('No se pudo quitar el grupo', formatUserError(e), 'error');
                     return;
                 }
             }
-            setGroups(prev => prev.filter(g => g.id !== groupId));
+            setGroups(prev => prev.map(g => g.id === groupId ? { ...g, moderation_status: MODERATION_STATUS.INAPPROPRIATE } : g));
         };
 
-        if (isModDeletingOther) {
+        if (isModeratingOther) {
             showPrompt(
                 'Moderación: Justificación obligatoria',
-                `Estás eliminando el grupo "${target.title}" (de ${target.author_alias}). Como moderador, ingresa la justificación para la auditoría y notificación:`,
+                `Estás ocultando el grupo "${target.title}" (de ${target.author_alias}). Como moderador, ingresa la justificación para la auditoría y notificación:`,
                 'Ej: Spam, enlace roto, contenido inapropiado...',
-                (justificationText) => executeDelete(justificationText)
+                (justificationText) => executeHide(justificationText)
             );
         } else {
             showConfirm(
-                '¿Eliminar grupo estudiantil?',
-                `¿Estás seguro de que deseas eliminar permanentemente el grupo "${target.title}" de la plataforma?`,
-                () => executeDelete(null)
+                '¿Quitar grupo estudiantil?',
+                `¿Confirmas que deseas quitar el grupo "${target.title}"? Quedará oculto para la comunidad, pero podrás restaurarlo cuando quieras.`,
+                () => executeHide(null)
             );
+        }
+    };
+
+    const handleRestoreGroup = async (groupId) => {
+        if (!isSupabaseConfigured || !supabase) return;
+        const target = groups.find(g => g.id === groupId);
+        const isOwner = user && target?.user_id === user.id;
+        if (!isOwner && !canModerate) {
+            showAlert('Acceso denegado', 'No tienes permisos para restaurar este grupo.', 'error');
+            return;
+        }
+        try {
+            await restoreContent('whatsapp_groups', groupId);
+            await fetchGroups();
+        } catch (e) {
+            console.error('Error al restaurar grupo:', e);
+            showAlert('No se pudo restaurar el grupo', formatUserError(e), 'error');
         }
     };
 
@@ -779,7 +790,7 @@ export default function WhatsAppGroups() {
     // Filtered lists
     const displayedGroups = useMemo(() => {
         return groups.filter(g => {
-            if (!canModerate && isContentBlocked(g.moderation_status)) {
+            if (!canModerate && isContentBlocked(g.moderation_status) && g.user_id !== user?.id) {
                 return false;
             }
             if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera && g.carrera !== 'todas') {
@@ -984,8 +995,8 @@ export default function WhatsAppGroups() {
                         <button
                             onClick={dismissCleanupNotice}
                             className="shrink-0 p-1 rounded-lg hover:bg-sky-200/60 dark:hover:bg-[#0E1624]/60 text-[#0369A1]/70 dark:text-[#7DD3FC]/70 hover:text-[#0369A1] dark:hover:text-[#7DD3FC] transition cursor-pointer bg-transparent border-none"
-                            title="Ocultar aviso"
-                            aria-label="Ocultar aviso de fechas de limpieza"
+                            title="Quitar aviso"
+                            aria-label="Quitar aviso de fechas de limpieza"
                         >
                             <X size={14} />
                         </button>
@@ -1174,13 +1185,23 @@ export default function WhatsAppGroups() {
                                             </button>
 
                                             {canDelete && (
-                                                <button
-                                                    onClick={() => handleDeleteGroup(group.id)}
-                                                    title="Eliminar grupo"
-                                                    className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#FFEBE6] dark:hover:bg-[#450A0A]/40 text-[#7A869A] dark:text-slate-400 hover:text-[#BF2600] dark:hover:text-[#FF6369] transition cursor-pointer flex items-center justify-center"
-                                                >
-                                                    <Trash2 size={15} />
-                                                </button>
+                                                Number(group.moderation_status) === MODERATION_STATUS.INAPPROPRIATE ? (
+                                                    <button
+                                                        onClick={() => handleRestoreGroup(group.id)}
+                                                        title="Restaurar grupo (volver a mostrarlo)"
+                                                        className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#E3FCEF] dark:hover:bg-[#0A3622] text-[#059669] dark:text-[#10b981] hover:text-[#047857] dark:hover:text-[#34d399] transition cursor-pointer flex items-center justify-center"
+                                                    >
+                                                        <RotateCcw size={15} />
+                                                    </button>
+                                                ) : (
+                                                    <button
+                                                        onClick={() => handleHideGroup(group.id)}
+                                                        title={canModerate && group.user_id !== user?.id ? "Moderación: Quitar grupo con justificación" : "Quitar grupo"}
+                                                        className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-amber-500/10 dark:hover:bg-[#422006]/40 text-[#7A869A] dark:text-slate-400 hover:text-[#B45309] dark:hover:text-[#FBBF24] transition cursor-pointer flex items-center justify-center"
+                                                    >
+                                                        <EyeOff size={15} />
+                                                    </button>
+                                                )
                                             )}
                                         </div>
                                     </div>

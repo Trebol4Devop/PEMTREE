@@ -1,13 +1,14 @@
 import { useState, useEffect, useCallback, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { 
+import {
     MessageSquare, Plus, Search, ThumbsUp, User, ShieldCheck, 
     Send, LogOut, ChevronDown, BookOpen, Clock, Trash2, Edit3,
     AlertCircle, Info, CheckCircle2, AlertTriangle, Flag, CornerDownRight, BarChart3,
-    Image as ImageIcon, X
+    Image as ImageIcon, X, EyeOff, RotateCcw
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 import { checkCooldown, updateCooldown, formatUserError, getModerationInfo, isContentBlocked, MODERATION_STATUS } from '../lib/moderation';
+import { hideContent, restoreContent } from '../lib/moderationApi';
 import { sendFormspreeNotification } from '../lib/notification';
 import { uploadOrCompressImage } from '../lib/imageUtils';
 import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
@@ -101,7 +102,8 @@ const CommentLayerItem = ({
     commentReplyTexts,
     setCommentReplyTexts,
     handleAddComment,
-    handleDeleteComment,
+    handleHideComment,
+    handleRestoreComment,
     handleOpenReportModal,
     formatTimeAgo,
     showAlert
@@ -164,13 +166,27 @@ const CommentLayerItem = ({
                             <span>Responder</span>
                         </button>
                         {(isOwner || canModerate) && (
-                            <button
-                                onClick={(e) => handleDeleteComment(post.id, comment.id, e)}
-                                className={`p-0.5 rounded transition cursor-pointer ${canModerate && !isOwner ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
-                                title={canModerate && !isOwner ? "Moderación: Eliminar comentario con justificación" : "Eliminar mi comentario y sub-capas"}
-                            >
-                                <Trash2 size={13} />
-                            </button>
+                            Number(comment.moderation_status) === MODERATION_STATUS.INAPPROPRIATE ? (
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        handleRestoreComment(post.id, comment.id);
+                                    }}
+                                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
+                                    title={canModerate && !isOwner ? "Restaurar comentario (aprobarlo de nuevo)" : "Restaurar mi comentario"}
+                                >
+                                    <RotateCcw size={12} />
+                                    <span>Restaurar</span>
+                                </button>
+                            ) : (
+                                <button
+                                    onClick={(e) => handleHideComment(post.id, comment.id, e)}
+                                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer ${canModerate && !isOwner ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#B45309] dark:hover:text-[#FBBF24]'}`}
+                                    title={canModerate && !isOwner ? "Moderación: Borrar comentario con justificación" : "Borrar mi comentario"}
+                                >
+                                    <EyeOff size={13} />
+                                </button>
+                            )
                         )}
                         {comment.user_id && (!user || comment.user_id !== user.id) && (
                             <button
@@ -251,7 +267,8 @@ const CommentLayerItem = ({
                             commentReplyTexts={commentReplyTexts}
                             setCommentReplyTexts={setCommentReplyTexts}
                             handleAddComment={handleAddComment}
-                            handleDeleteComment={handleDeleteComment}
+                            handleHideComment={handleHideComment}
+                            handleRestoreComment={handleRestoreComment}
                             handleOpenReportModal={handleOpenReportModal}
                             formatTimeAgo={formatTimeAgo}
                             showAlert={showAlert}
@@ -325,11 +342,12 @@ export default function Forum() {
         setIsRetentionNoticeVisible(false);
     }, []);
 
-    // Comentarios visibles según moderación: los bloqueados (status 2) se ocultan al público general
+    // Comentarios visibles según moderación: los bloqueados (status 2) se ocultan al público general,
+    // pero el autor y los moderadores/admins aún pueden verlos (el autor para poder restaurarlos).
     const getVisibleComments = useCallback((comments = []) => {
         if (canModerate) return comments;
-        return comments.filter(c => !isContentBlocked(c.moderation_status));
-    }, [canModerate]);
+        return comments.filter(c => !isContentBlocked(c.moderation_status) || c.user_id === user?.id);
+    }, [canModerate, user]);
 
     const fetchSupabasePosts = useCallback(async () => {
         if (!isSupabaseConfigured || !supabase) return;
@@ -771,164 +789,169 @@ export default function Forum() {
         }
     };
 
-    const handleDeletePost = async (postId, e) => {
+    const handleHidePost = async (postId, e) => {
         if (e) e.stopPropagation();
         if (!user) return;
-        
+
         const targetPost = posts.find(p => p.id === postId);
-        const canDelete = canModerate || targetPost?.user_id === user.id;
-        if (!canDelete) {
-            showAlert('Acceso denegado', 'No tienes permisos para eliminar esta publicación.', 'error');
+        if (!targetPost) return;
+
+        const isOwner = targetPost?.user_id === user.id;
+        const isModeratingOther = canModerate && !isOwner;
+        if (!isOwner && !canModerate) {
+            showAlert('Acceso denegado', 'No tienes permisos para quitar esta publicación.', 'error');
             return;
         }
 
-        const isModDeletingOther = canModerate && targetPost?.user_id !== user.id;
-
-        const executeDelete = async (justification = null) => {
-            if (isModDeletingOther && user.id !== ADMIN_UID && (!justification || !justification.trim())) {
-                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+        const executeHide = async (justification = null) => {
+            if (isModeratingOther && (!justification || !justification.trim())) {
+                showAlert('Ocultado cancelado', 'Como moderador, es obligatorio ingresar una justificación para quitar contenido de otros usuarios.', 'warning');
                 return;
             }
 
             if (isSupabaseConfigured && supabase) {
                 try {
-                    if (isModDeletingOther && justification) {
-                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
-                            p_tabla: 'posts',
-                            p_item_id: postId,
-                            p_justificacion: justification.trim()
-                        });
-                        if (modErr) throw modErr;
+                    await hideContent('posts', postId, justification ? justification.trim() : null);
+                    if (isModeratingOther) {
                         sendFormspreeNotification({
-                            tipo_evento: 'MODERADOR ELIMINÓ POST DEL FORO',
+                            tipo_evento: 'MODERADOR OCULTÓ POST DEL FORO',
                             a_quien: `Publicación: "${targetPost?.title}" (Autor original: ${targetPost?.author_alias})`,
-                            por_quien: user?.email || user?.id || 'Moderador/Admin',
-                            porque: justification.trim()
+                            por_quien: user?.email || user?.id || 'Moderador',
+                            porque: (justification || '').trim()
                         });
-                    } else {
-                        let query = supabase.from('posts').delete().eq('id', postId);
-                        if (!canModerate) {
-                            query = query.eq('user_id', user.id);
-                        }
-                        const { error } = await query;
-                        if (error) throw error;
                     }
                     await fetchSupabasePosts();
                 } catch (err) {
-                    console.error('Error al eliminar post:', err);
-                    showAlert('No se pudo eliminar', formatUserError(err), 'error');
+                    console.error('Error al quitar post:', err);
+                    showAlert('No se pudo quitar', formatUserError(err), 'error');
                     return;
                 }
             }
-            setPosts(prev => prev.filter(p => p.id !== postId));
+            setPosts(prev => prev.map(p => p.id === postId ? { ...p, moderation_status: MODERATION_STATUS.INAPPROPRIATE } : p));
         };
 
-        if (isModDeletingOther && user.id !== ADMIN_UID) {
+        if (isModeratingOther) {
             showPrompt(
                 'Moderación: Justificación obligatoria',
-                `Estás eliminando la publicación "${targetPost?.title}" de ${targetPost?.author_alias}. Ingresa la razón para el registro de auditoría:`,
+                `Estás ocultando la publicación "${targetPost?.title}" de ${targetPost?.author_alias}. Ingresa la razón para el registro de auditoría:`,
                 'Ej: Contenido fuera de tema, spam, lenguaje ofensivo...',
-                (justificationText) => executeDelete(justificationText)
+                (justificationText) => executeHide(justificationText)
             );
         } else {
             showConfirm(
-                isModDeletingOther ? 'Admin: ¿Eliminar publicación?' : '¿Eliminar publicación?',
-                isModDeletingOther 
-                    ? '¿Confirmas la eliminación administrativa de esta publicación y todas sus respuestas?'
-                    : '¿Estás seguro de que deseas eliminar permanentemente tu publicación y todas sus respuestas? Esta acción no se puede deshacer.',
-                () => executeDelete(null)
+                '¿quitar publicación?',
+                '¿Confirmas que deseas quitar esta publicación? Quedará oculta para la comunidad, pero podrás restaurarla cuando quieras.',
+                () => executeHide(null)
             );
         }
     };
 
-    const handleDeleteComment = async (postId, commentId, e) => {
-        if (e) e.stopPropagation();
+    const handleRestorePost = async (postId) => {
         if (!user) return;
-        
+
         const targetPost = posts.find(p => p.id === postId);
-        const targetComment = targetPost?.comments?.find(c => c.id === commentId);
-        const canDeleteComment = canModerate || targetComment?.user_id === user.id;
-        if (!canDeleteComment) {
-            showAlert('Acceso denegado', 'No tienes permisos para eliminar este comentario.', 'error');
+        const isOwner = targetPost?.user_id === user.id;
+        if (!isOwner && !canModerate) {
+            showAlert('Acceso denegado', 'No tienes permisos para restaurar esta publicación.', 'error');
             return;
         }
 
-        const isModDeletingOther = canModerate && targetComment?.user_id !== user.id;
+        if (isSupabaseConfigured && supabase) {
+            try {
+                await restoreContent('posts', postId);
+                await fetchSupabasePosts();
+            } catch (err) {
+                console.error('Error al restaurar post:', err);
+                showAlert('No se pudo restaurar', formatUserError(err), 'error');
+            }
+        }
+    };
 
-        const executeDelete = async (justification = null) => {
-            if (isModDeletingOther && user.id !== ADMIN_UID && (!justification || !justification.trim())) {
-                showAlert('Borrado cancelado', 'Como moderador, es obligatorio ingresar una justificación para eliminar contenido de otros usuarios.', 'warning');
+    const handleHideComment = async (postId, commentId, e) => {
+        if (e) e.stopPropagation();
+        if (!user) return;
+
+        const targetPost = posts.find(p => p.id === postId);
+        const targetComment = targetPost?.comments?.find(c => c.id === commentId);
+        if (!targetComment) return;
+
+        const isOwner = targetComment?.user_id === user.id;
+        const isModeratingOther = canModerate && !isOwner;
+        if (!isOwner && !canModerate) {
+            showAlert('Acceso denegado', 'No tienes permisos para quitar este comentario.', 'error');
+            return;
+        }
+
+        const executeHide = async (justification = null) => {
+            if (isModeratingOther && (!justification || !justification.trim())) {
+                showAlert('Ocultado cancelado', 'Como moderador, es obligatorio ingresar una justificación para quitar contenido de otros usuarios.', 'warning');
                 return;
             }
 
-            const idsToDelete = new Set([commentId]);
-            let added = true;
-            while (added) {
-                added = false;
-                (targetPost?.comments || []).forEach(c => {
-                    if (c.parent_id && idsToDelete.has(c.parent_id) && !idsToDelete.has(c.id)) {
-                        idsToDelete.add(c.id);
-                        added = true;
-                    }
-                });
-            }
-            const idsArray = Array.from(idsToDelete);
-
             if (isSupabaseConfigured && supabase) {
                 try {
-                    if (isModDeletingOther && justification) {
-                        const { error: modErr } = await supabase.rpc('eliminar_contenido_moderado', {
-                            p_tabla: 'comments',
-                            p_item_id: commentId,
-                            p_justificacion: justification.trim()
-                        });
-                        if (modErr) throw modErr;
+                    await hideContent('comments', commentId, justification ? justification.trim() : null);
+                    if (isModeratingOther) {
                         sendFormspreeNotification({
-                            tipo_evento: 'MODERADOR ELIMINÓ COMENTARIO DEL FORO',
+                            tipo_evento: 'MODERADOR OCULTÓ COMENTARIO DEL FORO',
                             a_quien: `Comentario de ${targetComment?.author_alias || 'Estudiante'} en post "${targetPost?.title}"`,
-                            por_quien: user?.email || user?.id || 'Moderador/Admin',
-                            porque: justification.trim()
+                            por_quien: user?.email || user?.id || 'Moderador',
+                            porque: (justification || '').trim()
                         });
-                    } else {
-                        let query = supabase.from('comments').delete().in('id', idsArray);
-                        if (!canModerate) {
-                            query = query.in('id', idsArray);
-                        }
-                        const { error } = await query;
-                        if (error) throw error;
                     }
                     await fetchSupabasePosts();
                 } catch (err) {
-                    console.error('Error al eliminar comentario:', err);
-                    showAlert('No se pudo eliminar', formatUserError(err), 'error');
+                    console.error('Error al quitar comentario:', err);
+                    showAlert('No se pudo quitar', formatUserError(err), 'error');
                     return;
                 }
             }
             setPosts(prev => prev.map(p => {
                 if (p.id === postId) {
-                    return { ...p, comments: (p.comments || []).filter(c => !idsToDelete.has(c.id)) };
+                    return { ...p, comments: (p.comments || []).map(c => c.id === commentId ? { ...c, moderation_status: MODERATION_STATUS.INAPPROPRIATE } : c) };
                 }
                 return p;
             }));
         };
 
-        if (isModDeletingOther && user.id !== ADMIN_UID) {
+        if (isModeratingOther) {
             showPrompt(
                 'Moderación: Justificación obligatoria',
-                `Estás eliminando el comentario de ${targetComment?.author_alias}. Ingresa la razón para el registro de auditoría:`,
+                `Estás ocultando el comentario de ${targetComment?.author_alias}. Ingresa la razón para el registro de auditoría:`,
                 'Ej: Comentario ofensivo, spam, acoso...',
-                (justificationText) => executeDelete(justificationText)
+                (justificationText) => executeHide(justificationText)
             );
         } else {
             showConfirm(
-                isModDeletingOther ? 'Admin: ¿Eliminar comentario?' : '¿Eliminar comentario y respuestas?',
-                isModDeletingOther 
-                    ? '¿Confirmas la eliminación administrativa de este comentario y de TODAS sus respuestas anidadas en la comunidad?'
-                    : '¿Estás seguro de que deseas eliminar permanentemente tu comentario junto con todas las respuestas que dependen de él? Esta acción no se puede deshacer.',
-                () => executeDelete(null)
+                '¿Quitar comentario?',
+                '¿Confirmas que deseas quitar este comentario? Quedará oculto para la comunidad, pero podrás restaurarlo cuando quieras.',
+                () => executeHide(null)
             );
         }
     };
+
+    const handleRestoreComment = async (postId, commentId) => {
+        if (!user) return;
+
+        const targetPost = posts.find(p => p.id === postId);
+        const targetComment = targetPost?.comments?.find(c => c.id === commentId);
+        const isOwner = targetComment?.user_id === user.id;
+        if (!isOwner && !canModerate) {
+            showAlert('Acceso denegado', 'No tienes permisos para restaurar este comentario.', 'error');
+            return;
+        }
+
+        if (isSupabaseConfigured && supabase) {
+            try {
+                await restoreContent('comments', commentId);
+                await fetchSupabasePosts();
+            } catch (err) {
+                console.error('Error al restaurar comentario:', err);
+                showAlert('No se pudo restaurar', formatUserError(err), 'error');
+            }
+        }
+    };
+
 
     const handleAddComment = async (postId, parentId = null) => {
         const text = (parentId ? commentReplyTexts[parentId] : commentTexts[postId] || '').trim();
@@ -982,7 +1005,7 @@ export default function Forum() {
     };
 
     const filteredPosts = posts
-        .filter(p => canModerate || !isContentBlocked(p.moderation_status))
+        .filter(p => canModerate || !isContentBlocked(p.moderation_status) || p.user_id === user?.id)
         .filter(p => {
             const matchesCategory = selectedCategory === 'todos' || p.category === selectedCategory;
             const matchesCarrera = selectedCarrera === 'todas' || p.carrera === selectedCarrera || (!p.carrera && selectedCarrera === 'todas');
@@ -1204,8 +1227,8 @@ export default function Forum() {
                         <button
                             onClick={dismissRetentionNotice}
                             className="shrink-0 p-1 rounded-lg hover:bg-sky-200/60 dark:hover:bg-[#0E1624]/60 text-[#0369A1]/70 dark:text-[#7DD3FC]/70 hover:text-[#0369A1] dark:hover:text-[#7DD3FC] transition cursor-pointer bg-transparent border-none"
-                            title="Ocultar aviso"
-                            aria-label="Ocultar aviso de retención"
+                            title="quitar aviso"
+                            aria-label="quitar aviso de retención"
                         >
                             <X size={14} />
                         </button>
@@ -1266,13 +1289,26 @@ export default function Forum() {
                                                     {formatTimeAgo(post.created_at)}
                                                 </span>
                                                 {user && (post.user_id === user.id || canModerate) && (
-                                                    <button
-                                                        onClick={(e) => handleDeletePost(post.id, e)}
-                                                        className={`p-1 rounded-lg transition cursor-pointer ml-1 ${canModerate && post.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#E5484D] dark:hover:text-[#FF6369]'}`}
-                                                        title={canModerate && post.user_id !== user.id ? "Moderación: Eliminar publicación con justificación" : "Eliminar mi publicación"}
-                                                    >
-                                                        <Trash2 size={14} />
-                                                    </button>
+                                                    Number(post.moderation_status) === MODERATION_STATUS.INAPPROPRIATE ? (
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                handleRestorePost(post.id);
+                                                            }}
+                                                            className={`p-1 rounded-lg transition cursor-pointer ml-1 flex items-center gap-1 text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
+                                                            title="Restaurar publicación (volver a mostrarla)"
+                                                        >
+                                                            <RotateCcw size={13} />
+                                                        </button>
+                                                    ) : (
+                                                        <button
+                                                            onClick={(e) => handleHidePost(post.id, e)}
+                                                            className={`p-1 rounded-lg transition cursor-pointer ml-1 ${canModerate && post.user_id !== user.id ? 'text-[#FF6369] bg-red-500/10 hover:bg-red-500/20' : 'text-[#7A869A] hover:text-[#B45309] dark:hover:text-[#FBBF24]'}`}
+                                                            title={canModerate && post.user_id !== user.id ? "Moderación: Quitar publicación con justificación" : "Quitar mi publicación"}
+                                                        >
+                                                            <EyeOff size={14} />
+                                                        </button>
+                                                    )
                                                 )}
                                                 {post.user_id && (!user || post.user_id !== user.id) && (
                                                     <button
@@ -1410,7 +1446,8 @@ export default function Forum() {
                                                                 commentReplyTexts={commentReplyTexts}
                                                                 setCommentReplyTexts={setCommentReplyTexts}
                                                                 handleAddComment={handleAddComment}
-                                                                handleDeleteComment={handleDeleteComment}
+                                                                handleHideComment={handleHideComment}
+                                                                handleRestoreComment={handleRestoreComment}
                                                                 handleOpenReportModal={handleOpenReportModal}
                                                                 formatTimeAgo={formatTimeAgo}
                                                                 showAlert={showAlert}
