@@ -407,7 +407,8 @@ export default function WhatsAppGroups() {
         if (!file) return;
         try {
             setIsCompressingImg(true);
-            const imageUrl = await uploadOrCompressImage(file, 'groups');
+            // Compresión compacta para cuidar el almacenamiento gratuito de Supabase
+            const imageUrl = await uploadOrCompressImage(file, 'groups', { maxDimension: 640, quality: 0.7 });
             setNewImageUrl(imageUrl);
         } catch (err) {
             showAlert('Error al adjuntar imagen', err.message || 'No se pudo procesar la imagen.', 'error');
