@@ -6,6 +6,7 @@ import Home from './pages/Home';
 import Visualizer from './pages/Visualizer';
 import Forum from './pages/Forum';
 import WhatsAppGroups from './pages/WhatsAppGroups';
+import MyPosts from './pages/MyPosts';
 
 function AppLayout() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -19,6 +20,7 @@ function AppLayout() {
           <Route path="/visualizador" element={<Visualizer />} />
           <Route path="/foro" element={<Forum />} />
           <Route path="/grupos" element={<WhatsAppGroups />} />
+          <Route path="/mis-publicaciones" element={<MyPosts />} />
         </Routes>
       </main>
     </div>

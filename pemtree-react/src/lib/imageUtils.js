@@ -2,9 +2,13 @@ import { supabase, isSupabaseConfigured } from './supabase';
 
 /**
  * Procesa y comprime una imagen seleccionada por el usuario utilizando un Canvas de HTML5.
- * Devuelve un Data URL (Base64) compacto.
+ * Devuelve un Data URL (Base64) compacto en formato JPEG.
+ *
+ * - Respeta la orientación EXIF de las fotos tomadas con el teléfono (createImageBitmap).
+ * - Redimensiona a maxDimension (px en el lado mayor) y ajusta la calidad para
+ *   producir archivos pequeños y así cuidar el espacio del almacenamiento gratuito.
  */
-export const processAndCompressImage = (file, maxDimension = 800, quality = 0.75) => {
+export const processAndCompressImage = (file, maxDimension = 800, quality = 0.72) => {
     return new Promise((resolve, reject) => {
         if (!file || !file.type.startsWith('image/')) {
             return reject(new Error('El archivo seleccionado no es una imagen válida.'));
@@ -14,42 +18,64 @@ export const processAndCompressImage = (file, maxDimension = 800, quality = 0.75
             return reject(new Error('La imagen es demasiado grande. Por favor selecciona una imagen menor a 15 MB.'));
         }
 
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = (event) => {
-            const img = new Image();
-            img.src = event.target.result;
-            img.onload = () => {
-                let width = img.width;
-                let height = img.height;
+        const drawAndCompress = (source, width, height) => {
+            let w = width;
+            let h = height;
 
-                if (width > height) {
-                    if (width > maxDimension) {
-                        height = Math.round((height * maxDimension) / width);
-                        width = maxDimension;
-                    }
-                } else {
-                    if (height > maxDimension) {
-                        width = Math.round((width * maxDimension) / height);
-                        height = maxDimension;
-                    }
+            if (w > h) {
+                if (w > maxDimension) {
+                    h = Math.round((h * maxDimension) / w);
+                    w = maxDimension;
                 }
+            } else {
+                if (h > maxDimension) {
+                    w = Math.round((w * maxDimension) / h);
+                    h = maxDimension;
+                }
+            }
 
-                const canvas = document.createElement('canvas');
-                canvas.width = width;
-                canvas.height = height;
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
 
-                const ctx = canvas.getContext('2d');
-                ctx.fillStyle = '#FFFFFF';
-                ctx.fillRect(0, 0, canvas.width, canvas.height);
-                ctx.drawImage(img, 0, 0, width, height);
+            const ctx = canvas.getContext('2d');
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.drawImage(source, 0, 0, w, h);
 
-                const dataUrl = canvas.toDataURL('image/jpeg', quality);
-                resolve(dataUrl);
-            };
-            img.onerror = () => reject(new Error('No se pudo procesar la imagen seleccionada.'));
+            const dataUrl = canvas.toDataURL('image/jpeg', quality);
+            if (typeof source.close === 'function') source.close();
+            resolve(dataUrl);
         };
-        reader.onerror = () => reject(new Error('Error al leer el archivo de imagen.'));
+
+        const loadViaImageElement = () => {
+            const reader = new FileReader();
+            reader.readAsDataURL(file);
+            reader.onload = (event) => {
+                const img = new Image();
+                img.src = event.target.result;
+                img.onload = () => drawAndCompress(img, img.width, img.height);
+                img.onerror = () => reject(new Error('No se pudo procesar la imagen seleccionada.'));
+            };
+            reader.onerror = () => reject(new Error('Error al leer el archivo de imagen.'));
+        };
+
+        // Cuando está disponible, createImageBitmap respeta la orientación EXIF de las fotos.
+        if (typeof createImageBitmap === 'function') {
+            try {
+                const promise = createImageBitmap(file, { imageOrientation: 'from-image' });
+                if (promise && typeof promise.then === 'function') {
+                    promise.then(
+                        (bitmap) => drawAndCompress(bitmap, bitmap.width, bitmap.height),
+                        () => loadViaImageElement()
+                    );
+                    return;
+                }
+            } catch {
+                // Opción no soportada: continuar con el método tradicional
+            }
+        }
+        loadViaImageElement();
     });
 };
 
@@ -72,9 +98,15 @@ const dataURLToBlob = (dataUrl) => {
  * Intenta subir la imagen procesada al bucket de Supabase Storage (ej. 'images', 'public' o 'media').
  * Si el bucket está configurado y accesible, devuelve la URL pública del objeto.
  * Si no está configurado o falla, devuelve la cadena Data URL comprimida para almacenarse en la base de datos de forma segura.
+ *
+ * @param {File} file Archivo de imagen seleccionado
+ * @param {string} folder Carpeta de destino dentro del bucket
+ * @param {{maxDimension?: number, quality?: number}} compression Ajustes de compresión compacta (opcional)
  */
-export const uploadOrCompressImage = async (file, folder = 'comunidad') => {
-    const compressedDataUrl = await processAndCompressImage(file, 900, 0.8);
+export const uploadOrCompressImage = async (file, folder = 'comunidad', compression = {}) => {
+    const maxDimension = Number.isFinite(compression.maxDimension) ? compression.maxDimension : 800;
+    const quality = Number.isFinite(compression.quality) ? compression.quality : 0.72;
+    const compressedDataUrl = await processAndCompressImage(file, maxDimension, quality);
 
     if (isSupabaseConfigured && supabase) {
         try {

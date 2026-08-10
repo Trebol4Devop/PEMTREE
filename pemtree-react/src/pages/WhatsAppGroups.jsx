@@ -3,11 +3,11 @@ import {
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
     AlertTriangle, Trash2, LogOut, Check, 
     Filter, BookOpen, X, Edit3, ShieldCheck, UserCheck,
-    Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles,
+    Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles, Info,
     Image as ImageIcon
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { formatUserError } from '../lib/moderation';
+import { formatUserError, getModerationInfo, isContentBlocked, MODERATION_STATUS } from '../lib/moderation';
 import { sendFormspreeNotification } from '../lib/notification';
 import { uploadOrCompressImage } from '../lib/imageUtils';
 import { cursos } from '../modules/data/cursos';
@@ -23,11 +23,15 @@ const MODERATOR_UIDS = [
 const CARRERAS = [
     { id: 'todas', label: 'Todas las Carreras / Áreas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'area_comun', label: 'Área Común (1er - 3er Sem)', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
-    { id: 'sistemas', label: 'Ciencias y Sistemas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'ambiental', label: 'Ingeniería Ambiental', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'sistemas', label: 'Ingeniería en Ciencias y Sistemas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'civil', label: 'Ingeniería Civil', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
-    { id: 'industrial', label: 'Ingeniería Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
-    { id: 'mecanica', label: 'Mecánica & M. Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'electrica', label: 'Ingeniería Eléctrica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'electronica', label: 'Ingeniería Electrónica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'industrial', label: 'Ingeniería Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica', label: 'Ingeniería Mecánica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica_electrica', label: 'Ingeniería Mecánica Eléctrica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica_industrial', label: 'Ingeniería Mecánica Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'quimica', label: 'Ingeniería Química', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' }
 ];
 
@@ -125,6 +129,14 @@ export default function WhatsAppGroups() {
     const [savedAlias, setSavedAlias] = useState(() => localStorage.getItem('pemtree_forum_alias') || '');
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [profileInputText, setProfileInputText] = useState('');
+
+    // Aviso de fechas de limpieza automática (eliminable por el usuario)
+    const [isCleanupNoticeVisible, setIsCleanupNoticeVisible] = useState(() => localStorage.getItem('pemtree_grupos_aviso_limpieza_visto') !== 'true');
+
+    const dismissCleanupNotice = useCallback(() => {
+        localStorage.setItem('pemtree_grupos_aviso_limpieza_visto', 'true');
+        setIsCleanupNoticeVisible(false);
+    }, []);
 
     const activeAlias = useMemo(() => {
         if (savedAlias && savedAlias.trim()) return savedAlias.trim();
@@ -395,7 +407,8 @@ export default function WhatsAppGroups() {
         if (!file) return;
         try {
             setIsCompressingImg(true);
-            const imageUrl = await uploadOrCompressImage(file, 'groups');
+            // Compresión compacta para cuidar el almacenamiento gratuito de Supabase
+            const imageUrl = await uploadOrCompressImage(file, 'groups', { maxDimension: 640, quality: 0.7 });
             setNewImageUrl(imageUrl);
         } catch (err) {
             showAlert('Error al adjuntar imagen', err.message || 'No se pudo procesar la imagen.', 'error');
@@ -766,6 +779,9 @@ export default function WhatsAppGroups() {
     // Filtered lists
     const displayedGroups = useMemo(() => {
         return groups.filter(g => {
+            if (!canModerate && isContentBlocked(g.moderation_status)) {
+                return false;
+            }
             if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera && g.carrera !== 'todas') {
                 return false;
             }
@@ -784,7 +800,19 @@ export default function WhatsAppGroups() {
             }
             return true;
         });
-    }, [groups, selectedCarrera, selectedCursoFilter, searchQuery]);
+    }, [groups, selectedCarrera, selectedCursoFilter, searchQuery, canModerate]);
+
+    // Polling ligero de moderación: mientras existan grupos pendientes (status 0),
+    // re-consulta cada 15s para reflejar el resultado del worker (apropiado/bloqueado).
+    const hasPendingModeration = useMemo(() => {
+        return groups.some(g => Number(g.moderation_status) === MODERATION_STATUS.PENDING);
+    }, [groups]);
+
+    useEffect(() => {
+        if (!isSupabaseConfigured || !supabase || !hasPendingModeration) return;
+        const intervalId = setInterval(() => { fetchGroups(); }, 15000);
+        return () => clearInterval(intervalId);
+    }, [hasPendingModeration, fetchGroups]);
 
     // Unique courses list present in current groups for filter dropdown
     const availableCursosInGroups = useMemo(() => {
@@ -946,6 +974,24 @@ export default function WhatsAppGroups() {
                     </div>
                 </div>
 
+                {/* Aviso de fechas de limpieza automática */}
+                {isCleanupNoticeVisible && (
+                    <div className="flex items-start gap-2.5 bg-sky-50 dark:bg-[#0C3E5F]/40 border border-sky-200/70 dark:border-[#38BDF8]/30 text-[#0369A1] dark:text-[#7DD3FC] rounded-xl px-3.5 py-2.5 text-[11px] sm:text-xs font-semibold leading-snug">
+                        <Info size={15} className="shrink-0 mt-0.5" />
+                        <span className="flex-1">
+                            La base de datos elimina automáticamente <strong>todos los grupos</strong> en las fechas de inicio de ciclo: <strong>1 de enero, 15 de mayo, 1 de julio y 15 de noviembre</strong>, para mantener la información actualizada. Revisa o guarda los enlaces que necesites antes de esas fechas.
+                        </span>
+                        <button
+                            onClick={dismissCleanupNotice}
+                            className="shrink-0 p-1 rounded-lg hover:bg-sky-200/60 dark:hover:bg-[#0E1624]/60 text-[#0369A1]/70 dark:text-[#7DD3FC]/70 hover:text-[#0369A1] dark:hover:text-[#7DD3FC] transition cursor-pointer bg-transparent border-none"
+                            title="Ocultar aviso"
+                            aria-label="Ocultar aviso de fechas de limpieza"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
+
                 {/* Career Tabs (igual que Forum.jsx) */}
                 <div className="flex items-center gap-1.5 sm:gap-2 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto pb-2 sm:pb-1 sm:flex-wrap hide-scrollbar">
                     {CARRERAS.map(carrera => {
@@ -988,6 +1034,7 @@ export default function WhatsAppGroups() {
                             const carreraObj = CARRERAS.find(c => c.id === group.carrera) || CARRERAS[0];
                             const isUpvoted = upvotedGroupIds.has(group.id);
                             const canDelete = canModerate || (user && group.user_id === user.id);
+                            const modInfo = getModerationInfo(group.moderation_status);
 
                             return (
                                 <div
@@ -1003,6 +1050,18 @@ export default function WhatsAppGroups() {
                                                 {group.section && (
                                                     <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-[#F4F5F7] dark:bg-[#0E1624] text-[#5E6C84] dark:text-slate-350 border border-[#DFE1E6] dark:border-[#3E4C5E]">
                                                         Secc. {group.section}
+                                                    </span>
+                                                )}
+                                                {modInfo && modInfo.type === 'pending' && (
+                                                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#FFF3C4] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 flex items-center gap-1">
+                                                        <ShieldCheck size={11} className="animate-pulse" />
+                                                        <span>Verificando...</span>
+                                                    </span>
+                                                )}
+                                                {modInfo && modInfo.type === 'blocked' && (
+                                                    <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-full bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 flex items-center gap-1">
+                                                        <AlertTriangle size={11} />
+                                                        <span>Bloqueado</span>
                                                     </span>
                                                 )}
                                             </div>
@@ -1037,6 +1096,13 @@ export default function WhatsAppGroups() {
                                                 />
                                             </div>
                                         )}
+
+                                        {modInfo && modInfo.type === 'error' && (
+                                            <div className="flex items-start gap-2 bg-[#FFF0B3] dark:bg-[#422006]/70 border border-amber-300/60 dark:border-amber-700/50 text-[#B45309] dark:text-[#FBBF24] rounded-xl px-3 py-2 text-[11px] font-semibold leading-snug">
+                                                <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+                                                <span>{modInfo.message}{group.moderation_reason ? ` ${group.moderation_reason}` : ''}</span>
+                                            </div>
+                                        )}
                                     </div>
 
                                     <div className="flex flex-col gap-3 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
@@ -1057,7 +1123,17 @@ export default function WhatsAppGroups() {
                                                 href={group.link}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
-                                                className="flex-grow flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-bold text-xs sm:text-sm py-2 px-4 rounded-xl transition no-underline text-center shadow-sm"
+                                                onClick={(e) => {
+                                                    if (modInfo && modInfo.type === 'blocked') {
+                                                        e.preventDefault();
+                                                        showAlert('Enlace bloqueado', 'Este grupo fue rechazado por el sistema de moderación y su enlace no está disponible para el público.', 'warning');
+                                                    }
+                                                }}
+                                                className={`flex-grow flex items-center justify-center gap-2 font-bold text-xs sm:text-sm py-2 px-4 rounded-xl transition no-underline text-center shadow-sm ${
+                                                    modInfo && modInfo.type === 'blocked'
+                                                        ? 'bg-[#E4E6EA] dark:bg-[#2D333B] text-[#7A869A] dark:text-slate-400 cursor-not-allowed'
+                                                        : 'bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624]'
+                                                }`}
                                             >
                                                 <MessageSquare size={15} />
                                                 <span>Abrir enlace</span>
