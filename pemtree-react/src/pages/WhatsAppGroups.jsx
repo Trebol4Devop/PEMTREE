@@ -3,7 +3,7 @@ import {
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
     AlertTriangle, Trash2, LogOut, Check, 
     Filter, BookOpen, X, Edit3, ShieldCheck, UserCheck,
-    Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles,
+    Upload, FileSpreadsheet, Download, CheckCircle, AlertCircle, Sparkles, Info,
     Image as ImageIcon
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
@@ -23,11 +23,15 @@ const MODERATOR_UIDS = [
 const CARRERAS = [
     { id: 'todas', label: 'Todas las Carreras / Áreas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'area_comun', label: 'Área Común (1er - 3er Sem)', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
-    { id: 'sistemas', label: 'Ciencias y Sistemas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'ambiental', label: 'Ingeniería Ambiental', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'sistemas', label: 'Ingeniería en Ciencias y Sistemas', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'civil', label: 'Ingeniería Civil', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
-    { id: 'industrial', label: 'Ingeniería Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
-    { id: 'mecanica', label: 'Mecánica & M. Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'electrica', label: 'Ingeniería Eléctrica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'electronica', label: 'Ingeniería Electrónica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'industrial', label: 'Ingeniería Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica', label: 'Ingeniería Mecánica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica_electrica', label: 'Ingeniería Mecánica Eléctrica', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
+    { id: 'mecanica_industrial', label: 'Ingeniería Mecánica Industrial', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' },
     { id: 'quimica', label: 'Ingeniería Química', badgeBg: 'bg-[#EAE6FF] dark:bg-[#281E5B] text-[#403294] dark:text-[#B8ACFF] border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50' }
 ];
 
@@ -125,6 +129,14 @@ export default function WhatsAppGroups() {
     const [savedAlias, setSavedAlias] = useState(() => localStorage.getItem('pemtree_forum_alias') || '');
     const [isProfileModalOpen, setIsProfileModalOpen] = useState(false);
     const [profileInputText, setProfileInputText] = useState('');
+
+    // Aviso de fechas de limpieza automática (eliminable por el usuario)
+    const [isCleanupNoticeVisible, setIsCleanupNoticeVisible] = useState(() => localStorage.getItem('pemtree_grupos_aviso_limpieza_visto') !== 'true');
+
+    const dismissCleanupNotice = useCallback(() => {
+        localStorage.setItem('pemtree_grupos_aviso_limpieza_visto', 'true');
+        setIsCleanupNoticeVisible(false);
+    }, []);
 
     const activeAlias = useMemo(() => {
         if (savedAlias && savedAlias.trim()) return savedAlias.trim();
@@ -960,6 +972,24 @@ export default function WhatsAppGroups() {
                         )}
                     </div>
                 </div>
+
+                {/* Aviso de fechas de limpieza automática */}
+                {isCleanupNoticeVisible && (
+                    <div className="flex items-start gap-2.5 bg-sky-50 dark:bg-[#0C3E5F]/40 border border-sky-200/70 dark:border-[#38BDF8]/30 text-[#0369A1] dark:text-[#7DD3FC] rounded-xl px-3.5 py-2.5 text-[11px] sm:text-xs font-semibold leading-snug">
+                        <Info size={15} className="shrink-0 mt-0.5" />
+                        <span className="flex-1">
+                            La base de datos elimina automáticamente <strong>todos los grupos</strong> en las fechas de inicio de ciclo: <strong>1 de enero, 15 de mayo, 1 de julio y 15 de noviembre</strong>, para mantener la información actualizada. Revisa o guarda los enlaces que necesites antes de esas fechas.
+                        </span>
+                        <button
+                            onClick={dismissCleanupNotice}
+                            className="shrink-0 p-1 rounded-lg hover:bg-sky-200/60 dark:hover:bg-[#0E1624]/60 text-[#0369A1]/70 dark:text-[#7DD3FC]/70 hover:text-[#0369A1] dark:hover:text-[#7DD3FC] transition cursor-pointer bg-transparent border-none"
+                            title="Ocultar aviso"
+                            aria-label="Ocultar aviso de fechas de limpieza"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
 
                 {/* Career Tabs (igual que Forum.jsx) */}
                 <div className="flex items-center gap-1.5 sm:gap-2 -mx-4 px-4 sm:mx-0 sm:px-0 overflow-x-auto pb-2 sm:pb-1 sm:flex-wrap hide-scrollbar">

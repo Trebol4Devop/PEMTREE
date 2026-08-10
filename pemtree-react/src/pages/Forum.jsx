@@ -23,11 +23,15 @@ const CATEGORIES = [
 const CARRERAS = [
     { id: 'todas', label: 'Todas las Carreras / Áreas' },
     { id: 'area_comun', label: 'Área Común (1er - 3er Sem)' },
-    { id: 'sistemas', label: 'Ciencias y Sistemas' },
+    { id: 'ambiental', label: 'Ingeniería Ambiental' },
+    { id: 'sistemas', label: 'Ingeniería en Ciencias y Sistemas' },
     { id: 'civil', label: 'Ingeniería Civil' },
-    { id: 'industrial', label: 'Ingeniería Industrial' },
-    { id: 'mecanica', label: 'Mecánica & M. Industrial' },
+    { id: 'electrica', label: 'Ingeniería Eléctrica' },
     { id: 'electronica', label: 'Ingeniería Electrónica' },
+    { id: 'industrial', label: 'Ingeniería Industrial' },
+    { id: 'mecanica', label: 'Ingeniería Mecánica' },
+    { id: 'mecanica_electrica', label: 'Ingeniería Mecánica Eléctrica' },
+    { id: 'mecanica_industrial', label: 'Ingeniería Mecánica Industrial' },
     { id: 'quimica', label: 'Ingeniería Química' }
 ];
 
@@ -311,6 +315,14 @@ export default function Forum() {
     const [commentTexts, setCommentTexts] = useState({});
     const [commentReplyTexts, setCommentReplyTexts] = useState({}); // Textos por cada ID de comentario al responder
     const [openReplyBoxes, setOpenReplyBoxes] = useState({}); // Qué cajas de respuesta (por ID de comentario) están abiertas
+
+    // Aviso de retención automática (eliminable por el usuario)
+    const [isRetentionNoticeVisible, setIsRetentionNoticeVisible] = useState(() => localStorage.getItem('pemtree_foro_aviso_retencion_visto') !== 'true');
+
+    const dismissRetentionNotice = useCallback(() => {
+        localStorage.setItem('pemtree_foro_aviso_retencion_visto', 'true');
+        setIsRetentionNoticeVisible(false);
+    }, []);
 
     // Comentarios visibles según moderación: los bloqueados (status 2) se ocultan al público general
     const getVisibleComments = useCallback((comments = []) => {
@@ -1169,6 +1181,24 @@ export default function Forum() {
                         );
                     })}
                 </div>
+
+                {/* Aviso de retención automática de contenido */}
+                {isRetentionNoticeVisible && (
+                    <div className="flex items-start gap-2.5 bg-sky-50 dark:bg-[#0C3E5F]/40 border border-sky-200/70 dark:border-[#38BDF8]/30 text-[#0369A1] dark:text-[#7DD3FC] rounded-xl px-3.5 py-2.5 text-[11px] sm:text-xs font-semibold leading-snug">
+                        <Info size={15} className="shrink-0 mt-0.5" />
+                        <span className="flex-1">
+                            Los mensajes con más de <strong>3 meses de antigüedad</strong> se eliminan automáticamente para mantener el foro actualizado. Guarda o exporta la información importante antes de que expire.
+                        </span>
+                        <button
+                            onClick={dismissRetentionNotice}
+                            className="shrink-0 p-1 rounded-lg hover:bg-sky-200/60 dark:hover:bg-[#0E1624]/60 text-[#0369A1]/70 dark:text-[#7DD3FC]/70 hover:text-[#0369A1] dark:hover:text-[#7DD3FC] transition cursor-pointer bg-transparent border-none"
+                            title="Ocultar aviso"
+                            aria-label="Ocultar aviso de retención"
+                        >
+                            <X size={14} />
+                        </button>
+                    </div>
+                )}
 
                 {/* Posts List */}
                 <div className="flex flex-col gap-4">
