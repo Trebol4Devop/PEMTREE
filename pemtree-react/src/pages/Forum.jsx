@@ -6,7 +6,7 @@ import {
     Image as ImageIcon, X
 } from 'lucide-react';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
-import { checkCooldown, updateCooldown, formatUserError } from '../lib/moderation';
+import { checkCooldown, updateCooldown, formatUserError, getModerationInfo, isContentBlocked, MODERATION_STATUS } from '../lib/moderation';
 import { sendFormspreeNotification } from '../lib/notification';
 import { uploadOrCompressImage } from '../lib/imageUtils';
 import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
@@ -123,6 +123,16 @@ const CommentLayerItem = ({
                                     Autor
                                 </span>
                             )}
+                            {Number(comment.moderation_status) === MODERATION_STATUS.INAPPROPRIATE && (
+                                <span className="bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369] text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">
+                                    Bloqueado
+                                </span>
+                            )}
+                            {Number(comment.moderation_status) === MODERATION_STATUS.ERROR && (
+                                <span className="bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24] text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">
+                                    Sin verificar
+                                </span>
+                            )}
                         </span>
                     </div>
                     <div className="flex items-center gap-1.5">
@@ -181,6 +191,13 @@ const CommentLayerItem = ({
                 <p className="text-[#172B4D] dark:text-[#CBD5E1] whitespace-pre-line leading-relaxed font-normal mt-0.5">
                     {comment.content}
                 </p>
+
+                {Number(comment.moderation_status) === MODERATION_STATUS.ERROR && (
+                    <div className="flex items-start gap-1.5 bg-[#FFF0B3]/60 dark:bg-[#422006]/50 border border-amber-300/50 dark:border-amber-700/40 text-[#B45309] dark:text-[#FBBF24] rounded-lg px-2 py-1 text-[10px] font-semibold leading-snug">
+                        <AlertTriangle size={11} className="shrink-0 mt-0.5" />
+                        <span>Contenido no moderado, puede ser inapropiado.</span>
+                    </div>
+                )}
 
                 {/* Reply Form */}
                 {isReplying && (
@@ -294,6 +311,12 @@ export default function Forum() {
     const [commentTexts, setCommentTexts] = useState({});
     const [commentReplyTexts, setCommentReplyTexts] = useState({}); // Textos por cada ID de comentario al responder
     const [openReplyBoxes, setOpenReplyBoxes] = useState({}); // Qué cajas de respuesta (por ID de comentario) están abiertas
+
+    // Comentarios visibles según moderación: los bloqueados (status 2) se ocultan al público general
+    const getVisibleComments = useCallback((comments = []) => {
+        if (canModerate) return comments;
+        return comments.filter(c => !isContentBlocked(c.moderation_status));
+    }, [canModerate]);
 
     const fetchSupabasePosts = useCallback(async () => {
         if (!isSupabaseConfigured || !supabase) return;
@@ -529,6 +552,21 @@ export default function Forum() {
         }
     }, [fetchSupabasePosts, fetchUserLikes, fetchUserReports, fetchAdminReports, checkAndPromptProfile]);
 
+    // Polling ligero de moderación: mientras exista contenido pendiente (status 0),
+    // re-consulta cada 15s para reflejar el resultado del worker (apropiado/bloqueado).
+    const hasPendingModeration = useMemo(() => {
+        return posts.some(p =>
+            Number(p.moderation_status) === MODERATION_STATUS.PENDING ||
+            (p.comments || []).some(c => Number(c.moderation_status) === MODERATION_STATUS.PENDING)
+        );
+    }, [posts]);
+
+    useEffect(() => {
+        if (!isSupabaseConfigured || !supabase || !hasPendingModeration) return;
+        const intervalId = setInterval(() => { fetchSupabasePosts(); }, 15000);
+        return () => clearInterval(intervalId);
+    }, [hasPendingModeration, fetchSupabasePosts]);
+
     const handleGoogleLogin = async () => {
         if (!isSupabaseConfigured || !supabase) {
             showAlert('Inicio de sesión temporalmente deshabilitado', 'El servicio de autenticación se encuentra en mantenimiento en este momento. Por favor, intenta más tarde.', 'warning');
@@ -691,6 +729,11 @@ export default function Forum() {
         const hasLiked = userLikes.includes(postId);
         const targetPost = posts.find(p => p.id === postId);
         if (!targetPost) return;
+
+        if (isContentBlocked(targetPost.moderation_status)) {
+            showAlert('Contenido bloqueado', 'Este contenido fue rechazado por el sistema de moderación y no se permiten interacciones con él.', 'warning');
+            return;
+        }
 
         const newLikes = hasLiked ? Math.max(0, (targetPost.likes || 1) - 1) : (targetPost.likes || 0) + 1;
 
@@ -925,26 +968,29 @@ export default function Forum() {
         }
     };
 
-    const filteredPosts = posts.filter(p => {
-        const matchesCategory = selectedCategory === 'todos' || p.category === selectedCategory;
-        const matchesCarrera = selectedCarrera === 'todas' || p.carrera === selectedCarrera || (!p.carrera && selectedCarrera === 'todas');
-        
-        if (!searchQuery.trim()) return matchesCategory && matchesCarrera;
+    const filteredPosts = posts
+        .filter(p => canModerate || !isContentBlocked(p.moderation_status))
+        .filter(p => {
+            const matchesCategory = selectedCategory === 'todos' || p.category === selectedCategory;
+            const matchesCarrera = selectedCarrera === 'todas' || p.carrera === selectedCarrera || (!p.carrera && selectedCarrera === 'todas');
+            
+            if (!searchQuery.trim()) return matchesCategory && matchesCarrera;
 
-        const query = searchQuery.toLowerCase().trim();
-        const matchesTitle = (p.title || '').toLowerCase().includes(query);
-        const matchesContent = (p.content || '').toLowerCase().includes(query);
-        const matchesAuthor = (p.author_alias || '').toLowerCase().includes(query);
-        const matchesComments = (p.comments || []).some(c => 
-            (c.content || '').toLowerCase().includes(query) || 
-            (c.author_alias || '').toLowerCase().includes(query)
-        );
+            const query = searchQuery.toLowerCase().trim();
+            const matchesTitle = (p.title || '').toLowerCase().includes(query);
+            const matchesContent = (p.content || '').toLowerCase().includes(query);
+            const matchesAuthor = (p.author_alias || '').toLowerCase().includes(query);
+            const matchesComments = getVisibleComments(p.comments).some(c => 
+                (c.content || '').toLowerCase().includes(query) || 
+                (c.author_alias || '').toLowerCase().includes(query)
+            );
 
-        return matchesCategory && matchesCarrera && (matchesTitle || matchesContent || matchesAuthor || matchesComments);
-    }).sort((a, b) => {
-        if (sortBy === 'likes') return (b.likes || 0) - (a.likes || 0);
-        return new Date(b.created_at || 0) - new Date(a.created_at || 0);
-    });
+            return matchesCategory && matchesCarrera && (matchesTitle || matchesContent || matchesAuthor || matchesComments);
+        })
+        .sort((a, b) => {
+            if (sortBy === 'likes') return (b.likes || 0) - (a.likes || 0);
+            return new Date(b.created_at || 0) - new Date(a.created_at || 0);
+        });
 
     const formatTimeAgo = (dateStr) => {
         if (!dateStr) return 'hace un momento';
@@ -1151,7 +1197,9 @@ export default function Forum() {
                             const isExpanded = expandedPostId === post.id;
                             const catLabel = CATEGORIES.find(c => c.id === post.category)?.label || post.category;
                             const carreraObj = CARRERAS.find(c => c.id === post.carrera);
-                            const hasCommentMatch = searchQuery.trim() && (post.comments || []).some(c => 
+                            const modInfo = getModerationInfo(post.moderation_status);
+                            const visibleComments = getVisibleComments(post.comments);
+                            const hasCommentMatch = searchQuery.trim() && visibleComments.some(c => 
                                 (c.content || '').toLowerCase().includes(searchQuery.toLowerCase().trim()) || 
                                 (c.author_alias || '').toLowerCase().includes(searchQuery.toLowerCase().trim())
                             );
@@ -1215,6 +1263,18 @@ export default function Forum() {
                                                 <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] text-[#42526E] dark:text-[#94A3B8] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50">
                                                     {catLabel}
                                                 </span>
+                                                {modInfo && modInfo.type === 'pending' && (
+                                                    <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#FFF3C4] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 flex items-center gap-1">
+                                                        <ShieldCheck size={11} className="animate-pulse" />
+                                                        <span>Verificando contenido...</span>
+                                                    </span>
+                                                )}
+                                                {modInfo && modInfo.type === 'blocked' && (
+                                                    <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369] border border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 flex items-center gap-1">
+                                                        <AlertTriangle size={11} />
+                                                        <span>Bloqueado por moderación</span>
+                                                    </span>
+                                                )}
                                                 {hasCommentMatch && (
                                                     <span className="text-[11px] font-extrabold px-2.5 py-1 rounded-lg bg-[#FFF3C4] dark:bg-[#5E4C1C] text-[#D97706] dark:text-[#FBBF24] flex items-center gap-1">
                                                         <Search size={11} />
@@ -1231,6 +1291,13 @@ export default function Forum() {
                                         <p className="text-xs sm:text-sm text-[#42526E] dark:text-slate-300 leading-relaxed whitespace-pre-wrap">
                                             {post.content}
                                         </p>
+
+                                        {modInfo && modInfo.type === 'error' && (
+                                            <div className="flex items-start gap-2 bg-[#FFF0B3] dark:bg-[#422006]/70 border border-amber-300/60 dark:border-amber-700/50 text-[#B45309] dark:text-[#FBBF24] rounded-xl px-3 py-2 text-[11px] font-semibold leading-snug">
+                                                <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+                                                <span>{modInfo.message}{post.moderation_reason ? ` ${post.moderation_reason}` : ''}</span>
+                                            </div>
+                                        )}
 
                                         {post.image_url && (
                                             <div className="mt-2 rounded-2xl overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] max-h-96 flex items-center justify-center bg-black/5 dark:bg-black/20">
@@ -1267,7 +1334,7 @@ export default function Forum() {
                                                     }`}
                                                 >
                                                     <MessageSquare size={14} />
-                                                    <span>{(post.comments?.length || 0)} Comentarios</span>
+                                                    <span>{visibleComments.length} Comentarios</span>
                                                     <ChevronDown size={14} className={`transition-transform duration-200 ${isExpanded ? 'rotate-180' : ''}`} />
                                                 </button>
                                             </div>
@@ -1277,16 +1344,16 @@ export default function Forum() {
                                         {isExpanded && (
                                             <div className="mt-2 pt-4 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3 bg-[#FAFBFC] dark:bg-[#0E1624]/50 -mx-5 sm:-mx-6 -mb-5 sm:-mb-6 p-5 sm:p-6">
                                                 <div className="text-xs font-bold text-[#172B4D] dark:text-slate-200 mb-1">
-                                                    Respuestas de la comunidad ({post.comments?.length || 0})
+                                                    Respuestas de la comunidad ({visibleComments.length})
                                                 </div>
 
-                                                {(post.comments || []).length === 0 ? (
+                                                {visibleComments.length === 0 ? (
                                                     <p className="text-xs italic text-[#7A869A] dark:text-slate-400 py-2">
                                                         Aún no hay respuestas en esta publicación. ¡Escribe el primer aporte abajo!
                                                     </p>
                                                 ) : (
                                                     <div className="flex flex-col gap-2.5">
-                                                        {buildCommentTree(post.comments).map(rootComment => (
+                                                        {buildCommentTree(visibleComments).map(rootComment => (
                                                             <CommentLayerItem
                                                                 key={rootComment.id}
                                                                 comment={rootComment}

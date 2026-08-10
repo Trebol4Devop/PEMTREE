@@ -32,6 +32,57 @@ const BAD_WORDS = [
     'stfu', 'gtfo', 'wtf', 'lmfao', 'ffs', 'bs', 'kms'
 ];
 
+// Estados de moderación automática (igual que el esquema SQL de Supabase)
+export const MODERATION_STATUS = {
+    PENDING: 0,        // Pendiente: el modelo aún no lo clasifica (normalmente <1 min)
+    APPROPRIATE: 1,    // Apropiado: se muestra normalmente
+    INAPPROPRIATE: 2,  // No apropiado: ocultar / bloquear interacción
+    ERROR: 3           // Error: no se pudo clasificar, mostrar advertencia
+};
+
+/**
+ * Devuelve la información de visualización para un estado de moderación.
+ * Retorna null cuando el contenido es apto (status 1 o ausente) y no requiere UI especial.
+ */
+export function getModerationInfo(status) {
+    const s = Number(status);
+    if (s === MODERATION_STATUS.PENDING) {
+        return {
+            status: s,
+            type: 'pending',
+            label: 'Verificando',
+            badgeVariant: 'warning',
+            message: 'Este contenido está siendo verificado por nuestro sistema de moderación.'
+        };
+    }
+    if (s === MODERATION_STATUS.INAPPROPRIATE) {
+        return {
+            status: s,
+            type: 'blocked',
+            label: 'Bloqueado',
+            badgeVariant: 'danger',
+            message: 'Este contenido fue rechazado por infringir las normas de convivencia de la comunidad.'
+        };
+    }
+    if (s === MODERATION_STATUS.ERROR) {
+        return {
+            status: s,
+            type: 'error',
+            label: 'Sin verificar',
+            badgeVariant: 'warning',
+            message: 'Contenido no moderado, puede ser inapropiado.'
+        };
+    }
+    return null;
+}
+
+/**
+ * Indica si el contenido debe ocultarse/bloquearse para el público general.
+ */
+export function isContentBlocked(status) {
+    return Number(status) === MODERATION_STATUS.INAPPROPRIATE;
+}
+
 // Dominios, extensiones y palabras clave en URLs que están prohibidos (adultos, apuestas, acortadores, malware)
 const BLOCKED_LINK_KEYWORDS = [
     'porn', 'xxx', 'xvideos', 'pornhub', 'onlyfans', 'xhamster', 'redtube', 'brazzers', 'chaturbate',
@@ -226,14 +277,16 @@ export function formatUserError(error) {
     if (!error) return 'Ocurrió un problema técnico temporal al procesar tu solicitud. Por favor, inténtalo de nuevo.';
     const msg = (typeof error === 'string' ? error : error.message || '').toLowerCase();
 
-    if (msg.includes('inapropiado') || msg.includes('ofensivo') || msg.includes('grosería') || msg.includes('moderación') || msg.includes('prohibido')) {
-        return 'No pudimos publicar tu contenido porque nuestro sistema detectó palabras u oraciones que podrían no cumplir con las normas de convivencia de la comunidad. Por favor, revisa tu redacción e inténtalo de nuevo.';
+    // 1. Errores del trigger de moderación en la BD (rechazo duro al INSERT/UPDATE).
+    //    Se verifican antes del resto porque algunos mensajes comparten palabras clave.
+    if (msg.includes('caracteres repetidos') || msg.includes('flooding') || msg.includes('excesivamente')) {
+        return 'El mensaje contiene demasiados caracteres repetidos. Por favor, ajústalo antes de enviar.';
     }
     if (msg.includes('enlace') || msg.includes('link') || msg.includes('url')) {
-        return 'El contenido incluye enlaces no permitidos. Por favor, retira o verifica la dirección web antes de publicar.';
+        return 'El contenido incluye enlaces no permitidos (sitios de adultos, apuestas, acortadores, archivos o dominios sospechosos). Por favor, retira o verifica la dirección web antes de publicar.';
     }
-    if (msg.includes('repetidos') || msg.includes('excesivamente') || msg.includes('flooding')) {
-        return 'El mensaje contiene demasiados caracteres repetidos. Por favor, ajústalo antes de enviar.';
+    if (msg.includes('inapropiado') || msg.includes('ofensivo') || msg.includes('grosería') || msg.includes('groserias') || msg.includes('moderación') || msg.includes('prohibido') || msg.includes('lenguaje') || msg.includes('palabras')) {
+        return 'No pudimos publicar tu contenido porque nuestro sistema detectó palabras u oraciones que podrían no cumplir con las normas de convivencia de la comunidad. Por favor, revisa tu redacción e inténtalo de nuevo.';
     }
     if (msg.includes('unique') || msg.includes('23505') || msg.includes('ya registrado') || msg.includes('duplicado')) {
         return 'Ya existe un registro o reporte con esta información en el sistema.';
