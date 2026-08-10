@@ -774,7 +774,6 @@ export default function Forum() {
             setUserLikes(prev => prev.filter(id => id !== postId));
             try {
                 await supabase.from('post_likes').delete().eq('post_id', postId).eq('user_id', user.id);
-                await supabase.from('posts').update({ likes: newLikes }).eq('id', postId);
             } catch (err) {
                 console.error('Error quitando like:', err.message);
             }
@@ -782,7 +781,6 @@ export default function Forum() {
             setUserLikes(prev => [...prev, postId]);
             try {
                 await supabase.from('post_likes').insert([{ post_id: postId, user_id: user.id }]);
-                await supabase.from('posts').update({ likes: newLikes }).eq('id', postId);
             } catch (err) {
                 console.error('Error guardando like:', err.message);
             }
