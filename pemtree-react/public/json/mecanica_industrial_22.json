@@ -631,7 +631,7 @@
   },
   {
     "codigo": "0640",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "CONTROL DE LA PRODUCCIÓN",
     "creditos": 6,
     "tipo": "Obligatorio",
@@ -640,7 +640,7 @@
   },
   {
     "codigo": "0659",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "ADMINISTRACIÓN DE RECURSOS HUMANOS",
     "creditos": 6,
     "tipo": "Obligatorio",
@@ -649,7 +649,7 @@
   },
   {
     "codigo": "0665",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "MICROECONOMÍA",
     "creditos": 3,
     "tipo": "Obligatorio",
@@ -658,7 +658,7 @@
   },
   {
     "codigo": "0709",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "GESTIÓN DE PROYECTOS",
     "creditos": 4,
     "tipo": "Obligatorio",
@@ -667,7 +667,7 @@
   },
   {
     "codigo": "7987",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. MECÁNICA INDUSTRIAL",
     "creditos": 3,
     "tipo": "Obligatorio",
@@ -676,7 +676,7 @@
   },
   {
     "codigo": "7995",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "SEMINARIO DE INVESTIGACIÓN MECÁNICA INDUSTRIAL",
     "creditos": 3,
     "tipo": "Obligatorio",
@@ -685,7 +685,7 @@
   },
   {
     "codigo": "0620",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "GESTIÓN AMBIENTAL",
     "creditos": 4,
     "tipo": "Electivo",
@@ -694,7 +694,7 @@
   },
   {
     "codigo": "0676",
-    "semestre": "UNDÉCIMO\nSEMESTRE",
+    "semestre": "11",
     "nombre": "COMERCIO INTERNACIONAL",
     "creditos": 3,
     "tipo": "Electivo",
@@ -703,7 +703,7 @@
   },
   {
     "codigo": "0609",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "INNOVACIÓN Y EMPRENDIMIENTO",
     "creditos": 6,
     "tipo": "Obligatorio",
@@ -712,7 +712,7 @@
   },
   {
     "codigo": "0614",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "LOGÍSTICA Y CADENA DE SUMINISTRO",
     "creditos": 4,
     "tipo": "Obligatorio",
@@ -721,7 +721,7 @@
   },
   {
     "codigo": "0622",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "SISTEMA DE GESTIÓN DE LA CALIDAD",
     "creditos": 6,
     "tipo": "Obligatorio",
@@ -730,7 +730,7 @@
   },
   {
     "codigo": "0632",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "INGENIERÍA DE PLANTAS",
     "creditos": 6,
     "tipo": "Obligatorio",
@@ -739,7 +739,7 @@
   },
   {
     "codigo": "2007",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "PRÁCTICAS FINALES INGENIERÍA MECÁNICA INDUSTRIAL",
     "creditos": 0,
     "tipo": "Obligatorio",
@@ -748,7 +748,7 @@
   },
   {
     "codigo": "0606",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "ANÁLISIS DE SISTEMAS INDUSTRIALES",
     "creditos": 3,
     "tipo": "Electivo",
@@ -757,7 +757,7 @@
   },
   {
     "codigo": "0612",
-    "semestre": "DUODÉCIMO\nSEMESTRE",
+    "semestre": "12",
     "nombre": "GESTIÓN TECNOLÓGICA",
     "creditos": 4,
     "tipo": "Electivo",

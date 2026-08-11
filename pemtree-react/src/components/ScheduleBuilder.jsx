@@ -70,15 +70,39 @@ function migrateOldKeys() {
     }
 }
 
+function parseSavedSections(raw) {
+    if (!raw) return {};
+    let parsed;
+    try {
+        parsed = JSON.parse(raw);
+    } catch {
+        return {};
+    }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const cleaned = {};
+    for (const [code, arr] of Object.entries(parsed)) {
+        if (!Array.isArray(arr)) continue;
+        const valid = arr.filter(s =>
+            s && typeof s === 'object' &&
+            Array.isArray(s.dias) && s.dias.length > 0 &&
+            typeof s.inicio === 'string' && s.inicio &&
+            typeof s.final === 'string' && s.final
+        );
+        if (valid.length > 0) cleaned[code] = valid;
+    }
+    return cleaned;
+}
+
 export default function ScheduleBuilder() {
-    const [currentPeriod, setCurrentPeriod] = useState('semestre1');
+    const [currentPeriod, setCurrentPeriod] = useState(() => {
+        return localStorage.getItem('pemtree_schedule_period') || 'semestre1';
+    });
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedSections, setSelectedSections] = useState(() => {
         migrateOldKeys();
-        const saved = localStorage.getItem(getScheduleStorageKey('semestre1'));
-        return saved ? JSON.parse(saved) : {};
+        return parseSavedSections(localStorage.getItem(getScheduleStorageKey('semestre1')));
     });
     const sectionsPeriodRef = useRef('semestre1');
     const [expandedCourses, setExpandedCourses] = useState({});
@@ -115,8 +139,7 @@ export default function ScheduleBuilder() {
     // con la clave correcta en cuanto esté disponible.
     useEffect(() => {
         function handlePensumReady() {
-            const saved = localStorage.getItem(getScheduleStorageKey(sectionsPeriodRef.current));
-            setSelectedSections(saved ? JSON.parse(saved) : {});
+            setSelectedSections(parseSavedSections(localStorage.getItem(getScheduleStorageKey(sectionsPeriodRef.current))));
         }
         window.addEventListener('pemtree-pensum-ready', handlePensumReady);
         return () => window.removeEventListener('pemtree-pensum-ready', handlePensumReady);
@@ -153,8 +176,8 @@ export default function ScheduleBuilder() {
             // simply re-read localStorage with the now-correct key. This is safe to
             // do unconditionally: the course list hasn't loaded yet before this
             // point, so the user can't have made a selection to lose.
-            const saved = localStorage.getItem(getScheduleStorageKey(periodId));
-            setSelectedSections(saved ? JSON.parse(saved) : {});
+            const saved = parseSavedSections(localStorage.getItem(getScheduleStorageKey(periodId)));
+            setSelectedSections(saved);
             sectionsPeriodRef.current = periodId;
         } catch {
             setError('No pudimos cargar los horarios disponibles en este momento. Por favor, intenta de nuevo más tarde.');
@@ -217,11 +240,15 @@ export default function ScheduleBuilder() {
         return validarHorarioCompleto(allSelected, isVacaciones);
     }, [allSelected, isVacaciones]);
 
-    const overlapPairs = useMemo(() => {
+    const overlapGroups = useMemo(() => {
         if (isVacaciones) return [];
-        const pairs = [];
+        const allIndex = new Map(allSelected.map((s, i) => [s, i]));
+        const groups = [];
         for (const dia of DIAS_SEMANA) {
             const cursosDelDia = allSelected.filter(s => (s.dias || []).includes(dia));
+            if (cursosDelDia.length < 2) continue;
+
+            const adj = new Map(cursosDelDia.map(s => [s, new Set()]));
             for (let i = 0; i < cursosDelDia.length; i++) {
                 for (let j = i + 1; j < cursosDelDia.length; j++) {
                     const a = cursosDelDia[i];
@@ -231,15 +258,41 @@ export default function ScheduleBuilder() {
                     const aFlex = esTraslapePermitido(a);
                     const bFlex = esTraslapePermitido(b);
                     if (!(aFlex || bFlex) && t >= 50) continue;
-                    const iniMin = Math.min(mins(a.inicio), mins(b.inicio));
-                    const finMin = Math.max(mins(a.final), mins(b.final));
-                    const overlapStart = Math.max(mins(a.inicio), mins(b.inicio));
-                    const overlapEnd = Math.min(mins(a.final), mins(b.final));
-                    pairs.push({ day: dia, a, b, startMin: iniMin, endMin: finMin, overlapStart, overlapEnd });
+                    adj.get(a).add(b);
+                    adj.get(b).add(a);
                 }
             }
+
+            const visited = new Set();
+            for (const s of cursosDelDia) {
+                if (visited.has(s)) continue;
+                const comp = [];
+                const stack = [s];
+                visited.add(s);
+                while (stack.length) {
+                    const cur = stack.pop();
+                    comp.push(cur);
+                    for (const nb of adj.get(cur)) {
+                        if (!visited.has(nb)) {
+                            visited.add(nb);
+                            stack.push(nb);
+                        }
+                    }
+                }
+                if (comp.length < 2) continue;
+                comp.sort((x, y) => (allIndex.get(x) ?? 0) - (allIndex.get(y) ?? 0));
+                const startMin = Math.min(...comp.map(c => mins(c.inicio)));
+                const endMin = Math.max(...comp.map(c => mins(c.final)));
+                let overlapStart = Math.max(...comp.map(c => mins(c.inicio)));
+                let overlapEnd = Math.min(...comp.map(c => mins(c.final)));
+                if (overlapStart >= overlapEnd) {
+                    overlapStart = startMin;
+                    overlapEnd = endMin;
+                }
+                groups.push({ day: dia, sections: comp, startMin, endMin, overlapStart, overlapEnd });
+            }
         }
-        return pairs;
+        return groups;
     }, [allSelected, isVacaciones]);
 
     const courseCounts = useMemo(() => {
@@ -320,25 +373,22 @@ export default function ScheduleBuilder() {
         });
     }
 
-    function cyclePair(pair) {
-        const { a, b } = pair;
-        const aSel = isSectionSelected(a);
-        const bSel = isSectionSelected(b);
-        if (aSel && !bSel) {
-            toggleSection(a);
-            toggleSection(b);
-        } else if (!aSel && bSel) {
-            toggleSection(b);
-            toggleSection(a);
-        } else if (!aSel && !bSel) {
-            toggleSection(a);
-        } else {
-            toggleSection(a);
-        }
+    function groupKey(group) {
+        return `${group.day}|${group.sections.map(s => getSectionId(s)).join('__')}`;
     }
 
-    function pairKey(a, b) {
-        return `${a.codigo}|${a.seccion}|${a.tipo || ''}__${b.codigo}|${b.seccion}|${b.tipo || ''}`;
+    function getGroupActiveIndex(group) {
+        const idx = group.sections.findIndex(s => isSectionSelected(s));
+        return idx === -1 ? 0 : idx;
+    }
+
+    function cycleGroup(group) {
+        const activeIdx = getGroupActiveIndex(group);
+        const next = group.sections[(activeIdx + 1) % group.sections.length];
+        for (const s of group.sections) {
+            if (isSectionSelected(s)) toggleSection(s);
+        }
+        toggleSection(next);
     }
 
     function toggleSection(seccion) {
@@ -650,7 +700,7 @@ export default function ScheduleBuilder() {
         // ── course blocks ─────────────────────────────────────────────────────
 
         const blockHasBg = bgImg && bgApply === 'blocks';
-        const renderedPairKeysCanvas = new Set();
+        const renderedGroupKeysCanvas = new Set();
 
         function fillBlockBackground(blockX, blockY, bw, bh) {
             if (!blockHasBg) return;
@@ -697,11 +747,11 @@ export default function ScheduleBuilder() {
             ctx.restore();
         }
 
-        function drawPairContent(activo, otro, blockX, blockY, bw, bh, tc) {
+        function drawGroupContent(sections, activeIdx, blockX, blockY, bw, bh, tc) {
             const padX = 6;
-            const padY = 5;
+            const padY = 4;
             const fSize = 9;
-            const lineH = fSize * 1.25;
+            const lineH = fSize * 1.2;
             const isLight = tc !== '#ffffff';
             const tcActive = tc;
             const tcName = isLight ? 'rgba(30,41,59,0.9)' : 'rgba(255,255,255,0.9)';
@@ -709,8 +759,13 @@ export default function ScheduleBuilder() {
             const tcRoom = isLight ? 'rgba(30,41,59,0.85)' : 'rgba(255,255,255,0.85)';
             const tcTipo = isLight ? 'rgba(30,41,59,1.0)' : 'rgba(255,255,255,1.0)';
 
-            const bhActive = bh * 0.5;
-            const bhInactive = bh * 0.5;
+            const n = sections.length;
+            const activeShare = Math.max(0.25, Math.min(0.55, 1.1 / n));
+            const otherShare = n > 1 ? (1 - activeShare) / (n - 1) : 1;
+
+            const badges = sections
+                .map((s, i) => (i !== activeIdx ? s.codigo : null))
+                .filter(Boolean);
 
             if (isDark) {
                 ctx.save();
@@ -719,116 +774,97 @@ export default function ScheduleBuilder() {
                 ctx.shadowOffsetY = 1;
             }
 
-            {
-                const yStart = blockY;
+            let y = blockY;
+            sections.forEach((sec, idx) => {
+                const hh = bh * (idx === activeIdx ? activeShare : otherShare);
+                const yStart = y;
+                const isActive = idx === activeIdx;
                 const yCode = yStart + padY + fSize * 0.5;
-                const codeText = `${activo.codigo}-${(activo.seccion || '').trim() || '?'}`;
-                drawText(codeText, blockX + padX, yCode, bw - padX * 2 - 24, fSize, tcActive, 'left', 'bold');
+                const codeText = `${sec.codigo}-${(sec.seccion || '').trim() || '?'}`;
 
-                ctx.save();
-                ctx.font = `800 8px "${font}", sans-serif`;
-                const badgeText = `↔ ${otro.codigo}`;
-                const textW = ctx.measureText(badgeText).width;
-                const badgeW = textW + 5;
-                const badgeH = 11;
-                const badgeX = blockX + bw - padX - badgeW;
-                const badgeY = yCode - 5.5;
-                ctx.fillStyle = 'rgba(0,0,0,0.3)';
-                roundRect(badgeX, badgeY, badgeW, badgeH, 3);
-                ctx.fill();
-                ctx.fillStyle = '#ffffff';
-                ctx.textAlign = 'center';
-                ctx.textBaseline = 'middle';
-                ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
-                ctx.restore();
+                drawText(codeText, blockX + padX, yCode, bw - padX * 2 - (isActive && badges.length ? 26 : 0), fSize, isActive ? tcActive : tcName, 'left', 'bold');
 
-                if (bhActive >= 40) {
-                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
-                    drawText(nombreCorto(activo.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.85, tcProf, 'left');
-                } else if (bhActive >= 26) {
-                    drawText(truncarNombre(activo.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
+                if (isActive && badges.length) {
+                    ctx.save();
+                    ctx.font = `800 7px "${font}", sans-serif`;
+                    const badgeText = `↔ ${badges.join(',')}`;
+                    const textW = ctx.measureText(badgeText).width;
+                    const badgeW = textW + 5;
+                    const badgeH = 10;
+                    const badgeX = blockX + bw - padX - badgeW;
+                    const badgeY = yCode - 5;
+                    ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                    roundRect(badgeX, badgeY, badgeW, badgeH, 3);
+                    ctx.fill();
+                    ctx.fillStyle = '#ffffff';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(badgeText, badgeX + badgeW / 2, badgeY + badgeH / 2);
+                    ctx.restore();
                 }
 
-                if (bhActive >= 26) {
-                    const yBottom = yStart + bhActive - padY - fSize * 0.5;
-                    drawText(`${activo.edificio} ${activo.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.85, tcRoom, 'left');
-                    drawText(tipoAbrev(activo.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
-                } else if (bhActive >= 14) {
-                    const yBottom = yStart + bhActive - padY - fSize * 0.5;
-                    drawText(tipoAbrev(activo.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
-                }
-            }
-
-            const dividerY = blockY + bhActive;
-            ctx.save();
-            ctx.strokeStyle = tc;
-            ctx.globalAlpha = 0.35;
-            ctx.lineWidth = 1;
-            ctx.beginPath();
-            ctx.moveTo(blockX + 6, dividerY);
-            ctx.lineTo(blockX + bw - 6, dividerY);
-            ctx.stroke();
-            ctx.restore();
-
-            ctx.save();
-            ctx.globalAlpha = 0.95;
-            {
-                const yStart = blockY + bhActive;
-                const yCode = yStart + padY + fSize * 0.5;
-                const codeText = `${otro.codigo}-${(otro.seccion || '').trim() || '?'}`;
-                drawText(codeText, blockX + padX, yCode, bw - padX * 2, fSize, tcActive, 'left', 'bold');
-
-                if (bhInactive >= 40) {
-                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
-                    drawText(nombreCorto(otro.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.85, tcProf, 'left');
-                } else if (bhInactive >= 26) {
-                    drawText(truncarNombre(otro.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
+                if (hh >= 40) {
+                    drawText(truncarNombre(sec.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
+                    drawText(nombreCorto(sec.catedratico), blockX + padX, yCode + lineH * 2, bw - padX * 2, fSize * 0.85, tcProf, 'left');
+                } else if (hh >= 26) {
+                    drawText(truncarNombre(sec.nombre), blockX + padX, yCode + lineH, bw - padX * 2, fSize * 0.85, tcName, 'left');
                 }
 
-                if (bhInactive >= 26) {
-                    const yBottom = yStart + bhInactive - padY - fSize * 0.5;
-                    drawText(`${otro.edificio} ${otro.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.85, tcRoom, 'left');
-                    drawText(tipoAbrev(otro.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
-                } else if (bhInactive >= 14) {
-                    const yBottom = yStart + bhInactive - padY - fSize * 0.5;
-                    drawText(tipoAbrev(otro.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
+                if (hh >= 26) {
+                    const yBottom = yStart + hh - padY - fSize * 0.5;
+                    drawText(`${sec.edificio} ${sec.salon}`.trim(), blockX + padX, yBottom, bw - padX * 2 - 20, fSize * 0.85, tcRoom, 'left');
+                    drawText(tipoAbrev(sec.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
+                } else if (hh >= 14) {
+                    const yBottom = yStart + hh - padY - fSize * 0.5;
+                    drawText(tipoAbrev(sec.tipo), blockX + bw - padX, yBottom, 45, fSize * 0.85, tcTipo, 'right', 'bold');
                 }
-            }
-            ctx.restore();
+
+                if (idx < n - 1) {
+                    const dividerY = yStart + hh;
+                    ctx.save();
+                    ctx.strokeStyle = tc;
+                    ctx.globalAlpha = 0.35;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(blockX + 6, dividerY);
+                    ctx.lineTo(blockX + bw - 6, dividerY);
+                    ctx.stroke();
+                    ctx.restore();
+                }
+
+                y += hh;
+            });
 
             if (isDark) {
                 ctx.restore();
             }
         }
 
-        // ── 1. Render merged pair blocks ────────────────────────────────────
-        for (const pair of overlapPairs) {
+        // ── 1. Render merged group blocks ────────────────────────────────────
+        for (const group of overlapGroups) {
           try {
-            const pk = pairKey(pair.a, pair.b);
-            if (renderedPairKeysCanvas.has(pk)) continue;
-            const diaIdx = DIAS_SEMANA.indexOf(pair.day);
+            const gk = groupKey(group);
+            if (renderedGroupKeysCanvas.has(gk)) continue;
+            const diaIdx = DIAS_SEMANA.indexOf(group.day);
             if (diaIdx === -1) continue;
 
-            const aSel = isSectionSelected(pair.a);
-            const bSel = isSectionSelected(pair.b);
-            const activo = aSel ? pair.a : (bSel ? pair.b : pair.a);
-            const otro = activo === pair.a ? pair.b : pair.a;
+            const activeIdx = getGroupActiveIndex(group);
+            const activo = group.sections[activeIdx];
 
-            const pairStartSlot = Math.floor((pair.startMin - HORA_INICIO * 60) / slotMinutes);
-            const pairEndSlot   = Math.ceil((pair.endMin - HORA_INICIO * 60) / slotMinutes);
+            const groupStartSlot = Math.floor((group.startMin - HORA_INICIO * 60) / slotMinutes);
+            const groupEndSlot   = Math.ceil((group.endMin - HORA_INICIO * 60) / slotMinutes);
             let visibleRows = 0;
-            for (let s = pairStartSlot; s < pairEndSlot; s++) {
+            for (let s = groupStartSlot; s < groupEndSlot; s++) {
                 if (!collapsedSlotsC.has(s)) visibleRows++;
                 if (collapseMarkersC.has(s)) visibleRows++;
             }
             visibleRows = Math.max(1, visibleRows);
             const minPairHeight = 80;
             const blockH = Math.max(visibleRows * ROW_H, minPairHeight);
-            const blockY = slotYMap.has(pairStartSlot) ? slotYMap.get(pairStartSlot) : gridY;
+            const blockY = slotYMap.has(groupStartSlot) ? slotYMap.get(groupStartSlot) : gridY;
             const blockX = gridX + diaIdx * COL_W - 0.5;
             const bw = COL_W + 1;
             const bh = blockH + 1;
-            const bhActive = bh * 0.6;
 
             const color = getCursoColor(activo.codigo, activePalette);
             
@@ -840,7 +876,7 @@ export default function ScheduleBuilder() {
             ctx.restore();
 
             if (esLaboratorio(activo)) {
-                drawLabStripes(blockX, blockY, bw, bhActive);
+                drawLabStripes(blockX, blockY, bw, bh);
             }
 
             ctx.save();
@@ -858,11 +894,11 @@ export default function ScheduleBuilder() {
             ctx.restore();
 
             const tc = getTextColor(color);
-            drawPairContent(activo, otro, blockX, blockY, bw, bh, tc);
+            drawGroupContent(group.sections, activeIdx, blockX, blockY, bw, bh, tc);
 
-            renderedPairKeysCanvas.add(pk);
+            renderedGroupKeysCanvas.add(gk);
           } catch (err) {
-            console.warn('Exportación de horario: no se pudo dibujar un bloque combinado por datos incompletos.', err, pair);
+            console.warn('Exportación de horario: no se pudo dibujar un bloque combinado por datos incompletos.', err, group);
           }
         }
 
@@ -886,10 +922,10 @@ export default function ScheduleBuilder() {
                 const diaIdx = DIAS_SEMANA.indexOf(dia);
                 if (diaIdx === -1) return;
 
-                // Collect pair-overlap windows for this section on this day
-                const overlaps = overlapPairs
-                    .filter(p => p.day === dia && (p.a === seccion || p.b === seccion))
-                    .map(p => ({ start: p.startMin, end: p.endMin }));
+                // Collect group windows for this section on this day
+                const overlaps = overlapGroups
+                    .filter(g => g.day === dia && g.sections.includes(seccion))
+                    .map(g => ({ start: g.startMin, end: g.endMin }));
 
                 // Subtract pair windows from the section's range
                 const segments = [{ start: iniMin, end: finMin }];
@@ -1283,7 +1319,7 @@ export default function ScheduleBuilder() {
         const slotMinutes = 10;
         const slotsPerHour = 60 / slotMinutes;
         const activePalette = PALETAS[exportSettings.paletteName] || PALETAS.Default;
-        const renderedPairKeys = new Set();
+        const renderedGroupKeys = new Set();
 
         if (allSelected.length === 0) {
             blocks.push(
@@ -1359,30 +1395,28 @@ export default function ScheduleBuilder() {
                     const slotStartMin = hora * 60 + minuto;
                     const slotEndMin   = slotStartMin + slotMinutes;
 
-                    // ── Check for a pair starting at this slot+dia ────────────
-                    let pairForSlot = null;
-                    for (const pair of overlapPairs) {
-                        if (pair.day !== dia) continue;
-                        const pk = pairKey(pair.a, pair.b);
-                        if (renderedPairKeys.has(pk)) continue;
-                        if (slotStartMin >= pair.startMin && slotStartMin < pair.endMin) {
-                            pairForSlot = pair;
+                    // ── Check for an overlap group starting at this slot+dia ──
+                    let groupForSlot = null;
+                    for (const group of overlapGroups) {
+                        if (group.day !== dia) continue;
+                        if (renderedGroupKeys.has(groupKey(group))) continue;
+                        if (slotStartMin >= group.startMin && slotStartMin < group.endMin) {
+                            groupForSlot = group;
                             break;
                         }
                     }
 
-                    if (pairForSlot) {
-                        renderedPairKeys.add(pairKey(pairForSlot.a, pairForSlot.b));
-                        const aSel = isSectionSelected(pairForSlot.a);
-                        const bSel = isSectionSelected(pairForSlot.b);
-                        const activo = aSel ? pairForSlot.a : (bSel ? pairForSlot.b : pairForSlot.a);
-                        const otro = activo === pairForSlot.a ? pairForSlot.b : pairForSlot.a;
+                    if (groupForSlot) {
+                        renderedGroupKeys.add(groupKey(groupForSlot));
+                        const activeIdx = getGroupActiveIndex(groupForSlot);
+                        const activo = groupForSlot.sections[activeIdx];
+                        const otros = groupForSlot.sections.filter((_, i) => i !== activeIdx);
 
-                        const pairStartSlot = Math.floor((pairForSlot.startMin - HORA_INICIO * 60) / slotMinutes);
-                        const pairEndSlot   = Math.ceil((pairForSlot.endMin   - HORA_INICIO * 60) / slotMinutes);
+                        const groupStartSlot = Math.floor((groupForSlot.startMin - HORA_INICIO * 60) / slotMinutes);
+                        const groupEndSlot   = Math.ceil((groupForSlot.endMin   - HORA_INICIO * 60) / slotMinutes);
 
                         let visibleRowSpan = 0;
-                        for (let s = pairStartSlot; s < pairEndSlot; s++) {
+                        for (let s = groupStartSlot; s < groupEndSlot; s++) {
                             if (!collapsedSlots.has(s)) visibleRowSpan++;
                             if (collapseMarkers.has(s)) visibleRowSpan++;
                         }
@@ -1396,7 +1430,9 @@ export default function ScheduleBuilder() {
                                 <div className="schedule-block-pair-half schedule-block-pair-active">
                                     <div className="schedule-block-pair-row">
                                         <span className="schedule-block-code">{activo.codigo}-{(activo.seccion || '').trim() || '?'}</span>
-                                        <span className="schedule-block-pair-badge" title={`Traslape permitido con ${otro.codigo}-${(otro.seccion || '').trim() || '?'}`}>↔ {otro.codigo}</span>
+                                        {otros.length > 0 && (
+                                            <span className="schedule-block-pair-badge" title={`Traslape(s) permitido(s) con ${otros.map(o => o.codigo).join(', ')}`}>↔ {otros.map(o => o.codigo).join(', ')}</span>
+                                        )}
                                     </div>
                                     <span className="schedule-block-name">{truncarNombre(activo.nombre)}</span>
                                     <span className="schedule-block-prof">{nombreCorto(activo.catedratico)}</span>
@@ -1405,27 +1441,31 @@ export default function ScheduleBuilder() {
                                         <span className="schedule-block-tipo">{tipoAbrev(activo.tipo)}</span>
                                     </span>
                                 </div>
-                                <div className="schedule-block-pair-divider" />
-                                <div className="schedule-block-pair-half schedule-block-pair-inactive">
-                                    <div className="schedule-block-pair-row">
-                                        <span className="schedule-block-code">{otro.codigo}-{(otro.seccion || '').trim() || '?'}</span>
-                                    </div>
-                                    <span className="schedule-block-name">{truncarNombre(otro.nombre)}</span>
-                                    <span className="schedule-block-prof">{nombreCorto(otro.catedratico)}</span>
-                                    <span className="schedule-block-bottom">
-                                        <span className="schedule-block-room">{otro.edificio} {otro.salon}</span>
-                                        <span className="schedule-block-tipo">{tipoAbrev(otro.tipo)}</span>
-                                    </span>
-                                </div>
+                                {otros.map((otro, i) => (
+                                    <Fragment key={`${otro.codigo}-${otro.seccion}-${i}`}>
+                                        <div className="schedule-block-pair-divider" />
+                                        <div className="schedule-block-pair-half schedule-block-pair-inactive">
+                                            <div className="schedule-block-pair-row">
+                                                <span className="schedule-block-code">{otro.codigo}-{(otro.seccion || '').trim() || '?'}</span>
+                                                <span className="schedule-block-pair-indicator">{tipoAbrev(otro.tipo)}</span>
+                                            </div>
+                                            <span className="schedule-block-name">{truncarNombre(otro.nombre)}</span>
+                                            <span className="schedule-block-prof">{nombreCorto(otro.catedratico)}</span>
+                                            <span className="schedule-block-bottom">
+                                                <span className="schedule-block-room">{otro.edificio} {otro.salon}</span>
+                                            </span>
+                                        </div>
+                                    </Fragment>
+                                ))}
                             </>
                         );
 
-                        const overlapDur = (pairForSlot.overlapEnd ?? pairForSlot.endMin) - (pairForSlot.overlapStart ?? pairForSlot.startMin);
-                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\nTraslape permitido (${overlapDur} min) con:\n${otro.codigo} - ${otro.seccion} · ${otro.nombre}\n${otro.inicio}-${otro.final} · ${otro.catedratico}`;
+                        const overlapDur = (groupForSlot.overlapEnd ?? groupForSlot.endMin) - (groupForSlot.overlapStart ?? groupForSlot.startMin);
+                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\n${otros.length > 0 ? `Traslape permitido (${overlapDur} min) con:\n${otros.map(o => `${o.codigo} - ${o.seccion} · ${o.nombre}\n${o.inicio}-${o.final} · ${o.catedratico}`).join('\n')}` : ''}`;
 
                         blocks.push(
-                            <div key={`pair-block-${pairKey(pairForSlot.a, pairForSlot.b)}`}
-                                className={`schedule-block schedule-block-merged ${esLaboratorio(activo) ? 'lab' : ''}`}
+                            <div key={`group-block-${groupKey(groupForSlot)}`}
+                                className={`schedule-block schedule-block-merged schedule-block-group ${groupForSlot.sections.length > 2 ? 'schedule-block-group-multi' : ''} ${esLaboratorio(activo) ? 'lab' : ''}`}
                                 title={blockTitle}
                                 style={{
                                     gridColumn: diaIdx + 2,
@@ -1437,7 +1477,7 @@ export default function ScheduleBuilder() {
                                     position: 'relative',
                                     minHeight: '80px'
                                 }}
-                                onClick={() => cyclePair(pairForSlot)}>
+                                onClick={() => cycleGroup(groupForSlot)}>
                                 {blockContent}
                             </div>
                         );
@@ -1449,10 +1489,10 @@ export default function ScheduleBuilder() {
                         const ini = mins(h.inicio);
                         const fin = mins(h.final);
                         if (!(slotEndMin > ini && slotStartMin < fin)) return false;
-                        for (const pair of overlapPairs) {
-                            if (pair.day !== dia) continue;
-                            if (pair.a !== h && pair.b !== h) continue;
-                            if (slotEndMin > pair.startMin && slotStartMin < pair.endMin) {
+                        for (const group of overlapGroups) {
+                            if (group.day !== dia) continue;
+                            if (!group.sections.includes(h)) continue;
+                            if (slotEndMin > group.startMin && slotStartMin < group.endMin) {
                                 return false;
                             }
                         }

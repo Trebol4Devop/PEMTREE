@@ -1,0 +1,866 @@
+[
+  {
+    "codigo": "0017",
+    "semestre": "1",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA SOCIAL HUMANÍSTICA 2"
+  },
+  {
+    "codigo": "0069",
+    "semestre": "1",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DIBUJO TÉCNICO MECÁNICO"
+  },
+  {
+    "codigo": "0101",
+    "semestre": "1",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA MATEMÁTICA BÁSICA 2, FÍSICA BÁSICA, QUÍMICA 2, QUÍMICA 2"
+  },
+  {
+    "codigo": "0348",
+    "semestre": "1",
+    "nombre": "QUÍMICA GENERAL 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "QUÍMICA 2, PRINCIPIOS DE METROLOGÍA"
+  },
+  {
+    "codigo": "0006",
+    "semestre": "1",
+    "nombre": "IDIOMA TÉCNICO 1",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "IDIOMA TÉCNICO 2"
+  },
+  {
+    "codigo": "0039",
+    "semestre": "1",
+    "nombre": "DEPORTES 1",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DEPORTES 2"
+  },
+  {
+    "codigo": "0005",
+    "semestre": "2",
+    "nombre": "TÉCNICAS DE ESTUDIO E INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0019",
+    "semestre": "2",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0017",
+    "post_requisitos": "FILOSOFÍA DE LA CIENCIA"
+  },
+  {
+    "codigo": "0103",
+    "semestre": "2",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 2",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 1, FÍSICA 1, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0147",
+    "semestre": "2",
+    "nombre": "FÍSICA BÁSICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "FÍSICA 1, QUÍMICA 2"
+  },
+  {
+    "codigo": "0040",
+    "semestre": "2",
+    "nombre": "DEPORTES 2",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0039|0031)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0107",
+    "semestre": "3",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 1",
+    "creditos": 10,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 2, ÁREA MATEMÁTICA INTERMEDIA 3, FÍSICA 2, MECÁNICA ANALÍTICA 1, ESTADÍSTICA 1, INTROD DE PROYECTOS GERENCIALES, INTRODUCCIÓN A LA INGENIERÍA PETROLERA"
+  },
+  {
+    "codigo": "0150",
+    "semestre": "3",
+    "nombre": "FÍSICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147",
+    "post_requisitos": "FÍSICA 2, MECÁNICA ANALÍTICA 1, INTRODUCCIÓN A LA INGENIERÍA PETROLERA"
+  },
+  {
+    "codigo": "2025",
+    "semestre": "3",
+    "nombre": "PRÁCTICAS INICIALES",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0018",
+    "semestre": "3",
+    "nombre": "FILOSOFÍA DE LA CIENCIA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0352",
+    "semestre": "3",
+    "nombre": "QUÍMICA 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0101, 0147, (0348|0101), 0033",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0073",
+    "semestre": "4",
+    "nombre": "DIBUJO TÉCNICO MECÁNICO",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0069, 060CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0112",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 3, MATEMÁTICA APLICADA 1, MATEMÁTICA APLICADA 5 (DIPLOMADO)"
+  },
+  {
+    "codigo": "0114",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 3",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "PROGRAMACIÓN DE COMPUTADORAS 1, MATEMÁTICA APLICADA 3, INGENIERÍA ELÉCTRICA 1, MECÁNICA DE FLUIDOS, RESISTENCIA DE MATERIALES 1, MATEMÁTICA APLICADA 1, MECÁNICA ANALÍTICA 2, MATEMÁTICA APLICADA 5 (DIPLOMADO)"
+  },
+  {
+    "codigo": "0152",
+    "semestre": "4",
+    "nombre": "FÍSICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "INGENIERÍA ELÉCTRICA 1, CIENCIA DE LOS MATERIALES, PRINCIPIOS DE METROLOGÍA"
+  },
+  {
+    "codigo": "0170",
+    "semestre": "4",
+    "nombre": "MECÁNICA ANALÍTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "MECÁNICA DE FLUIDOS, RESISTENCIA DE MATERIALES 1, MECÁNICA ANALÍTICA 2"
+  },
+  {
+    "codigo": "0732",
+    "semestre": "4",
+    "nombre": "ESTADÍSTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0005",
+    "post_requisitos": "PROGRAMACIÓN DE COMPUTADORAS 1, INGENIERÍA ECONÓMICA 1, ESTADÍSTICA 2, PRINCIPIOS DE METROLOGÍA, INGENIERÍA DE PLANTAS"
+  },
+  {
+    "codigo": "0608",
+    "semestre": "4",
+    "nombre": "INTROD DE PROYECTOS GERENCIALES",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0107",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0022",
+    "semestre": "5",
+    "nombre": "PSICOLOGÍA INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "090CR",
+    "post_requisitos": "ADMINISTRACIÓN DE PERSONAL"
+  },
+  {
+    "codigo": "0028",
+    "semestre": "5",
+    "nombre": "ECOLOGÍA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "090CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0090",
+    "semestre": "5",
+    "nombre": "PROGRAMACIÓN DE COMPUTADORAS 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0732",
+    "post_requisitos": "PROGRAMACIÓN DE COMPUTADORAS 2, INVESTIGACIÓN DE OPERACIONES I, PROGRAMACIÓN COMERCIAL 1"
+  },
+  {
+    "codigo": "0116",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 3",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0200",
+    "semestre": "5",
+    "nombre": "INGENIERÍA ELÉCTRICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0152",
+    "post_requisitos": "INGENIERÍA ELÉCTRICA 2"
+  },
+  {
+    "codigo": "0250",
+    "semestre": "5",
+    "nombre": "MECÁNICA DE FLUIDOS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "TERMODINÁMICA 1"
+  },
+  {
+    "codigo": "0300",
+    "semestre": "5",
+    "nombre": "RESISTENCIA DE MATERIALES 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "RESISTENCIA DE MATERIALES 2"
+  },
+  {
+    "codigo": "0452",
+    "semestre": "5",
+    "nombre": "CIENCIA DE LOS MATERIALES",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0152",
+    "post_requisitos": "PROCESOS DE MANUFACTURA 1, METALURGIA Y METALOGRAFÍA, DISEÑO DE MÁQUINAS 1"
+  },
+  {
+    "codigo": "0650",
+    "semestre": "5",
+    "nombre": "CONTABILIDAD 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "90CR",
+    "post_requisitos": "INGENIERÍA DE PLANTAS, CONTABILIDAD 2"
+  },
+  {
+    "codigo": "0662",
+    "semestre": "5",
+    "nombre": "LEGISLACIÓN 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "90CR",
+    "post_requisitos": "LEGISLACIÓN 2"
+  },
+  {
+    "codigo": "0700",
+    "semestre": "5",
+    "nombre": "INGENIERÍA ECONÓMICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732",
+    "post_requisitos": "INGENIERÍA ECONÓMICA 2, MICROECONOMÍA, PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1"
+  },
+  {
+    "codigo": "0734",
+    "semestre": "5",
+    "nombre": "ESTADÍSTICA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732",
+    "post_requisitos": "MERCADOTECNIA 1, CONTROLES INDUSTRIALES, ECONOMETRIA, ESTADÍSTICA 3"
+  },
+  {
+    "codigo": "0118",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 1",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "MATEMÁTICA APLICADA 4, MATEMÁTICA APLICADA 2 (DIPLOMADO)"
+  },
+  {
+    "codigo": "0172",
+    "semestre": "5",
+    "nombre": "MECÁNICA ANALÍTICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0368",
+    "semestre": "5",
+    "nombre": "PRINCIPIOS DE METROLOGÍA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732, 0152, (0354|0348)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0474",
+    "semestre": "5",
+    "nombre": "INTRODUCCIÓN A LA INGENIERÍA PETROLERA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0150, 0107, 090CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "3123",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 5 (DIPLOMADO)",
+    "creditos": 0,
+    "tipo": "Electivo",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0092",
+    "semestre": "6",
+    "nombre": "PROGRAMACIÓN DE COMPUTADORAS 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0090",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0202",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ELÉCTRICA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0200",
+    "post_requisitos": "SEGURIDAD E HIGIENE INDUSTRIAL"
+  },
+  {
+    "codigo": "0390",
+    "semestre": "6",
+    "nombre": "TERMODINÁMICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0250",
+    "post_requisitos": "TERMODINÁMICA 2"
+  },
+  {
+    "codigo": "0520",
+    "semestre": "6",
+    "nombre": "PROCESOS DE MANUFACTURA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0452",
+    "post_requisitos": "PROCESOS DE MANUFACTURA 2, MONTAJE Y MANTENIMIENTO DE EQUIPO"
+  },
+  {
+    "codigo": "0601",
+    "semestre": "6",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES I",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0090",
+    "post_requisitos": "INVESTIGACIÓN DE OPERACIONES II, CONTROL DE LA PRODUCCIÓN"
+  },
+  {
+    "codigo": "0632",
+    "semestre": "6",
+    "nombre": "INGENIERÍA DE PLANTAS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0650, 0732",
+    "post_requisitos": "INGENIERÍA DE MÉTODOS, MICROECONOMÍA, PROGRAMACIÓN COMERCIAL 1, PRÁCTICAS INTERMEDIAS, GESTIÓN DE DESASTRES"
+  },
+  {
+    "codigo": "0652",
+    "semestre": "6",
+    "nombre": "CONTABILIDAD 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0650",
+    "post_requisitos": "CONTABILIDAD 3, MICROECONOMÍA"
+  },
+  {
+    "codigo": "0658",
+    "semestre": "6",
+    "nombre": "ADMINISTRACIÓN DE PERSONAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0022",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0660",
+    "semestre": "6",
+    "nombre": "MERCADOTECNIA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0734",
+    "post_requisitos": "MERCADOTECNIA 2"
+  },
+  {
+    "codigo": "0664",
+    "semestre": "6",
+    "nombre": "LEGISLACIÓN 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0662",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0008",
+    "semestre": "6",
+    "nombre": "IDIOMA TÉCNICO 2",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0006",
+    "post_requisitos": "IDIOMA TÉCNICO 3"
+  },
+  {
+    "codigo": "0014",
+    "semestre": "6",
+    "nombre": "ECONOMÍA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0120CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0122",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 4",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0302",
+    "semestre": "6",
+    "nombre": "RESISTENCIA DE MATERIALES 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0300",
+    "post_requisitos": "DISEÑO DE MÁQUINAS 1"
+  },
+  {
+    "codigo": "0454",
+    "semestre": "6",
+    "nombre": "METALURGIA Y METALOGRAFÍA",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0452",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0702",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ECONÓMICA 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0700",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0739",
+    "semestre": "6",
+    "nombre": "DIDÁCTICA DE LA MATEMÁTICA",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "3120",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 2 (DIPLOMADO)",
+    "creditos": 0,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0522",
+    "semestre": "7",
+    "nombre": "PROCESOS DE MANUFACTURA 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0520",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0603",
+    "semestre": "7",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES II",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0601",
+    "post_requisitos": "INVESTIGACIÓN DE OPERACIONES III, ANÁLISIS DE SISTEMAS INDUSTRIALES"
+  },
+  {
+    "codigo": "0634",
+    "semestre": "7",
+    "nombre": "INGENIERÍA DE MÉTODOS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0632",
+    "post_requisitos": "DISEÑO PARA LA PRODUCCIÓN, CONTROLES INDUSTRIALES, INGENIERÍA TEXTIL 1"
+  },
+  {
+    "codigo": "0642",
+    "semestre": "7",
+    "nombre": "SEGURIDAD E HIGIENE INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0202",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0654",
+    "semestre": "7",
+    "nombre": "CONTABILIDAD 3",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0652",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0656",
+    "semestre": "7",
+    "nombre": "ADMINISTRACIÓN DE EMPRESAS 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "150CR",
+    "post_requisitos": "ADMINISTRACIÓN DE EMPRESAS 2"
+  },
+  {
+    "codigo": "0665",
+    "semestre": "7",
+    "nombre": "MICROECONOMÍA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0632, (0652|0700)",
+    "post_requisitos": "ECONOMETRIA, ECONOMÍA INDUSTRIAL"
+  },
+  {
+    "codigo": "0667",
+    "semestre": "7",
+    "nombre": "PROGRAMACIÓN COMERCIAL 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0090, 0632",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "2036",
+    "semestre": "7",
+    "nombre": "PRÁCTICAS INTERMEDIAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2025, 0658, 0664, 0632",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA INDUSTRIAL"
+  },
+  {
+    "codigo": "0009",
+    "semestre": "7",
+    "nombre": "IDIOMA TÉCNICO 3",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0008",
+    "post_requisitos": "IDIOMA TÉCNICO 4"
+  },
+  {
+    "codigo": "0335",
+    "semestre": "7",
+    "nombre": "GESTIÓN DE DESASTRES",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0632",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0392",
+    "semestre": "7",
+    "nombre": "TERMODINÁMICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0390",
+    "post_requisitos": "MOTORES DE COMBUSTIÓN INTERNA, PLANTAS DE VAPOR"
+  },
+  {
+    "codigo": "0508",
+    "semestre": "7",
+    "nombre": "MONTAJE Y MANTENIMIENTO DE EQUIPO",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0520",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0524",
+    "semestre": "7",
+    "nombre": "DISEÑO DE MÁQUINAS 1",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0302, 0452",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0661",
+    "semestre": "7",
+    "nombre": "MERCADOTECNIA 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0660",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0636",
+    "semestre": "8",
+    "nombre": "DISEÑO PARA LA PRODUCCIÓN",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0634",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0638",
+    "semestre": "8",
+    "nombre": "CONTROLES INDUSTRIALES",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0634, 0734",
+    "post_requisitos": "CONTROL DE LA PRODUCCIÓN"
+  },
+  {
+    "codigo": "7905",
+    "semestre": "8",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN INDUSTRIAL",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "200CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0011",
+    "semestre": "8",
+    "nombre": "IDIOMA TÉCNICO 4",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0009",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0288",
+    "semestre": "8",
+    "nombre": "INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "190CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0504",
+    "semestre": "8",
+    "nombre": "MOTORES DE COMBUSTIÓN INTERNA",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0392",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0506",
+    "semestre": "8",
+    "nombre": "PLANTAS DE VAPOR",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0392",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0604",
+    "semestre": "8",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES III",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0603",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0644",
+    "semestre": "8",
+    "nombre": "INGENIERÍA TEXTIL 1",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0634|0414)",
+    "post_requisitos": "INGENIERÍA TEXTIL 2"
+  },
+  {
+    "codigo": "0657",
+    "semestre": "8",
+    "nombre": "ADMINISTRACIÓN DE EMPRESAS 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0656",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0668",
+    "semestre": "8",
+    "nombre": "ECONOMETRIA",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0665, 0734",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0669",
+    "semestre": "8",
+    "nombre": "ECONOMÍA INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0665",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0737",
+    "semestre": "8",
+    "nombre": "ESTADÍSTICA 3",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0734",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0640",
+    "semestre": "9",
+    "nombre": "CONTROL DE LA PRODUCCIÓN",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0601, 0638",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0706",
+    "semestre": "9",
+    "nombre": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0700, 190CR",
+    "post_requisitos": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 2"
+  },
+  {
+    "codigo": "7985",
+    "semestre": "9",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. INDUSTRIAL",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "225CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0001",
+    "semestre": "9",
+    "nombre": "ÉTICA PROFESIONAL",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "200CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0439",
+    "semestre": "9",
+    "nombre": "INGENIERÍA TEXTIL 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0644",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0606",
+    "semestre": "9",
+    "nombre": "ANÁLISIS DE SISTEMAS INDUSTRIALES",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0603",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0738",
+    "semestre": "9",
+    "nombre": "TEORÍA PROBABILISTICA DE DECISIONES",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0736",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "3710",
+    "semestre": "9",
+    "nombre": "PLANEAMIENTO (DIPLOMADO)",
+    "creditos": 0,
+    "tipo": "Electivo",
+    "pre_requisitos": "190CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0708",
+    "semestre": "10",
+    "nombre": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0706",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "2005",
+    "semestre": "10",
+    "nombre": "PRÁCTICAS FINALES INGENIERÍA INDUSTRIAL",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2036, 200CR",
+    "post_requisitos": "Ninguno"
+  }
+]

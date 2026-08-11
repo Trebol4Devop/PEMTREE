@@ -1,0 +1,1073 @@
+[
+  {
+    "codigo": "0017",
+    "semestre": "1",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA SOCIAL HUMANÍSTICA 2"
+  },
+  {
+    "codigo": "0069",
+    "semestre": "1",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA TÉCNICA COMPLEMENTARIA 2"
+  },
+  {
+    "codigo": "0101",
+    "semestre": "1",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 1",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA MATEMÁTICA BÁSICA 2, FÍSICA BÁSICA, QUÍMICA 2, QUÍMICA 2"
+  },
+  {
+    "codigo": "0348",
+    "semestre": "1",
+    "nombre": "QUÍMICA GENERAL 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "QUÍMICA 2, GEOLOGÍA, PRINCIPIOS DE METROLOGÍA"
+  },
+  {
+    "codigo": "0006",
+    "semestre": "1",
+    "nombre": "IDIOMA TÉCNICO 1",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "IDIOMA TÉCNICO 2"
+  },
+  {
+    "codigo": "0039",
+    "semestre": "1",
+    "nombre": "DEPORTES 1",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DEPORTES 2"
+  },
+  {
+    "codigo": "0005",
+    "semestre": "2",
+    "nombre": "TÉCNICAS DE ESTUDIO E INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0019",
+    "semestre": "2",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 2",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0017",
+    "post_requisitos": "LÓGICA"
+  },
+  {
+    "codigo": "0071",
+    "semestre": "2",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0069",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0103",
+    "semestre": "2",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 2",
+    "creditos": 7,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 1, FÍSICA 1, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0147",
+    "semestre": "2",
+    "nombre": "FÍSICA BÁSICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "FÍSICA 1, GEOGRAFÍA, QUÍMICA 2"
+  },
+  {
+    "codigo": "0040",
+    "semestre": "2",
+    "nombre": "DEPORTES 2",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0039|0031)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0107",
+    "semestre": "3",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 1",
+    "creditos": 10,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "INTRODUCCIÓN A LA INGENIERÍA PETROLERA, TOPOGRAFÍA 1, ÁREA MATEMÁTICA INTERMEDIA 2, ÁREA MATEMÁTICA INTERMEDIA 3, FÍSICA 2, MECÁNICA ANALÍTICA 1, ESTADÍSTICA 1, INTROD DE PROYECTOS GERENCIALES"
+  },
+  {
+    "codigo": "0150",
+    "semestre": "3",
+    "nombre": "FÍSICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147",
+    "post_requisitos": "INTRODUCCIÓN A LA INGENIERÍA PETROLERA, FÍSICA 2, MECÁNICA ANALÍTICA 1"
+  },
+  {
+    "codigo": "2025",
+    "semestre": "3",
+    "nombre": "PRÁCTICAS INICIALES",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0010",
+    "semestre": "3",
+    "nombre": "LÓGICA",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0030",
+    "semestre": "3",
+    "nombre": "GEOGRAFÍA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0147",
+    "post_requisitos": "GEOLOGÍA"
+  },
+  {
+    "codigo": "0352",
+    "semestre": "3",
+    "nombre": "QUÍMICA 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0101, 0147, (0348|0101), 0033",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0474",
+    "semestre": "3",
+    "nombre": "INTRODUCCIÓN A LA INGENIERÍA PETROLERA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0150, 0107, 090CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0028",
+    "semestre": "4",
+    "nombre": "ECOLOGÍA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "090CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0080",
+    "semestre": "4",
+    "nombre": "TOPOGRAFÍA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "TOPOGRAFÍA 2"
+  },
+  {
+    "codigo": "0112",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 1, MATEMÁTICA APLICADA 3"
+  },
+  {
+    "codigo": "0114",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 3",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "PROGRAMACIÓN DE COMPUTADORAS 1, MATEMÁTICA APLICADA 1, INGENIERÍA ELÉCTRICA 1, MECÁNICA DE FLUIDOS, RESISTENCIA DE MATERIALES 1, MATEMÁTICA APLICADA 3, GEOFÍSICA"
+  },
+  {
+    "codigo": "0152",
+    "semestre": "4",
+    "nombre": "FÍSICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "INGENIERÍA ELÉCTRICA 1, PRINCIPIOS DE METROLOGÍA, CIENCIA DE LOS MATERIALES, GEOFÍSICA"
+  },
+  {
+    "codigo": "0170",
+    "semestre": "4",
+    "nombre": "MECÁNICA ANALÍTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "MECÁNICA DE FLUIDOS, RESISTENCIA DE MATERIALES 1, ANÁLISIS MECÁNICO"
+  },
+  {
+    "codigo": "0662",
+    "semestre": "4",
+    "nombre": "LEGISLACIÓN 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "90CR",
+    "post_requisitos": "LEGISLACIÓN 2"
+  },
+  {
+    "codigo": "0732",
+    "semestre": "4",
+    "nombre": "ESTADÍSTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0005",
+    "post_requisitos": "PROGRAMACIÓN DE COMPUTADORAS 1, PRINCIPIOS DE METROLOGÍA, INGENIERÍA ECONÓMICA 1, ESTADÍSTICA 2"
+  },
+  {
+    "codigo": "0022",
+    "semestre": "4",
+    "nombre": "PSICOLOGÍA INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "090CR",
+    "post_requisitos": "ADMINISTRACIÓN DE PERSONAL"
+  },
+  {
+    "codigo": "0450",
+    "semestre": "4",
+    "nombre": "GEOLOGÍA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0030, (0348|0354)",
+    "post_requisitos": "GESTIÓN DE DESASTRES, GEOLOGÍA DEL PETRÓLEO, PETROLOGÍA, PERFORACIÓN DE POZOS 1, GEOLOGÍA ESTRUCTURAL"
+  },
+  {
+    "codigo": "0608",
+    "semestre": "4",
+    "nombre": "INTROD DE PROYECTOS GERENCIALES",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0107",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0650",
+    "semestre": "4",
+    "nombre": "CONTABILIDAD 1",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "90CR",
+    "post_requisitos": "CONTABILIDAD 2"
+  },
+  {
+    "codigo": "0082",
+    "semestre": "5",
+    "nombre": "TOPOGRAFÍA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0080",
+    "post_requisitos": "TOPOGRAFÍA 3, VÍAS TERRESTRES 1, PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0090",
+    "semestre": "5",
+    "nombre": "PROGRAMACIÓN DE COMPUTADORAS 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0732",
+    "post_requisitos": "PROGRAMACIÓN DE COMPUTADORAS 2, INVESTIGACIÓN DE OPERACIONES I"
+  },
+  {
+    "codigo": "0118",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "MATEMÁTICA APLICADA 2, MATEMÁTICA APLICADA 4, PLACAS Y CÁSCARAS"
+  },
+  {
+    "codigo": "0200",
+    "semestre": "5",
+    "nombre": "INGENIERÍA ELÉCTRICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0152",
+    "post_requisitos": "INGENIERÍA ELÉCTRICA 2"
+  },
+  {
+    "codigo": "0250",
+    "semestre": "5",
+    "nombre": "MECÁNICA DE FLUIDOS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "HIDRÁULICA"
+  },
+  {
+    "codigo": "0300",
+    "semestre": "5",
+    "nombre": "RESISTENCIA DE MATERIALES 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0170",
+    "post_requisitos": "RESISTENCIA DE MATERIALES 2, MATERIALES DE CONSTRUCCIÓN, MECÁNICA DE SUELOS 1"
+  },
+  {
+    "codigo": "0116",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 3",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0335",
+    "semestre": "5",
+    "nombre": "GESTIÓN DE DESASTRES",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0450",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0368",
+    "semestre": "5",
+    "nombre": "PRINCIPIOS DE METROLOGÍA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732, 0152, (0354|0348)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0452",
+    "semestre": "5",
+    "nombre": "CIENCIA DE LOS MATERIALES",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0152",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0476",
+    "semestre": "5",
+    "nombre": "GEOLOGÍA DEL PETRÓLEO",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0450",
+    "post_requisitos": "GEOFÍSICA"
+  },
+  {
+    "codigo": "0478",
+    "semestre": "5",
+    "nombre": "PETROLOGÍA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0450",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0536",
+    "semestre": "5",
+    "nombre": "PERFORACIÓN DE POZOS 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0450",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0538",
+    "semestre": "5",
+    "nombre": "GEOFÍSICA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0114, 0152, 0476",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0652",
+    "semestre": "5",
+    "nombre": "CONTABILIDAD 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0650",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0658",
+    "semestre": "5",
+    "nombre": "ADMINISTRACIÓN DE PERSONAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0022",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0664",
+    "semestre": "5",
+    "nombre": "LEGISLACIÓN 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0662",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0687",
+    "semestre": "5",
+    "nombre": "GEOLOGÍA ESTRUCTURAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0450",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0700",
+    "semestre": "5",
+    "nombre": "INGENIERÍA ECONÓMICA 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "INGENIERÍA ECONÓMICA 2, PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1"
+  },
+  {
+    "codigo": "0734",
+    "semestre": "5",
+    "nombre": "ESTADÍSTICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0252",
+    "semestre": "6",
+    "nombre": "HIDRÁULICA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0250",
+    "post_requisitos": "HIDROLOGÍA, MÁQUINAS HIDRÁULICAS, HIDRÁULICA DE CANALES, PLANEAMIENTO Y USO DE RECURSOS HIDRÁULICOS"
+  },
+  {
+    "codigo": "0302",
+    "semestre": "6",
+    "nombre": "RESISTENCIA DE MATERIALES 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0300",
+    "post_requisitos": "ANÁLISIS ESTRUCTURAL 1, ANÁLISIS ESTRUCTURAL, CONCRETO ARMADO 1, RESISTENCIA DE MATERIALES 3"
+  },
+  {
+    "codigo": "0456",
+    "semestre": "6",
+    "nombre": "MATERIALES DE CONSTRUCCIÓN",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0300",
+    "post_requisitos": "CONCRETO ARMADO 1, PRÁCTICAS INTERMEDIAS, DISENO ESTRUCTURAL, DISEÑO ESTRUCTURAL 1"
+  },
+  {
+    "codigo": "0458",
+    "semestre": "6",
+    "nombre": "MECÁNICA DE SUELOS 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0300",
+    "post_requisitos": "VÍAS TERRESTRES 1, PRÁCTICAS INTERMEDIAS, CIMENTACIONES 1, OBRAS HIDRÁULICAS"
+  },
+  {
+    "codigo": "0008",
+    "semestre": "6",
+    "nombre": "IDIOMA TÉCNICO 2",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0006",
+    "post_requisitos": "IDIOMA TÉCNICO 3"
+  },
+  {
+    "codigo": "0084",
+    "semestre": "6",
+    "nombre": "TOPOGRAFÍA 3",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0082",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0092",
+    "semestre": "6",
+    "nombre": "PROGRAMACIÓN DE COMPUTADORAS 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0090",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0120",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 2",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0122",
+    "semestre": "6",
+    "nombre": "MATEMÁTICA APLICADA 4",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0202",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ELÉCTRICA 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0200",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0601",
+    "semestre": "6",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES I",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0090",
+    "post_requisitos": "INVESTIGACIÓN DE OPERACIONES II"
+  },
+  {
+    "codigo": "0702",
+    "semestre": "6",
+    "nombre": "INGENIERÍA ECONÓMICA 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0700",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0739",
+    "semestre": "6",
+    "nombre": "DIDÁCTICA DE LA MATEMÁTICA",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0254",
+    "semestre": "7",
+    "nombre": "HIDROLOGÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0252",
+    "post_requisitos": "INGENIERÍA SANITARIA 1, INGENIERÍA SANITARIA 2, AGUAS SUBTERRÁNEAS, SANEAMIENTO AMBIENTAL, OBRAS HIDRÁULICAS"
+  },
+  {
+    "codigo": "0306",
+    "semestre": "7",
+    "nombre": "ANÁLISIS ESTRUCTURAL 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0302",
+    "post_requisitos": "ANÁLISIS MECÁNICO, CIMENTACIONES 1, DISENO ESTRUCTURAL, DISEÑO ESTRUCTURAL 1, TIPOLOGÍA ESTRUCTURAL, ANÁLISIS ESTRUCTURAL 2"
+  },
+  {
+    "codigo": "0311",
+    "semestre": "7",
+    "nombre": "ANÁLISIS ESTRUCTURAL",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0302",
+    "post_requisitos": "ANÁLISIS MECÁNICO, CIMENTACIONES 1, DISENO ESTRUCTURAL, DISEÑO ESTRUCTURAL 1, TIPOLOGÍA ESTRUCTURAL, ANÁLISIS ESTRUCTURAL 2"
+  },
+  {
+    "codigo": "0314",
+    "semestre": "7",
+    "nombre": "CONCRETO ARMADO 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0302, 0456",
+    "post_requisitos": "CONCRETO ARMADO 2, CIMENTACIONES 1, DISENO ESTRUCTURAL, DISEÑO ESTRUCTURAL 1"
+  },
+  {
+    "codigo": "0550",
+    "semestre": "7",
+    "nombre": "VÍAS TERRESTRES 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0082, 0458",
+    "post_requisitos": "PAVIMENTOS, VÍAS TERRESTRES 2, TRANSPORTES, INGENIERÍA DE TRÁNSITO"
+  },
+  {
+    "codigo": "0630",
+    "semestre": "7",
+    "nombre": "INGENIERÍA DE LA PRODUCCIÓN",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "165CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "2036",
+    "semestre": "7",
+    "nombre": "PRÁCTICAS INTERMEDIAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2025, 0456, 0458, 0082",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA CIVIL"
+  },
+  {
+    "codigo": "0009",
+    "semestre": "7",
+    "nombre": "IDIOMA TÉCNICO 3",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0008",
+    "post_requisitos": "IDIOMA TÉCNICO 4"
+  },
+  {
+    "codigo": "0258",
+    "semestre": "7",
+    "nombre": "MÁQUINAS HIDRÁULICAS",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0252",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0286",
+    "semestre": "7",
+    "nombre": "HIDRÁULICA DE CANALES",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0252",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0304",
+    "semestre": "7",
+    "nombre": "RESISTENCIA DE MATERIALES 3",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0302",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0459",
+    "semestre": "7",
+    "nombre": "MECÁNICA DE SUELOS 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "PENDIENTE",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0603",
+    "semestre": "7",
+    "nombre": "INVESTIGACIÓN DE OPERACIONES II",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0601",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0656",
+    "semestre": "7",
+    "nombre": "ADMINISTRACIÓN DE EMPRESAS 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "150CR",
+    "post_requisitos": "ADMINISTRACIÓN DE EMPRESAS 2"
+  },
+  {
+    "codigo": "0173",
+    "semestre": "8",
+    "nombre": "ANÁLISIS MECÁNICO",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0170, (0306|0311)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0280",
+    "semestre": "8",
+    "nombre": "INGENIERÍA SANITARIA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0254",
+    "post_requisitos": "PLANEAMIENTO Y USO DE RECURSOS HIDRÁULICOS"
+  },
+  {
+    "codigo": "0282",
+    "semestre": "8",
+    "nombre": "INGENIERÍA SANITARIA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0254",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0316",
+    "semestre": "8",
+    "nombre": "CONCRETO ARMADO 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0314",
+    "post_requisitos": "CONCRETO PREESFORZADO, PLACAS Y CÁSCARAS"
+  },
+  {
+    "codigo": "0318",
+    "semestre": "8",
+    "nombre": "CIMENTACIONES 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "(0306|0311), 0314, 0458",
+    "post_requisitos": "PUENTES, CIMENTACIONES 2"
+  },
+  {
+    "codigo": "0321",
+    "semestre": "8",
+    "nombre": "DISENO ESTRUCTURAL",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "(0306|0311), 0314, 0456",
+    "post_requisitos": "OBRAS HIDRÁULICAS, DISEÑO DE ESTRUCTURAS EN MAMPOSTERÍA, DISEÑO DE ESTRUCTURAS METÁLICAS 1, MÉTODOS DE CONSTRUCCIÓN, DISEÑO ESTRUCTURAL DE CONCRETO PREESFORZADO"
+  },
+  {
+    "codigo": "0322",
+    "semestre": "8",
+    "nombre": "DISEÑO ESTRUCTURAL 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "(0306|0311), 0314, 0456",
+    "post_requisitos": "OBRAS HIDRÁULICAS, DISEÑO DE ESTRUCTURAS EN MAMPOSTERÍA, DISEÑO DE ESTRUCTURAS METÁLICAS 1, MÉTODOS DE CONSTRUCCIÓN, DISEÑO ESTRUCTURAL DE CONCRETO PREESFORZADO"
+  },
+  {
+    "codigo": "7991",
+    "semestre": "8",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN CIVIL",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "200CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0011",
+    "semestre": "8",
+    "nombre": "IDIOMA TÉCNICO 4",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0009",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0262",
+    "semestre": "8",
+    "nombre": "AGUAS SUBTERRÁNEAS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0254",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0284",
+    "semestre": "8",
+    "nombre": "SANEAMIENTO AMBIENTAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0254",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0288",
+    "semestre": "8",
+    "nombre": "INTRODUCCIÓN AL ESTUDIO DE IMPACTO AMBIENTAL",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "190CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0307",
+    "semestre": "8",
+    "nombre": "TIPOLOGÍA ESTRUCTURAL",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0306|0311)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0308",
+    "semestre": "8",
+    "nombre": "ANÁLISIS ESTRUCTURAL 2",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0306|0311)",
+    "post_requisitos": "ANÁLISIS ESTRUCTURAL 3, INGENIERÍA SÍSMICA, PLACAS Y CÁSCARAS"
+  },
+  {
+    "codigo": "0460",
+    "semestre": "8",
+    "nombre": "PAVIMENTOS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0550",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0560",
+    "semestre": "8",
+    "nombre": "VÍAS TERRESTRES 2",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0550",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0570",
+    "semestre": "8",
+    "nombre": "TRANSPORTES",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0550",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0580",
+    "semestre": "8",
+    "nombre": "INGENIERÍA DE TRÁNSITO",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0550",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0657",
+    "semestre": "8",
+    "nombre": "ADMINISTRACIÓN DE EMPRESAS 2",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0656",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0332",
+    "semestre": "9",
+    "nombre": "PUENTES",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0318",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0666",
+    "semestre": "9",
+    "nombre": "COSTOS PRESUPUESTOS Y AVALÚOS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "190CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0710",
+    "semestre": "9",
+    "nombre": "PLANEAMIENTO",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "190CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7981",
+    "semestre": "9",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. CIVIL",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "225CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0001",
+    "semestre": "9",
+    "nombre": "ÉTICA PROFESIONAL",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "200CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0256",
+    "semestre": "9",
+    "nombre": "OBRAS HIDRÁULICAS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0321|0322), 0254, 0458",
+    "post_requisitos": "PLANEAMIENTO Y USO DE RECURSOS HIDRÁULICOS"
+  },
+  {
+    "codigo": "0310",
+    "semestre": "9",
+    "nombre": "ANÁLISIS ESTRUCTURAL 3",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0308",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0315",
+    "semestre": "9",
+    "nombre": "CONCRETO PREESFORZADO",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0316",
+    "post_requisitos": "DISEÑO ESTRUCTURAL DE CONCRETO PREESFORZADO"
+  },
+  {
+    "codigo": "0320",
+    "semestre": "9",
+    "nombre": "CIMENTACIONES 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0318",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0323",
+    "semestre": "9",
+    "nombre": "DISEÑO DE ESTRUCTURAS EN MAMPOSTERÍA",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0321|0322)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0325",
+    "semestre": "9",
+    "nombre": "DISEÑO DE ESTRUCTURAS METÁLICAS 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0321|0322)",
+    "post_requisitos": "DISEÑO DE ESTRUCTURAS METÁLICAS 2"
+  },
+  {
+    "codigo": "0329",
+    "semestre": "9",
+    "nombre": "INGENIERÍA SÍSMICA",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0308",
+    "post_requisitos": "DINÁMICA ESTRUCTURAL"
+  },
+  {
+    "codigo": "0334",
+    "semestre": "9",
+    "nombre": "PLACAS Y CÁSCARAS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0118, 0308, 0316",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0340",
+    "semestre": "9",
+    "nombre": "MÉTODOS DE CONSTRUCCIÓN",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "(0321|0322)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0706",
+    "semestre": "9",
+    "nombre": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 1",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0700, 190CR",
+    "post_requisitos": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 2"
+  },
+  {
+    "codigo": "2001",
+    "semestre": "10",
+    "nombre": "PRÁCTICAS FINALES INGENIERÍA CIVIL",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2036, 200CR",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0260",
+    "semestre": "10",
+    "nombre": "PLANEAMIENTO Y USO DE RECURSOS HIDRÁULICOS",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0252, 0256, 0280",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0317",
+    "semestre": "10",
+    "nombre": "DISEÑO ESTRUCTURAL DE CONCRETO PREESFORZADO",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0315, (0321|0322)",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0327",
+    "semestre": "10",
+    "nombre": "DISEÑO DE ESTRUCTURAS METÁLICAS 2",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0325",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0330",
+    "semestre": "10",
+    "nombre": "DINÁMICA ESTRUCTURAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0329",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0708",
+    "semestre": "10",
+    "nombre": "PREPARACIÓN Y EVALUACIÓN DE PROYECTOS 2",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0706",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0712",
+    "semestre": "10",
+    "nombre": "URBANISMO",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "190CR",
+    "post_requisitos": "Ninguno"
+  }
+]

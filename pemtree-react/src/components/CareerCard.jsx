@@ -47,9 +47,12 @@ function CareerIcon({ base, primary }) {
     );
 }
 
-export default function CareerCard({ name, shortName, base, jsonFile, colors, year, onSelect }) {
+export default function CareerCard({ name, shortName, base, jsonFile, colors, year, esAntiguo, onSelect }) {
     const primary = colors?.color1 || '#0052CC';
     const secondary = colors?.color2 || primary;
+
+    const badgeText = esAntiguo ? (year ? `ANTIGUO ${year}` : 'ANTIGUO') : (year ? `CLAR ${year}` : '');
+    const showBadge = Boolean(badgeText);
 
     return (
         <button
@@ -60,7 +63,7 @@ export default function CareerCard({ name, shortName, base, jsonFile, colors, ye
             aria-label={`Abrir pensum de ${name}`}
             title={`Abrir ${name}`}
         >
-            {year && (
+            {showBadge && (
                 <span
                     className="absolute top-1 right-1 sm:top-1.5 sm:right-1.5 z-20 px-1.5 sm:px-2 py-0.5 rounded-md text-[9px] sm:text-[10px] font-extrabold uppercase tracking-wider shadow-sm pointer-events-none"
                     style={{
@@ -69,7 +72,7 @@ export default function CareerCard({ name, shortName, base, jsonFile, colors, ye
                         border: `1.5px solid ${primary}`,
                     }}
                 >
-                    CLAR {year}
+                    {badgeText}
                 </span>
             )}
 

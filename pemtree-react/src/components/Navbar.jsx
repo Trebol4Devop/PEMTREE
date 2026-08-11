@@ -1,12 +1,13 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, Menu, CheckCircle2, Sun, Moon, Home as HomeIcon, Coffee } from 'lucide-react';
+import { X, Menu, Sun, Moon, Coffee, Bell, CircleUserRound } from 'lucide-react';
+import { useNotifications } from '../context/NotificationsContext';
 
 export default function Navbar({ isDarkMode, onToggleTheme }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const { unreadCount } = useNotifications();
 
     const location = useLocation();
-    const isNotHome = location.pathname !== '/';
     const currentView = (() => {
         if (location.pathname === '/visualizador') {
             const params = new URLSearchParams(location.search);
@@ -18,6 +19,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
         if (location.pathname === '/foro') return 'forum';
         if (location.pathname === '/grupos') return 'groups';
         if (location.pathname === '/mis-publicaciones') return 'myposts';
+        if (location.pathname === '/notificaciones') return 'notifications';
         return 'home';
     })();
 
@@ -56,9 +58,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <Link to="/grupos" className={boardLinkClass(currentView === 'groups')}>
                         Grupos Estudiantiles
                     </Link>
-                    <Link to="/mis-publicaciones" className={boardLinkClass(currentView === 'myposts')}>
-                        Mis Publicaciones
-                    </Link>
                 </div>
             </div>
 
@@ -86,6 +85,20 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <span className="hidden md:inline">PayPal</span>
                 </a>
 
+                <Link
+                    to="/notificaciones"
+                    className="relative p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300 transition flex items-center justify-center no-underline"
+                    aria-label="Notificaciones del foro"
+                    title="Notificaciones del foro"
+                >
+                    <Bell size={16} className="sm:w-5 sm:h-5" />
+                    {unreadCount > 0 && (
+                        <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] text-[10px] font-bold flex items-center justify-center">
+                            {unreadCount > 9 ? '9+' : unreadCount}
+                        </span>
+                    )}
+                </Link>
+
                 <button
                     onClick={onToggleTheme}
                     className="p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] cursor-pointer border-none bg-transparent flex items-center justify-center text-[#5E6C84] dark:text-slate-300"
@@ -94,21 +107,14 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     {isDarkMode ? <Sun size={16} className="sm:w-5 sm:h-5 text-yellow-400" /> : <Moon size={16} className="sm:w-5 sm:h-5" />}
                 </button>
 
-                <div className="hidden sm:flex items-center gap-1 px-1.5 sm:px-2.5 py-1 bg-[#F4F5F7] dark:bg-[#0E1624] rounded-full text-[0.65rem] sm:text-xs font-semibold border border-[#E1E6EB] dark:border-[#3E4C5E] whitespace-nowrap">
-                    <CheckCircle2 size={11} className="sm:w-3.5 sm:h-3.5 text-[#0052CC] dark:text-[#4C9AFF] flex-shrink-0" />
-                    <span className="text-[#172B4D] dark:text-slate-300">PENSUM</span>
-                </div>
-
-                {isNotHome ? (
-                    <Link to="/" className="flex items-center gap-1 sm:gap-1.5 bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] text-[0.7rem] sm:text-xs font-bold px-2 sm:px-3 py-1 sm:py-1.5 rounded transition shadow-xs cursor-pointer no-underline whitespace-nowrap">
-                        <HomeIcon size={14} className="text-[#0052CC] dark:text-[#4C9AFF]" />
-                        <span>Inicio</span>
-                    </Link>
-                ) : (
-                    <Link to="/visualizador" className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white text-[0.7rem] sm:text-xs font-bold px-2 sm:px-3.5 py-1 sm:py-1.5 rounded transition shadow-sm cursor-pointer no-underline whitespace-nowrap">
-                        Abrir Board
-                    </Link>
-                )}
+                <Link
+                    to="/mis-publicaciones"
+                    className="relative flex items-center justify-center p-1 sm:p-1.5 rounded-full bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#5E6C84] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] transition shadow-xs no-underline"
+                    aria-label="Mis Publicaciones"
+                    title="Mis Publicaciones"
+                >
+                    <CircleUserRound size={18} className="sm:w-5 sm:h-5 text-[#0052CC] dark:text-[#4C9AFF]" />
+                </Link>
 
                 <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1 rounded hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#172B4D] dark:text-slate-200 cursor-pointer bg-transparent border-none flex items-center justify-center"
                     aria-label="Toggle menu"
@@ -118,7 +124,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
             </div>
 
             {mobileMenuOpen && (
-                <div className="absolute top-12 sm:top-14 left-0 w-full bg-white dark:bg-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-2 px-2 flex flex-col gap-1 text-xs sm:text-sm font-semibold z-30 lg:hidden shadow-lg">
+                <div className="absolute top-12 sm:top-14 left-0 w-full bg-white dark:bg-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-2 px-2 flex flex-col gap-1 text-xs sm:text-sm font-semibold z-30 lg:hidden shadow-lg max-h-[calc(100dvh-3rem)] overflow-y-auto" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
                     <Link to="/" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'home' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Inicio
                     </Link>
@@ -137,8 +143,8 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <Link to="/grupos" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'groups' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Grupos Estudiantiles
                     </Link>
-                    <Link to="/mis-publicaciones" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'myposts' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
-                        Mis Publicaciones
+                    <Link to="/notificaciones" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'notifications' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
+                        Notificaciones {unreadCount > 0 && <span className="ml-1 inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] text-[10px] font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>}
                     </Link>
                     <div className="border-t border-[#DFE1E6] dark:border-[#3E4C5E] my-1 pt-2 px-1 flex items-center gap-1.5">
                         <a

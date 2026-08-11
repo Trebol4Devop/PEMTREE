@@ -447,10 +447,8 @@ export default function WhatsAppGroups() {
             try {
                 if (isUpvoted) {
                     await supabase.from('whatsapp_group_upvotes').delete().eq('group_id', groupId).eq('user_id', user.id);
-                    await supabase.from('whatsapp_groups').update({ upvotes: Math.max(0, (groups.find(g => g.id === groupId)?.upvotes || 1) - 1) }).eq('id', groupId);
                 } else {
                     await supabase.from('whatsapp_group_upvotes').insert([{ group_id: groupId, user_id: user.id }]);
-                    await supabase.from('whatsapp_groups').update({ upvotes: (groups.find(g => g.id === groupId)?.upvotes || 0) + 1 }).eq('id', groupId);
                 }
             } catch (err) {
                 console.error('Error al actualizar upvote en Supabase:', err);
@@ -770,9 +768,6 @@ export default function WhatsAppGroups() {
                     user_id: user.id,
                     reason: reportReason
                 }]);
-                await supabase.from('whatsapp_groups').update({
-                    reported_count: (reportTarget.reported_count || 0) + 1
-                }).eq('id', reportTarget.id);
                 await fetchGroups();
             } catch (err) {
                 console.error('Error al registrar reporte:', err);

@@ -1,5 +1,5 @@
-import { useState, useEffect, useCallback, useMemo } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { Link, useSearchParams } from 'react-router-dom';
 import {
     MessageSquare, Plus, Search, ThumbsUp, User, ShieldCheck, 
     Send, LogOut, ChevronDown, BookOpen, Clock, Trash2, Edit3,
@@ -598,6 +598,24 @@ export default function Forum() {
         return () => clearInterval(intervalId);
     }, [hasPendingModeration, fetchSupabasePosts]);
 
+    // Deep-link: abrir un post específico desde una notificación (?post=<id>)
+    const [searchParams] = useSearchParams();
+    const deepLinkPost = searchParams.get('post');
+    const deepLinkHandled = useRef(false);
+    useEffect(() => {
+        if (!deepLinkPost || deepLinkHandled.current || loading) return;
+        const el = document.getElementById(`post-${deepLinkPost}`);
+        if (el) {
+            deepLinkHandled.current = true;
+            const timer = setTimeout(() => {
+                setExpandedPostId(deepLinkPost);
+                el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }, 120);
+            return () => clearTimeout(timer);
+        }
+        return undefined;
+    }, [deepLinkPost, loading, posts]);
+
     const handleGoogleLogin = async () => {
         if (!isSupabaseConfigured || !supabase) {
             showAlert('Inicio de sesión temporalmente deshabilitado', 'El servicio de autenticación se encuentra en mantenimiento en este momento. Por favor, intenta más tarde.', 'warning');
@@ -774,7 +792,6 @@ export default function Forum() {
             setUserLikes(prev => prev.filter(id => id !== postId));
             try {
                 await supabase.from('post_likes').delete().eq('post_id', postId).eq('user_id', user.id);
-                await supabase.from('posts').update({ likes: newLikes }).eq('id', postId);
             } catch (err) {
                 console.error('Error quitando like:', err.message);
             }
@@ -782,7 +799,6 @@ export default function Forum() {
             setUserLikes(prev => [...prev, postId]);
             try {
                 await supabase.from('post_likes').insert([{ post_id: postId, user_id: user.id }]);
-                await supabase.from('posts').update({ likes: newLikes }).eq('id', postId);
             } catch (err) {
                 console.error('Error guardando like:', err.message);
             }
@@ -1271,6 +1287,7 @@ export default function Forum() {
                             return (
                                 <div 
                                     key={post.id}
+                                    id={`post-${post.id}`}
                                     className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs hover:border-[#0052CC]/40 dark:hover:border-[#4C9AFF]/40 transition-all overflow-hidden"
                                 >
                                     <div className="p-5 sm:p-6 flex flex-col gap-3">

@@ -24,6 +24,12 @@
     Cache-Control = "no-cache, must-revalidate"
     Content-Type = "application/json; charset=utf-8"
 
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Service-Worker-Allowed = "/"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"

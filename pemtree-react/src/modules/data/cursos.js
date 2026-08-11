@@ -316,16 +316,27 @@ export async function listAvailablePensums() {
     // Si no hay index, intentar descubrir archivos probando una lista conocida
     const KNOWN_FILES = [
         'ambiental_25.json',
+        'ambiental_ant.json',
         'ciencias_y_sistemas_22.json',
         'ciencias_y_sistemas_25.json',
+        'ciencias_y_sistemas_ant.json',
         'civil_22.json',
+        'civil_2017.json',
+        'civil_ant17.json',
         'electrica_22.json',
+        'electrica_ant.json',
         'electronica_22.json',
+        'electronica_ant.json',
         'industrial_22.json',
+        'industrial_ant.json',
         'mecanica_22.json',
+        'mecanica_ant.json',
         'mecanica_electrica_22.json',
+        'mecanica_electrica_ant.json',
         'mecanica_industrial_22.json',
-        'quimica_22.json'
+        'mecanica_industrial_ant.json',
+        'quimica_22.json',
+        'quimica_ant.json'
     ];
 
     const detectedPensums = [];
@@ -438,8 +449,8 @@ export async function applyPensumColors(relPensumPath) {
     if (!relPensumPath) return;
     try {
         const fileName = relPensumPath.split('/').pop(); // e.g. "ciencias_y_sistemas_22.json"
-        // Remover sufijo de año como _22 o _25 si existe
-        const base = fileName.replace(/\.json$/i, '').replace(/_\d{2,4}$/, '');
+        // Remover sufijo de año (_22, _25) o de pensum anterior (_ant, _ant17, _2017) si existe
+        const base = fileName.replace(/\.json$/i, '').replace(/(?:_\d{2,4}|_ant\d*)$/, '');
         const colorRel = `/pensum_color/${base}_color.json`;
 
         const res = await fetch(colorRel);

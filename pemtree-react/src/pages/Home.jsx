@@ -4,7 +4,8 @@ import {
     Lock, BarChart4, GitBranch, Mail, Link as LinkIcon,
     Compass, Calendar, Clock, Search, CheckCircle2,
     Copy, AlertTriangle, Download, Pin, Filter,
-    Sparkles, GitMerge, ChevronDown, Coffee
+    Sparkles, GitMerge, ChevronDown, Coffee,
+    MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
@@ -25,10 +26,18 @@ export default function Home() {
                 const enriched = await Promise.all(list.map(async (entry) => {
                     const file = entry.file;
                     const name = entry.name;
-                    const base = file.replace(/\.json$/i, '').replace(/_\d{2,4}$/, '');
-                    const yearMatch = file.replace(/\.json$/i, '').match(/_(\d{2,4})$/);
-                    const year = yearMatch ? `20${yearMatch[1]}` : '';
-                    const shortName = name
+                    const base = file.replace(/\.json$/i, '').replace(/(?:_\d{2,4}|_ant\d*)$/, '');
+                    const yearMatch = file.replace(/\.json$/i, '').match(/(?:_(\d{2})|_(\d{4}))$/);
+                    const year = yearMatch
+                        ? (yearMatch[1] ? `20${yearMatch[1]}` : yearMatch[2])
+                        : '';
+                    // Los pensum antiguos se identifican por el sufijo del archivo (_ant, _ant17, _2017)
+                    const esAntiguo = /_(?:ant\d*|2017)\.json$/i.test(file);
+                    // Quitar "(Antiguo...)" del título mostrado; el badge ANTIGUO lo indica
+                    const titleName = name
+                        .replace(/\s*\((?:Antiguo[^)]*)\)\s*$/i, '')
+                        .trim();
+                    const shortName = titleName
                         .replace(/^Ingenier[ií]a\s+/i, '')
                         .replace(/\s*\(\d{4}\)\s*$/, '')
                         .trim();
@@ -48,7 +57,7 @@ export default function Home() {
                     } catch {
                         // keep defaults
                     }
-                    return { name, shortName, base, jsonFile, colors, year };
+                    return { name: titleName, shortName, base, jsonFile, colors, year, esAntiguo };
                 }));
 
                 if (!cancelled) setCareers(enriched);
@@ -68,6 +77,37 @@ export default function Home() {
         }
         navigate('/visualizador');
     };
+
+    const versionsByBase = (() => {
+        const map = new Map();
+        for (const c of careers) {
+            if (!map.has(c.base)) map.set(c.base, []);
+            map.get(c.base).push(c);
+        }
+        return map;
+    })();
+
+    const timeGroups = (() => {
+        const groups = new Map();
+        for (const c of careers) {
+            const key = c.esAntiguo ? 'antiguo' : (c.year || 'antiguo');
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(c);
+        }
+        const sortedKeys = Array.from(groups.keys()).sort((a, b) => {
+            if (a === 'antiguo') return 1;
+            if (b === 'antiguo') return -1;
+            return Number(b) - Number(a);
+        });
+        return sortedKeys.map(key => ({
+            key,
+            title: key === 'antiguo' ? 'Pensums Antiguos' : `Pensum ${key}`,
+            subtitle: key === 'antiguo'
+                ? 'Versiones anteriores de los pensums de Ingeniería'
+                : `Pensum CLAR ${key} · Plan de estudios vigente`,
+            items: groups.get(key),
+        }));
+    })();
 
     const team = [
         {
@@ -210,18 +250,34 @@ export default function Home() {
                         Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> de todas las carreras de Ingeniería mediante un tablero interactivo.
                     </p>
 
-                    <div className="mt-10 w-full mx-auto flex flex-wrap justify-center gap-10 sm:gap-12 lg:gap-16">
-                        {careers.map(c => (
-                            <CareerCard
-                                key={c.jsonFile}
-                                name={c.name}
-                                shortName={c.shortName}
-                                base={c.base}
-                                jsonFile={c.jsonFile}
-                                colors={c.colors}
-                                year={c.year}
-                                onSelect={handleSelectCareer}
-                            />
+                    <div className="mt-10 w-full mx-auto flex flex-col items-center gap-12">
+                        {timeGroups.map(group => (
+                            <div key={group.key} className="w-full">
+                                <div className="mb-7 text-center">
+                                    <h3 className="text-lg sm:text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">
+                                        {group.title}
+                                    </h3>
+                                    <p className="text-xs text-[#5E6C84] dark:text-slate-400 mt-1">
+                                        {group.subtitle}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap justify-center gap-8">
+                                    {group.items.map(c => (
+                                        <CareerCard
+                                            key={c.jsonFile}
+                                            name={c.name}
+                                            shortName={c.shortName}
+                                            base={c.base}
+                                            jsonFile={c.jsonFile}
+                                            colors={c.colors}
+                                            year={c.year}
+                                            esAntiguo={c.esAntiguo}
+                                            onSelect={handleSelectCareer}
+                                            versions={versionsByBase.get(c.base) || []}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
@@ -335,6 +391,89 @@ export default function Home() {
             </section>
 
             <section className="w-full bg-white dark:bg-[#0F1726] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
+                <div className="max-w-7xl mx-auto">
+                    <div className="text-center mb-12">
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
+                            Comunidad
+                        </p>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
+                            Conecta con otros estudiantes
+                        </h2>
+                        <p className="text-sm text-[#5E6C84] dark:text-slate-400 max-w-2xl mx-auto">
+                            Resuelve dudas de forma anónima y encuentra los grupos de estudio y comunidades de tu carrera.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 xl:gap-8 items-stretch">
+                        {/* Foro Estudiantil */}
+                        <div className="bg-[#F4F5F7] dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden flex flex-col h-full">
+                            <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between gap-4 h-[230px] shrink-0">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
+                                        <MessageSquare size={22} />
+                                    </div>
+                                    <div>
+                                        <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Foro Estudiantil</h3>
+                                        <span className="text-[10px] font-extrabold uppercase tracking-wider bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] px-2 py-0.5 rounded-full mt-1 inline-block">
+                                            Comunidad Anónima
+                                        </span>
+                                    </div>
+                                </div>
+                                <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
+                                    Espacio colaborativo para resolver dudas de prerrequisitos, catedráticos y horarios de forma segura, protegiendo tu identidad tras un alias.
+                                </p>
+                                <Link to="/foro" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                    Abrir Foro
+                                </Link>
+                            </div>
+                            <div className="p-5 flex-1 flex flex-col gap-2">
+                                {[
+                                    { icon: ShieldCheck, title: 'Identidad protegida', text: 'Inicia sesión con Google manteniendo tu identidad oculta tras un seudónimo que puedes personalizar.' },
+                                    { icon: MessageCircle, title: 'Publicaciones y respuestas', text: 'Crea consultas con imágenes y responde en cadenas de comentarios para resolver dudas en conjunto.' },
+                                    { icon: ThumbsUp, title: 'Me gusta y visibilidad', text: 'Vota por las publicaciones y respuestas más útiles para destacar la información de mayor calidad.' },
+                                    { icon: Search, title: 'Búsqueda avanzada', text: 'Encuentra dudas por curso, catedrático, palabra en comentarios o alias de quien las publicó.' },
+                                    { icon: Bell, title: 'Notificaciones', text: 'Recibe avisos cuando responden a tus publicaciones o hay actividad relevante en el foro.' },
+                                    { icon: CheckCircle2, title: 'Moderación segura', text: 'Reportes y moderación comunitaria para mantener un ambiente respetuoso y libre de spam.' },
+                                ].map(f => (
+                                    <FeatureCard key={f.title} {...f} />
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Grupos Estudiantiles */}
+                        <div className="bg-[#F4F5F7] dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden flex flex-col h-full">
+                            <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between gap-4 h-[230px] shrink-0">
+                                <div className="flex items-center gap-3.5">
+                                    <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
+                                        <Users size={22} />
+                                    </div>
+                                    <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Grupos Estudiantiles</h3>
+                                </div>
+                                <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
+                                    Encuentra, verifica y únete a grupos de estudio, comunidades en WhatsApp/Telegram/Discord, laboratorios y repositorios de tu carrera o curso semestral.
+                                </p>
+                                <Link to="/grupos" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                    Explorar Grupos
+                                </Link>
+                            </div>
+                            <div className="p-5 flex-1 flex flex-col gap-2">
+                                {[
+                                    { icon: MessageCircle, title: 'WhatsApp, Telegram y Discord', text: 'Enlaces directos a comunidades de chat, grupos de estudio, laboratorios y repositorios compartidos.' },
+                                    { icon: Filter, title: 'Filtros por carrera', text: 'Clasifica los grupos por carrera o área común para encontrar rápidamente los de tu pensum.' },
+                                    { icon: Search, title: 'Búsqueda por curso y sección', text: 'Localiza grupos específicos de tu curso o sección usando el buscador integrado.' },
+                                    { icon: ShieldCheck, title: 'Verificación y moderación', text: 'Grupos revisados por moderadores para evitar enlaces inválidos o contenido no académico.' },
+                                    { icon: ThumbsUp, title: 'Votación comunitaria', text: 'Dale Me gusta a los grupos más útiles para que otros estudiantes los descubran fácilmente.' },
+                                    { icon: ExternalLink, title: 'Agrega tu grupo', text: 'Comparte el enlace del grupo de tu sección o curso para ayudar a tus compañeros.' },
+                                ].map(f => (
+                                    <FeatureCard key={f.title} {...f} />
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
                 <div className="max-w-6xl mx-auto text-center">
                     <h2 className="text-3xl md:text-4xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">
                         Desarrollado por <span className="text-[#0052CC] dark:text-[#74C0FC]">Trebol4Devop</span>
