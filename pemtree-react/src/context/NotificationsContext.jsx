@@ -98,7 +98,26 @@ export function NotificationsProvider({ children }) {
             return;
         }
         const sub = await getPushSubscription();
-        setPushState(prev => ({ ...prev, enabled: Boolean(sub) }));
+        if (!sub) {
+            setPushState(prev => ({ ...prev, enabled: false }));
+            return;
+        }
+        // El estado "activadas" solo debe mostrarse si la suscripción también está guardada en la BD,
+        // de lo contrario el push jamás llegaría aunque el navegador diga que está suscrito.
+        let dbHasIt = false;
+        if (isSupabaseConfigured && supabase) {
+            try {
+                const { data } = await supabase
+                    .from('notification_subscriptions')
+                    .select('id')
+                    .eq('endpoint', sub.endpoint)
+                    .maybeSingle();
+                dbHasIt = Boolean(data);
+            } catch (err) {
+                console.error('Error verificando suscripción push:', err.message);
+            }
+        }
+        setPushState(prev => ({ ...prev, enabled: dbHasIt }));
     }, []);
 
     const refresh = useCallback(async () => {
@@ -202,7 +221,7 @@ export function NotificationsProvider({ children }) {
                 ...prev,
                 enabled: res.ok,
                 checking: false,
-                lastError: res.ok ? null : res.reason
+                lastError: res.ok ? null : { reason: res.reason, error: res.error }
             }));
         }
     }, [user, pushState.enabled]);
