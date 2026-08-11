@@ -239,13 +239,6 @@ html.dark .hide-scrollbar::-webkit-scrollbar-thumb {
     background-color: #3E4C5E; 
 }
 
-/* Mejorar visibilidad del select y inputs en dark mode */
-html.dark select,
-html.dark input {
-    background-color: #0E1624 !important;
-    color: #f1f5f9 !important;
-}
-
 html.dark select option {
     background-color: #1c2636;
     color: #f1f5f9;
@@ -2802,6 +2795,17 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
     margin-left: 0.3rem;
     line-height: 1.1;
     letter-spacing: 0.02em;
+}
+
+.schedule-block-group.schedule-block-group-multi .schedule-block-pair-half {
+    flex: 1 1 0%;
+}
+.schedule-block-group.schedule-block-group-multi .schedule-block-pair-active {
+    flex: 2 1 0%;
+}
+.schedule-block-group .schedule-block-pair-half {
+    min-width: 0;
+    min-height: 0;
 }
 
 /* Responsive */
