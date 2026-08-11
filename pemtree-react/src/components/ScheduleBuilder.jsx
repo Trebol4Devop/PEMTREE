@@ -70,15 +70,39 @@ function migrateOldKeys() {
     }
 }
 
+function parseSavedSections(raw) {
+    if (!raw) return {};
+    let parsed;
+    try {
+        parsed = JSON.parse(raw);
+    } catch {
+        return {};
+    }
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) return {};
+    const cleaned = {};
+    for (const [code, arr] of Object.entries(parsed)) {
+        if (!Array.isArray(arr)) continue;
+        const valid = arr.filter(s =>
+            s && typeof s === 'object' &&
+            Array.isArray(s.dias) && s.dias.length > 0 &&
+            typeof s.inicio === 'string' && s.inicio &&
+            typeof s.final === 'string' && s.final
+        );
+        if (valid.length > 0) cleaned[code] = valid;
+    }
+    return cleaned;
+}
+
 export default function ScheduleBuilder() {
-    const [currentPeriod, setCurrentPeriod] = useState('semestre1');
+    const [currentPeriod, setCurrentPeriod] = useState(() => {
+        return localStorage.getItem('pemtree_schedule_period') || 'semestre1';
+    });
     const [horarios, setHorarios] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [selectedSections, setSelectedSections] = useState(() => {
         migrateOldKeys();
-        const saved = localStorage.getItem(getScheduleStorageKey('semestre1'));
-        return saved ? JSON.parse(saved) : {};
+        return parseSavedSections(localStorage.getItem(getScheduleStorageKey('semestre1')));
     });
     const sectionsPeriodRef = useRef('semestre1');
     const [expandedCourses, setExpandedCourses] = useState({});
@@ -115,8 +139,7 @@ export default function ScheduleBuilder() {
     // con la clave correcta en cuanto esté disponible.
     useEffect(() => {
         function handlePensumReady() {
-            const saved = localStorage.getItem(getScheduleStorageKey(sectionsPeriodRef.current));
-            setSelectedSections(saved ? JSON.parse(saved) : {});
+            setSelectedSections(parseSavedSections(localStorage.getItem(getScheduleStorageKey(sectionsPeriodRef.current))));
         }
         window.addEventListener('pemtree-pensum-ready', handlePensumReady);
         return () => window.removeEventListener('pemtree-pensum-ready', handlePensumReady);
@@ -153,8 +176,8 @@ export default function ScheduleBuilder() {
             // simply re-read localStorage with the now-correct key. This is safe to
             // do unconditionally: the course list hasn't loaded yet before this
             // point, so the user can't have made a selection to lose.
-            const saved = localStorage.getItem(getScheduleStorageKey(periodId));
-            setSelectedSections(saved ? JSON.parse(saved) : {});
+            const saved = parseSavedSections(localStorage.getItem(getScheduleStorageKey(periodId)));
+            setSelectedSections(saved);
             sectionsPeriodRef.current = periodId;
         } catch {
             setError('No pudimos cargar los horarios disponibles en este momento. Por favor, intenta de nuevo más tarde.');
