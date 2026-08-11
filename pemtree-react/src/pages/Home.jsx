@@ -78,6 +78,37 @@ export default function Home() {
         navigate('/visualizador');
     };
 
+    const versionsByBase = (() => {
+        const map = new Map();
+        for (const c of careers) {
+            if (!map.has(c.base)) map.set(c.base, []);
+            map.get(c.base).push(c);
+        }
+        return map;
+    })();
+
+    const timeGroups = (() => {
+        const groups = new Map();
+        for (const c of careers) {
+            const key = c.esAntiguo ? 'antiguo' : (c.year || 'antiguo');
+            if (!groups.has(key)) groups.set(key, []);
+            groups.get(key).push(c);
+        }
+        const sortedKeys = Array.from(groups.keys()).sort((a, b) => {
+            if (a === 'antiguo') return 1;
+            if (b === 'antiguo') return -1;
+            return Number(b) - Number(a);
+        });
+        return sortedKeys.map(key => ({
+            key,
+            title: key === 'antiguo' ? 'Pensums Antiguos' : `Pensum ${key}`,
+            subtitle: key === 'antiguo'
+                ? 'Versiones anteriores de los pensums de Ingeniería'
+                : `Pensum CLAR ${key} · Plan de estudios vigente`,
+            items: groups.get(key),
+        }));
+    })();
+
     const team = [
         {
             name: 'Jose Monzon',
@@ -219,19 +250,34 @@ export default function Home() {
                         Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> de todas las carreras de Ingeniería mediante un tablero interactivo.
                     </p>
 
-                    <div className="mt-10 w-full mx-auto flex flex-wrap justify-center gap-10 sm:gap-12 lg:gap-16">
-                        {careers.map(c => (
-                            <CareerCard
-                                key={c.jsonFile}
-                                name={c.name}
-                                shortName={c.shortName}
-                                base={c.base}
-                                jsonFile={c.jsonFile}
-                                colors={c.colors}
-                                year={c.year}
-                                esAntiguo={c.esAntiguo}
-                                onSelect={handleSelectCareer}
-                            />
+                    <div className="mt-10 w-full mx-auto flex flex-col items-center gap-12">
+                        {timeGroups.map(group => (
+                            <div key={group.key} className="w-full">
+                                <div className="mb-7 text-center">
+                                    <h3 className="text-lg sm:text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">
+                                        {group.title}
+                                    </h3>
+                                    <p className="text-xs text-[#5E6C84] dark:text-slate-400 mt-1">
+                                        {group.subtitle}
+                                    </p>
+                                </div>
+                                <div className="flex flex-wrap justify-center gap-8">
+                                    {group.items.map(c => (
+                                        <CareerCard
+                                            key={c.jsonFile}
+                                            name={c.name}
+                                            shortName={c.shortName}
+                                            base={c.base}
+                                            jsonFile={c.jsonFile}
+                                            colors={c.colors}
+                                            year={c.year}
+                                            esAntiguo={c.esAntiguo}
+                                            onSelect={handleSelectCareer}
+                                            versions={versionsByBase.get(c.base) || []}
+                                        />
+                                    ))}
+                                </div>
+                            </div>
                         ))}
                     </div>
                 </div>
