@@ -217,6 +217,16 @@ export default function Notifications() {
                                         <span>{pushState.checking ? 'Activando...' : 'Activar notificaciones del navegador'}</span>
                                     </button>
                                 )}
+
+                                {pushState.lastError && !pushState.enabled && (
+                                    <div className="mt-3 flex items-start gap-2 bg-[#FFEBE6]/60 dark:bg-[#450A0A]/40 border border-red-300/50 dark:border-red-700/40 text-[#BF2600] dark:text-[#FF6369] rounded-xl px-3 py-2.5 text-[11px] font-semibold leading-snug">
+                                        <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+                                        <span>
+                                            No se pudieron activar las notificaciones: {pushState.lastError.error || pushState.lastError.reason}.
+                                            <span className="block text-[10px] font-medium mt-0.5">Revisa la consola del navegador (F12) para más detalles e inténtalo de nuevo.</span>
+                                        </span>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Preferencias por tipo */}

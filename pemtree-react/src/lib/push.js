@@ -70,26 +70,48 @@ export async function enablePushNotifications(userId) {
             });
         } catch (err) {
             console.error('Error suscribiéndose a push:', err);
-            return { ok: false, reason: 'subscribe' };
+            return { ok: false, reason: 'subscribe', error: err?.message || String(err) };
         }
     }
 
     const endpoint = sub.endpoint;
+    const p256dh = arrayBufferToBase64(sub.getKey('p256dh'));
+    const auth = arrayBufferToBase64(sub.getKey('auth'));
 
-    // Reemplaza cualquier registro previo de la misma suscripción
-    await supabase.from('notification_subscriptions').delete().eq('endpoint', endpoint);
+    // Fuerza la renovación del token de sesión antes de escribir en la BD:
+    // si la sesión estaba vencida, el INSERT fallaría por RLS (auth.uid() nulo).
+    try {
+        await supabase.auth.getUser();
+    } catch {
+        // continuar de todos modos; el error real se captura abajo
+    }
 
-    const { error } = await supabase.from('notification_subscriptions').insert({
-        user_id: userId,
-        endpoint,
-        p256dh: arrayBufferToBase64(sub.getKey('p256dh')),
-        auth: arrayBufferToBase64(sub.getKey('auth')),
-        user_agent: navigator.userAgent
-    });
+    let dbError = null;
+    try {
+        const { error: upsertError } = await supabase
+            .from('notification_subscriptions')
+            .upsert(
+                {
+                    user_id: userId,
+                    endpoint,
+                    p256dh,
+                    auth,
+                    user_agent: navigator.userAgent
+                },
+                { onConflict: 'endpoint' }
+            );
+        if (upsertError) dbError = upsertError;
+    } catch (err) {
+        dbError = err;
+    }
 
-    if (error) {
-        console.error('Error guardando suscripción push:', error);
-        return { ok: false, reason: 'save' };
+    if (dbError) {
+        console.error('Error guardando suscripción push:', dbError);
+        // Revertir la suscripción del navegador para no dejar un estado inconsistente
+        try {
+            if (sub) await sub.unsubscribe();
+        } catch { /* noop */ }
+        return { ok: false, reason: 'save', error: dbError?.message || String(dbError) };
     }
 
     return { ok: true };
@@ -97,17 +119,23 @@ export async function enablePushNotifications(userId) {
 
 export async function disablePushNotifications() {
     if (!('serviceWorker' in navigator)) return;
-    const reg = await navigator.serviceWorker.getRegistration('/sw.js');
-    const sub = reg ? await reg.pushManager.getSubscription() : null;
-    if (sub) {
-        await sub.unsubscribe();
+    try {
+        const reg = await navigator.serviceWorker.getRegistration('/sw.js');
+        const sub = reg ? await reg.pushManager.getSubscription() : null;
+        if (sub) {
+            await sub.unsubscribe();
+        }
         if (isSupabaseConfigured && supabase) {
-            await supabase.from('notification_subscriptions').delete().eq('endpoint', sub.endpoint);
+            if (sub) {
+                await supabase.from('notification_subscriptions').delete().eq('endpoint', sub.endpoint);
+            } else {
+                const { data: { user } } = await supabase.auth.getUser();
+                if (user) {
+                    await supabase.from('notification_subscriptions').delete().eq('user_id', user.id);
+                }
+            }
         }
-    } else if (isSupabaseConfigured && supabase) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-            await supabase.from('notification_subscriptions').delete().eq('user_id', user.id);
-        }
+    } catch (err) {
+        console.error('Error desactivando notificaciones push:', err);
     }
 }
