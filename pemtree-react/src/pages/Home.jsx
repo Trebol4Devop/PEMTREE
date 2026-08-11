@@ -25,10 +25,18 @@ export default function Home() {
                 const enriched = await Promise.all(list.map(async (entry) => {
                     const file = entry.file;
                     const name = entry.name;
-                    const base = file.replace(/\.json$/i, '').replace(/_\d{2,4}$/, '');
-                    const yearMatch = file.replace(/\.json$/i, '').match(/_(\d{2,4})$/);
-                    const year = yearMatch ? `20${yearMatch[1]}` : '';
-                    const shortName = name
+                    const base = file.replace(/\.json$/i, '').replace(/(?:_\d{2,4}|_ant\d*)$/, '');
+                    const yearMatch = file.replace(/\.json$/i, '').match(/(?:_(\d{2})|_(\d{4}))$/);
+                    const year = yearMatch
+                        ? (yearMatch[1] ? `20${yearMatch[1]}` : yearMatch[2])
+                        : '';
+                    // Los pensum antiguos se identifican por el sufijo del archivo (_ant, _ant17, _2017)
+                    const esAntiguo = /_(?:ant\d*|2017)\.json$/i.test(file);
+                    // Quitar "(Antiguo...)" del título mostrado; el badge ANTIGUO lo indica
+                    const titleName = name
+                        .replace(/\s*\((?:Antiguo[^)]*)\)\s*$/i, '')
+                        .trim();
+                    const shortName = titleName
                         .replace(/^Ingenier[ií]a\s+/i, '')
                         .replace(/\s*\(\d{4}\)\s*$/, '')
                         .trim();
@@ -48,7 +56,7 @@ export default function Home() {
                     } catch {
                         // keep defaults
                     }
-                    return { name, shortName, base, jsonFile, colors, year };
+                    return { name: titleName, shortName, base, jsonFile, colors, year, esAntiguo };
                 }));
 
                 if (!cancelled) setCareers(enriched);
@@ -220,6 +228,7 @@ export default function Home() {
                                 jsonFile={c.jsonFile}
                                 colors={c.colors}
                                 year={c.year}
+                                esAntiguo={c.esAntiguo}
                                 onSelect={handleSelectCareer}
                             />
                         ))}

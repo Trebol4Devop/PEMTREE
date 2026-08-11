@@ -274,7 +274,7 @@ export default function Planner({ currentPensum }) {
 
             // Cargar color del segundo pensum
             const basename = file.split('/').pop().replace('.json', '');
-            const base = basename.replace(/_\d{2,4}$/, '');
+            const base = basename.replace(/(?:_\d{2,4}|_ant\d*)$/, '');
             const colorRes = await fetch(`/pensum_color/${base}_color.json`);
             let colorData = null;
             if (colorRes.ok) {

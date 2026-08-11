@@ -1644,6 +1644,8 @@ html.dark .planner-pool-close:hover {
         z-index: 95;
         flex-direction: column;
         overflow: hidden;
+        /* Evita que la barra de navegación de Android cubra el contenido inferior */
+        padding-bottom: env(safe-area-inset-bottom);
     }
     html.dark .planner-pool-wrapper {
         border-color: #3E4C5E;
@@ -1654,7 +1656,7 @@ html.dark .planner-pool-close:hover {
     }
 
     .planner-pool-wrapper.planner-pool-open + .planner-content {
-        padding-bottom: 42vh;
+        padding-bottom: calc(42vh + env(safe-area-inset-bottom));
     }
 
     .planner-pool {
