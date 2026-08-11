@@ -35,6 +35,18 @@ const formatTimeAgo = (dateStr) => {
     return `hace ${diffDays} d`;
 };
 
+const PUSH_ERROR_MESSAGES = {
+    unsupported: 'Tu navegador no admite notificaciones. Podrás ver la bandeja desde esta página de todos modos.',
+    service: 'El servicio de notificaciones no está disponible en este momento. Inténtalo más tarde.',
+    denied: 'El permiso de notificaciones está bloqueado por tu navegador. Habilítalo desde la configuración del sitio (icono de candado) y vuelve a intentar.',
+    sw: 'No se pudo completar la activación. Recarga la página e inténtalo de nuevo.',
+    subscribe: 'Tu navegador o red no permite recibir notificaciones de este sitio por ahora. Puedes intentarlo de nuevo más tarde; mientras tanto, la bandeja de esta página te mostrará la actividad de tu foro.',
+    save: 'No se pudieron guardar las notificaciones. Inténtalo de nuevo en unos momentos.'
+};
+
+const getFriendlyPushError = (reason) =>
+    PUSH_ERROR_MESSAGES[reason] || 'No se pudo activar. Inténtalo de nuevo más tarde.';
+
 function ToggleSwitch({ checked, onChange, label, description }) {
     return (
         <div className="flex items-start justify-between gap-3 py-2.5">
@@ -221,10 +233,7 @@ export default function Notifications() {
                                 {pushState.lastError && !pushState.enabled && (
                                     <div className="mt-3 flex items-start gap-2 bg-[#FFEBE6]/60 dark:bg-[#450A0A]/40 border border-red-300/50 dark:border-red-700/40 text-[#BF2600] dark:text-[#FF6369] rounded-xl px-3 py-2.5 text-[11px] font-semibold leading-snug">
                                         <AlertTriangle size={14} className="shrink-0 mt-0.5" />
-                                        <span>
-                                            No se pudieron activar las notificaciones: {pushState.lastError.error || pushState.lastError.reason}.
-                                            <span className="block text-[10px] font-medium mt-0.5">Revisa la consola del navegador (F12) para más detalles e inténtalo de nuevo.</span>
-                                        </span>
+                                        <span>{getFriendlyPushError(pushState.lastError.reason)}</span>
                                     </div>
                                 )}
                             </div>

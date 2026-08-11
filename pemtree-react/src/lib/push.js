@@ -44,6 +44,20 @@ const arrayBufferToBase64 = (buffer) => {
     return btoa(binary);
 };
 
+// Chrome exige la clave pública VAPID como ArrayBuffer/Uint8Array en `pushManager.subscribe`.
+// Pasar la cadena base64url directamente puede causar
+// "AbortError: Registration failed - push service error".
+const urlBase64ToUint8Array = (base64url) => {
+    const padding = '='.repeat((4 - (base64url.length % 4)) % 4);
+    const base64 = (base64url + padding).replace(/-/g, '+').replace(/_/g, '/');
+    const rawData = window.atob(base64);
+    const outputArray = new Uint8Array(rawData.length);
+    for (let i = 0; i < rawData.length; i += 1) {
+        outputArray[i] = rawData.charCodeAt(i);
+    }
+    return outputArray;
+};
+
 export async function enablePushNotifications(userId) {
     if (!isPushSupported()) {
         return { ok: false, reason: 'unsupported' };
@@ -61,16 +75,33 @@ export async function enablePushNotifications(userId) {
         return { ok: false, reason: 'sw' };
     }
 
+    // Asegurar que haya un service worker activo antes de suscribirse
+    try {
+        await navigator.serviceWorker.ready;
+    } catch {
+        return { ok: false, reason: 'sw' };
+    }
+
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
-        try {
-            sub = await reg.pushManager.subscribe({
-                userVisibleOnly: true,
-                applicationServerKey: VAPID_PUBLIC_KEY
-            });
-        } catch (err) {
-            console.error('Error suscribiéndose a push:', err);
-            return { ok: false, reason: 'subscribe', error: err?.message || String(err) };
+        let lastErr = null;
+        for (let attempt = 1; attempt <= 3; attempt += 1) {
+            try {
+                sub = await reg.pushManager.subscribe({
+                    userVisibleOnly: true,
+                    applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+                });
+                break;
+            } catch (err) {
+                lastErr = err;
+                console.error(`Intento ${attempt}/3 de suscripción a push falló:`, err);
+                if (attempt < 3) {
+                    await new Promise(r => setTimeout(r, attempt * 800));
+                }
+            }
+        }
+        if (!sub) {
+            return { ok: false, reason: 'subscribe', error: lastErr?.message || String(lastErr) };
         }
     }
 
