@@ -1,7 +1,8 @@
 import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, X, BookOpen, Copy, Pencil, Trash2, Share2, Upload, Download, Check, MessageCircle, Mail } from 'lucide-react';
 import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
-import { importarCursosDesdeJSON } from '../modules/data/importFromJSON';
+import { construirCursosDesdeCatalogo } from '../modules/data/importFromJSON';
+import { cargarCatalogo } from '../modules/data/catalogo';
 import CoursePool from './CoursePool';
 import SemesterBlock from './SemesterBlock';
 import VacationBlock from './VacationBlock';
@@ -268,21 +269,18 @@ export default function Planner({ currentPensum }) {
     async function loadSecondPensum(file) {
         setSecondLoading(true);
         try {
-            const res = await fetch(file);
-            if (!res.ok) throw new Error('No se pudo cargar el pensum');
-            const json = await res.json();
+            // Tras la migración, el 2º pensum se construye desde el catálogo unificado
+            const catalogo = await cargarCatalogo();
+            const fileName = file.split('/').pop();
+            const cursos = construirCursosDesdeCatalogo(catalogo, fileName);
+            if (cursos.length === 0) throw new Error(`Pensum no encontrado en el catálogo: ${fileName}`);
 
-            // Cargar color del segundo pensum
-            const basename = file.split('/').pop().replace('.json', '');
+            // Colores de la carrera desde el catálogo
+            const basename = fileName.replace('.json', '');
             const base = basename.replace(/(?:_\d{2,4}|_ant\d*)$/, '');
-            const colorRes = await fetch(`/pensum_color/${base}_color.json`);
-            let colorData = null;
-            if (colorRes.ok) {
-                const cJson = await colorRes.json();
-                colorData = Array.isArray(cJson) ? cJson[0] : cJson;
-            }
+            const carrera = (catalogo.carreras || []).find(cr => cr.id === base);
+            const colorData = (carrera && carrera.colores) || null;
 
-            const cursos = importarCursosDesdeJSON(json);
             const map = new Map();
             cursos.forEach(c => {
                 c.id += 10000;
