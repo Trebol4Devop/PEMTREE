@@ -4,6 +4,12 @@
 // agregada desde Supabase (vista docente_reputation + voto del usuario actual).
 // La reputación se fusiona en memoria con el catálogo; no bloquea si Supabase
 // no está configurado.
+//
+// Modelo v4: además de la apertura por tipoPeriodo, expone secciones/horarios
+// (getSeccionesDeCurso), docentes por (ciclo, tipoPeriodo) con reputación
+// (getDocentesDeCursoEnPeriodo), y recomendabilidad de cursos (esCursoRecomendable).
+// Nota: el catálogo referencia docentes con ids `doc_rol_...`; Supabase usa uuids.
+// La reputación se une por (claveNombre|rol) en cargarReputacion().
 
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
 
@@ -11,8 +17,10 @@ const CATALOGO_URL = '/json/catalogo.json';
 
 let catalogo = null;          // objeto completo del catálogo (o null si aún no carga)
 let catalogoPromise = null;   // evita fetchs duplicados mientras carga
-let reputacionCache = null;   // Map<docente_id, { docente_id, total, recomendados, pct_recomienda, miVoto }>
+let reputacionCache = null;   // Map<docente_id uuid Supabase, { docente_id, total, recomendados, pct_recomienda, miVoto }>
 let reputacionPromise = null;
+let docenteIdPorClave = null; // Map<`${claveNombre}|${rol}`, uuid Supabase> — une el id `doc_*` del catálogo con el uuid de Supabase
+let docenteIndex = null;      // Map<id catálogo `doc_*`, docente> (caché perezoso)
 
 // ---------- Normalización de nombres (misma regla que el pipeline) ----------
 
@@ -40,6 +48,7 @@ export async function cargarCatalogo(force = false) {
         })
         .then(data => {
             catalogo = data;
+            docenteIndex = null;
             return catalogo;
         })
         .catch(err => {
@@ -133,10 +142,11 @@ export async function cargarReputacion(force = false) {
     }
     reputacionPromise = (async () => {
         const map = new Map();
+        const idPorClave = new Map();
         try {
             const { data, error } = await supabase
                 .from('docente_reputation')
-                .select('docente_id, total, recomendados, pct_recomienda');
+                .select('docente_id, nombre, rol, total, recomendados, pct_recomienda');
             if (error) throw error;
             for (const fila of data || []) {
                 map.set(fila.docente_id, {
@@ -146,7 +156,26 @@ export async function cargarReputacion(force = false) {
                     pct_recomienda: fila.pct_recomienda,
                     miVoto: null,
                 });
+                const clave = `${claveNombre(fila.nombre)}|${fila.rol}`;
+                if (!idPorClave.has(clave)) idPorClave.set(clave, fila.docente_id);
             }
+
+            // El catálogo referencia docentes con ids `doc_rol_slug`, pero Supabase
+            // usa uuids. Se indexa por (claveNombre|rol) desde la tabla `docentes`
+            // (incluye variantes) para poder unir reputación y votos con el catálogo.
+            const { data: dbDocentes, error: errDocentes } = await supabase
+                .from('docentes')
+                .select('id, nombre, rol, nombre_variantes');
+            if (errDocentes) throw errDocentes;
+            const setClave = (nombre, rol, uuid) => {
+                const clave = `${claveNombre(nombre)}|${rol}`;
+                if (!idPorClave.has(clave)) idPorClave.set(clave, uuid);
+            };
+            for (const d of dbDocentes || []) {
+                setClave(d.nombre, d.rol, d.id);
+                for (const v of d.nombre_variantes || []) setClave(v, d.rol, d.id);
+            }
+
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 const { data: misVotos, error: errVotos } = await supabase
@@ -171,6 +200,7 @@ export async function cargarReputacion(force = false) {
             console.warn('No se pudo cargar la reputación de docentes:', err.message);
         }
         reputacionCache = map;
+        docenteIdPorClave = idPorClave;
         return map;
     })();
     return reputacionPromise;
@@ -178,7 +208,11 @@ export async function cargarReputacion(force = false) {
 
 export function getReputacionDocente(docente) {
     if (!reputacionCache || !docente) return null;
-    return reputacionCache.get(docente.id) || null;
+    const uuid = docenteIdPorClave
+        ? docenteIdPorClave.get(`${claveNombre(docente.nombre)}|${docente.rol}`)
+        : null;
+    if (!uuid) return null;
+    return reputacionCache.get(uuid) || null;
 }
 
 export function reputacionPorNombre(nombreRaw, rol) {
@@ -207,11 +241,23 @@ export function docentesDeCursoConReputacion(codigo, { rol, activos = true } = {
 
 /**
  * Registra/actualiza el voto del usuario actual sobre un docente (1 por usuario/docente).
+ * `docente` es el objeto del catálogo; se resuelve su uuid de Supabase por (nombre, rol).
  * @returns {{data:object|null, error:object|null}}
  */
-export async function recomendarDocente(docenteId, recomienda) {
+export async function recomendarDocente(docente, recomienda) {
     if (!isSupabaseConfigured || !supabase) {
         return { data: null, error: { message: 'Supabase no está configurado' } };
+    }
+    if (!docenteIdPorClave) {
+        try {
+            await cargarReputacion();
+        } catch { /* se reporta como no sincronizado */ }
+    }
+    const docenteId = docenteIdPorClave
+        ? docenteIdPorClave.get(`${claveNombre(docente.nombre)}|${docente.rol}`)
+        : null;
+    if (!docenteId) {
+        return { data: null, error: { message: 'Este docente aún no está sincronizado; no se puede opinar sobre él.' } };
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
@@ -226,6 +272,59 @@ export async function recomendarDocente(docenteId, recomienda) {
     if (!error) {
         reputacionCache = null;
         reputacionPromise = null;
+        docenteIdPorClave = null;
     }
     return { data, error };
+}
+
+// ---------- Modelo v4: secciones, docentes por periodo y recomendaciones ----------
+
+export function getDocentePorId(docenteId) {
+    if (!catalogo || !Array.isArray(catalogo.docentes)) return null;
+    if (!docenteIndex) docenteIndex = new Map(catalogo.docentes.map(d => [d.id, d]));
+    return docenteIndex.get(docenteId) || null;
+}
+
+/**
+ * Secciones (horarios) de un curso desde el catálogo, opcionalmente filtradas por
+ * (ciclo, tipoPeriodo). Cada sección trae `restricciones`, `periodo_restriccion`,
+ * `anio` y referencias a docentes (catedraticoId/auxiliarId). Las de ciclos
+ * anteriores quedan etiquetadas con su `ciclo` para distinguir vigente vs. histórico.
+ */
+export function getSeccionesDeCurso(codigo, { ciclo, tipoPeriodo } = {}) {
+    const curso = getCursoInfo(codigo);
+    if (!curso || !Array.isArray(curso.secciones)) return [];
+    return curso.secciones.filter(s =>
+        (!ciclo || s.ciclo === ciclo) &&
+        (!tipoPeriodo || s.tipoPeriodo === tipoPeriodo)
+    );
+}
+
+/**
+ * Docentes que imparten un curso, opcionalmente restringidos al (ciclo, tipoPeriodo)
+ * que realmente impartieron (usa docentes[].cursos[].secciones del catálogo).
+ * Añade la reputación de cada docente. Sin filtros equivale a getDocentesDeCurso.
+ */
+export function getDocentesDeCursoEnPeriodo(codigo, { ciclo, tipoPeriodo, rol, activos = true } = {}) {
+    const base = getDocentesDeCurso(codigo, { rol, activos });
+    const matchSeccion = (sec) => {
+        if (ciclo && !sec.startsWith(`${ciclo}|`)) return false;
+        if (tipoPeriodo && !sec.includes(`|${tipoPeriodo}|`)) return false;
+        return true;
+    };
+    return base
+        .filter(d => (!ciclo && !tipoPeriodo) || (d.cursos || []).some(cu =>
+            cu.codigo === String(codigo) && (cu.secciones || []).some(matchSeccion)
+        ))
+        .map(d => ({ ...d, reputacion: getReputacionDocente(d) }));
+}
+
+/**
+ * ¿Vale la pena recomendar el curso? Un curso recomendable debe haberse abierto
+ * en algún horario capturado (vistoEnHorarios del schema v4); los sembrados solo
+ * desde pensum sin historial no se recomiendan.
+ */
+export function esCursoRecomendable(codigo) {
+    const curso = getCursoInfo(codigo);
+    return !!curso && curso.vistoEnHorarios === true;
 }
