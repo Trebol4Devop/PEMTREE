@@ -183,7 +183,7 @@ function seccionKey(s) {
 // (fallback: cohort derivado del filename; vigencia/clar null).
 function derivarPensums(index) {
     const pensums = [];
-    const pensumCursos = new Map(); // codigo -> [{ file, semestre, creditos, tipo, preRequisitos[], posRequisitos[] }]
+    const pensumCursos = new Map(); // codigo -> [{ file, orden, semestre, creditos, tipo, preRequisitos[], posRequisitos[] }]
     const nombres = new Map();      // codigo -> nombre (primer pensum)
     const nameToCodes = new Map();  // nombre normalizado -> Set<codigo>
     const cached = new Map();       // file -> pensum[]
@@ -216,12 +216,13 @@ function derivarPensums(index) {
             vigencia: entry.vigencia || null,
             clar: entry.clar != null ? !!entry.clar : null,
         });
-        for (const c of pensum) {
+        for (const [orden, c] of pensum.entries()) {
             const codigo = String(c.codigo);
             if (!nombres.has(codigo)) nombres.set(codigo, String(c.nombre || ''));
             if (!pensumCursos.has(codigo)) pensumCursos.set(codigo, []);
             pensumCursos.get(codigo).push({
                 file,
+                orden,
                 semestre: Number(c.semestre) || 0,
                 creditos: Number(c.creditos) || 0,
                 tipo: String(c.tipo || ''),
@@ -710,6 +711,29 @@ function main() {
             resumen: construirResumen(observaciones),
             secciones: seccionesOut,
         });
+    }
+
+    // Detección de renumérado: si la universidad cambia el código de un curso
+    // (mismo nombre, código nuevo), aquí se detecta. Cada curso expone su
+    // `claveNombre` (nombre canónico, sin acentos) y `codigos[]` (todos los
+    // códigos que comparten ese nombre). Los datos siguen keyed por `codigo`;
+    // `claveNombre`/`codigos` permiten correlacionar equivalencias sin romper
+    // nada. Se emite un [WARN] cuando un nombre tiene >1 código.
+    const porClave = new Map();
+    for (const cur of cursosOut) {
+        const clave = claveNombre(cur.nombre);
+        if (!porClave.has(clave)) porClave.set(clave, []);
+        porClave.get(clave).push(cur);
+    }
+    for (const cur of cursosOut) {
+        cur.claveNombre = claveNombre(cur.nombre);
+        const grupo = porClave.get(cur.claveNombre) || [cur];
+        cur.codigos = grupo.map(g => g.codigo).sort((a, b) => a.localeCompare(b, undefined, { numeric: true }));
+    }
+    for (const [clave, grupo] of porClave) {
+        if (grupo.length > 1) {
+            console.warn(`  [WARN] Curso con múltiples códigos (¿renuméricado?): "${grupo[0].nombre}" -> ${grupo.map(g => g.codigo).join(', ')}`);
+        }
     }
 
     const catalogo = {

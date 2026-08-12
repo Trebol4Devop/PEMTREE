@@ -1,4 +1,13 @@
 // modules/data/cursos.js - Definición de datos y modelo
+//
+// Tras la migración, el modelo se construye desde el catálogo unificado
+// (public/json/catalogo.json) en lugar de fetchear los archivos de pensum.
+// Se conserva la API pública (cursos, cursoMap, initializeCursos, loadPensum,
+// listAvailablePensums, getPensumKey, applyPensumColors, STARTUP_LOADED_PENSUM)
+// para que GraphManager, Planner, StorageManager y NodeRenderer sigan igual.
+
+import { construirCursosDesdeCatalogo } from './importFromJSON.js';
+import { cargarCatalogo, getCatalogo } from './catalogo.js';
 
 const SOCIAL_HUM_CODES = ['0017', '0019', '0001', '0010', '0018'];
 const IDIOMA_TECNICO_CODES = ['0006', '0008', '0009', '0011'];
@@ -109,14 +118,10 @@ const DEFAULT_CURSOS = [
 ];
 
 
-
-// Importador que convierte JSON en instancias de NodoCurso (evita ejecución en carga por la circularidad)
-import { importarCursosDesdeJSON } from './importFromJSON.js';
-
 // Exportar cursos como variable mutable para que otros módulos puedan leer la referencia
 export let cursos = [];
 
-// Mapa de cursos (se actualiza en initializeCursos)
+// Mapa de cursos (se actualiza en initializeCursos/loadPensum)
 export const cursoMap = new Map();
 
 // Caché compartido de colores del pensum activo (evita re-fetches desde NodeRenderer)
@@ -124,7 +129,9 @@ export let currentPensumColors = { primary: '#fc904f', secondary: '#ffd0b6' };
 
 // Nombre del pensum que debe cargarse al iniciar
 const DEFAULT_STARTUP_FILENAME = 'ciencias_y_sistemas_22.json';
-const DEFAULT_STARTUP_REL = `/json/${DEFAULT_STARTUP_FILENAME}`;
+
+// Sufijos de versión/cohort en los nombres de archivo de pensum (_22, _25, _ant, _2017...)
+const SUFIJOS_PENSUM = /(?:_\d{2,4}|_ant\d*)$/;
 
 // Exporta el pensum cargado al iniciar (para sincronizar la UI)
 export let STARTUP_LOADED_PENSUM = '';
@@ -148,238 +155,77 @@ export function getPensumKey() {
     return fileName.replace(/\.json$/i, '');
 }
 
-// Rutas candidatas (intentar varias formas en caso de diferencias en el servidor o base path)"
-const INDEX_CANDIDATES = [
-    '/json/index.json'
-].map(p => ({ rel: p, url: p }));
-
 /**
- * Inicializa `cursos` cargando archivos JSON desde `modules/json`.
- * Si la carga falla, usa `DEFAULT_CURSOS` como fallback.
+ * Inicializa `cursos` construyéndolos desde el catálogo unificado.
+ * Si el catálogo no está disponible, usa `DEFAULT_CURSOS` como fallback.
  */
 export async function initializeCursos() {
     try {
-        const allJson = [];
-        let pensumFiles = [];
-
-        // Leer index.json
-        let indexList = null;
-        for (const candidate of INDEX_CANDIDATES) {
-            try {
-                const resIndex = await fetch(candidate.url);
-                if (!resIndex.ok) {
-                    console.debug(`Index no encontrado en ${candidate.url}: ${resIndex.status}`);
-                    continue;
-                }
-                const parsed = await resIndex.json();
-                if (Array.isArray(parsed)) {
-                    indexList = parsed;
-                    break;
-                }
-            } catch (e) {
-                console.debug(`Error leyendo index en ${candidate.url}:`, e);
-                continue;
-            }
+        const catalogo = await cargarCatalogo();
+        let archivo = DEFAULT_STARTUP_FILENAME;
+        const existe = (catalogo.pensums || []).some(p => p.file === DEFAULT_STARTUP_FILENAME);
+        if (!existe) {
+            const primero = catalogo.pensums && catalogo.pensums[0];
+            archivo = primero ? primero.file : null;
         }
+        if (!archivo) throw new Error('El catálogo no contiene pensums');
 
-        if (Array.isArray(indexList)) {
-            pensumFiles = indexList.map(entry => typeof entry === 'string' ? `/json/${entry}` : (entry.file ? `/json/${entry.file}` : ''))
-                                   .filter(Boolean);
-        }
+        cursos = construirCursosDesdeCatalogo(catalogo, archivo);
+        STARTUP_LOADED_PENSUM = `/json/${archivo}`;
+        notifyPensumReady();
 
-        // Preferir cargar solo el pensum por defecto al iniciar (ciencias_y_sistemas_22)
         try {
-            const preferredSuffix = DEFAULT_STARTUP_FILENAME.toLowerCase();
-            const foundPreferred = pensumFiles.find(p => p.toLowerCase().endsWith(preferredSuffix));
-            if (foundPreferred) {
-                pensumFiles = [foundPreferred];
-                console.debug(`Inicializando solo con el pensum por defecto: ${foundPreferred}`);
-            } else if (pensumFiles.length === 0) {
-                // Si la lista está vacía, comprobar si el archivo por defecto existe y usarlo
-                try {
-                    const headRes = await fetch(DEFAULT_STARTUP_REL, { method: 'HEAD' });
-                    if (headRes.ok) {
-                        pensumFiles = [DEFAULT_STARTUP_REL];
-                        console.debug(`Archivo por defecto encontrado: ${DEFAULT_STARTUP_REL}, cargando solo este.`);
-                    }
-                } catch { /* ignore */ }
-            }
+            await applyPensumColors(STARTUP_LOADED_PENSUM);
         } catch (e) {
-            // no bloquear inicialización por este paso
-            console.debug('Error verificando pensum por defecto:', e);
+            console.debug('No se aplicaron colores al inicializar:', e);
         }
-
-        for (const relPath of pensumFiles) {
-            try {
-                const res = await fetch(relPath);
-                if (!res.ok) {
-                    console.warn(`No se pudo cargar ${relPath}: ${res.status}`);
-                    continue;
-                }
-                const json = await res.json();
-                if (Array.isArray(json)) {
-                    allJson.push(...json);
-                    if (!STARTUP_LOADED_PENSUM) {
-                        STARTUP_LOADED_PENSUM = relPath;
-                        notifyPensumReady();
-                    }
-                }
-            } catch (innerErr) {
-                console.warn(`Error cargando ${relPath}:`, innerErr);
-            }
-        }
-
-        if (allJson.length > 0) {
-            // Convertir y asignar
-            const imported = importarCursosDesdeJSON(allJson);
-            cursos = imported;
-
-            // intentar aplicar colores asociados al pensum de arranque
-            try {
-                await applyPensumColors(STARTUP_LOADED_PENSUM);
-            } catch (e) {
-                console.debug('No se aplicaron colores al inicializar:', e);
-            }
-        } else {
-            // Si no hay JSON cargado, dejar el fallback
-            cursos = DEFAULT_CURSOS.slice();
-            console.warn('No se cargaron JSONs; usando datos por defecto.');
-        }
-
-        // Reconstruir el mapa
-        cursoMap.clear();
-        cursos.forEach(curso => cursoMap.set(curso.id, curso));
-
-        console.log(`Cursos inicializados (${cursos.length} cursos)`);
-        return cursos;
     } catch (error) {
-        console.error('Error inicializando cursos:', error);
-        // Fallback
+        console.error('Error inicializando cursos desde el catálogo:', error);
         cursos = DEFAULT_CURSOS.slice();
-        cursoMap.clear();
-        cursos.forEach(curso => cursoMap.set(curso.id, curso));
-        return cursos;
+        console.warn('Usando datos por defecto.');
     }
+
+    cursoMap.clear();
+    cursos.forEach(curso => cursoMap.set(curso.id, curso));
+
+    console.log(`Cursos inicializados (${cursos.length} cursos)`);
+    return cursos;
 }
 
-
-// Inicializar `cursos` y `cursoMap` con los valores por defecto para mantener compatibilidad
-cursos = DEFAULT_CURSOS.slice();
-cursoMap.clear();
-cursos.forEach(curso => cursoMap.set(curso.id, curso));
-
 /**
- * Devuelve la lista de pensums disponibles leyendo `modules/json/index.json` si existe
+ * Devuelve la lista de pensums disponibles desde el catálogo.
  * @returns {Promise<Array<{file: string, id: string, name: string}>>}
  */
 export async function listAvailablePensums() {
-    // Intentar varias rutas para index.json
-    let indexList = null;
-    for (const candidate of INDEX_CANDIDATES) {
-        try {
-            const res = await fetch(candidate.url);
-            if (!res.ok) {
-                console.debug(`Index no encontrado en ${candidate.url}: ${res.status}`);
-                continue;
-            }
-            const parsed = await res.json();
-            if (Array.isArray(parsed)) {
-                indexList = parsed;
-                break;
-            }
-        } catch (err) {
-            console.debug(`Error leyendo index en ${candidate.url}:`, err);
-        }
+    try {
+        const catalogo = await cargarCatalogo();
+        if (!catalogo || !Array.isArray(catalogo.pensums)) return [];
+        return catalogo.pensums.map(p => ({ file: p.file, id: p.id, name: p.nombre }));
+    } catch (err) {
+        console.warn('Error listando pensums desde el catálogo:', err.message);
+        return [];
     }
-
-    if (Array.isArray(indexList)) {
-        const pensums = indexList.map(entry => {
-            if (typeof entry === 'string') {
-                const file = `/json/${entry}`;
-                const id = entry.replace('.json', '');
-                const name = id.replace(/_/g, ' ');
-                return { file, id, name };
-            } else if (typeof entry === 'object' && entry.file) {
-                const file = `/json/${entry.file}`;
-                const id = entry.id || entry.file.replace('.json','');
-                const name = entry.name || id.replace(/_/g, ' ');
-                return { file, id, name };
-            }
-            return null;
-        }).filter(Boolean);
-
-        console.log(' Pensums disponibles (desde index):', pensums.length);
-        pensums.forEach(p => console.log(`  - ${p.id}: ${p.name} (${p.file})`));
-        return pensums;
-    }
-
-    // Si no hay index, intentar descubrir archivos probando una lista conocida
-    const KNOWN_FILES = [
-        'ambiental_25.json',
-        'ambiental_ant.json',
-        'ciencias_y_sistemas_22.json',
-        'ciencias_y_sistemas_25.json',
-        'ciencias_y_sistemas_ant.json',
-        'civil_22.json',
-        'civil_2017.json',
-        'civil_ant17.json',
-        'electrica_22.json',
-        'electrica_ant.json',
-        'electronica_22.json',
-        'electronica_ant.json',
-        'industrial_22.json',
-        'industrial_ant.json',
-        'mecanica_22.json',
-        'mecanica_ant.json',
-        'mecanica_electrica_22.json',
-        'mecanica_electrica_ant.json',
-        'mecanica_industrial_22.json',
-        'mecanica_industrial_ant.json',
-        'quimica_22.json',
-        'quimica_ant.json'
-    ];
-
-    const detectedPensums = [];
-    for (const fileName of KNOWN_FILES) {
-        const rel = `/json/${fileName}`;
-        try {
-            const res = await fetch(rel, { method: 'HEAD' });
-            if (res.ok) {
-                const id = fileName.replace('.json','');
-                detectedPensums.push({ file: rel, id, name: id.replace(/_/g,' ') });
-            }
-        } catch { /* ignore */ }
-    }
-
-    if (detectedPensums.length > 0) {
-        console.log(' Pensums detectados (probe):', detectedPensums.length);
-        return detectedPensums;
-    }
-
-    return [];
 }
 
 /**
- * Carga un pensum (archivo JSON) individual por su ruta relativa (tal como está en JSON_FILES)
- * Actualiza `cursos` y `cursoMap`.
- * @param {string} relPath
+ * Cambia el pensum activo reconstruyendo `cursos`/`cursoMap` desde el catálogo.
+ * @param {string} relPath - ruta del pensum (p. ej. '/json/civil_22.json')
  * @returns {Promise<Array>} cursos
  */
 export async function loadPensum(relPath) {
     try {
-        const res = await fetch(relPath);
-        if (!res.ok) throw new Error(`HTTP error ${res.status}`);
-        const json = await res.json();
-        if (!Array.isArray(json)) throw new Error('Formato de JSON inválido');
+        const catalogo = await cargarCatalogo();
+        const fileName = relPath.split('/').pop();
+        const imported = construirCursosDesdeCatalogo(catalogo, fileName);
+        if (imported.length === 0) throw new Error(`Pensum no encontrado en el catálogo: ${fileName}`);
 
-        const imported = importarCursosDesdeJSON(json);
         cursos = imported;
 
         // Reconstruir mapa
         cursoMap.clear();
         cursos.forEach(curso => cursoMap.set(curso.id, curso));
 
-        // Intentar cargar y aplicar colores específicos para este pensum (si existe)
+        // Aplicar colores de la carrera desde el catálogo
         try {
             await applyPensumColors(relPath);
         } catch (e) {
@@ -440,32 +286,26 @@ function generateDarkPalette(primaryHex) {
 }
 
 /**
- * Intenta encontrar y aplicar un archivo de colores asociado al pensum cargado.
- * El archivo esperado se encuentra en `modules/pensum_color/<pensum>_color.json`.
- * Ejemplo: `ciencias_y_sistemas_22.json` -> `ciencias_y_sistemas_color.json`
- * No sobrescribe colores ya definidos por curso en el JSON del pensum.
+ * Aplica los colores de la carrera del pensum activo desde el catálogo
+ * (carreras[].colores), estableciendo CSS custom properties y los colores
+ * por curso. No sobrescribe overrides explícitos por curso.
  */
 export async function applyPensumColors(relPensumPath) {
     if (!relPensumPath) return;
     try {
+        const catalogo = getCatalogo();
+        if (!catalogo || !Array.isArray(catalogo.carreras)) return;
+
         const fileName = relPensumPath.split('/').pop(); // e.g. "ciencias_y_sistemas_22.json"
-        // Remover sufijo de año (_22, _25) o de pensum anterior (_ant, _ant17, _2017) si existe
-        const base = fileName.replace(/\.json$/i, '').replace(/(?:_\d{2,4}|_ant\d*)$/, '');
-        const colorRel = `/pensum_color/${base}_color.json`;
-
-        const res = await fetch(colorRel);
-        if (!res.ok) {
-            console.debug(`Archivo de color no encontrado: ${colorRel} (${res.status})`);
-            return;
-        }
-
-        const colorJson = await res.json();
-        const primary = colorJson.color1 || colorJson.primary || null;
-        const secondary = colorJson.color2 || colorJson.secondary || null;
-        const accent = colorJson.color3 || primary;
+        const base = fileName.replace(/\.json$/i, '').replace(SUFIJOS_PENSUM, '');
+        const carrera = catalogo.carreras.find(cr => cr.id === base);
+        const color = (carrera && carrera.colores) || {};
+        const primary = color.color1 || null;
+        const secondary = color.color2 || primary;
+        const accent = color.color3 || primary;
 
         if (!primary && !secondary) {
-            console.debug('Archivo de color sin campos útiles:', colorRel, colorJson);
+            console.debug('Carrera sin colores en el catálogo:', base);
             return false;
         }
 
@@ -483,9 +323,9 @@ export async function applyPensumColors(relPensumPath) {
         });
 
         // Aplicar a todos los cursos solo si no tienen overrides explícitos
-        const carrera = colorJson.carrera || '';
+        const nombreCarrera = carrera ? carrera.nombre : '';
         cursos.forEach(c => {
-            if (!c.carrera) c.carrera = carrera;
+            if (!c.carrera) c.carrera = nombreCarrera;
             c.colors = c.colors || {};
             c.colors.leftTop = c.colors.leftTop || { fill: primary };
             c.colors.right = c.colors.right || { fill: primary };
@@ -494,13 +334,9 @@ export async function applyPensumColors(relPensumPath) {
             c.colors.text = c.colors.text || { fill: textForSecondary };
         });
 
-        console.log(`Colores aplicados desde ${colorRel}: primary=${primary}, secondary=${secondary}, text=${textForSecondary}`);
+        console.log(`Colores aplicados desde el catálogo para ${base}: primary=${primary}, secondary=${secondary}, text=${textForSecondary}`);
         // Actualizar caché compartido para NodeRenderer
         currentPensumColors = { primary, secondary };
-        // Loguear el primer curso para verificar los cambios
-        if (cursos && cursos.length > 0) {
-            console.debug('Ejemplo curso[0].colors:', cursos[0].colors);
-        }
         return true;
     } catch (err) {
         console.debug('Error aplicando colores del pensum:', err);
@@ -538,4 +374,10 @@ function pickTextColor(bgHex) {
     const lum = relativeLuminance(rgb);
     // WCAG contrast approximation: si luminancia baja (oscuro) -> texto blanco
     return lum < 0.5 ? '#ffffff' : '#222222';
-} 
+}
+
+// Inicializar `cursos` y `cursoMap` con los valores por defecto para mantener
+// compatibilidad (estado inicial no vacío mientras carga el catálogo).
+cursos = DEFAULT_CURSOS.slice();
+cursoMap.clear();
+cursos.forEach(curso => cursoMap.set(curso.id, curso));
