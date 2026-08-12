@@ -17,6 +17,7 @@
 - **Routing:** React Router (`/` → Home, `/visualizador` → Visualizer)
 - **Core JS modules** (not React components) live in `src/modules/`:
   - `data/` — `NodoCurso` model, JSON loading (`cursos.js`), import (`importFromJSON.js`). `cursos` and `cursoMap` are mutable module-level exports.
+  - `data/catalogo.js` — Catálogo unificado: `cargarCatalogo()` (fetch `public/json/catalogo.json` con dedup de promesa), helpers `getCursoInfo`/`getCursoResumen`/`getCursoApertura`, `getDocente` (match por `variantes` tolerante a acentos), `getDocentesDeCurso`, y reputación Supabase (`cargarReputacion()` usa la vista `docente_reputation` + voto propio; `recomendarDocente()` upsert en `docente_reviews`). No bloquea si Supabase no está configurado.
   - `graph/` — `GraphManager`, `LayoutCalculator`, `NodeRenderer`, `EdgeRenderer`, `CriticalPathAnalyzer`, `dimensions.js`
   - `storage/` — `StorageManager` (localStorage persistence, per-pensum keys)
   - `ui/` — `PanZoomManager`, `TooltipManager`
