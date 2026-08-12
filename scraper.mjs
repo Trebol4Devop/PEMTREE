@@ -16,6 +16,23 @@ const DIAS_MAP = {
     'JU': 'jueves', 'VI': 'viernes', 'SA': 'sabado', 'DO': 'domingo'
 };
 
+// Paridad del periodo académico: 1ª mitad del año = impar, 2ª = par.
+const TIPO_PERIODO_POR_FUENTE = {
+    semestre1: 'semestre-impar',
+    semestre2: 'semestre-par',
+    vacaciones1: 'vacaciones-impar',
+    vacaciones2: 'vacaciones-par',
+};
+
+function tipoPeriodoDeFuente(fuente) {
+    return TIPO_PERIODO_POR_FUENTE[fuente] || null;
+}
+
+function normalizarNombre(n) {
+    if (!n) return n;
+    return n.replace(/\s+/g, ' ').trim();
+}
+
 async function fetchHTML(url) {
     const resp = await fetch(url);
     if (!resp.ok) throw new Error(`HTTP ${resp.status}: ${url}`);
@@ -187,10 +204,11 @@ function parseRows(html, fuente) {
             inicio,
             final,
             dias,
-            catedratico,
-            auxiliar,
+            catedratico: normalizarNombre(catedratico),
+            auxiliar: normalizarNombre(auxiliar),
             restricciones,
             fuente,
+            tipoPeriodo: tipoPeriodoDeFuente(fuente),
             ...(periodoRestr ? { periodo_restriccion: periodoRestr } : {}),
         });
     }
