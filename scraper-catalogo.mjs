@@ -2,6 +2,20 @@
 // Pipeline que procesa y organiza los datos dispersos (pensums, colores, horarios,
 // catedráticos y auxiliares) en un único catálogo unificado: public/json/catalogo.json
 //
+// Schema v4: además de la apertura por (ciclo, tipoPeriodo), el catálogo unifica:
+//   - `pensums[]`: registro de cada pensum con carrera, cohort, vigencia y clar
+//     (metadata persistida por scraper-pensum.mjs en index.json).
+//   - `cursos[].pensums[]`: datos por pensum (semestre, créditos, tipo, prerequisitos
+//     y posrequisitos normalizados a códigos). Todos los cursos del pensum se siembran
+//     aunque nunca hayan abierto (historial vacío).
+//   - `cursos[].secciones[]`: horarios ACUMULADOS por ciclo con su `ciclo` explícito,
+//     para conservar la última info aunque el portal la borre. Incluye tipoSeccion,
+//     modalidad, días/horas, restricciones (bandera/placeholder), periodo_restriccion,
+//     anio y referencias a docentes (catedraticoId/auxiliarId).
+//   - `docentes[].cursos[].secciones[]`: asociación catedrático <-> curso <-> sección.
+//   - `carreras[].cursos[]`: cierre carrera -> cursos.
+// - Restricciones: el texto detallado se enriquece aparte (scraper-restricciones.mjs);
+//   el pipeline conserva el texto enriquecido si el snapshot vuelve con solo la bandera.
 // - Cada ejecución detecta un ciclo académico nuevo (id generado "ciclo-AAAA-N",
 //   no existe identificador oficial) y hace merge del historial por "tipoPeriodo"
 //   par/impar: semestre-impar, semestre-par, vacaciones-impar, vacaciones-par.
@@ -26,7 +40,7 @@ const HISTORY_DIR = join(HORARIOS_DIR, 'history');
 const PENSUM_COLOR_DIR = resolve(__dirname, 'pemtree-react', 'public', 'pensum_color');
 const CATALOGO_PATH = join(PUBLIC_JSON, 'catalogo.json');
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 4;
 
 // Umbrales configurables
 const DEPURAR_TRAS_CICLOS = 3;          // ciclos consecutivos sin aparecer -> activo:false
@@ -96,6 +110,166 @@ function ordenTipoPeriodo(a, b) {
     return TIPO_PERIODOS_ORDER.indexOf(a) - TIPO_PERIODOS_ORDER.indexOf(b);
 }
 
+// ---------- Helpers del modelo v4 ----------
+
+// Año del ciclo "ciclo-2026-1" -> "2026" (equivale al `anio` que usa el portal para restricciones)
+function anioDeCiclo(cicloId) {
+    const m = String(cicloId).match(/^ciclo-(\d{4})-/);
+    return m ? m[1] : null;
+}
+
+// Cohort del pensum desde el filename (_25, _22, _2017, _ant*) con fallback a ANTERIOR
+function derivarCohort(file) {
+    const stem = file.replace(/\.json$/i, '');
+    const m = stem.match(/_(20\d{2})$/);
+    if (m) return m[1];
+    if (/_25$/.test(stem)) return '2025';
+    if (/_22$/.test(stem)) return '2022';
+    return 'ANTERIOR';
+}
+
+// Id determinista de un docente (misma regla que construirDocentesDesdeSnapshots),
+// permite referenciar docentes desde las secciones sin esperar a tener el mapa completo.
+function docenteIdDe(nombre, rol) {
+    if (!esDocente(nombre)) return null;
+    const clave = claveNombre(normalizarNombre(nombre));
+    return `doc_${rol}_${slugClave(clave)}`;
+}
+
+// Normaliza pre_requisitos (string del pensum) a una lista semántica:
+//   "0732, 0152, (0354|0348)" -> ["0732","0152",{alternativa:["0354","0348"]}]
+//   "200CR"                   -> [{creditos:200}]
+//   "Ninguno" / "PENDIENTE"   -> omitidos
+function parsePreRequisitos(str) {
+    if (!str) return [];
+    const out = [];
+    for (const raw of String(str).split(',')) {
+        const p = raw.trim();
+        if (!p) continue;
+        if (/^\d{4}$/.test(p)) { out.push(p); continue; }
+        const or = p.match(/^\(([^)]+)\)$/);
+        if (or) {
+            const alts = or[1].split('|').map(s => s.trim()).filter(Boolean);
+            if (alts.length > 0) out.push({ alternativa: alts });
+            continue;
+        }
+        const cr = p.match(/^(\d{2,4})\s*CR$/i);
+        if (cr) { out.push({ creditos: parseInt(cr[1], 10) }); continue; }
+    }
+    return out;
+}
+
+// Normaliza post_requisitos (nombres en el pensum) a códigos vía el mapa nombre->código
+function parsePosRequisitos(str, nameToCodes) {
+    if (!str) return [];
+    const out = [];
+    for (const raw of String(str).split(',')) {
+        const p = raw.trim();
+        if (!p || p.toLowerCase() === 'ninguno') continue;
+        if (/^\d{4}$/.test(p)) { out.push(p); continue; }
+        const codes = nameToCodes.get(normalizarNombre(p));
+        if (codes && codes.size > 0) out.push([...codes][0]);
+    }
+    return out;
+}
+
+// Clave estable de una sección dentro de un (ciclo, tipoPeriodo): sin repetir en --force.
+function seccionKey(s) {
+    return `${s.tipoPeriodo}|${s.seccion || ''}|${s.tipoSeccion || ''}|${s.inicio || ''}|${s.final || ''}|${(s.dias || []).join('')}`;
+}
+
+// Registro de pensums + info por-pensum de cada curso (desde index.json + archivos de pensum).
+// index.json puede traer cohort/vigencia/clar (si scraper-pensum.mjs se re-corrió) o no
+// (fallback: cohort derivado del filename; vigencia/clar null).
+function derivarPensums(index) {
+    const pensums = [];
+    const pensumCursos = new Map(); // codigo -> [{ file, semestre, creditos, tipo, preRequisitos[], posRequisitos[] }]
+    const nombres = new Map();      // codigo -> nombre (primer pensum)
+    const nameToCodes = new Map();  // nombre normalizado -> Set<codigo>
+    const cached = new Map();       // file -> pensum[]
+
+    for (const entry of index) {
+        if (!entry.file) continue;
+        const pensum = leerJSON(join(PUBLIC_JSON, entry.file), []);
+        if (!Array.isArray(pensum) || pensum.length === 0) continue;
+        cached.set(entry.file, pensum);
+        for (const c of pensum) {
+            if (!c.codigo || !c.nombre) continue;
+            const nombre = normalizarNombre(c.nombre);
+            if (!nameToCodes.has(nombre)) nameToCodes.set(nombre, new Set());
+            nameToCodes.get(nombre).add(String(c.codigo));
+        }
+    }
+
+    for (const entry of index) {
+        const file = entry.file;
+        const pensum = cached.get(file);
+        if (!pensum) continue;
+        const stem = file.replace(/\.json$/i, '');
+        const base = stem.replace(SUFIJOS_PENSUM, '');
+        pensums.push({
+            id: stem,
+            file,
+            carrera: base,
+            nombre: String(entry.name || base),
+            cohort: entry.cohort || derivarCohort(file),
+            vigencia: entry.vigencia || null,
+            clar: entry.clar != null ? !!entry.clar : null,
+        });
+        for (const c of pensum) {
+            const codigo = String(c.codigo);
+            if (!nombres.has(codigo)) nombres.set(codigo, String(c.nombre || ''));
+            if (!pensumCursos.has(codigo)) pensumCursos.set(codigo, []);
+            pensumCursos.get(codigo).push({
+                file,
+                semestre: Number(c.semestre) || 0,
+                creditos: Number(c.creditos) || 0,
+                tipo: String(c.tipo || ''),
+                preRequisitos: parsePreRequisitos(c.pre_requisitos),
+                posRequisitos: parsePosRequisitos(c.post_requisitos, nameToCodes),
+            });
+        }
+    }
+
+    for (const arr of pensumCursos.values()) arr.sort((a, b) => a.file.localeCompare(b.file));
+    pensums.sort((a, b) => a.id.localeCompare(b.id));
+    return { pensums, pensumCursos, nombres, nameToCodes };
+}
+
+// Secciones/horarios del ciclo actual desde los snapshots crudos. Cada sección lleva
+// su `ciclo` para que la app distinga el horario vigente del histórico conservado.
+function construirSecciones(periodos, cicloId) {
+    const map = new Map(); // codigo -> Map<seccionKey, seccion>
+    for (const fuente of FUENTES) {
+        const entries = periodos[fuente] || [];
+        if (entries.length === 0) continue;
+        const tp = tipoPeriodoDeFuente(fuente);
+        for (const h of entries) {
+            const codigo = String(h.codigo);
+            const seccion = {
+                ciclo: cicloId,
+                tipoPeriodo: tp,
+                seccion: h.seccion || '',
+                tipoSeccion: h.tipo || 'MAGISTRAL',
+                modalidad: h.modalidad || '',
+                edificio: h.edificio || '',
+                salon: h.salon || '',
+                inicio: h.inicio || '',
+                final: h.final || '',
+                dias: Array.isArray(h.dias) ? [...h.dias] : [],
+                restricciones: typeof h.restricciones === 'string' ? h.restricciones : !!h.restricciones,
+                periodo_restriccion: h.periodo_restriccion || null,
+                anio: anioDeCiclo(cicloId),
+                catedraticoId: docenteIdDe(h.catedratico, 'catedratico'),
+                auxiliarId: docenteIdDe(h.auxiliar, 'auxiliar'),
+            };
+            if (!map.has(codigo)) map.set(codigo, new Map());
+            map.get(codigo).set(seccionKey(seccion), seccion);
+        }
+    }
+    return map;
+}
+
 // ---------- Carreras (desde index.json + pensum_color) ----------
 
 const SUFIJOS_PENSUM = /(?:_\d{2,4}|_ant\d*)$/;
@@ -144,6 +318,7 @@ function derivarCarreras() {
             nombre: carrera.nombre,
             pensums: [...carrera.pensums].sort(),
             colores: carrera.colores,
+            cursos: [...carrera.cursos].sort((a, b) => a.localeCompare(b, undefined, { numeric: true })),
         });
     }
     out.sort((a, b) => a.id.localeCompare(b.id));
@@ -243,7 +418,8 @@ function construirDocentesDesdeSnapshots(periodos, cicloId, cursoACarreras, doce
             const carreras = cursoACarreras.get(codigo) || new Set();
             const nombre = lista[0].nombre || '';
             for (const [campo, rol] of [['catedratico', 'catedratico'], ['auxiliar', 'auxiliar']]) {
-                for (const raw of lista.map(h => h[campo])) {
+                for (const h of lista) {
+                    const raw = h[campo];
                     if (!esDocente(raw)) continue;
                     const nombreNorm = normalizarNombre(raw);
                     const clave = claveNombre(nombreNorm);
@@ -270,11 +446,13 @@ function construirDocentesDesdeSnapshots(periodos, cicloId, cursoACarreras, doce
                             rol,
                             tipoPeriodos: new Set(),
                             ciclos: new Set(),
+                            secciones: new Set(),
                         });
                     }
                     const dc = d.cursos.get(codigo);
                     dc.tipoPeriodos.add(tp);
                     dc.ciclos.add(cicloId);
+                    dc.secciones.add(`${cicloId}|${tp}|${h.seccion || ''}`);
                 }
             }
         }
@@ -306,11 +484,13 @@ function construirDocentesDesdeSnapshots(periodos, cicloId, cursoACarreras, doce
                     rol: d.rol,
                     tipoPeriodos: new Set(),
                     ciclos: new Set(),
+                    secciones: new Set(),
                 });
             }
             const dc = d.cursos.get(pc.codigo);
             for (const tp of pc.tipoPeriodos || []) dc.tipoPeriodos.add(tp);
             for (const ciclo of pc.ciclos || []) dc.ciclos.add(ciclo);
+            for (const s of pc.secciones || []) dc.secciones.add(s);
         }
     }
 
@@ -357,6 +537,7 @@ function serializarDocentes(docentes) {
                 rol: c.rol,
                 tipoPeriodos: [...c.tipoPeriodos].sort(ordenTipoPeriodo),
                 ciclos: [...c.ciclos].sort(ordenCiclo),
+                secciones: [...c.secciones].sort(),
             }))
             .sort((a, b) => a.codigo.localeCompare(b.codigo, undefined, { numeric: true }));
         out.push({
@@ -460,17 +641,32 @@ function main() {
     const catalogoCursosPrev = catalogoPrevio && Array.isArray(catalogoPrevio.cursos) ? catalogoPrevio.cursos : [];
     const cursosInfo = construirObservaciones(periodos, cicloId, catalogoCursosPrev);
 
+    // Modelo v4: registro de pensums + info por-pensum de cada curso + secciones del ciclo actual
+    const index = leerJSON(join(PUBLIC_JSON, 'index.json'), []);
+    const { pensums, pensumCursos, nombres: nombresPensum } = derivarPensums(index);
+    const seccionesActuales = construirSecciones(periodos, cicloId);
+
     const docentes = construirDocentesDesdeSnapshots(periodos, cicloId, cursoACarreras, catalogoPrevio?.docentes || []);
     depurarDocentes(docentes, ciclosAcademicos);
 
+    // Secciones previas acumuladas (clave completa con ciclo, para conservar el histórico
+    // aunque el portal borre datos del ciclo nuevo)
+    const seccionesPrevMap = new Map();
+    for (const pc of catalogoCursosPrev) {
+        const m = new Map();
+        for (const s of pc.secciones || []) m.set(`${s.ciclo}|${seccionKey(s)}`, s);
+        seccionesPrevMap.set(pc.codigo, m);
+    }
+
     // Fusionar observaciones previas + nuevas
     const cursosPrevMap = new Map(catalogoCursosPrev.map(c => [c.codigo, c]));
-    const todosCodigos = new Set([...cursosInfo.keys(), ...cursosPrevMap.keys()]);
+    const todosCodigos = new Set([...cursosInfo.keys(), ...cursosPrevMap.keys(), ...pensumCursos.keys()]);
 
     const cursosOut = [];
     for (const codigo of [...todosCodigos].sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))) {
         const prev = cursosPrevMap.get(codigo);
         const info = cursosInfo.get(codigo);
+        const pensumInfo = pensumCursos.get(codigo) || [];
 
         const obsMap = new Map();
         // Solo se heredan observaciones de ciclos anteriores; las del ciclo actual
@@ -483,12 +679,36 @@ function main() {
             (a, b) => ordenCiclo(a.ciclo, b.ciclo) || ordenTipoPeriodo(a.tipoPeriodo, b.tipoPeriodo)
         );
 
+        // Secciones acumuladas: heredar todo lo previo (ciclos anteriores) y regenerar el
+        // ciclo actual desde los snapshots (determinista). Conserva el texto enriquecido
+        // de restricciones si el snapshot vuelve a traer solo la bandera true.
+        const secciones = new Map(seccionesPrevMap.get(codigo) || []);
+        for (const [key, s] of seccionesActuales.get(codigo) || []) {
+            const fullKey = `${cicloId}|${key}`;
+            const prevSec = secciones.get(fullKey);
+            if (prevSec && typeof prevSec.restricciones === 'string' && typeof s.restricciones !== 'string') {
+                s.restricciones = prevSec.restricciones;
+            }
+            secciones.set(fullKey, s);
+        }
+        const seccionesOut = [...secciones.values()].sort(
+            (a, b) => ordenCiclo(a.ciclo, b.ciclo) || ordenTipoPeriodo(a.tipoPeriodo, b.tipoPeriodo)
+                || String(a.seccion).localeCompare(String(b.seccion))
+        );
+
         cursosOut.push({
             codigo,
-            nombre: (info && info.nombre) || (prev && prev.nombre) || '',
+            nombre: (info && info.nombre) || (prev && prev.nombre) || nombresPensum.get(codigo) || '',
             carreras: cursoACarreras.has(codigo) ? [...cursoACarreras.get(codigo)].sort() : [],
+            pensums: pensumInfo,
+            creditos: pensumInfo.length > 0 ? pensumInfo[0].creditos : null,
+            tipo: pensumInfo.length > 0 ? pensumInfo[0].tipo : null,
+            esObligatorio: pensumInfo.length > 0 ? pensumInfo[0].tipo === 'Obligatorio' : null,
+            enPensum: pensumInfo.length > 0,
+            vistoEnHorarios: observaciones.length > 0,
             observaciones,
             resumen: construirResumen(observaciones),
+            secciones: seccionesOut,
         });
     }
 
@@ -498,6 +718,7 @@ function main() {
         ultimoLastRun: lastRun,
         ciclosAcademicos,
         tipoPeriodos: TIPO_PERIODOS_ORDER,
+        pensums,
         carreras,
         cursos: cursosOut,
         docentes: serializarDocentes(docentes),
@@ -508,12 +729,16 @@ function main() {
     const totalDocentes = catalogo.docentes.length;
     const inactivos = catalogo.docentes.filter(d => !d.activo).length;
     const totalObs = catalogo.cursos.reduce((acc, c) => acc + c.observaciones.length, 0);
+    const totalSecciones = catalogo.cursos.reduce((acc, c) => acc + (c.secciones || []).length, 0);
+    const soloPensum = catalogo.cursos.filter(c => c.enPensum && !c.vistoEnHorarios).length;
 
     console.log(`\n=== RESUMEN ===`);
     console.log(`Ciclo procesado: ${cicloId} (lastRun ${lastRun})`);
+    console.log(`Pensums: ${pensums.length}`);
     console.log(`Carreras: ${carreras.length}`);
-    console.log(`Cursos: ${cursosOut.length}`);
+    console.log(`Cursos: ${cursosOut.length} (${soloPensum} solo de pensum, sin historial de horarios)`);
     console.log(`  Observaciones (abrió/no): ${totalObs}`);
+    console.log(`  Secciones (horarios): ${totalSecciones}`);
     console.log(`Docentes: ${totalDocentes} (${inactivos} inactivos por depuración)`);
     console.log(`Snapshots archivados en: ${HISTORY_DIR}`);
     console.log(`Catálogo escrito en: ${CATALOGO_PATH}`);

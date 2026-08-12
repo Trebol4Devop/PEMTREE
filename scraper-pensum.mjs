@@ -247,6 +247,7 @@ function naming(pensum, vigencia) {
     return {
         file: `${carrera.base}${sufijo}.json`,
         name: `${carrera.nombre}${etiqueta}`,
+        cohort: pensum.seccion,
     };
 }
 
@@ -277,12 +278,12 @@ async function main() {
             }
 
             const json = buildJSON(rows);
-            const { file, name } = naming(p, vigencia);
+            const { file, name, cohort } = naming(p, vigencia);
             const filePath = resolve(OUT_DIR, file);
 
             // El orden de campos del JSON existente es: codigo, semestre, nombre, creditos, tipo, pre_requisitos, post_requisitos
             writeFileSync(filePath, JSON.stringify(json, null, 2), 'utf-8');
-            index.push({ file, name });
+            index.push({ file, name, cohort, vigencia, clar: !!p.clar });
 
             console.log(`    -> ${file} (${json.length} cursos)`);
         } catch (e) {
