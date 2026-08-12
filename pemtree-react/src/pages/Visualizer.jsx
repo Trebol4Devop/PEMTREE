@@ -6,6 +6,7 @@ import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
 import ScheduleBuilder from '../components/ScheduleBuilder';
 import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
+import { cargarCatalogo, getUltimaActualizacionHorarios } from '../modules/data/catalogo';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
 import { PanZoomManager } from '../modules/ui/PanZoomManager';
@@ -78,18 +79,19 @@ export default function Visualizer() {
         localStorage.setItem('pemtree_active_view', activeView);
     }, [activeView]);
 
-    // Load schedule timestamps from index.json
+    // Load schedule timestamps from the catalog (lastRun por ciclo/periodo)
     useEffect(() => {
-        fetch('/json/horarios/index.json')
-            .then(r => r.json())
-            .then(data => {
+        let active = true;
+        cargarCatalogo()
+            .then(async () => {
                 const ts = {};
-                if (data.periods) {
-                    data.periods.forEach(p => { ts[p.id] = p.lastUpdated || null; });
+                for (const p of ['semestre1', 'semestre2', 'vacaciones1', 'vacaciones2']) {
+                    ts[p] = await getUltimaActualizacionHorarios(p);
                 }
-                setScheduleTimestamps(ts);
+                if (active) setScheduleTimestamps(ts);
             })
             .catch(() => {});
+        return () => { active = false; };
     }, []);
 
     // Listen for schedule period changes from ScheduleBuilder

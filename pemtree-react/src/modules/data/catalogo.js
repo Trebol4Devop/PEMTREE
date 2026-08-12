@@ -328,3 +328,104 @@ export function esCursoRecomendable(codigo) {
     const curso = getCursoInfo(codigo);
     return !!curso && curso.vistoEnHorarios === true;
 }
+
+// ---------- Horarios por periodo (migración Fase 2) ----------
+
+const PERIODO_A_TIPO_PERIODO = {
+    semestre1: 'semestre-impar',
+    semestre2: 'semestre-par',
+    vacaciones1: 'vacaciones-impar',
+    vacaciones2: 'vacaciones-par',
+};
+
+function ordenCiclo(a, b) {
+    return String(a).replace('ciclo-', '').localeCompare(String(b).replace('ciclo-', ''), undefined, { numeric: true });
+}
+
+/**
+ * Elige el ciclo más reciente que capturó un tipoPeriodo. Si el ciclo vigente
+ * no lo capturó (p. ej. el portal borró el periodo), cae al ciclo anterior con
+ * `datoAnterior: true` para conservar la última info acumulada.
+ */
+function cicloConDatos(catalogo, tipoPeriodo) {
+    const ciclos = (catalogo.ciclosAcademicos || []).slice().sort((a, b) => ordenCiclo(a.id, b.id));
+    const vigente = ciclos[ciclos.length - 1] || null;
+    for (let i = ciclos.length - 1; i >= 0; i--) {
+        const c = ciclos[i];
+        if ((c.periodosCapturados || []).includes(tipoPeriodo)) {
+            return {
+                cicloId: c.id,
+                lastRun: c.lastRun || null,
+                vigenteId: vigente ? vigente.id : null,
+                datoAnterior: vigente ? c.id !== vigente.id : false,
+            };
+        }
+    }
+    return null;
+}
+
+/**
+ * Horarios de un periodo desde el catálogo (migración Fase 2): agrega las
+ * secciones de todos los cursos para el (ciclo, tipoPeriodo) elegido y las
+ * devuelve con el esquema que consume scraper.js/ScheduleBuilder (campo `tipo`
+ * = tipoSeccion, `catedratico`/`auxiliar` resueltos por id a nombre).
+ * Cada objeto lleva `ciclo` y `datoAnterior` para etiquetar procedencia.
+ * @param {string} periodId 'semestre1'|'semestre2'|'vacaciones1'|'vacaciones2'
+ * @param {{ciclo?:string}} [opts] forzar un ciclo específico
+ * @returns {Promise<Array>}
+ */
+export async function getHorariosPorPeriodo(periodId, { ciclo } = {}) {
+    const catalogo = await cargarCatalogo();
+    if (!catalogo || !Array.isArray(catalogo.cursos)) return [];
+    const tp = PERIODO_A_TIPO_PERIODO[periodId];
+    if (!tp) return [];
+
+    let objetivo;
+    if (ciclo) {
+        objetivo = { cicloId: ciclo, datoAnterior: false };
+    } else {
+        objetivo = cicloConDatos(catalogo, tp);
+    }
+    if (!objetivo) return [];
+
+    const out = [];
+    for (const curso of catalogo.cursos) {
+        const codigo = String(curso.codigo);
+        for (const s of curso.secciones || []) {
+            if (s.tipoPeriodo !== tp || s.ciclo !== objetivo.cicloId) continue;
+            out.push({
+                codigo,
+                nombre: curso.nombre || '',
+                seccion: s.seccion || '',
+                modalidad: s.modalidad || '',
+                tipo: s.tipoSeccion || 'MAGISTRAL',
+                edificio: s.edificio || '',
+                salon: s.salon || '',
+                inicio: s.inicio || '',
+                final: s.final || '',
+                dias: Array.isArray(s.dias) ? [...s.dias] : [],
+                catedratico: (getDocentePorId(s.catedraticoId) || {}).nombre || '',
+                auxiliar: (getDocentePorId(s.auxiliarId) || {}).nombre || '',
+                restricciones: s.restricciones ?? false,
+                periodo_restriccion: s.periodo_restriccion || null,
+                ciclo: s.ciclo,
+                datoAnterior: objetivo.datoAnterior,
+            });
+        }
+    }
+    out.sort((a, b) => a.codigo.localeCompare(b.codigo, undefined, { numeric: true }));
+    return out;
+}
+
+/**
+ * Última actualización (lastRun del ciclo) de un periodo, o null si nunca se capturó.
+ * Reemplaza la lectura de horarios/index.json.
+ */
+export async function getUltimaActualizacionHorarios(periodId) {
+    const catalogo = await cargarCatalogo();
+    if (!catalogo) return null;
+    const tp = PERIODO_A_TIPO_PERIODO[periodId];
+    if (!tp) return null;
+    const info = cicloConDatos(catalogo, tp);
+    return info ? info.lastRun : null;
+}

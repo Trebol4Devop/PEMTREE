@@ -1,3 +1,5 @@
+import { getHorariosPorPeriodo } from './catalogo.js';
+
 let cachedData = {};
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -8,11 +10,12 @@ const TIPOS_NO_LAB = ['MAGISTRAL', 'TRABAJO_DIRIGIDO', 'DIBUJO'];
 
 export async function cargarHorarios(periodId) {
     if (cachedData[periodId]) return cachedData[periodId];
-    
-    const response = await fetch(`/json/horarios/${periodId}.json`);
-    if (!response.ok) throw new Error(`No se pudo cargar ${periodId}`);
-    
-    const data = await response.json();
+
+    // Tras la migración, los horarios se leen del catálogo unificado
+    // (cursos[].secciones acumuladas por ciclo). Se usa el ciclo más reciente
+    // con datos para el periodo; si el vigente no lo capturó, se cae al anterior
+    // con `datoAnterior: true` (los objetos lo etiquetan).
+    const data = await getHorariosPorPeriodo(periodId);
     cachedData[periodId] = data;
     return data;
 }

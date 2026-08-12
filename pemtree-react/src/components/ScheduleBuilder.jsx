@@ -1633,6 +1633,20 @@ export default function ScheduleBuilder() {
         </div>
         </div>
 
+        {horarios.length > 0 && horarios[0].datoAnterior && (
+            <div
+                style={{
+                    display: 'flex', alignItems: 'center', gap: '6px', padding: '0.35rem 0.9rem',
+                    fontSize: '0.68rem', color: '#B45309', background: '#FEF9E7',
+                    borderBottom: '1px solid #FCD34D', flexWrap: 'wrap',
+                }}
+                title="El portal oficial no publicó este periodo en el ciclo vigente; se muestran los datos del ciclo anterior conservados."
+            >
+                <Clock size={12} />
+                <span>Datos del ciclo anterior (<strong>{horarios[0].ciclo}</strong>): el ciclo vigente no publicó este periodo.</span>
+            </div>
+        )}
+
         <div className="schedule-filters">
         <select
         className="schedule-modalidad-select"
