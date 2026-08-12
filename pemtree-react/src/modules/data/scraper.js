@@ -6,6 +6,7 @@ const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabad
 
 const TIPO_LAB = 'LABORATORIO';
 const TIPO_PRACTICA = 'PRACTICA';
+// Categorías "no laboratorio" del portal oficial (MAGISTRAL, TRABAJO_DIRIGIDO, DIBUJO)
 const TIPOS_NO_LAB = ['MAGISTRAL', 'TRABAJO_DIRIGIDO', 'DIBUJO'];
 
 export async function cargarHorarios(periodId) {
@@ -20,27 +21,12 @@ export async function cargarHorarios(periodId) {
     return data;
 }
 
-export async function cargarTodosLosHorarios() {
-    const [sem1, sem2, vac1, vac2] = await Promise.all([
-        cargarHorarios('semestre1').catch(() => []),
-        cargarHorarios('semestre2').catch(() => []),
-        cargarHorarios('vacaciones1').catch(() => []),
-        cargarHorarios('vacaciones2').catch(() => [])
-    ]);
-    
-    return { semestre1: sem1, semestre2: sem2, vacaciones1: vac1, vacaciones2: vac2 };
-}
-
 export function getTipo(horario) {
     return horario.tipo || 'MAGISTRAL';
 }
 
 export function esLaboratorio(horario) {
     return getTipo(horario) === TIPO_LAB;
-}
-
-export function esPractica(horario) {
-    return getTipo(horario) === TIPO_PRACTICA;
 }
 
 export function esTraslapePermitido(horario) {
@@ -181,14 +167,6 @@ export function validarHorarioCompleto(horarios, esVacaciones) {
         return validarReglasVacaciones(horarios);
     }
     return detectarConflictosSemestral(horarios);
-}
-
-export function buscarHorariosPorCodigo(horarios, codigo) {
-    return horarios.filter(h => h.codigo === codigo);
-}
-
-export function getSeccionesDisponibles(horarios, codigo) {
-    return buscarHorariosPorCodigo(horarios, codigo);
 }
 
 export function formatearHorario(horario) {

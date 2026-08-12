@@ -332,27 +332,10 @@ async function main() {
         writeFileSync(filePath, JSON.stringify(horarios, null, 2), 'utf-8');
     }
 
-    // Merge: semestre1 + semestre2 → semestre
-    const semestreData = [
-        ...(allData.semestre1 || []).map(h => ({ ...h })),
-        ...(allData.semestre2 || []).map(h => ({ ...h }))
-    ];
-    const vacacionesData = [
-        ...(allData.vacaciones1 || []).map(h => ({ ...h })),
-        ...(allData.vacaciones2 || []).map(h => ({ ...h }))
-    ];
-
-    // Write merged files
-    writeFileSync(`${outDir}/semestre.json`, JSON.stringify(semestreData, null, 2), 'utf-8');
-    writeFileSync(`${outDir}/vacaciones.json`, JSON.stringify(vacacionesData, null, 2), 'utf-8');
-
     console.log(`\nIndividuales:`);
     for (const [nombre, horarios] of Object.entries(allData)) {
         console.log(`  ${nombre}.json -> ${horarios.length} horarios`);
     }
-    console.log(`\nFusionados:`);
-    console.log(`  semestre.json -> ${semestreData.length} horarios`);
-    console.log(`  vacaciones.json -> ${vacacionesData.length} horarios`);
 
     if (allErrores.length > 0) {
         console.log(`\n=== ERRORES ENCONTRADOS (${allErrores.length}) ===`);
@@ -373,7 +356,7 @@ async function main() {
 
     console.log(`\n=== INDEX CREADO (${now}) ===`);
     console.log(`Archivos en: ${outDir}`);
-    console.log(`  index.json, semestre.json, vacaciones.json + individuales`);
+    console.log(`  index.json + individuales (semestre1|2, vacaciones1|2)`);
 }
 
 function contarPorTipo(horarios) {
