@@ -13,6 +13,7 @@ import {
 import { getPensumKey } from '../modules/data/cursos';
 import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
 import ExportModal from './ExportModal';
+import DocenteReviews from './DocenteReviews';
 import { WarningBanner } from './ui';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -1771,6 +1772,7 @@ export default function ScheduleBuilder() {
                             <div className="schedule-section-check">
                             {allSlotsSelected && <Check size={10} />}
                             </div>
+                            <div className="schedule-section-slots">
                             {displaySlots.map((sec, sIdx) => {
                                 const isFirst = sIdx === 0;
                                 const showBadge = sec.tipo && sec.tipo !== 'MAGISTRAL';
@@ -1808,6 +1810,7 @@ export default function ScheduleBuilder() {
                                     </Fragment>
                                 );
                             })}
+                            </div>
                             {conf.status !== 'valid' && (
                                 <span className={`schedule-section-status ${conf.status}`} style={{ marginTop: 0, alignSelf: 'center' }}>
                                 {conf.status === 'error' ? <X size={10} /> : <AlertTriangle size={10} />}
@@ -1818,6 +1821,7 @@ export default function ScheduleBuilder() {
                                 <Check size={10} />
                                 </span>
                             )}
+                            <DocenteReviews nombre={first.catedratico} />
                             </div>
                         );
                     })}

@@ -95,25 +95,6 @@ export const SEMESTER_LABEL = {
   dark: '#f1f5f9',    // target: text_primary dark
 };
 
-/* ── Canvas export (ScheduleBuilder.renderToCanvas) ─────────── */
-
-export const CANVAS_COLORS = {
-  light: {
-    BG: '#FAFBFC',          // target: page
-    SURFACE: '#FFFFFF',     // target: surface
-    BORDER: '#DFE1E6',      // target: border_default
-    TEXT_MUTED: '#7A869A',  // text_muted
-    TIME_BG: '#F4F5F7',    // target: surface_secondary
-  },
-  dark: {
-    BG: '#0E1624',          // target: page dark
-    SURFACE: '#1C2636',     // target: surface dark
-    BORDER: '#3E4C5E',      // target: border_default dark
-    TEXT_MUTED: '#94a3b8',  // text_muted dark
-    TIME_BG: '#0E1624',     // target: page dark (was #0f172a → unified)
-  },
-};
-
 /* ── Advertencia (warning icon) colours ─────────────────────── */
 
 export const WARNING_COLORS = {

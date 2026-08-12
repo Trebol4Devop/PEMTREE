@@ -5,7 +5,7 @@ import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
 import ScheduleBuilder from '../components/ScheduleBuilder';
-import { cursos, cursoMap, initializeCursos, listAvailablePensums, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
+import { cursos, cursoMap, initializeCursos, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
 import { cargarCatalogo, getUltimaActualizacionHorarios } from '../modules/data/catalogo';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
@@ -27,7 +27,6 @@ export default function Visualizer() {
     });
     const [graphManager, setGraphManager] = useState(null);
     const [panZoom, setPanZoom] = useState(null);
-    const [pensums, setPensums] = useState([]);
     const [currentPensum, setCurrentPensum] = useState('');
     
     const [zoom, setZoom] = useState(100);
@@ -210,10 +209,7 @@ export default function Visualizer() {
                 storageManager.guardarPensumActual(pensumToLoad);
                 setCurrentPensum(pensumToLoad);
 
-                const availablePensums = await listAvailablePensums();
-
                 if (!isMounted) return;
-                setPensums(availablePensums);
 
                 const container = graficaRef.current;
                 container.innerHTML = '';
@@ -377,30 +373,6 @@ export default function Visualizer() {
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [showCriticalPath]);
-
-    const handlePensumChange = async (e) => {
-        const relPath = e.target.value;
-        const gm = graphManagerRef.current;
-        if (!relPath || !gm) return;
-        try {
-            await loadPensum(relPath);
-            setCurrentPensum(relPath);
-            // Guardar el pensum seleccionado
-            if (gm.storageManager) {
-                gm.storageManager.guardarPensumActual(relPath);
-                gm.storageManager.cargarProgreso(cursos, cursoMap);
-            }
-            actualizarCreditos();
-            gm.updateCursos(cursos, cursoMap);
-            await gm.dibujarGrafo();
-            if (panZoom) applyInitialView(panZoom, graficaRef.current);
-            setSelectedCourse(null);
-            setSearchTerm('');
-            setSearchResults([]);
-        } catch (error) {
-            console.error(error);
-        }
-    };
 
     const handleCycleEstado = async (cursoId) => {
         const gm = graphManagerRef.current;
@@ -615,17 +587,6 @@ export default function Visualizer() {
 
                 {/* Selectors y búsqueda */}
                 <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
-                    <select
-                        value={currentPensum}
-                        onChange={handlePensumChange}
-                        className="bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-white rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-xs max-lg:text-[0.65rem] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer min-w-0"
-                    >
-                        <option value="">Seleccione Pensum...</option>
-                        {pensums.map(p => (
-                            <option key={p.id} value={p.file}>{p.name}</option>
-                        ))}
-                    </select>
-
                     <div className="flex items-center gap-1.5 min-w-0 sm:flex-1 lg:w-48 bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 transition-all focus-within:border-[#0052CC] dark:focus-within:border-[#4C9AFF]" ref={searchContainerRef}>
                         <Search size={12} className="shrink-0 text-[#5E6C84] dark:text-slate-400" />
                         <input
