@@ -37,6 +37,22 @@
 - `pensum_color/` — Per-program color themes (`*_color.json` with `color1`/`color2`/`color3`). Loaded at runtime via `applyPensumColors()`, which sets CSS custom properties `--primary`, `--accent`, `--border` and dark-mode palette vars on `:root`.
 - `images/` — Static assets (logo, guide images, background).
 
+## Supabase — docentes y reseñas
+- **`docentes`** (tabla sembrada desde `catalogo.json`): `id`, `nombre`, `rol` (`catedratico`|`auxiliar`), `nombre_variantes`, `activo`, timestamps; unique `(nombre, rol)`. RLS: lectura pública, actualización solo admin.
+- **`docente_reviews`** (reseñas estilo Steam, sin comentarios): `docente_id` FK, `user_id` FK, `recomienda bool`, timestamps; unique `(docente_id, user_id)` (1 voto por usuario/docente). RLS: lectura pública, insert/update/delete solo del dueño (o admin).
+- **`docente_reputation`** (vista `security_invoker`): `total`, `recomendados`, `pct_recomienda` por docente.
+- **Seed**: `pemtree-react/scripts/seed-docentes.mjs` — upsert por `(nombre, rol)` leyendo el catálogo local. Requiere `SUPABASE_SERVICE_ROLE_KEY` (NO la anon/publishable). `--depurar` desactiva en Supabase los docentes ausentes del catálogo.
+  ```sh
+  SUPABASE_SERVICE_ROLE_KEY=svc_xxx node scripts/seed-docentes.mjs [--depurar]
+  ```
+
+## Supabase — seguridad y push
+- **RLS por rol (anon vs authenticated):** las políticas SELECT de `posts`/`comments`/`whatsapp_groups` están separadas por rol. `anon` solo ve contenido no moderado (`moderation_status IS DISTINCT FROM 2`); `authenticated` además ve su propio contenido y el de moderadores/admin. Los DELETE de posts/comments son solo `authenticated`.
+- **Políticas con `(select auth.uid())`:** todas las políticas usan el patrón initplan para evitar re-evaluar `auth.uid()` por fila.
+- **SECURITY DEFINER restringidas:** `is_pemtree_admin`, `is_pemtree_moderator` y las RPCs de moderación (`ocultar/restaurar/eliminar_contenido_moderado`) NO son ejecutables por `anon`; solo `authenticated` (validan permisos internamente) y `service_role`.
+- **`get_push_secrets()`** (RPC, solo `service_role`): la edge function `send-push` lee sus secretos del Vault vía esta RPC en lugar de tenerlos hardcoded. Secrets en `vault.secrets`: `push_edge_secret`, `vapid_public_key`, `vapid_private_key`, `vapid_subject`.
+- **`user_reports`:** `reporter_id` es `uuid` con FK a `auth.users` (CASCADE); `reported_user_id` es `uuid` (sin FK, el reporte debe conservarse aunque el usuario reportado no exista).
+
 ## localStorage keys
 - `pemtree_progreso_<pensumKey>` — per-pensum course completion state (`[{id, completado, cursando}]`)
 - `pemtree_pensum_actual` — currently selected pensum filename
