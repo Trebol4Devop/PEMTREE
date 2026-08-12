@@ -5,8 +5,8 @@ import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
 import WelcomeModal from '../components/WelcomeModal';
 import ScheduleBuilder from '../components/ScheduleBuilder';
-import { cursos, cursoMap, initializeCursos, loadPensum, STARTUP_LOADED_PENSUM } from '../modules/data/cursos';
-import { cargarCatalogo, getUltimaActualizacionHorarios } from '../modules/data/catalogo';
+import { cursos, cursoMap, initializeCursos, loadPensum, STARTUP_LOADED_PENSUM, getPensumKey } from '../modules/data/cursos';
+import { cargarCatalogo, getUltimaActualizacionHorarios, getCarreraDePensum, getPensumInfo } from '../modules/data/catalogo';
 import { GraphManager } from '../modules/graph/GraphManager';
 import { getNodeDimensions } from '../modules/graph/dimensions';
 import { PanZoomManager } from '../modules/ui/PanZoomManager';
@@ -28,6 +28,8 @@ export default function Visualizer() {
     const [graphManager, setGraphManager] = useState(null);
     const [panZoom, setPanZoom] = useState(null);
     const [currentPensum, setCurrentPensum] = useState('');
+    const [carreraTitulo, setCarreraTitulo] = useState('');
+    const [carreraColor, setCarreraColor] = useState('');
     
     const [zoom, setZoom] = useState(100);
     const [showOptional, setShowOptional] = useState(true);
@@ -105,6 +107,22 @@ export default function Visualizer() {
             window.removeEventListener('storage', handler);
         };
     }, []);
+
+    // Título de la carrera actual (centrado, con periodo y color del pensum)
+    useEffect(() => {
+        let active = true;
+        cargarCatalogo()
+            .then(() => {
+                const file = currentPensum || getPensumKey() || STARTUP_LOADED_PENSUM || '';
+                const info = getPensumInfo(file);
+                const carrera = getCarreraDePensum(file);
+                if (!active) return;
+                setCarreraTitulo(info ? info.nombre : (carrera ? carrera.nombre : ''));
+                setCarreraColor((carrera && carrera.colores && carrera.colores.color1) || '');
+            })
+            .catch(() => {});
+        return () => { active = false; };
+    }, [currentPensum]);
 
     const guiaLightSrc = '/images/Guia_de_uso.png';
     const guiaDarkSrc = '/images/Guia_de_uso_dark.png';
@@ -602,6 +620,15 @@ export default function Visualizer() {
                 </div>
 
                 {/* Botones de ayuda, créditos y reiniciar */}
+                {carreraTitulo && (
+                    <span
+                        className="flex items-center min-w-0 text-sm lg:text-base font-extrabold tracking-wide whitespace-nowrap overflow-hidden text-ellipsis px-1 sm:px-2"
+                        style={{ color: carreraColor }}
+                        title="Carrera actual"
+                    >
+                        {carreraTitulo}
+                    </span>
+                )}
                 <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <button
                         type="button"

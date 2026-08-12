@@ -62,6 +62,27 @@ export function getCatalogo() {
     return catalogo;
 }
 
+/**
+ * Información del pensum en el catálogo por nombre de archivo (p. ej. 'ciencias_y_sistemas_22.json').
+ * @returns {{id:string, file:string, carrera:string, nombre:string, cohort:string, vigencia:string, clar:boolean}|null}
+ */
+export function getPensumInfo(file) {
+    if (!catalogo || !Array.isArray(catalogo.pensums)) return null;
+    const f = String(file || '').split('/').pop();
+    if (!f) return null;
+    return catalogo.pensums.find(p => p.file === f || p.id === f) || null;
+}
+
+/**
+ * Carrera del catálogo a la que pertenece un pensum (por nombre de archivo).
+ * @returns {{id:string, nombre:string, pensums:string[], colores:object, cursos:string[]}|null}
+ */
+export function getCarreraDePensum(file) {
+    const info = getPensumInfo(file);
+    if (!info || !catalogo || !Array.isArray(catalogo.carreras)) return null;
+    return catalogo.carreras.find(c => c.id === info.carrera) || null;
+}
+
 export function getCursoInfo(codigo) {
     if (!catalogo || !Array.isArray(catalogo.cursos)) return null;
     const c = String(codigo);
@@ -362,6 +383,15 @@ function cicloConDatos(catalogo, tipoPeriodo) {
         }
     }
     return null;
+}
+
+/**
+ * Ciclo más reciente con datos capturados para un tipoPeriodo (público).
+ * @returns {{cicloId:string, datoAnterior:boolean, vigenteId:string}|null}
+ */
+export function getCicloConDatos(tipoPeriodo) {
+    if (!catalogo) return null;
+    return cicloConDatos(catalogo, tipoPeriodo);
 }
 
 /**

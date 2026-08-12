@@ -290,6 +290,33 @@ html.dark input {
     background: #FAFBFC;
     font-family: 'Segoe UI', Arial, sans-serif;
 }
+
+/* Toggle de carreras simultáneas en el filtro de horarios */
+.schedule-simultanea-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 5px;
+    font-size: 0.62rem;
+    font-weight: 700;
+    background: var(--bg-secondary, #F4F5F7);
+    border: 1px solid var(--border, #DFE1E6);
+    color: var(--text-secondary, #5E6C84);
+    cursor: pointer;
+    white-space: nowrap;
+    user-select: none;
+}
+html.dark .schedule-simultanea-toggle {
+    background: #0E1624;
+    border-color: #3E4C5E;
+    color: #cbd5e1;
+}
+.schedule-simultanea-toggle input {
+    accent-color: #0052CC;
+    cursor: pointer;
+    margin: 0;
+}
 html.dark .planner-container {
     background: #0E1624;
 }
@@ -1141,7 +1168,7 @@ html.dark .planner-add-line-bottom:hover {
     height: 48px;
     min-height: 48px;
     flex-shrink: 0;
-    overflow: hidden;
+    overflow: visible;
     background: #fff;
     cursor: grab;
     position: relative;
@@ -1372,6 +1399,92 @@ html.dark .planner-chip-ghost-name {
 }
 .planner-chip-remove:hover {
     background: #e74c3c;
+}
+
+/* Advertencias del planificador: columna vertical a la izquierda del cuadro del curso */
+.planner-chip-warnings {
+    position: absolute;
+    top: 50%;
+    left: -19px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    z-index: 3;
+}
+
+/* Iconos con fondo de superficie neutro para asegurar contraste sobre el chip */
+.planner-chip-warn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 15px;
+    height: 15px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(23, 43, 77, 0.18);
+    box-shadow: 0 1px 2px rgba(23, 43, 77, 0.18);
+    color: #64748b;
+    font-size: 8px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: help;
+}
+html.dark .planner-chip-warn {
+    background: rgba(30, 41, 59, 0.92);
+    border-color: rgba(148, 163, 184, 0.4);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    color: #94a3b8;
+}
+
+.planner-chip-warn-error,
+.planner-chip-warn-negativo {
+    color: #dc2626;
+}
+html.dark .planner-chip-warn-error,
+html.dark .planner-chip-warn-negativo {
+    color: #f87171;
+}
+
+.planner-chip-warn-warn,
+.planner-chip-warn-variado {
+    color: #d97706;
+}
+html.dark .planner-chip-warn-warn,
+html.dark .planner-chip-warn-variado {
+    color: #fbbf24;
+}
+
+.planner-chip-warn-info {
+    color: #64748b;
+}
+
+.planner-chip-warn-soloBuenos {
+    color: #059669;
+}
+html.dark .planner-chip-warn-soloBuenos {
+    color: #34d399;
+}
+
+/* Aviso de regla de vacaciones: máximo 4h de magistrales por día */
+.planner-vac-mag-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    margin-top: 0.35rem;
+    padding: 0.3rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.6rem;
+    font-weight: 700;
+    background: rgba(225, 29, 72, 0.08);
+    border: 1px solid rgba(225, 29, 72, 0.4);
+    color: #be123c;
+}
+html.dark .planner-vac-mag-warning {
+    color: #fda4af;
+    background: rgba(225, 29, 72, 0.16);
+    border-color: rgba(248, 113, 113, 0.4);
 }
 
 /* ============================================

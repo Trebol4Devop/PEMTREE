@@ -11,6 +11,7 @@ import {
         formatearDuracion
 } from '../modules/data/scraper';
 import { getPensumKey } from '../modules/data/cursos';
+import { cargarCatalogo, getCatalogo, getCarreraDePensum, getPensumInfo } from '../modules/data/catalogo';
 import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
 import ExportModal from './ExportModal';
 import DocenteReviews from './DocenteReviews';
@@ -141,10 +142,51 @@ export default function ScheduleBuilder() {
     useEffect(() => {
         function handlePensumReady() {
             setSelectedSections(parseSavedSections(localStorage.getItem(getScheduleStorageKey(sectionsPeriodRef.current))));
+            setPensumFile(getPensumKey() || '');
         }
         window.addEventListener('pemtree-pensum-ready', handlePensumReady);
         return () => window.removeEventListener('pemtree-pensum-ready', handlePensumReady);
     }, []);
+
+    // Carga del catálogo + carrera actual (filtro por carrera)
+    const [catalogoListo, setCatalogoListo] = useState(false);
+    const [pensumFile, setPensumFile] = useState(() => getPensumKey() || '');
+
+    useEffect(() => {
+        let active = true;
+        cargarCatalogo()
+            .then(() => { if (active) setCatalogoListo(true); })
+            .catch(() => {});
+        return () => { active = false; };
+    }, []);
+
+    const carreraInfo = useMemo(() => {
+        if (!catalogoListo || !pensumFile) return null;
+        const carrera = getCarreraDePensum(pensumFile);
+        if (!carrera) return null;
+        return { nombre: carrera.nombre, codes: new Set(carrera.cursos || []) };
+    }, [catalogoListo, pensumFile]);
+
+    // Carreras simultáneas: permite incluir cursos de una segunda carrera
+    const [simultanea, setSimultanea] = useState(() => localStorage.getItem('pemtree_schedule_simultanea') === 'true');
+    const [segundaCarrera, setSegundaCarrera] = useState(() => localStorage.getItem('pemtree_schedule_segunda_carrera') || '');
+
+    useEffect(() => { localStorage.setItem('pemtree_schedule_simultanea', String(simultanea)); }, [simultanea]);
+    useEffect(() => { localStorage.setItem('pemtree_schedule_segunda_carrera', segundaCarrera); }, [segundaCarrera]);
+
+    const pensumsDisponibles = useMemo(() => {
+        if (!catalogoListo || !pensumFile) return [];
+        const catalogo = getCatalogo();
+        return (catalogo?.pensums || []).filter(p => p.id !== pensumFile && p.file !== pensumFile);
+    }, [catalogoListo, pensumFile]);
+
+    const segundaCarreraInfo = useMemo(() => {
+        if (!catalogoListo || !simultanea || !segundaCarrera) return null;
+        const carrera = getCarreraDePensum(segundaCarrera);
+        const info = getPensumInfo(segundaCarrera);
+        if (!carrera) return null;
+        return { nombre: info ? info.nombre : carrera.nombre, codes: new Set(carrera.cursos || []) };
+    }, [catalogoListo, simultanea, segundaCarrera]);
 
     // persist current period to localStorage for cross-component communication
     useEffect(() => {
@@ -199,6 +241,9 @@ export default function ScheduleBuilder() {
         const searchWords = normalize(courseSearch).split(/\s+/).filter(Boolean);
         const grouped = {};
         for (const h of horarios) {
+            if (carreraInfo && !carreraInfo.codes.has(String(h.codigo))) {
+                if (!(segundaCarreraInfo && segundaCarreraInfo.codes.has(String(h.codigo)))) continue;
+            }
             const haystackWords = normalize([
                 h.codigo,
                 h.nombre,
@@ -230,7 +275,7 @@ export default function ScheduleBuilder() {
             if (aSel !== bSel) return bSel - aSel;
             return a.codigo.localeCompare(b.codigo);
         });
-    }, [horarios, courseSearch, modalidadFilter, pinnedCourses, selectedSections]);
+    }, [horarios, courseSearch, modalidadFilter, pinnedCourses, selectedSections, carreraInfo, segundaCarreraInfo]);
 
     const allSelected = useMemo(() => {
         return Object.values(selectedSections).flat();
@@ -1649,6 +1694,26 @@ export default function ScheduleBuilder() {
         )}
 
         <div className="schedule-filters">
+        <label className="schedule-simultanea-toggle" title="Incluir cursos de una segunda carrera">
+            <input
+                type="checkbox"
+                checked={simultanea}
+                onChange={e => setSimultanea(e.target.checked)}
+            />
+            Simultáneas
+        </label>
+        {simultanea && (
+            <select
+                className="schedule-modalidad-select"
+                value={segundaCarrera}
+                onChange={e => setSegundaCarrera(e.target.value)}
+            >
+                <option value="">Seleccione 2ª carrera...</option>
+                {pensumsDisponibles.map(p => (
+                    <option key={p.id} value={p.file}>{p.nombre}</option>
+                ))}
+            </select>
+        )}
         <select
         className="schedule-modalidad-select"
         value={modalidadFilter}

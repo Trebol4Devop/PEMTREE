@@ -1,7 +1,14 @@
 import { currentPensumColors, cursoMap } from '../modules/data/cursos';
-import { Award } from 'lucide-react';
+import { Award, AlertTriangle, ThumbsUp, ThumbsDown, Minus } from 'lucide-react';
 
-export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia, sourceBlock, mergedMap }) {
+function peorNivel(avisos) {
+    if (!avisos || avisos.length === 0) return null;
+    if (avisos.some(a => a.nivel === 'error')) return 'error';
+    if (avisos.some(a => a.nivel === 'warn')) return 'warn';
+    return 'info';
+}
+
+export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia, onToggleSuficiencia, sourceBlock, mergedMap, advertencias }) {
     const primary = (curso.colors?.leftTop?.fill) || currentPensumColors.primary || '#fc904f';
     const secondary = (curso.colors?.leftBottom?.fill) || currentPensumColors.secondary || '#ffd0b6';
     const textFill = (curso.colors?.text?.fill) || '#333';
@@ -90,6 +97,32 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
                     </span>
                 )}
             </div>
+            {!isSuficiencia && advertencias && (
+                <div className="planner-chip-warnings">
+                    {advertencias.reputacion && (
+                        <span
+                            className={`planner-chip-warn planner-chip-warn-${advertencias.reputacion.nivel}`}
+                            title={advertencias.reputacion.nivel === 'soloBuenos'
+                                ? `Todos sus catedráticos son bien recomendados (${advertencias.reputacion.promedio}%).`
+                                : advertencias.reputacion.nivel === 'variado'
+                                    ? `Recomendaciones variadas de sus catedráticos (${advertencias.reputacion.promedio}%).`
+                                    : `Recomendaciones desfavorables de sus catedráticos (${advertencias.reputacion.promedio}%).`}
+                        >
+                            {advertencias.reputacion.nivel === 'soloBuenos' ? <ThumbsUp size={9} />
+                                : advertencias.reputacion.nivel === 'variado' ? <Minus size={9} />
+                                    : <ThumbsDown size={9} />}
+                        </span>
+                    )}
+                    {advertencias.avisos && advertencias.avisos.length > 0 && (
+                        <span
+                            className={`planner-chip-warn planner-chip-warn-${peorNivel(advertencias.avisos)}`}
+                            title={advertencias.avisos.map(a => a.texto).join('\n')}
+                        >
+                            <AlertTriangle size={9} />
+                        </span>
+                    )}
+                </div>
+            )}
             {onToggleSuficiencia && (
                 <button
                     className={`planner-chip-suf-toggle ${isSuficiencia ? 'planner-chip-suf-toggle-active' : ''}`}

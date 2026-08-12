@@ -2,7 +2,8 @@ import { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Plus, X, BookOpen, Copy, Pencil, Trash2, Share2, Upload, Download, Check, MessageCircle, Mail } from 'lucide-react';
 import { cursoMap, getPensumKey, listAvailablePensums } from '../modules/data/cursos';
 import { construirCursosDesdeCatalogo } from '../modules/data/importFromJSON';
-import { cargarCatalogo } from '../modules/data/catalogo';
+import { cargarCatalogo, cargarReputacion } from '../modules/data/catalogo';
+import { advertenciasDeCurso, horasMagistralesCurso, totalMagistralVacaciones, tipoPeriodoDeBloque } from '../modules/data/plannerWarnings';
 import CoursePool from './CoursePool';
 import SemesterBlock from './SemesterBlock';
 import VacationBlock from './VacationBlock';
@@ -252,6 +253,17 @@ export default function Planner({ currentPensum }) {
     const [secondCursoMap, setSecondCursoMap] = useState(new Map());
     const [secondLoading, setSecondLoading] = useState(false);
 
+    // Avisos del planificador (apertura, traslapes, reputación, regla de vacaciones)
+    const [avisosListos, setAvisosListos] = useState(false);
+
+    useEffect(() => {
+        let active = true;
+        Promise.all([cargarCatalogo(), cargarReputacion()])
+            .then(() => { if (active) setAvisosListos(true); })
+            .catch(() => { if (active) setAvisosListos(true); });
+        return () => { active = false; };
+    }, []);
+
     useEffect(() => {
         if (simultaneous && availablePensums.length === 0) {
             listAvailablePensums().then(setAvailablePensums);
@@ -471,6 +483,33 @@ export default function Planner({ currentPensum }) {
         return map;
     }, [secondCursoMap]);
 
+    const avisosData = useMemo(() => {
+        const porId = new Map();
+        const vacaciones = new Map();
+        if (!avisosListos) return { porId, vacaciones };
+        const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
+        for (const line of lines) {
+            for (const [blockId, ids] of Object.entries(line.plan || {})) {
+                const tp = tipoPeriodoDeBloque(blockId);
+                if (!tp) continue;
+                const codigos = [];
+                for (const id of ids) {
+                    const curso = resolveMap.get(id);
+                    if (!curso || curso.codigo == null) continue;
+                    const codigo = String(curso.codigo);
+                    const base = advertenciasDeCurso(codigo, tp);
+                    const horasMag = tp.startsWith('vacaciones') ? horasMagistralesCurso(codigo, tp) : 0;
+                    porId.set(`${blockId}:${id}`, { ...base, horasMag });
+                    codigos.push(codigo);
+                }
+                if (tp.startsWith('vacaciones')) {
+                    vacaciones.set(blockId, totalMagistralVacaciones(codigos, tp));
+                }
+            }
+        }
+        return { porId, vacaciones };
+    }, [lines, simultaneous, mergedCursoMap, avisosListos]);
+
     const lineCredits = useCallback((line) => {
         const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
         return sumLineCredits(line, resolveMap, suficiencias);
@@ -562,6 +601,26 @@ export default function Planner({ currentPensum }) {
         if (isVac && targetCourses.length >= 2) {
             addToast('Máximo 2 cursos por escuela de vacaciones');
             return;
+        }
+
+        if (isVac) {
+            const course = mergedCursoMap.get(courseId);
+            if (course && course.codigo != null) {
+                const tp = tipoPeriodoDeBloque(targetBlockId);
+                if (tp) {
+                    const codigos = targetCourses
+                        .filter(id => id !== courseId)
+                        .map(id => mergedCursoMap.get(id))
+                        .filter(Boolean)
+                        .map(c => String(c.codigo));
+                    codigos.push(String(course.codigo));
+                    const mag = totalMagistralVacaciones(codigos, tp);
+                    if (mag.excede) {
+                        addToast('Regla de vacaciones: máximo 4h de cursos magistrales (laboratorios y prácticas no cuentan)');
+                        return;
+                    }
+                }
+            }
         }
 
         if (!isVac) {
@@ -1022,6 +1081,8 @@ export default function Planner({ currentPensum }) {
                                                     onRemoveChip={makeHandleRemoveChip(line.id)}
                                                     onToggleSuficiencia={makeHandleToggleSuficiencia(line.id)}
                                                     mergedMap={simultaneous ? mergedCursoMap : null}
+                                                    advertenciasMap={avisosData.porId}
+                                                    blockId={block.id}
                                                 />
                                             );
                                         } else if (block.type === 'vacation') {
@@ -1034,6 +1095,9 @@ export default function Planner({ currentPensum }) {
                                                     onRemoveChip={makeHandleRemoveChip(line.id)}
                                                     mergedMap={simultaneous ? mergedCursoMap : null}
                                                     onToggle={makeHandleToggleVacation(line.id)}
+                                                    advertenciasMap={avisosData.porId}
+                                                    blockId={block.id}
+                                                    magTotales={avisosData.vacaciones.get(block.id)}
                                                 />
                                             );
                                         } else if (block.type === 'vacation_hidden') {

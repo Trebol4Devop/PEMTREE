@@ -1,12 +1,13 @@
-import { Trash2 } from 'lucide-react';
+import { AlertTriangle, Trash2 } from 'lucide-react';
 import CourseChip from './CourseChip';
 
-export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, mergedMap, onToggle }) {
+export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, mergedMap, onToggle, advertenciasMap, blockId, magTotales }) {
     const isFull = courses.length >= 2;
+    const excedeMagistral = magTotales && magTotales.excede;
 
     return (
         <div
-            className={`planner-block planner-block-vacation ${isFull ? 'planner-block-vacation-full' : ''}`}
+            className={`planner-block planner-block-vacation ${isFull ? 'planner-block-vacation-full' : ''} ${excedeMagistral ? 'planner-block-vacation-over' : ''}`}
             data-block-id={`vac-${vacNum}`}
             onDragOver={(e) => { e.preventDefault(); e.currentTarget.classList.add('planner-block-over'); }}
             onDragLeave={(e) => { e.currentTarget.classList.remove('planner-block-over'); }}
@@ -47,8 +48,15 @@ export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, m
                         onRemove={onRemoveChip}
                         sourceBlock={`vac-${vacNum}`}
                         mergedMap={mergedMap}
+                        advertencias={advertenciasMap ? advertenciasMap.get(`${blockId}:${curso.id}`) : undefined}
                     />
                 ))}
+                {excedeMagistral && (
+                    <div className="planner-vac-mag-warning" title="Regla de vacaciones: máximo 4h de cursos magistrales por día (laboratorios, prácticas y complementarios no cuentan)">
+                        <AlertTriangle size={11} className="shrink-0" />
+                        <span>Máximo 4h de cursos magistrales en vacaciones</span>
+                    </div>
+                )}
             </div>
         </div>
     );
