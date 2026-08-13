@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
+import { cargarCatalogo } from '../modules/data/catalogo';
 
 export default function Home() {
     const navigate = useNavigate();
@@ -18,47 +19,37 @@ export default function Home() {
         let cancelled = false;
         const loadCareers = async () => {
             try {
-                const res = await fetch('/json/index.json');
-                if (!res.ok) return;
-                const list = await res.json();
-                if (!Array.isArray(list) || cancelled) return;
+                const catalogo = await cargarCatalogo();
+                if (!catalogo || !Array.isArray(catalogo.pensums) || cancelled) return;
 
-                const enriched = await Promise.all(list.map(async (entry) => {
-                    const file = entry.file;
-                    const name = entry.name;
-                    const base = file.replace(/\.json$/i, '').replace(/(?:_\d{2,4}|_ant\d*)$/, '');
+                const carrerasById = new Map((catalogo.carreras || []).map(c => [c.id, c]));
+
+                const enriched = catalogo.pensums.map(p => {
+                    const file = p.file;
+                    const base = p.carrera;
+                    const cohort = p.cohort || '';
                     const yearMatch = file.replace(/\.json$/i, '').match(/(?:_(\d{2})|_(\d{4}))$/);
                     const year = yearMatch
                         ? (yearMatch[1] ? `20${yearMatch[1]}` : yearMatch[2])
                         : '';
-                    // Los pensum antiguos se identifican por el sufijo del archivo (_ant, _ant17, _2017)
-                    const esAntiguo = /_(?:ant\d*|2017)\.json$/i.test(file);
+                    // Los pensum antiguos se identifican por el cohort del catálogo (_ant, _ant17, _2017)
+                    const esAntiguo = cohort === 'ANTERIOR';
                     // Quitar "(Antiguo...)" del título mostrado; el badge ANTIGUO lo indica
-                    const titleName = name
+                    const titleName = String(p.nombre || file.replace(/\.json$/i, ''))
                         .replace(/\s*\((?:Antiguo[^)]*)\)\s*$/i, '')
                         .trim();
                     const shortName = titleName
                         .replace(/^Ingenier[ií]a\s+/i, '')
                         .replace(/\s*\(\d{4}\)\s*$/, '')
                         .trim();
-                    const jsonFile = `/json/${file}`;
-
-                    let colors = { color1: '#0052CC', color2: '#DEEBFF', color3: '#0052CC' };
-                    try {
-                        const cRes = await fetch(`/pensum_color/${base}_color.json`);
-                        if (cRes.ok) {
-                            const cJson = await cRes.json();
-                            colors = {
-                                color1: cJson.color1 || colors.color1,
-                                color2: cJson.color2 || colors.color2,
-                                color3: cJson.color3 || cJson.color1 || colors.color3,
-                            };
-                        }
-                    } catch {
-                        // keep defaults
-                    }
-                    return { name: titleName, shortName, base, jsonFile, colors, year, esAntiguo };
-                }));
+                    const col = (carrerasById.get(base) || {}).colores || {};
+                    const colors = {
+                        color1: col.color1 || '#0052CC',
+                        color2: col.color2 || '#DEEBFF',
+                        color3: col.color3 || col.color1 || '#0052CC',
+                    };
+                    return { name: titleName, shortName, base, jsonFile: `/json/${file}`, colors, year, esAntiguo };
+                });
 
                 if (!cancelled) setCareers(enriched);
             } catch (err) {

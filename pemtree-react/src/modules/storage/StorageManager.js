@@ -13,10 +13,6 @@ export class StorageManager {
         return localStorage.getItem(this._idiomaEquivalenciaKey) === 'true';
     }
 
-    setIdiomaEquivalencia(val) {
-        localStorage.setItem(this._idiomaEquivalenciaKey, val ? 'true' : 'false');
-    }
-
     get storageKey() {
         const pensumKey = getPensumKey();
         return pensumKey ? `${this._baseKey}_${pensumKey}` : this._baseKey;
@@ -45,29 +41,6 @@ export class StorageManager {
         }
         this.actualizarDisponibilidad(cursos, cursoMap);
         this.actualizarContadorCreditos(cursos);
-    }
-
-    toggleCompletado(cursoId, graphManager, infoCardManager) {
-        const curso = graphManager.cursoMap.get(cursoId);
-        if (!curso) return;
-        
-        const nuevoEstado = !curso.completado;
-        curso.completado = nuevoEstado;
-        if (nuevoEstado) curso.cursando = false;
-        
-        if (nuevoEstado) {
-            this.marcarPrerequisitosComoCompletados(curso, graphManager.cursoMap);
-        }
-
-        this.guardarProgreso(graphManager.cursos);
-        this.actualizarDisponibilidad(graphManager.cursos, graphManager.cursoMap);
-        this.actualizarContadorCreditos(graphManager.cursos);
-        
-        graphManager.dibujarGrafo();
-        
-        if (graphManager.getSelectedNode() && graphManager.getSelectedNode().id === cursoId) {
-            infoCardManager.mostrar(curso);
-        }
     }
 
     marcarPrerequisitosComoCompletados(curso, cursoMap) {

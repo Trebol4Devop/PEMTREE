@@ -1,31 +1,24 @@
+import { getHorariosPorPeriodo } from './catalogo.js';
+
 let cachedData = {};
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 
 const TIPO_LAB = 'LABORATORIO';
 const TIPO_PRACTICA = 'PRACTICA';
+// Categorías "no laboratorio" del portal oficial (MAGISTRAL, TRABAJO_DIRIGIDO, DIBUJO)
 const TIPOS_NO_LAB = ['MAGISTRAL', 'TRABAJO_DIRIGIDO', 'DIBUJO'];
 
 export async function cargarHorarios(periodId) {
     if (cachedData[periodId]) return cachedData[periodId];
-    
-    const response = await fetch(`/json/horarios/${periodId}.json`);
-    if (!response.ok) throw new Error(`No se pudo cargar ${periodId}`);
-    
-    const data = await response.json();
+
+    // Tras la migración, los horarios se leen del catálogo unificado
+    // (cursos[].secciones acumuladas por ciclo). Se usa el ciclo más reciente
+    // con datos para el periodo; si el vigente no lo capturó, se cae al anterior
+    // con `datoAnterior: true` (los objetos lo etiquetan).
+    const data = await getHorariosPorPeriodo(periodId);
     cachedData[periodId] = data;
     return data;
-}
-
-export async function cargarTodosLosHorarios() {
-    const [sem1, sem2, vac1, vac2] = await Promise.all([
-        cargarHorarios('semestre1').catch(() => []),
-        cargarHorarios('semestre2').catch(() => []),
-        cargarHorarios('vacaciones1').catch(() => []),
-        cargarHorarios('vacaciones2').catch(() => [])
-    ]);
-    
-    return { semestre1: sem1, semestre2: sem2, vacaciones1: vac1, vacaciones2: vac2 };
 }
 
 export function getTipo(horario) {
@@ -34,10 +27,6 @@ export function getTipo(horario) {
 
 export function esLaboratorio(horario) {
     return getTipo(horario) === TIPO_LAB;
-}
-
-export function esPractica(horario) {
-    return getTipo(horario) === TIPO_PRACTICA;
 }
 
 export function esTraslapePermitido(horario) {
@@ -178,14 +167,6 @@ export function validarHorarioCompleto(horarios, esVacaciones) {
         return validarReglasVacaciones(horarios);
     }
     return detectarConflictosSemestral(horarios);
-}
-
-export function buscarHorariosPorCodigo(horarios, codigo) {
-    return horarios.filter(h => h.codigo === codigo);
-}
-
-export function getSeccionesDisponibles(horarios, codigo) {
-    return buscarHorariosPorCodigo(horarios, codigo);
 }
 
 export function formatearHorario(horario) {

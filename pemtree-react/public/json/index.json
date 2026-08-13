@@ -1,90 +1,156 @@
 [
   {
     "file": "ambiental_25.json",
-    "name": "Ingeniería Ambiental (2025)"
+    "name": "Ingeniería Ambiental (2025)",
+    "cohort": "2025",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2025",
+    "clar": true
   },
   {
     "file": "ambiental_ant.json",
-    "name": "Ingeniería Ambiental (Antiguo)"
+    "name": "Ingeniería Ambiental (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "ciencias_y_sistemas_22.json",
-    "name": "Ingeniería en Ciencias y Sistemas (2022)"
+    "name": "Ingeniería en Ciencias y Sistemas (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "ciencias_y_sistemas_25.json",
-    "name": "Ingeniería en Ciencias y Sistemas (2025)"
+    "name": "Ingeniería en Ciencias y Sistemas (2025)",
+    "cohort": "2025",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2025",
+    "clar": true
   },
   {
     "file": "ciencias_y_sistemas_ant.json",
-    "name": "Ingeniería en Ciencias y Sistemas (Antiguo)"
+    "name": "Ingeniería en Ciencias y Sistemas (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "civil_2017.json",
-    "name": "Ingeniería Civil (Antiguo 2017)"
+    "name": "Ingeniería Civil (Antiguo 2017)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR a partir del año 2017",
+    "clar": false
   },
   {
     "file": "civil_22.json",
-    "name": "Ingeniería Civil (2022)"
+    "name": "Ingeniería Civil (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "civil_ant17.json",
-    "name": "Ingeniería Civil (Antiguo)"
+    "name": "Ingeniería Civil (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR inscritos antes del 2017",
+    "clar": false
   },
   {
     "file": "electrica_22.json",
-    "name": "Ingeniería Eléctrica (2022)"
+    "name": "Ingeniería Eléctrica (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "electrica_ant.json",
-    "name": "Ingeniería Eléctrica (Antiguo)"
+    "name": "Ingeniería Eléctrica (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "electronica_22.json",
-    "name": "Ingeniería Electrónica (2022)"
+    "name": "Ingeniería Electrónica (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "electronica_ant.json",
-    "name": "Ingeniería Electrónica (Antiguo)"
+    "name": "Ingeniería Electrónica (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "industrial_22.json",
-    "name": "Ingeniería Industrial (2022)"
+    "name": "Ingeniería Industrial (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "industrial_ant.json",
-    "name": "Ingeniería Industrial (Antiguo)"
+    "name": "Ingeniería Industrial (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "mecanica_22.json",
-    "name": "Ingeniería Mecánica (2022)"
+    "name": "Ingeniería Mecánica (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "mecanica_ant.json",
-    "name": "Ingeniería Mecánica (Antiguo)"
+    "name": "Ingeniería Mecánica (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "mecanica_electrica_22.json",
-    "name": "Ingeniería Mecánica Eléctrica (2022)"
+    "name": "Ingeniería Mecánica Eléctrica (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "mecanica_electrica_ant.json",
-    "name": "Ingeniería Mecánica Eléctrica (Antiguo)"
+    "name": "Ingeniería Mecánica Eléctrica (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "mecanica_industrial_22.json",
-    "name": "Ingeniería Mecánica Industrial (2022)"
+    "name": "Ingeniería Mecánica Industrial (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "mecanica_industrial_ant.json",
-    "name": "Ingeniería Mecánica Industrial (Antiguo)"
+    "name": "Ingeniería Mecánica Industrial (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   },
   {
     "file": "quimica_22.json",
-    "name": "Ingeniería Química (2022)"
+    "name": "Ingeniería Química (2022)",
+    "cohort": "2022",
+    "vigencia": "Vigente para estudiantes con pensum CLAR a partir del año 2022",
+    "clar": true
   },
   {
     "file": "quimica_ant.json",
-    "name": "Ingeniería Química (Antiguo)"
+    "name": "Ingeniería Química (Antiguo)",
+    "cohort": "ANTERIOR",
+    "vigencia": "Vigente para estudiantes con pensum anterior a CLAR",
+    "clar": false
   }
 ]
