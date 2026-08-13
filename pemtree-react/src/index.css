@@ -2353,6 +2353,11 @@ html.dark .schedule-block {
     padding: 0.5rem;
 }
 
+/* Header (título + botón X) del panel de cursos: solo visible en móvil */
+.schedule-courses-header {
+    display: none;
+}
+
 .schedule-course-item {
     display: flex;
     flex-direction: column;
@@ -3057,7 +3062,89 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
     }
 
     .schedule-sidebar {
-        max-height: 300px;
+        height: auto;
+        flex-shrink: 0;
+    }
+
+    /* Lista de cursos como panel deslizante (bottom sheet) en móvil, igual que el planificador */
+    .schedule-course-list {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        width: 100%;
+        height: 40vh;
+        max-height: 40vh;
+        min-height: 0;
+        margin: 0;
+        padding: 0;
+        padding-bottom: env(safe-area-inset-bottom);
+        background: var(--bg-primary);
+        border-top: 1px solid var(--border);
+        border-radius: 16px 16px 0 0;
+        box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.25);
+        transform: translateY(105%);
+        transition: transform 0.3s ease;
+        z-index: 90;
+        flex: none;
+        justify-content: flex-start;
+    }
+    html.dark .schedule-course-list {
+        background: #1C2636;
+        border-color: #3E4C5E;
+    }
+
+.schedule-course-list.schedule-courses-open {
+    transform: translateY(0);
+}
+
+.schedule-courses-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    padding: 0.5rem 0.6rem 0.45rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg-primary);
+    border-radius: 15px 15px 0 0;
+    flex-shrink: 0;
+}
+    html.dark .schedule-courses-header {
+        background: #1C2636;
+        border-color: #3E4C5E;
+    }
+
+    .schedule-courses-header-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.03em;
+        color: var(--text-primary);
+    }
+
+    .schedule-courses-close {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 26px;
+        height: 26px;
+        border: none;
+        background: transparent;
+        border-radius: 6px;
+        color: var(--text-secondary);
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .schedule-courses-close:hover {
+        background: rgba(0, 0, 0, 0.06);
+    }
+    html.dark .schedule-courses-close {
+        color: #94a3b8;
+    }
+    html.dark .schedule-courses-close:hover {
+        background: rgba(255, 255, 255, 0.1);
     }
 
     .schedule-search {
@@ -3076,7 +3163,16 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
     }
 
     .schedule-filters {
+        flex-wrap: wrap;
+        justify-content: flex-start;
         gap: 0.3rem;
+        padding: 0 0.25rem;
+    }
+
+    .schedule-filters .schedule-search {
+        flex: 1 1 100%;
+        max-width: none;
+        padding: 0.25rem 0.4rem;
     }
 }
 

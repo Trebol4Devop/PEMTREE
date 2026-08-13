@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
-import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin } from 'lucide-react';
+import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin, BookOpen } from 'lucide-react';
 import {
     cargarHorarios,
     minutos as mins,
@@ -118,6 +118,7 @@ export default function ScheduleBuilder() {
     const gridRef = useRef(null);
     const savedSettingsRef = useRef(null);
     const [showExportModal, setShowExportModal] = useState(false);
+    const [showCourses, setShowCourses] = useState(false);
     const [exportSettings, setExportSettings] = useState({
         paletteName: 'Default',
         fontFamily: 'Segoe UI',
@@ -1663,6 +1664,14 @@ export default function ScheduleBuilder() {
 
         <div className="schedule-toolbar-actions">
         <button
+          className="planner-pool-toggle-bar schedule-courses-toggle"
+          onClick={() => setShowCourses(v => !v)}
+          title={showCourses ? 'Ocultar cursos' : 'Ver cursos'}
+        >
+          <BookOpen size={14} />
+          <span className="planner-pool-toggle-label">Cursos</span>
+        </button>
+        <button
           className={`schedule-btn ${clusterEnabled ? 'cluster-active' : ''}`}
           onClick={() => setClusterEnabled(!clusterEnabled)}
           title={clusterEnabled ? 'Mostrar horario completo' : 'Compactar tiempo muerto'}
@@ -1787,7 +1796,19 @@ export default function ScheduleBuilder() {
             </div>
 
             <div className="schedule-sidebar">
-            <div className="schedule-course-list">
+            <div className={`schedule-course-list ${showCourses ? 'schedule-courses-open' : ''}`}>
+            <div className="schedule-courses-header">
+            <span className="schedule-courses-header-title">Cursos disponibles</span>
+            <button
+                type="button"
+                className="schedule-courses-close"
+                onClick={() => setShowCourses(false)}
+                title="Ocultar cursos"
+                aria-label="Ocultar cursos"
+            >
+                <X size={16} />
+            </button>
+            </div>
             {filteredCourses.map(curso => (
                 <div key={curso.codigo} className="schedule-course-item">
                 <div
