@@ -2353,6 +2353,12 @@ html.dark .schedule-block {
     padding: 0.5rem;
 }
 
+.schedule-course-list .schedule-search {
+    flex: none;
+    flex-shrink: 0;
+    max-width: none;
+}
+
 /* Header (título + botón X) del panel de cursos: solo visible en móvil */
 .schedule-courses-header {
     display: none;
@@ -3151,6 +3157,7 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
         gap: 0.25rem;
         padding: 0.25rem 0.4rem;
         max-width: none;
+        margin: 0 0.5rem;
     }
 
     .schedule-search input {
@@ -3167,12 +3174,6 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
         justify-content: flex-start;
         gap: 0.3rem;
         padding: 0 0.25rem;
-    }
-
-    .schedule-filters .schedule-search {
-        flex: 1 1 100%;
-        max-width: none;
-        padding: 0.25rem 0.4rem;
     }
 }
 

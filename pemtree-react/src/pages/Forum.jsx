@@ -12,6 +12,8 @@ import { hideContent, restoreContent } from '../lib/moderationApi';
 import { sendFormspreeNotification } from '../lib/notification';
 import { uploadOrCompressImage } from '../lib/imageUtils';
 import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
+import HelpButton from '../components/onboarding/HelpButton';
+import { useScreenWelcome } from '../context/OnboardingContext';
 
 const CATEGORIES = [
     { id: 'todos', label: 'Todas las áreas' },
@@ -281,6 +283,7 @@ const CommentLayerItem = ({
 };
 
 export default function Forum() {
+    const { openHelp } = useScreenWelcome('foro');
     const [user, setUser] = useState(null);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isModerator, setIsModerator] = useState(false);
@@ -1162,6 +1165,7 @@ export default function Forum() {
                                 <span>Reportes ({adminReports.length})</span>
                             </button>
                         )}
+                        <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda del foro" />
                     </div>
                 </div>
             </div>

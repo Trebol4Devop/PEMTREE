@@ -10,6 +10,7 @@ import VacationBlock from './VacationBlock';
 import ToastNotification from './ToastNotification';
 import { useToast } from '../hooks/useToast';
 import { WarningBanner, Modal, Button } from './ui';
+import HelpButton from './onboarding/HelpButton';
 
 const INITIAL_SEMESTERS = 3;
 const SIMULTANEOUS_BONUS = 5;
@@ -190,7 +191,7 @@ function decodePlanPayload(code) {
     }
 }
 
-export default function Planner({ currentPensum }) {
+export default function Planner({ currentPensum, openHelp }) {
     const { toasts, addToast, removeToast } = useToast();
     const [showPool, setShowPool] = useState(false);
     const [showWarning, setShowWarning] = useState(() => {
@@ -983,6 +984,7 @@ export default function Planner({ currentPensum }) {
                         <BookOpen size={16} />
                         <span className="planner-pool-toggle-label">Cursos</span>
                     </button>
+                    {openHelp && <HelpButton onClick={openHelp} className="self-center" />}
                 </div>
                 <div className="planner-main">
                     {lines.map(line => {

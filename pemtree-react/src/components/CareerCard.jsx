@@ -13,7 +13,7 @@ const CAREER_ICONS = {
     quimica: FlaskConical,
 };
 
-function NodeStyleBar({ primary, secondary, className = '' }) {
+export function NodeStyleBar({ primary, secondary, className = '' }) {
     return (
         <div
             className={`flex w-full h-3.5 sm:h-4 rounded-sm overflow-hidden ${className}`}

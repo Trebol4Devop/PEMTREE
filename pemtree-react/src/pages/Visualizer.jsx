@@ -3,7 +3,6 @@ import { useSearchParams } from 'react-router-dom';
 import { Search, Compass, Layers, RotateCcw, CheckCircle2, Lock, Unlock, EyeOff } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import Planner from '../components/Planner';
-import WelcomeModal from '../components/WelcomeModal';
 import ScheduleBuilder from '../components/ScheduleBuilder';
 import { cursos, cursoMap, initializeCursos, loadPensum, STARTUP_LOADED_PENSUM, getPensumKey } from '../modules/data/cursos';
 import { cargarCatalogo, getUltimaActualizacionHorarios, getCarreraDePensum, getPensumInfo } from '../modules/data/catalogo';
@@ -12,6 +11,7 @@ import { getNodeDimensions } from '../modules/graph/dimensions';
 import { PanZoomManager } from '../modules/ui/PanZoomManager';
 import { StorageManager } from '../modules/storage/StorageManager';
 import { TooltipManager } from '../modules/ui/TooltipManager';
+import { useScreenWelcome } from '../context/OnboardingContext';
 
 export default function Visualizer() {
     const graficaRef = useRef(null);
@@ -63,13 +63,13 @@ export default function Visualizer() {
     const [searchFocused, setSearchFocused] = useState(false);
     const [dropdownStyle, setDropdownStyle] = useState({});
     const [creditosAprobados, setCreditosAprobados] = useState(0);
-    const [showGuia, setShowGuia] = useState(() => {
-        return !localStorage.getItem('pemtree_guia_visto');
-    });
     const [searchParams] = useSearchParams();
     const viewParam = searchParams.get('view');
     const hasSharePlan = searchParams.has('sharePlan') || searchParams.has('plan') || window.location.hash.includes('sharePlan=') || window.location.hash.includes('plan=');
     const activeView = (viewParam === 'planner' || viewParam === 'schedule' || hasSharePlan) ? (viewParam === 'schedule' ? 'schedule' : 'planner') : 'graph';
+
+    const screenKey = activeView === 'schedule' ? 'horarios' : activeView === 'planner' ? 'planificador' : 'visualizador';
+    const { openHelp } = useScreenWelcome(screenKey);
 
     const [scheduleTimestamps, setScheduleTimestamps] = useState({});
     const [schedulePeriod, setSchedulePeriod] = useState(() => {
@@ -124,11 +124,7 @@ export default function Visualizer() {
         return () => { active = false; };
     }, [currentPensum]);
 
-    const guiaLightSrc = '/images/Guia_de_uso.png';
-    const guiaDarkSrc = '/images/Guia_de_uso_dark.png';
-
-    const actualizarCreditos = () => {
-        let total = 0;
+    const actualizarCreditos = () => {        let total = 0;
         if (cursoMap) {
             cursoMap.forEach(curso => {
                 if (curso.completado) {
@@ -310,11 +306,6 @@ export default function Visualizer() {
         const gm = graphManagerRef.current;
         if (gm) gm.desseleccionarNodo();
         setSelectedCourse(null);
-    };
-
-    const handleCerrarGuia = () => {
-        setShowGuia(false);
-        localStorage.setItem('pemtree_guia_visto', 'true');
     };
 
     const handleToggleOptativos = () => {
@@ -632,7 +623,7 @@ export default function Visualizer() {
                 <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <button
                         type="button"
-                        onClick={() => setShowGuia(true)}
+                        onClick={openHelp}
                         className="w-7 h-7 sm:w-8 sm:h-8 min-w-[28px] sm:min-w-[32px] min-h-[28px] sm:min-h-[32px] p-0 flex-none rounded-full border border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] font-extrabold text-xs sm:text-sm flex items-center justify-center hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] transition"
                         aria-label="Ayuda"
                         title="Ayuda"
@@ -688,11 +679,11 @@ export default function Visualizer() {
             )}
 
             {activeView === 'planner' ? (
-                <Planner key={currentPensum} currentPensum={currentPensum} />
+                <Planner key={currentPensum} currentPensum={currentPensum} openHelp={openHelp} />
             ) : null}
 
             {activeView === 'schedule' ? (
-                <ScheduleBuilder />
+                <ScheduleBuilder openHelp={openHelp} />
             ) : null}
 
 {showCriticalPath && rutasData.length > 0 && activeView !== 'planner' && activeView !== 'schedule' && (
@@ -747,14 +738,6 @@ export default function Visualizer() {
                             ↺
                         </button>
                     </div>
-
-            {showGuia && (
-                <WelcomeModal
-                    isDarkMode={isDarkMode}
-                    guiaSrc={isDarkMode ? guiaDarkSrc : guiaLightSrc}
-                    onClose={handleCerrarGuia}
-                />
-            )}
 
             {showRutaCriticaInfo && showCriticalPath && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4" onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }}>

@@ -16,6 +16,7 @@ import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme
 import ExportModal from './ExportModal';
 import DocenteReviews from './DocenteReviews';
 import { WarningBanner } from './ui';
+import HelpButton from './onboarding/HelpButton';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
 const HORA_INICIO = 6;
@@ -95,7 +96,7 @@ function parseSavedSections(raw) {
     return cleaned;
 }
 
-export default function ScheduleBuilder() {
+export default function ScheduleBuilder({ openHelp }) {
     const [currentPeriod, setCurrentPeriod] = useState(() => {
         return localStorage.getItem('pemtree_schedule_period') || 'semestre1';
     });
@@ -1685,6 +1686,7 @@ export default function ScheduleBuilder() {
         <button className="schedule-btn" onClick={openExport} disabled={allSelected.length === 0} title="Descargar imagen del horario">
         <Download size={14} />
         </button>
+        {openHelp && <HelpButton onClick={openHelp} className="schedule-help-btn" />}
         </div>
         </div>
 
@@ -1733,15 +1735,6 @@ export default function ScheduleBuilder() {
         <option value="SEMIPRESENCIAL">Semipresencial</option>
         <option value="VIRTUAL">Virtual</option>
         </select>
-        <div className="schedule-search">
-        <Search size={14} />
-        <input
-        type="text"
-         placeholder="Buscar..."
-        value={courseSearch}
-        onChange={e => setCourseSearch(e.target.value)}
-        />
-        </div>
         </div>
 
         {loading && (
@@ -1808,6 +1801,15 @@ export default function ScheduleBuilder() {
             >
                 <X size={16} />
             </button>
+            </div>
+            <div className="schedule-search">
+                <Search size={14} />
+                <input
+                    type="text"
+                    placeholder="Buscar..."
+                    value={courseSearch}
+                    onChange={e => setCourseSearch(e.target.value)}
+                />
             </div>
             {filteredCourses.map(curso => (
                 <div key={curso.codigo} className="schedule-course-item">

@@ -10,6 +10,7 @@ export default function Modal({
   footer,
   size = 'md',
   className = '',
+  contentClassName = '',
 }) {
   useEffect(() => {
     if (isOpen) {
@@ -32,7 +33,10 @@ export default function Modal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center p-4"
+      style={{ paddingBottom: 'calc(1rem + env(safe-area-inset-bottom, 0px))' }}
+    >
       <div
         className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity"
         onClick={onClose}
@@ -62,7 +66,7 @@ export default function Modal({
           </button>
         </div>
 
-        <div className="flex-grow p-5 overflow-y-auto min-h-0 text-[#172B4D] dark:text-slate-100">
+        <div className={`flex-grow p-5 overflow-y-auto min-h-0 text-[#172B4D] dark:text-slate-100 ${contentClassName}`}>
           {children}
         </div>
 
