@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider, useTheme } from './theme/ThemeContext';
 import { NotificationsProvider } from './context/NotificationsContext';
+import { OnboardingProvider } from './context/OnboardingContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Visualizer from './pages/Visualizer';
@@ -36,7 +37,9 @@ function App() {
       <ThemeProvider>
         <BrowserRouter>
           <NotificationsProvider>
-            <AppLayout />
+            <OnboardingProvider>
+              <AppLayout />
+            </OnboardingProvider>
           </NotificationsProvider>
         </BrowserRouter>
       </ThemeProvider>

@@ -13,6 +13,8 @@ import { sendFormspreeNotification } from '../lib/notification';
 import { uploadOrCompressImage } from '../lib/imageUtils';
 import { cursos } from '../modules/data/cursos';
 import { Modal, Input, Textarea, Select, Button, EmptyState } from '../components/ui';
+import HelpButton from '../components/onboarding/HelpButton';
+import { useScreenWelcome } from '../context/OnboardingContext';
 
 const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
 
@@ -37,6 +39,7 @@ const CARRERAS = [
 ];
 
 export default function WhatsAppGroups() {
+    const { openHelp } = useScreenWelcome('grupos');
     const [groups, setGroups] = useState(() => {
         if (!isSupabaseConfigured || !supabase) {
             return [
@@ -920,6 +923,7 @@ export default function WhatsAppGroups() {
                             <Plus size={18} strokeWidth={3} />
                             <span>Agregar Grupo</span>
                         </button>
+                        <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda de grupos" />
                     </div>
                 </div>
             </div>
