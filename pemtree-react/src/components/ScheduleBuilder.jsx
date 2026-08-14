@@ -1733,15 +1733,6 @@ export default function ScheduleBuilder() {
         <option value="SEMIPRESENCIAL">Semipresencial</option>
         <option value="VIRTUAL">Virtual</option>
         </select>
-        <div className="schedule-search">
-        <Search size={14} />
-        <input
-        type="text"
-         placeholder="Buscar..."
-        value={courseSearch}
-        onChange={e => setCourseSearch(e.target.value)}
-        />
-        </div>
         </div>
 
         {loading && (
@@ -1808,6 +1799,15 @@ export default function ScheduleBuilder() {
             >
                 <X size={16} />
             </button>
+            </div>
+            <div className="schedule-search">
+                <Search size={14} />
+                <input
+                    type="text"
+                    placeholder="Buscar..."
+                    value={courseSearch}
+                    onChange={e => setCourseSearch(e.target.value)}
+                />
             </div>
             {filteredCourses.map(curso => (
                 <div key={curso.codigo} className="schedule-course-item">

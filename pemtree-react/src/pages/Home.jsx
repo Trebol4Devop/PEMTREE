@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import {
     Lock, BarChart4, GitBranch, Mail, Link as LinkIcon,
     Compass, Calendar, Clock, Search, CheckCircle2,
@@ -9,11 +9,13 @@ import {
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
+import SiteLauncher from '../components/SiteLauncher';
 import { cargarCatalogo } from '../modules/data/catalogo';
 
 export default function Home() {
-    const navigate = useNavigate();
     const [careers, setCareers] = useState([]);
+    const [launcherOpen, setLauncherOpen] = useState(false);
+    const [selectedCareer, setSelectedCareer] = useState(null);
 
     useEffect(() => {
         let cancelled = false;
@@ -66,7 +68,9 @@ export default function Home() {
         } catch {
             // ignore
         }
-        navigate('/visualizador');
+        const career = careers.find(c => c.jsonFile === jsonFile);
+        setSelectedCareer(career || null);
+        setLauncherOpen(true);
     };
 
     const versionsByBase = (() => {
@@ -575,6 +579,12 @@ export default function Home() {
                     <p className="text-xs text-white/70">© {new Date().getFullYear()} - Trebol4Devop</p>
                 </div>
             </footer>
+
+            <SiteLauncher
+                open={launcherOpen}
+                onClose={() => setLauncherOpen(false)}
+                selectedCareer={selectedCareer}
+            />
         </div>
         </>
     );
