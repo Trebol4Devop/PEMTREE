@@ -24,13 +24,13 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
     })();
 
     const boardLinkClass = (active) =>
-        `px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline whitespace-nowrap text-xs sm:text-sm font-medium ${
+        `px-2 sm:px-3 py-1.5 rounded-lg transition-transform duration-150 active:scale-[0.96] cursor-pointer no-underline whitespace-nowrap text-xs sm:text-sm font-medium ${
             active
                 ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] font-semibold'
                 : 'text-[#5E6C84] dark:text-slate-300 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'
         }`;
 
-    const homeLinkClass = 'flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded transition cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold';
+    const homeLinkClass = 'flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg transition-transform duration-150 active:scale-[0.96] cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold';
 
     return (
         <nav className="h-12 sm:h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-2 sm:px-4 flex items-center justify-between transition-colors duration-300 shrink-0 select-none">
@@ -53,7 +53,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                         Horarios
                     </Link>
                     <Link to="/foro" className={boardLinkClass(currentView === 'forum')}>
-                        Foro anonimo
+                        Foro anónimo
                     </Link>
                     <Link to="/grupos" className={boardLinkClass(currentView === 'groups')}>
                         Grupos Estudiantiles
@@ -66,7 +66,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     href="https://buymeacoffee.com/trebol4devop"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-2 py-1 rounded bg-[#F4F5F7] dark:bg-[#0E1624] hover:bg-[#EBECF0] dark:hover:bg-[#2E3C50] text-[#172B4D] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] text-[0.65rem] sm:text-xs font-semibold no-underline transition"
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] hover:bg-[#EBECF0] dark:hover:bg-[#2E3C50] text-[#172B4D] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] text-[0.65rem] sm:text-xs font-semibold no-underline transition-transform duration-150 active:scale-[0.96]"
                     title="Donar con Buy Me a Coffee"
                 >
                     <Coffee size={12} className="text-[#5E6C84] dark:text-slate-400 shrink-0" />
@@ -76,7 +76,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     href="https://www.paypal.com/paypalme/TrebolDevop"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="flex items-center gap-1 px-2 py-1 rounded bg-[#F4F5F7] dark:bg-[#0E1624] hover:bg-[#EBECF0] dark:hover:bg-[#2E3C50] text-[#172B4D] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] text-[0.65rem] sm:text-xs font-semibold no-underline transition"
+                    className="flex items-center gap-1 px-2 py-1 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] hover:bg-[#EBECF0] dark:hover:bg-[#2E3C50] text-[#172B4D] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] text-[0.65rem] sm:text-xs font-semibold no-underline transition-transform duration-150 active:scale-[0.96]"
                     title="Donar con PayPal"
                 >
                     <svg className="w-3 h-3 fill-[#5E6C84] dark:fill-slate-400 shrink-0" viewBox="0 0 24 24">
@@ -87,7 +87,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
 
                 <Link
                     to="/notificaciones"
-                    className="relative p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300 transition flex items-center justify-center no-underline"
+                    className="relative p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300 transition-transform duration-150 active:scale-[0.96] flex items-center justify-center no-underline"
                     aria-label="Notificaciones del foro"
                     title="Notificaciones del foro"
                 >
@@ -101,7 +101,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
 
                 <button
                     onClick={onToggleTheme}
-                    className="p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] cursor-pointer border-none bg-transparent flex items-center justify-center text-[#5E6C84] dark:text-slate-300"
+                    className="p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] cursor-pointer border-none bg-transparent flex items-center justify-center text-[#5E6C84] dark:text-slate-300 transition-transform duration-150 active:scale-[0.96]"
                     aria-label="Toggle theme"
                 >
                     {isDarkMode ? <Sun size={16} className="sm:w-5 sm:h-5 text-yellow-400" /> : <Moon size={16} className="sm:w-5 sm:h-5" />}
@@ -109,7 +109,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
 
                 <Link
                     to="/mis-publicaciones"
-                    className="relative flex items-center justify-center p-1 sm:p-1.5 rounded-full bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#5E6C84] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] transition shadow-xs no-underline"
+                    className="relative flex items-center justify-center p-1 sm:p-1.5 rounded-full bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#5E6C84] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] transition-transform duration-150 active:scale-[0.96] shadow-xs no-underline ring-1 ring-black/10 dark:ring-white/10"
                     aria-label="Mis Publicaciones"
                     title="Mis Publicaciones"
                 >
