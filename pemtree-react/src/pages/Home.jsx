@@ -647,16 +647,16 @@ export default function Home() {
                     <img src="/images/logo_trebol.png" alt="Trebol4Devop" className="w-9 h-9 logo-trebol" />
                     <p className="text-sm font-semibold text-center"><strong>PEMTREE</strong> es un proyecto con fines educativos.</p>
                     <div className="flex items-center flex-wrap justify-center gap-6 text-sm font-semibold">
-                        <a href="https://github.com/trebol4devop" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
+                        <a href="https://github.com/trebol4devop" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
                             <GitBranch size={16} /> GitHub
                         </a>
-                        <a href="https://politicas-de-privacidad-trebol4devop.netlify.app/policy.html?id=privacy_es_pemtree" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
+                        <a href="https://politicas-de-privacidad-trebol4devop.netlify.app/policy.html?id=privacy_es_pemtree" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
                             <ShieldCheck size={16} /> Privacidad
                         </a>
-                        <a href="mailto:trebol4devop@proton.me" className="flex items-center gap-2 hover:opacity-90 transition">
+                        <a href="mailto:trebol4devop@proton.me" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
                             <Mail size={16} /> Contacto
                         </a>
-                        <a href="https://www.linkedin.com/company/trebol4devop/" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
+                        <a href="https://www.linkedin.com/company/trebol4devop/" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
                             <LinkIcon size={16} /> LinkedIn
                         </a>
                     </div>
