@@ -3,7 +3,7 @@ import { supabase, isSupabaseConfigured } from './supabase';
 /**
  * Acciones de moderación vía RPC seguras (SECURITY DEFINER).
  * - ocultar: autor/admin/moderador (moderador ajeno requiere justificación)
- * - restaurar: autor/admin/moderador
+ * - restaurar: SOLO admin/moderador (el autor NO puede desocultar lo que ocultó)
  * - eliminar: SOLO admin (última palabra desde el panel de administración)
  */
 

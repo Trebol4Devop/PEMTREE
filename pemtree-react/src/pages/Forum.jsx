@@ -175,7 +175,7 @@ const CommentLayerItem = ({
                                         handleRestoreComment(post.id, comment.id);
                                     }}
                                     className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
-                                    title={canModerate && !isOwner ? "Restaurar comentario (aprobarlo de nuevo)" : "Restaurar mi comentario"}
+                                    title="Restaurar comentario (solo administración/moderación)"
                                 >
                                     <RotateCcw size={12} />
                                     <span>Restaurar</span>
@@ -345,12 +345,12 @@ export default function Forum() {
         setIsRetentionNoticeVisible(false);
     }, []);
 
-    // Comentarios visibles según moderación: los bloqueados (status 2) se ocultan al público general,
-    // pero el autor y los moderadores/admins aún pueden verlos (el autor para poder restaurarlos).
+    // Comentarios visibles según moderación: los bloqueados (status 2) se ocultan a todos,
+    // incluso a su autor. Solo moderadores/admins los ven (y pueden restaurarlos).
     const getVisibleComments = useCallback((comments = []) => {
         if (canModerate) return comments;
-        return comments.filter(c => !isContentBlocked(c.moderation_status) || c.user_id === user?.id);
-    }, [canModerate, user]);
+        return comments.filter(c => !isContentBlocked(c.moderation_status));
+    }, [canModerate]);
 
     const fetchSupabasePosts = useCallback(async () => {
         if (!isSupabaseConfigured || !supabase) return;
@@ -859,7 +859,7 @@ export default function Forum() {
         } else {
             showConfirm(
                 '¿quitar publicación?',
-                '¿Confirmas que deseas quitar esta publicación? Quedará oculta para la comunidad, pero podrás restaurarla cuando quieras.',
+                '¿Confirmas que deseas quitar esta publicación? Quedará oculta para la comunidad y para ti. Una vez oculta, solo un administrador o moderador podrá restaurarla.',
                 () => executeHide(null)
             );
         }
@@ -868,10 +868,8 @@ export default function Forum() {
     const handleRestorePost = async (postId) => {
         if (!user) return;
 
-        const targetPost = posts.find(p => p.id === postId);
-        const isOwner = targetPost?.user_id === user.id;
-        if (!isOwner && !canModerate) {
-            showAlert('Acceso denegado', 'No tienes permisos para restaurar esta publicación.', 'error');
+        if (!canModerate) {
+            showAlert('Acceso denegado', 'Solo un administrador o moderador puede restaurar una publicación oculta.', 'error');
             return;
         }
 
@@ -943,7 +941,7 @@ export default function Forum() {
         } else {
             showConfirm(
                 '¿Quitar comentario?',
-                '¿Confirmas que deseas quitar este comentario? Quedará oculto para la comunidad, pero podrás restaurarlo cuando quieras.',
+                '¿Confirmas que deseas quitar este comentario? Quedará oculto para la comunidad y para ti. Una vez oculto, solo un administrador o moderador podrá restaurarlo.',
                 () => executeHide(null)
             );
         }
@@ -952,11 +950,8 @@ export default function Forum() {
     const handleRestoreComment = async (postId, commentId) => {
         if (!user) return;
 
-        const targetPost = posts.find(p => p.id === postId);
-        const targetComment = targetPost?.comments?.find(c => c.id === commentId);
-        const isOwner = targetComment?.user_id === user.id;
-        if (!isOwner && !canModerate) {
-            showAlert('Acceso denegado', 'No tienes permisos para restaurar este comentario.', 'error');
+        if (!canModerate) {
+            showAlert('Acceso denegado', 'Solo un administrador o moderador puede restaurar un comentario oculto.', 'error');
             return;
         }
 
@@ -1024,7 +1019,7 @@ export default function Forum() {
     };
 
     const filteredPosts = posts
-        .filter(p => canModerate || !isContentBlocked(p.moderation_status) || p.user_id === user?.id)
+        .filter(p => canModerate || !isContentBlocked(p.moderation_status))
         .filter(p => {
             const matchesCategory = selectedCategory === 'todos' || p.category === selectedCategory;
             const matchesCarrera = selectedCarrera === 'todas' || p.carrera === selectedCarrera || (!p.carrera && selectedCarrera === 'todas');
@@ -1317,7 +1312,7 @@ export default function Forum() {
                                                                 handleRestorePost(post.id);
                                                             }}
                                                             className={`p-1 rounded-lg transition cursor-pointer ml-1 flex items-center gap-1 text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
-                                                            title="Restaurar publicación (volver a mostrarla)"
+                                                            title="Restaurar publicación (solo administración/moderación)"
                                                         >
                                                             <RotateCcw size={13} />
                                                         </button>

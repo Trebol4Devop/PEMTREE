@@ -205,7 +205,7 @@ export const SCREENS = {
       },
       {
         icon: Shield,
-        titulo: 'Reglas de la comunidad (Supabase)',
+        titulo: 'Reglas de la comunidad ',
         tema: true,
         descripcion:
           'El contenido pasa por moderación automática: lo inapropiado se oculta del público. Solo el autor y ' +
@@ -243,7 +243,7 @@ export const SCREENS = {
       },
       {
         icon: Shield,
-        titulo: 'Reglas de la comunidad (Supabase)',
+        titulo: 'Reglas de la comunidad ',
         tema: true,
         descripcion:
           'Los grupos y sus enlaces pasan por moderación: el contenido inapropiado se oculta y los grupos se ' +
