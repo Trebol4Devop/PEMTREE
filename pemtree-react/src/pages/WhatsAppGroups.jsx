@@ -719,7 +719,7 @@ export default function WhatsAppGroups() {
         } else {
             showConfirm(
                 '¿Quitar grupo estudiantil?',
-                `¿Confirmas que deseas quitar el grupo "${target.title}"? Quedará oculto para la comunidad, pero podrás restaurarlo cuando quieras.`,
+                `¿Confirmas que deseas quitar el grupo "${target.title}"? Quedará oculto para la comunidad y para ti. Una vez oculto, solo un administrador o moderador podrá restaurarlo.`,
                 () => executeHide(null)
             );
         }
@@ -727,10 +727,8 @@ export default function WhatsAppGroups() {
 
     const handleRestoreGroup = async (groupId) => {
         if (!isSupabaseConfigured || !supabase) return;
-        const target = groups.find(g => g.id === groupId);
-        const isOwner = user && target?.user_id === user.id;
-        if (!isOwner && !canModerate) {
-            showAlert('Acceso denegado', 'No tienes permisos para restaurar este grupo.', 'error');
+        if (!canModerate) {
+            showAlert('Acceso denegado', 'Solo un administrador o moderador puede restaurar un grupo oculto.', 'error');
             return;
         }
         try {
@@ -788,7 +786,7 @@ export default function WhatsAppGroups() {
     // Filtered lists
     const displayedGroups = useMemo(() => {
         return groups.filter(g => {
-            if (!canModerate && isContentBlocked(g.moderation_status) && g.user_id !== user?.id) {
+            if (!canModerate && isContentBlocked(g.moderation_status)) {
                 return false;
             }
             if (selectedCarrera !== 'todas' && g.carrera !== selectedCarrera && g.carrera !== 'todas') {
@@ -1187,7 +1185,7 @@ export default function WhatsAppGroups() {
                                                 Number(group.moderation_status) === MODERATION_STATUS.INAPPROPRIATE ? (
                                                     <button
                                                         onClick={() => handleRestoreGroup(group.id)}
-                                                        title="Restaurar grupo (volver a mostrarlo)"
+                                                        title="Restaurar grupo (solo administración/moderación)"
                                                         className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#E3FCEF] dark:hover:bg-[#0A3622] text-[#059669] dark:text-[#10b981] hover:text-[#047857] dark:hover:text-[#34d399] transition cursor-pointer flex items-center justify-center"
                                                     >
                                                         <RotateCcw size={15} />
