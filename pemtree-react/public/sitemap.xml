@@ -19,6 +19,22 @@
   </url>
 
   <url>
+    <loc>https://pemtree.netlify.app/foro</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/foro"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/grupos</loc>
+    <lastmod>2026-08-14</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/grupos"/>
+  </url>
+
+  <url>
     <loc>https://pemtree.netlify.app/visualizador?pensum=ciencias_y_sistemas_22</loc>
     <lastmod>2026-06-02</lastmod>
     <changefreq>weekly</changefreq>

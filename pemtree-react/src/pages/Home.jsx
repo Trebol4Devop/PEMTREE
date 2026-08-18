@@ -288,7 +288,7 @@ export default function Home() {
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Tablero interactivo con todos los cursos de tu pensum, organizados por semestre y por sus prerrequisitos.
                                 </p>
-                                <Link to="/visualizador" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                <Link to="/visualizador" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Visualizador
                                 </Link>
                             </div>
@@ -318,7 +318,7 @@ export default function Home() {
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Arrastra y suelta cursos en los semestres y escuelas de vacaciones para diseñar tu línea académica.
                                 </p>
-                                <Link to="/visualizador?view=planner" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                <Link to="/visualizador?view=planner" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Planificador
                                 </Link>
                             </div>
@@ -347,7 +347,7 @@ export default function Home() {
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Visualiza, combina y exporta tus horarios por semestre o vacaciones con datos actualizados de la facultad.
                                 </p>
-                                <Link to="/visualizador?view=schedule" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                <Link to="/visualizador?view=schedule" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Horarios
                                 </Link>
                             </div>
@@ -362,6 +362,87 @@ export default function Home() {
                                 ].map(f => (
                                     <FeatureCard key={f.title} {...f} />
                                 ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section className="w-full bg-white dark:bg-[#0F1726] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
+                <div className="max-w-6xl mx-auto">
+                    <div className="text-center mb-12">
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
+                            Guía Académica FIUSAC
+                        </p>
+                        <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
+                            Todo lo que necesitas saber sobre el Pensum CLAR y tu Carrera
+                        </h2>
+                        <p className="text-sm text-[#5E6C84] dark:text-slate-400 max-w-2xl mx-auto">
+                            Información detallada para estructurar tu avance académico en la Universidad de San Carlos de Guatemala.
+                        </p>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                            <div>
+                                <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
+                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">01</span>
+                                    ¿Qué es el Rediseño Curricular CLAR?
+                                </h3>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
+                                    El marco curricular CLAR (Créditos Latinoamericanos Reinventados) de la Facultad de Ingeniería de la USAC reorganiza los planes de estudio para optimizar las secuencias de aprendizaje, articular los prerrequisitos de forma más eficiente y permitir una flexibilidad óptima en la asignación de asignaturas semestrales.
+                                </p>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                    PEMTREE mapea digitalmente cada curso con sus códigos oficiales, creditaje reglamentario y relaciones de dependencia (prerrequisitos simples, múltiples y condicionales por creditaje acumulado).
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                            <div>
+                                <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
+                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">02</span>
+                                    Límites de Créditos y Asignación
+                                </h3>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
+                                    De acuerdo con la normativa académica de la FIUSAC, la cantidad máxima de créditos que un estudiante puede asignarse por semestre depende directamente de su promedio general acumulado:
+                                </p>
+                                <ul className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 space-y-2 list-disc list-inside">
+                                    <li><strong>Hasta 32 créditos:</strong> Promedio regular o estándar.</li>
+                                    <li><strong>Hasta 37 créditos:</strong> Promedio destacado según rango reglamentario.</li>
+                                    <li><strong>Hasta 42 créditos:</strong> Cuadro de honor / rendimiento superior.</li>
+                                    <li><strong>Bono de +5 créditos:</strong> Para estudiantes de carreras simultáneas o en fase de cierre de pensum.</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                            <div>
+                                <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
+                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">03</span>
+                                    Optimización de la Ruta Crítica
+                                </h3>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
+                                    La "Ruta Crítica" es la secuencia ininterrumpida de cursos prerrequisito que determina la duración mínima requerida para completar los 300 créditos de graduación.
+                                </p>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                    Usando el algoritmo del Visualizador de PEMTREE, puedes resaltar instantáneamente la cadena de cursos clave de tu carrera (Área Común, Ciencias Básicas y Especialidades) para evitar cuellos de botella en semestres avanzados.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                            <div>
+                                <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
+                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">04</span>
+                                    Planificación de Horarios y Catedráticos
+                                </h3>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
+                                    Durante los periodos de inscripciones y asignación de secciones, el Armador de Horarios de PEMTREE sincroniza las publicaciones de las escuelas con la reputación comunitariamente calificada de catedráticos y auxiliares.
+                                </p>
+                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                    De este modo, puedes construir combinaciones semanales libres de traslapes y guardar tu horario exportándolo directamente como imagen.
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -457,6 +538,43 @@ export default function Home() {
             </section>
 
             <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
+                <div className="max-w-6xl mx-auto text-center">
+                    <h2 className="text-3xl md:text-4xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">
+                        Desarrollado por <span className="text-[#0052CC] dark:text-[#74C0FC]">Trebol4Devop</span>
+                    </h2>
+                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 mt-2">
+                        Estudiantes de la Universidad de San Carlos de Guatemala (USAC).
+                    </p>
+
+                    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                        {team.map(member => (
+                            <div key={member.name} className="bg-[#F4F5F7] dark:bg-[#1C2636] rounded-2xl p-6 shadow-sm border border-transparent hover:border-[#DEEBFF] dark:hover:border-[#3E4C5E] transition-colors">
+                                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#DEEBFF] to-[#DEEBFF] dark:from-[#1C2636] dark:to-[#0E1624] flex items-center justify-center overflow-hidden ring-1 ring-black/10 dark:ring-white/10">
+                                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
+                                </div>
+                                <h3 className="mt-4 text-base font-extrabold text-[#172B4D] dark:text-slate-100">
+                                    {member.name}
+                                </h3>
+                                <p className="text-[11px] font-extrabold text-[#172B4D] dark:text-slate-300 tracking-widest mt-2">
+                                    {member.role.toUpperCase()}
+                                </p>
+                                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[#7A869A] dark:text-slate-400">
+                                    <a href={member.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
+                                        <GitBranch size={14} />
+                                        <span>GitHub</span>
+                                    </a>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+
+                    <div className="mt-10 text-xs text-[#5E6C84] dark:text-slate-400 border-t border-[#DFE1E6] dark:border-[#3E4C5E] pt-6">
+                        Tecnologias: <span className="font-semibold text-[#172B4D] dark:text-slate-100">React&Vite</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">Node.js</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">TailwindCSS</span>
+                    </div>
+                </div>
+            </section>
+
+            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-12">
                         <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
@@ -492,7 +610,7 @@ export default function Home() {
                             href="https://buymeacoffee.com/trebol4devop"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
+                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition-transform duration-150 active:scale-[0.96] text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
                         >
                             <Coffee size={16} className="text-[#5E6C84] dark:text-slate-400 shrink-0" />
                             <span>Buy Me a Coffee</span>
@@ -501,7 +619,7 @@ export default function Home() {
                             href="https://www.paypal.com/paypalme/TrebolDevop"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
+                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition-transform duration-150 active:scale-[0.96] text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
                         >
                             <svg className="w-4 h-4 fill-[#5E6C84] dark:fill-slate-400 shrink-0" viewBox="0 0 24 24">
                                 <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.641.641 0 0 1 .632-.54H11.2c2.478 0 4.414.53 5.753 1.577 1.343 1.049 1.954 2.651 1.819 4.763-.15 2.34-1.123 4.184-2.894 5.483-1.768 1.298-4.148 1.956-7.074 1.956H7.818l-.742 4.378z"/>
@@ -514,17 +632,20 @@ export default function Home() {
 
             <footer className="bg-[#172B4D] dark:bg-[#0E1624] text-white py-8 px-4 mt-auto select-none w-full shrink-0">
                 <div className="max-w-6xl mx-auto flex flex-col items-center gap-3">
-                    <img src="/images/logo_trebol.png" alt="PEMTREE Logo" className="w-9 h-9 logo-trebol" />
-                    <p className="text-sm font-bold text-center"><strong>PEMTREE</strong> — Red Estudiantil de Ingeniería</p>
-                    <p className="text-xs text-blue-200/90 dark:text-slate-300 font-semibold bg-white/10 dark:bg-white/5 px-3.5 py-1 rounded-full border border-white/10 text-center">
-                        Espacio estudiantil independiente no oficial
-                    </p>
-                    <p className="text-xs text-slate-300/80 dark:text-slate-400 text-center max-w-xl leading-relaxed">
-                        Proyecto comunitario independiente y de código abierto desarrollado de forma libre por y para estudiantes para fines de consulta académica y orientación.
-                    </p>
-                    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold mt-1">
-                        <a href="https://politicas-de-privacidad-trebol4devop.netlify.app/policy.html?id=privacy_es_pemtree" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
-                            <Lock size={16} /> Privacidad
+                    <img src="/images/logo_trebol.png" alt="Trebol4Devop" className="w-9 h-9 logo-trebol" />
+                    <p className="text-sm font-semibold text-center"><strong>PEMTREE</strong> es un proyecto con fines educativos.</p>
+                    <div className="flex items-center flex-wrap justify-center gap-6 text-sm font-semibold">
+                        <a href="https://github.com/trebol4devop" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
+                            <GitBranch size={16} /> GitHub
+                        </a>
+                        <a href="https://politicas-de-privacidad-trebol4devop.netlify.app/policy.html?id=privacy_es_pemtree" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
+                            <ShieldCheck size={16} /> Privacidad
+                        </a>
+                        <a href="mailto:trebol4devop@proton.me" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
+                            <Mail size={16} /> Contacto
+                        </a>
+                        <a href="https://www.linkedin.com/company/trebol4devop/" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
+                            <LinkIcon size={16} /> LinkedIn
                         </a>
                         <Link to="/normas" className="flex items-center gap-2 hover:opacity-90 transition">
                             <ShieldCheck size={16} /> Normas de la comunidad

@@ -58,7 +58,7 @@ export default function CareerCard({ name, shortName, base, jsonFile, colors, ye
         <button
             type="button"
             onClick={() => onSelect(jsonFile)}
-            className="group relative w-[220px] sm:w-[260px] aspect-[3/2] rounded-lg overflow-hidden border-2 cursor-pointer transition-all duration-300 hover:-translate-y-1 hover:shadow-lg text-left p-0"
+            className="group relative w-[220px] sm:w-[260px] aspect-[3/2] rounded-xl overflow-hidden border-2 cursor-pointer transition-transform duration-200 hover:-translate-y-1 active:scale-[0.96] hover:shadow-lg text-left p-0"
             style={{ borderColor: primary, backgroundColor: 'transparent' }}
             aria-label={`Abrir pensum de ${name}`}
             title={`Abrir ${name}`}
