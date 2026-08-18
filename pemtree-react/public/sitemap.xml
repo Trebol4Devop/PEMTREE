@@ -106,4 +106,20 @@
     <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/visualizador?pensum=ambiental_25"/>
   </url>
 
+  <url>
+    <loc>https://pemtree.netlify.app/foro</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/foro"/>
+  </url>
+
+  <url>
+    <loc>https://pemtree.netlify.app/normas</loc>
+    <lastmod>2026-08-17</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+    <xhtml:link rel="alternate" hreflang="es" href="https://pemtree.netlify.app/normas"/>
+  </url>
+
 </urlset>

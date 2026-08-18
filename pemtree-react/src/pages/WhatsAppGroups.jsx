@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { 
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
     AlertTriangle, LogOut, Check, 
@@ -921,6 +922,14 @@ export default function WhatsAppGroups() {
                             <Plus size={18} strokeWidth={3} />
                             <span>Agregar Grupo</span>
                         </button>
+                        <Link
+                            to="/normas"
+                            className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition cursor-pointer no-underline border border-white/25 backdrop-blur-xs shrink-0"
+                            title="Normas de la comunidad"
+                        >
+                            <ShieldCheck size={15} />
+                            <span className="hidden sm:inline">Reglas</span>
+                        </Link>
                         <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda de grupos" />
                     </div>
                 </div>

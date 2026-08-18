@@ -1160,6 +1160,14 @@ export default function Forum() {
                                 <span>Reportes ({adminReports.length})</span>
                             </button>
                         )}
+                        <Link
+                            to="/normas"
+                            className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-white/15 hover:bg-white/25 dark:bg-[#0E1624]/80 dark:hover:bg-[#1C2636] text-white dark:text-slate-200 font-extrabold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition cursor-pointer no-underline border border-white/25 dark:border-[#3E4C5E] shrink-0"
+                            title="Normas de la comunidad"
+                        >
+                            <ShieldCheck size={15} />
+                            <span className="hidden sm:inline">Reglas</span>
+                        </Link>
                         <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda del foro" />
                     </div>
                 </div>

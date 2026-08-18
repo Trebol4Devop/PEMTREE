@@ -5,7 +5,8 @@ import {
     Compass, Calendar, Clock, Search, CheckCircle2,
     Copy, AlertTriangle, Download, Pin, Filter,
     Sparkles, GitMerge, ChevronDown, Coffee,
-    MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink
+    MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink,
+    FileText
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
@@ -155,6 +156,10 @@ export default function Home() {
         {
             question: '¿Qué sucede si borro la memoria caché de mi navegador?',
             answer: 'Debido a que tus datos residen únicamente en tu navegador (almacenamiento local), al borrar los datos de navegación o historial del sitio web se reiniciará tu progreso. Te recomendamos mantener tu sesión y progreso en tu navegador personal habitual.'
+        },
+        {
+            question: '¿De dónde provienen los datos de pensum y horarios?',
+            answer: 'Los pensums, horarios, secciones y docentes se basan en las publicaciones oficiales que la Facultad de Ingeniería de la Universidad de San Carlos de Guatemala (FIUSAC) emite cada semestre y escuela de vacaciones. PEMTREE organiza y transforma esa información pública para facilitar su consulta; para información oficial y vigente consulta siempre los portales de la Facultad (portal.ingenieria.usac.edu.gt).'
         }
     ];
 
@@ -565,10 +570,19 @@ export default function Home() {
                 <div className="max-w-6xl mx-auto flex flex-col items-center gap-3">
                     <img src="/images/logo_trebol.png" alt="Trebol4Devop" className="w-9 h-9 logo-trebol" />
                     <p className="text-sm font-semibold text-center"><strong>PEMTREE</strong> es un proyecto con fines educativos.</p>
-                    <div className="flex items-center gap-6 text-sm font-semibold">
+                    <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold">
                         <a href="https://github.com/trebol4devop" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
                             <GitBranch size={16} /> GitHub
                         </a>
+                        <a href="https://politicas-de-privacidad-trebol4devop.netlify.app/policy.html?id=privacy_es_pemtree" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <Lock size={16} /> Privacidad
+                        </a>
+                        <Link to="/normas" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <ShieldCheck size={16} /> Normas de la comunidad
+                        </Link>
+                        <Link to="/normas#descargo" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <FileText size={16} /> Descargo
+                        </Link>
                         <a href="mailto:trebol4devop@proton.me" className="flex items-center gap-2 hover:opacity-90 transition">
                             <Mail size={16} /> Contacto
                         </a>
@@ -576,6 +590,7 @@ export default function Home() {
                             <LinkIcon size={16} /> LinkedIn
                         </a>
                     </div>
+                    <p className="text-xs text-white/70">Datos académicos: <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-90 transition">portal.ingenieria.usac.edu.gt</a></p>
                     <p className="text-xs text-white/70">© {new Date().getFullYear()} - Trebol4Devop</p>
                 </div>
             </footer>

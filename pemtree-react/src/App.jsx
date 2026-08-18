@@ -8,6 +8,7 @@ import Home from './pages/Home';
 import Visualizer from './pages/Visualizer';
 import Forum from './pages/Forum';
 import WhatsAppGroups from './pages/WhatsAppGroups';
+import Normas from './pages/Normas';
 import MyPosts from './pages/MyPosts';
 import Notifications from './pages/Notifications';
 
@@ -23,6 +24,7 @@ function AppLayout() {
           <Route path="/visualizador" element={<Visualizer />} />
           <Route path="/foro" element={<Forum />} />
           <Route path="/grupos" element={<WhatsAppGroups />} />
+          <Route path="/normas" element={<Normas />} />
           <Route path="/mis-publicaciones" element={<MyPosts />} />
           <Route path="/notificaciones" element={<Notifications />} />
         </Routes>
