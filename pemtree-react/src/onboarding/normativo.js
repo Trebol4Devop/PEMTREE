@@ -94,18 +94,20 @@ export const NORMATIVO_RULES = [
 ];
 
 export const DISCLAIMER = {
-  title: 'Pagina no oficial',
+  title: 'Espacio estudiantil independiente no oficial',
   icon: '!',
-  text: 'PEMTREE no es una pagina oficial de la Universidad de San Carlos de Guatemala ni de la Facultad de Ingenieria. Es una herramienta informativa creada por estudiantes para estudiantes.',
+  text: 'PEMTREE es un espacio estudiantil independiente no oficial de la Red Estudiantil de Ingeniería. No es una página oficial de la Universidad de San Carlos de Guatemala ni de la Facultad de Ingeniería. Es una herramienta comunitaria creada por y para estudiantes.',
   points: [
-    'Los datos de pensum se basan en informacion publica disponible.',
-    'Las reglas mostradas provienen del Normativo General de Evaluacion y Promocion de la Facultad (Acta 33-2021).',
-    'Para informacion oficial, consulta siempre los portales de la Facultad de Ingenieria.',
-    'Esta herramienta no almacena ni comparte tus datos personales.',
+    'Proyecto comunitario independiente y de código abierto sin afiliación institucional oficial.',
+    'Cada usuario es el único y exclusivo responsable legal del contenido, mensajes, enlaces e imágenes que comparte en la plataforma.',
+    'Los datos de pensum y horarios se basan en información pública de consulta y referencia estudiantil.',
+    'Las reglas mostradas provienen del Normativo General de Evaluación y Promoción de la Facultad (Acta 33-2021).',
+    'Para trámites administrativos y confirmación de datos oficiales, consulta siempre los portales oficiales de la Facultad de Ingeniería.',
+    'Esta herramienta no almacena contraseñas ni comparte tus datos personales.',
   ],
   links: [
-    { label: 'Portal de Ingeniería', url: 'https://portal.ingenieria.usac.edu.gt' },
-    { label: 'Redes de Estudio', url: 'https://redesestudio.ingenieria.usac.edu.gt/redesDeEstudio' },
+    { label: 'Portal oficial de Ingeniería (Externo)', url: 'https://portal.ingenieria.usac.edu.gt' },
+    { label: 'Redes de Estudio Oficiales (Externo)', url: 'https://redesestudio.ingenieria.usac.edu.gt/redesDeEstudio' },
     { label: 'Normativo PDF (Acta 33-2021)', url: 'https://portal.ingenieria.usac.edu.gt/reglamentos/NormativoGeneral_Evaluacion_y_Promocion.pdf' },
   ],
 };

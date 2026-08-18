@@ -331,6 +331,9 @@ export default function MyPosts() {
                                 <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                                     Panel de interacción
                                 </span>
+                                <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
+                                    Espacio estudiantil independiente no oficial
+                                </span>
                             </div>
                             <p className="text-sm text-blue-100 dark:text-slate-300 mt-1 max-w-xl leading-relaxed">
                                 Administra tus publicaciones en el foro y descubre cómo participan los demás estudiantes con tu contenido.

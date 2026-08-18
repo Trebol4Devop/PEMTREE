@@ -584,7 +584,7 @@ export default function Visualizer() {
                 </div>
 
                 {scheduleTimestamps[schedulePeriod] && (activeView === 'schedule') && (
-                    <span className="text-[0.6rem] sm:text-[0.65rem] text-[#5E6C84] dark:text-[#94a3b8] ml-auto whitespace-nowrap shrink-0" title="Última actualización de horarios desde FIUSAC">
+                    <span className="text-[0.6rem] sm:text-[0.65rem] text-[#5E6C84] dark:text-[#94a3b8] ml-auto whitespace-nowrap shrink-0" title="Última actualización de datos de horarios">
                         Actualizado: {(() => {
                             try {
                                 const d = new Date(scheduleTimestamps[schedulePeriod]);
@@ -610,16 +610,21 @@ export default function Visualizer() {
                     </div>
                 </div>
 
-                {/* Botones de ayuda, créditos y reiniciar */}
-                {carreraTitulo && (
-                    <span
-                        className="flex items-center min-w-0 text-sm lg:text-base font-extrabold tracking-wide whitespace-nowrap overflow-hidden text-ellipsis px-1 sm:px-2"
-                        style={{ color: carreraColor }}
-                        title="Carrera actual"
-                    >
-                        {carreraTitulo}
+                {/* Título de carrera y badge de espacio independiente */}
+                <div className="flex items-center gap-2 min-w-0">
+                    {carreraTitulo && (
+                        <span
+                            className="flex items-center min-w-0 text-sm lg:text-base font-extrabold tracking-wide whitespace-nowrap overflow-hidden text-ellipsis px-1 sm:px-2"
+                            style={{ color: carreraColor }}
+                            title="Carrera actual"
+                        >
+                            {carreraTitulo}
+                        </span>
+                    )}
+                    <span className="hidden 2xl:inline-block text-[9px] font-semibold text-[#5E6C84] dark:text-slate-400 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-[#DFE1E6] dark:border-[#3E4C5E] whitespace-nowrap" title="Espacio estudiantil independiente no oficial">
+                        Espacio estudiantil independiente no oficial
                     </span>
-                )}
+                </div>
                 <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <button
                         type="button"

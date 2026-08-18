@@ -1,4 +1,5 @@
 import { useState, useEffect, useMemo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 import { 
     MessageSquare, Plus, Search, ExternalLink, Copy, CheckCircle2, 
     AlertTriangle, LogOut, Check, 
@@ -99,6 +100,8 @@ export default function WhatsAppGroups() {
     const [csvParsedRows, setCsvParsedRows] = useState([]);
     const [csvError, setCsvError] = useState('');
     const [csvIsUploading, setCsvIsUploading] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
+    const [csvAcceptedTerms, setCsvAcceptedTerms] = useState(false);
 
     // Custom Alert / Confirm / Prompt
     const [customAlert, setCustomAlert] = useState({ isOpen: false, title: '', message: '', type: 'info' });
@@ -327,6 +330,11 @@ export default function WhatsAppGroups() {
             return;
         }
 
+        if (!acceptedTerms) {
+            showAlert('Términos de Servicio requeridos', 'Debes aceptar los Términos de Servicio y declarar que eres el único responsable legal del enlace y contenido que compartes.', 'warning');
+            return;
+        }
+
         // Validate URL format (WhatsApp, Telegram, Discord, Drive, Classroom, Facebook, etc.)
         const cleanLink = newLink.trim();
         let isValidUrl = false;
@@ -402,6 +410,7 @@ export default function WhatsAppGroups() {
         setNewDescription('');
         setNewCarrera('todas');
         setNewImageUrl('');
+        setAcceptedTerms(false);
         setIsAddModalOpen(false);
         showAlert('¡Grupo Agregado!', 'Tu grupo estudiantil se ha publicado correctamente y está listo para que otros estudiantes se unan.', 'success');
     };
@@ -614,6 +623,11 @@ export default function WhatsAppGroups() {
             return;
         }
 
+        if (!csvAcceptedTerms) {
+            setCsvError('Debes aceptar los Términos de Servicio antes de continuar con la importación masiva.');
+            return;
+        }
+
         setCsvIsUploading(true);
         setCsvError('');
 
@@ -666,8 +680,9 @@ export default function WhatsAppGroups() {
         setIsCsvModalOpen(false);
         setCsvFile(null);
         setCsvParsedRows([]);
+        setCsvAcceptedTerms(false);
         showAlert('¡Carga Masiva Exitosa!', `Se importaron ${validRows.length} cursos/grupos estudiantiles correctamente al directorio.`, 'success');
-    }, [csvParsedRows, user, isAdmin, fetchGroups, showAlert]);
+    }, [csvParsedRows, user, isAdmin, fetchGroups, showAlert, csvAcceptedTerms]);
 
     // Hide group (autor, moderador o admin) — nadie borra desde la página principal
     const handleHideGroup = async (groupId) => {
@@ -854,13 +869,19 @@ export default function WhatsAppGroups() {
             <div className="bg-gradient-to-r from-[#0052CC] to-[#0747A6] dark:from-[#0C295E] dark:to-[#143A7B] text-white py-8 px-4 sm:px-8 shadow-md">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div className="flex flex-col gap-2">
-                        <div className="flex items-center gap-2.5">
-                            <div className="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center shadow-lg transform -rotate-6">
+                        <div className="flex items-center gap-2.5 flex-wrap">
+                            <div className="w-10 h-10 rounded-xl bg-[#25D366] flex items-center justify-center shadow-lg transform -rotate-6 shrink-0">
                                 <MessageSquare size={22} className="text-white fill-white" />
                             </div>
                             <h1 className="text-2xl sm:text-3xl font-black tracking-tight flex items-center gap-2">
                                 Grupos Estudiantiles
                             </h1>
+                            <span className="text-[11px] font-extrabold bg-white/20 dark:bg-black/20 text-white px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                Red Estudiantil de Ingeniería
+                            </span>
+                            <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
+                                Espacio estudiantil independiente no oficial
+                            </span>
                         </div>
                         <p className="text-sm sm:text-base text-blue-100 dark:text-slate-300 max-w-2xl font-medium leading-relaxed">
                             Encuentra, verifica y únete a grupos de estudio, comunidades en WhatsApp/Telegram/Discord, laboratorios y repositorios de tu carrera o curso semestral.
@@ -921,6 +942,14 @@ export default function WhatsAppGroups() {
                             <Plus size={18} strokeWidth={3} />
                             <span>Agregar Grupo</span>
                         </button>
+                        <Link
+                            to="/normas"
+                            className="flex items-center gap-2 bg-white/15 hover:bg-white/25 text-white font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition cursor-pointer no-underline border border-white/25 backdrop-blur-xs shrink-0"
+                            title="Normas de la comunidad"
+                        >
+                            <ShieldCheck size={15} />
+                            <span className="hidden sm:inline">Reglas</span>
+                        </Link>
                         <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda de grupos" />
                     </div>
                 </div>
@@ -1329,6 +1358,21 @@ export default function WhatsAppGroups() {
                             )}
                         </div>
 
+                        <div className="rounded-xl p-3 bg-amber-50/80 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-xs text-slate-700 dark:text-slate-300">
+                            <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    required
+                                    checked={acceptedTerms}
+                                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                    className="w-4 h-4 mt-0.5 rounded accent-[#0052CC] shrink-0 cursor-pointer"
+                                />
+                                <span className="text-[11px] sm:text-xs leading-relaxed">
+                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaro que <strong>soy el único responsable legal del enlace y contenido que comparto</strong> en este espacio estudiantil independiente.
+                                </span>
+                            </label>
+                        </div>
+
                         <div className="flex items-center justify-end gap-3 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
                             <Button
                                 type="button"
@@ -1415,6 +1459,10 @@ export default function WhatsAppGroups() {
                                 autoFocus
                             />
                             <span className="text-[10px] text-[#7A869A] mt-1 block">Los cambios se verán reflejados al instante en el Foro y en tus Grupos compartidos.</span>
+
+                            <div className="p-2.5 rounded-xl bg-amber-50/70 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-[11px] text-slate-700 dark:text-slate-300 leading-snug">
+                                Al participar aceptas los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaras ser el único responsable legal de los grupos y enlaces que compartas.
+                            </div>
 
                             <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
                                 <Button
@@ -1552,6 +1600,21 @@ export default function WhatsAppGroups() {
                                 </div>
                             </div>
                         )}
+
+                        <div className="rounded-xl p-3 bg-amber-50/80 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-xs text-slate-700 dark:text-slate-300">
+                            <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    required
+                                    checked={csvAcceptedTerms}
+                                    onChange={(e) => setCsvAcceptedTerms(e.target.checked)}
+                                    className="w-4 h-4 mt-0.5 rounded accent-[#0052CC] shrink-0 cursor-pointer"
+                                />
+                                <span className="text-[11px] sm:text-xs leading-relaxed">
+                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaro que <strong>asumo la responsabilidad legal de los enlaces y datos</strong> importados a este directorio comunitario.
+                                </span>
+                            </label>
+                        </div>
 
                         {/* Footer de Acciones del Modal */}
                         <div className="flex justify-end items-center gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">

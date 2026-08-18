@@ -224,29 +224,34 @@ const CommentLayerItem = ({
 
                 {/* Reply Form */}
                 {isReplying && (
-                    <div className="mt-2 pt-2 border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 flex items-center gap-1.5">
-                        <input
-                            type="text"
-                            placeholder="Escribe tu respuesta a este comentario..."
-                            value={commentReplyTexts[comment.id] || ''}
-                            onChange={(e) => setCommentReplyTexts(prev => ({ ...prev, [comment.id]: e.target.value }))}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter' && !e.shiftKey) {
-                                    e.preventDefault();
-                                    handleAddComment(post.id, comment.id);
-                                }
-                            }}
-                            className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-lg px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-white placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] transition"
-                            autoFocus
-                        />
-                        <button
-                            onClick={() => handleAddComment(post.id, comment.id)}
-                            className="bg-[#0052CC] hover:bg-[#003D99] text-white px-2.5 py-1.5 rounded-lg font-semibold text-xs transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
-                            title="Enviar respuesta en capa"
-                        >
-                            <Send size={13} />
-                            <span>Enviar</span>
-                        </button>
+                    <div className="mt-2 pt-2 border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 flex flex-col gap-1">
+                        <div className="flex items-center gap-1.5">
+                            <input
+                                type="text"
+                                placeholder="Escribe tu respuesta a este comentario..."
+                                value={commentReplyTexts[comment.id] || ''}
+                                onChange={(e) => setCommentReplyTexts(prev => ({ ...prev, [comment.id]: e.target.value }))}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && !e.shiftKey) {
+                                        e.preventDefault();
+                                        handleAddComment(post.id, comment.id);
+                                    }
+                                }}
+                                className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-lg px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-white placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] transition"
+                                autoFocus
+                            />
+                            <button
+                                onClick={() => handleAddComment(post.id, comment.id)}
+                                className="bg-[#0052CC] hover:bg-[#003D99] text-white px-2.5 py-1.5 rounded-lg font-semibold text-xs transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+                                title="Enviar respuesta en capa"
+                            >
+                                <Send size={13} />
+                                <span>Enviar</span>
+                            </button>
+                        </div>
+                        <p className="text-[10px] text-[#5E6C84] dark:text-slate-400 leading-tight">
+                            Al responder aceptas los <Link to="/normas#terminos" target="_blank" className="underline font-semibold text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> (responsabilidad legal exclusiva).
+                        </p>
                     </div>
                 )}
             </div>
@@ -327,6 +332,7 @@ export default function Forum() {
     const [newContent, setNewContent] = useState('');
     const [newImageUrl, setNewImageUrl] = useState('');
     const [isCompressingImg, setIsCompressingImg] = useState(false);
+    const [acceptedTerms, setAcceptedTerms] = useState(false);
     
     // Profile / Pseudonym state
     const [savedAlias, setSavedAlias] = useState(() => localStorage.getItem('pemtree_forum_alias') || '');
@@ -514,7 +520,7 @@ export default function Forum() {
         if (existing && existing.trim()) {
             setSavedAlias(existing.trim());
         } else {
-            const initials = u.user_metadata?.full_name ? u.user_metadata.full_name.split(' ').map(n => n[0]).join('').toUpperCase() : 'USAC';
+            const initials = u.user_metadata?.full_name ? u.user_metadata.full_name.split(' ').map(n => n[0]).join('').toUpperCase() : 'EST';
             const idCode = u.id ? Math.abs(u.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 900 + 100 : 482;
             const suggestion = `Estudiante ${initials} #${idCode}`;
             setProfileInputText(suggestion);
@@ -703,6 +709,11 @@ export default function Forum() {
             return;
         }
 
+        if (!acceptedTerms) {
+            showAlert('Términos de Servicio requeridos', 'Debes aceptar los Términos de Servicio y confirmar que eres el único responsable legal del contenido que publicas.', 'warning');
+            return;
+        }
+
         // 1. Control de saturación / Cooldown
         const cooldown = checkCooldown('post');
         if (!cooldown.allowed) {
@@ -768,6 +779,7 @@ export default function Forum() {
         setNewContent('');
         setNewCarrera('todas');
         setNewImageUrl('');
+        setAcceptedTerms(false);
         setIsCreateModalOpen(false);
     };
 
@@ -1068,7 +1080,10 @@ export default function Forum() {
                             <div className="flex items-center gap-2 flex-wrap">
                                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Foro Estudiantil</h1>
                                 <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
-                                    Comunidad Anónima
+                                    Red Estudiantil de Ingeniería
+                                </span>
+                                <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
+                                    Espacio estudiantil independiente no oficial
                                 </span>
                             </div>
                             <p className="text-sm text-blue-100 dark:text-slate-300 mt-1 max-w-xl leading-relaxed">
@@ -1160,6 +1175,14 @@ export default function Forum() {
                                 <span>Reportes ({adminReports.length})</span>
                             </button>
                         )}
+                        <Link
+                            to="/normas"
+                            className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 bg-white/15 hover:bg-white/25 dark:bg-[#0E1624]/80 dark:hover:bg-[#1C2636] text-white dark:text-slate-200 font-extrabold text-xs sm:text-sm px-3.5 py-2.5 rounded-xl transition cursor-pointer no-underline border border-white/25 dark:border-[#3E4C5E] shrink-0"
+                            title="Normas de la comunidad"
+                        >
+                            <ShieldCheck size={15} />
+                            <span className="hidden sm:inline">Reglas</span>
+                        </Link>
                         <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda del foro" />
                     </div>
                 </div>
@@ -1474,22 +1497,27 @@ export default function Forum() {
 
                                                 {/* Add Comment Box */}
                                                 {user ? (
-                                                    <div className="flex items-center gap-2 mt-2">
-                                                        <input
-                                                            type="text"
-                                                            placeholder={`Escribe una respuesta como "${activeAlias}"...`}
-                                                            value={commentTexts[post.id] || ''}
-                                                            onChange={(e) => setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))}
-                                                            onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(post.id); }}
-                                                            className="flex-1 bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2 text-xs text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
-                                                        />
-                                                        <button
-                                                            onClick={() => handleAddComment(post.id)}
-                                                            className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white p-2 rounded-xl transition cursor-pointer shrink-0"
-                                                            title="Publicar respuesta"
-                                                        >
-                                                            <Send size={15} />
-                                                        </button>
+                                                    <div className="flex flex-col gap-1 mt-2">
+                                                        <div className="flex items-center gap-2">
+                                                            <input
+                                                                type="text"
+                                                                placeholder={`Escribe una respuesta como "${activeAlias}"...`}
+                                                                value={commentTexts[post.id] || ''}
+                                                                onChange={(e) => setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))}
+                                                                onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(post.id); }}
+                                                                className="flex-1 bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2 text-xs text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
+                                                            />
+                                                            <button
+                                                                onClick={() => handleAddComment(post.id)}
+                                                                className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white p-2 rounded-xl transition cursor-pointer shrink-0"
+                                                                title="Publicar respuesta"
+                                                            >
+                                                                <Send size={15} />
+                                                            </button>
+                                                        </div>
+                                                        <p className="text-[10px] text-[#5E6C84] dark:text-slate-400 px-1 leading-tight">
+                                                            Al responder aceptas los <Link to="/normas#terminos" target="_blank" className="underline font-semibold text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> (eres el único responsable legal de tu contenido).
+                                                        </p>
                                                     </div>
                                                 ) : (
                                                     <div className="mt-2 p-3 rounded-xl bg-[#DEEBFF]/60 dark:bg-[#0C295E]/60 border border-[#0052CC]/30 dark:border-[#4C9AFF]/30 text-center">
@@ -1615,6 +1643,21 @@ export default function Forum() {
                             </button>
                         </div>
 
+                        <div className="rounded-xl p-3 bg-amber-50/80 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-xs text-slate-700 dark:text-slate-300">
+                            <label className="flex items-start gap-2.5 cursor-pointer select-none">
+                                <input
+                                    type="checkbox"
+                                    required
+                                    checked={acceptedTerms}
+                                    onChange={(e) => setAcceptedTerms(e.target.checked)}
+                                    className="w-4 h-4 mt-0.5 rounded accent-[#0052CC] shrink-0 cursor-pointer"
+                                />
+                                <span className="text-[11px] sm:text-xs leading-relaxed">
+                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaro que <strong>soy el único responsable legal del contenido que publico</strong> en este espacio estudiantil independiente.
+                                </span>
+                            </label>
+                        </div>
+
                         <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
                             <Button
                                 type="button"
@@ -1656,6 +1699,9 @@ export default function Forum() {
                                 value={profileInputText}
                                 onChange={(e) => setProfileInputText(e.target.value)}
                             />
+                            <div className="mt-3 p-2.5 rounded-xl bg-amber-50/70 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-[11px] text-slate-700 dark:text-slate-300 leading-snug">
+                                Al participar aceptas los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y reconoces que <strong>eres el único responsable legal</strong> del contenido que publicas en este espacio comunitario.
+                            </div>
                         </div>
 
                         <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">

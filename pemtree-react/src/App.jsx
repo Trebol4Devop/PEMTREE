@@ -6,9 +6,8 @@ import { OnboardingProvider } from './context/OnboardingContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Visualizer from './pages/Visualizer';
-import Forum from './pages/Forum';
-import WhatsAppGroups from './pages/WhatsAppGroups';
-import MyPosts from './pages/MyPosts';
+import Maintenance from './pages/Maintenance';
+import Normas from './pages/Normas';
 import Notifications from './pages/Notifications';
 
 function AppLayout() {
@@ -21,9 +20,10 @@ function AppLayout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/visualizador" element={<Visualizer />} />
-          <Route path="/foro" element={<Forum />} />
-          <Route path="/grupos" element={<WhatsAppGroups />} />
-          <Route path="/mis-publicaciones" element={<MyPosts />} />
+          <Route path="/foro" element={<Maintenance />} />
+          <Route path="/grupos" element={<Maintenance />} />
+          <Route path="/normas" element={<Normas />} />
+          <Route path="/mis-publicaciones" element={<Maintenance />} />
           <Route path="/notificaciones" element={<Notifications />} />
         </Routes>
       </main>

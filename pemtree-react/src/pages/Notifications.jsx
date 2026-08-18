@@ -140,6 +140,9 @@ export default function Notifications() {
                                     {unreadCount} sin leer
                                 </span>
                             )}
+                            <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
+                                Espacio estudiantil independiente no oficial
+                            </span>
                         </div>
                         <p className="text-sm text-blue-100 dark:text-slate-300 mt-1 max-w-xl leading-relaxed">
                             Consulta la actividad reciente de tus publicaciones y configura las alertas que deseas recibir en tu navegador.

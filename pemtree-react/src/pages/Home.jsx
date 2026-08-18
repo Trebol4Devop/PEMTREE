@@ -1,11 +1,12 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Lock, BarChart4, GitBranch, Mail, Link as LinkIcon,
+    Lock, BarChart4, GitBranch, Coffee,
     Compass, Calendar, Clock, Search, CheckCircle2,
     Copy, AlertTriangle, Download, Pin, Filter,
-    Sparkles, GitMerge, ChevronDown, Coffee,
-    MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink
+    Sparkles, GitMerge, ChevronDown,
+    MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink,
+    FileText
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
@@ -104,37 +105,10 @@ export default function Home() {
         }));
     })();
 
-    const team = [
-        {
-            name: 'Jose Monzon',
-            role: 'Frontend Developer & UI/UX Designer',
-            avatar: 'https://github.com/0520Jose.png',
-            github: 'https://github.com/0520Jose'
-        },
-        {
-            name: 'Diego Vasquez',
-            role: 'QA & Testing',
-            avatar: 'https://github.com/DiegVas.png',
-            github: 'https://github.com/DiegVas'
-        },
-        {
-            name: 'Carlos del Cid',
-            role: 'Backend Developer',
-            avatar: 'https://github.com/Carlosdelcid05.png',
-            github: 'https://github.com/Carlosdelcid05'
-        },
-        {
-            name: 'Ottoniel Vasquez',
-            role: 'Backend Developer',
-            avatar: 'https://github.com/Farot3.png',
-            github: 'https://github.com/Farot3'
-        }
-    ];
-
     const faqs = [
         {
             question: '¿Qué es PEMTREE y para quién está diseñado?',
-            answer: 'PEMTREE es una plataforma académica interactiva desarrollada para estudiantes de Ingeniería de la Universidad de San Carlos de Guatemala (USAC). Te permite explorar tu pensum, verificar la lógica de prerrequisitos, simular semestres y diseñar tus horarios.'
+            answer: 'PEMTREE es un espacio estudiantil independiente no oficial y plataforma académica interactiva desarrollada por y para estudiantes de Ingeniería. Te permite explorar tu pensum, verificar la lógica de prerrequisitos, simular semestres y diseñar tus horarios de forma visual y comunitaria.'
         },
         {
             question: '¿Cómo se guarda mi progreso o planificación en la plataforma?',
@@ -155,6 +129,10 @@ export default function Home() {
         {
             question: '¿Qué sucede si borro la memoria caché de mi navegador?',
             answer: 'Debido a que tus datos residen únicamente en tu navegador (almacenamiento local), al borrar los datos de navegación o historial del sitio web se reiniciará tu progreso. Te recomendamos mantener tu sesión y progreso en tu navegador personal habitual.'
+        },
+        {
+            question: '¿De dónde provienen los datos de pensum y horarios?',
+            answer: 'Los pensums, horarios, secciones y docentes se basan en publicaciones e información pública de referencia emitida cada semestre y escuela de vacaciones. PEMTREE es un espacio estudiantil independiente no oficial que organiza y transforma esa información para facilitar su consulta comunitaria; para información oficial, inscripciones y trámites vigentes consulta siempre los portales oficiales de la Facultad (portal.ingenieria.usac.edu.gt).'
         }
     ];
 
@@ -227,9 +205,14 @@ export default function Home() {
             >
                 <div className="absolute inset-0 bg-white/45 dark:bg-[#0E1624]/55"></div>
                 <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 text-center max-w-6xl mx-auto flex flex-col items-center relative z-10">
-                    <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full mb-5 shadow-xs">
-                        pensum interactivo
-                    </p>
+                    <div className="flex flex-wrap items-center justify-center gap-2.5 mb-6">
+                        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full shadow-xs">
+                            Red Estudiantil de Ingeniería
+                        </span>
+                        <span className="text-[11px] font-bold text-[#5E6C84] dark:text-slate-300 bg-white/80 dark:bg-[#1C2636]/80 backdrop-blur-xs border border-[#DFE1E6] dark:border-[#3E4C5E] px-3.5 py-1 rounded-full shadow-xs">
+                            Espacio estudiantil independiente no oficial
+                        </span>
+                    </div>
 
                     <h1 className="text-[44px] md:text-[62px] leading-[1.1] font-extrabold text-[#172B4D] dark:text-white tracking-tight max-w-3xl">
                         PEMTREE: <br />
@@ -242,7 +225,7 @@ export default function Home() {
                     </h1>
 
                     <p className="text-[17px] md:text-[20px] text-[#5E6C84] dark:text-slate-400 mt-10 max-w-2xl leading-relaxed font-normal">
-                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> de todas las carreras de Ingeniería mediante un tablero interactivo.
+                        Estudia las rutas, prerrequisitos y dependencias de los <span className="font-semibold text-slate-800 dark:text-slate-100">Pensum CLAR 2022/2025</span> de todas las carreras de Ingeniería mediante un tablero interactivo comunitario.
                     </p>
 
                     <div className="mt-10 w-full mx-auto flex flex-col items-center gap-12">
@@ -490,16 +473,16 @@ export default function Home() {
                                     </div>
                                     <div>
                                         <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Foro Estudiantil</h3>
-                                        <span className="text-[10px] font-extrabold uppercase tracking-wider bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] px-2 py-0.5 rounded-full mt-1 inline-block">
-                                            Comunidad Anónima
+                                        <span className="text-[10px] font-extrabold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full mt-1 inline-block">
+                                            En Mantenimiento
                                         </span>
                                     </div>
                                 </div>
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
-                                    Espacio colaborativo para resolver dudas de prerrequisitos, catedráticos y horarios de forma segura, protegiendo tu identidad tras un alias.
+                                    Espacio colaborativo para resolver dudas de prerrequisitos y horarios de forma segura, protegiendo tu identidad tras un alias.
                                 </p>
-                                <Link to="/foro" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
-                                    Abrir Foro
+                                <Link to="/foro" className="w-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                    Mantenimiento Temporal
                                 </Link>
                             </div>
                             <div className="p-5 flex-1 flex flex-col gap-2">
@@ -507,7 +490,7 @@ export default function Home() {
                                     { icon: ShieldCheck, title: 'Identidad protegida', text: 'Inicia sesión con Google manteniendo tu identidad oculta tras un seudónimo que puedes personalizar.' },
                                     { icon: MessageCircle, title: 'Publicaciones y respuestas', text: 'Crea consultas con imágenes y responde en cadenas de comentarios para resolver dudas en conjunto.' },
                                     { icon: ThumbsUp, title: 'Me gusta y visibilidad', text: 'Vota por las publicaciones y respuestas más útiles para destacar la información de mayor calidad.' },
-                                    { icon: Search, title: 'Búsqueda avanzada', text: 'Encuentra dudas por curso, catedrático, palabra en comentarios o alias de quien las publicó.' },
+                                    { icon: Search, title: 'Búsqueda avanzada', text: 'Encuentra dudas por curso, palabra en comentarios o alias de quien las publicó.' },
                                     { icon: Bell, title: 'Notificaciones', text: 'Recibe avisos cuando responden a tus publicaciones o hay actividad relevante en el foro.' },
                                     { icon: CheckCircle2, title: 'Moderación segura', text: 'Reportes y moderación comunitaria para mantener un ambiente respetuoso y libre de spam.' },
                                 ].map(f => (
@@ -523,13 +506,18 @@ export default function Home() {
                                     <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
                                         <Users size={22} />
                                     </div>
-                                    <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Grupos Estudiantiles</h3>
+                                    <div>
+                                        <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Grupos Estudiantiles</h3>
+                                        <span className="text-[10px] font-extrabold uppercase tracking-wider bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-300 px-2 py-0.5 rounded-full mt-1 inline-block">
+                                            En Mantenimiento
+                                        </span>
+                                    </div>
                                 </div>
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Encuentra, verifica y únete a grupos de estudio, comunidades en WhatsApp/Telegram/Discord, laboratorios y repositorios de tu carrera o curso semestral.
                                 </p>
-                                <Link to="/grupos" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
-                                    Explorar Grupos
+                                <Link to="/grupos" className="w-full bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 font-bold text-sm px-4 py-2.5 rounded-xl transition shadow-sm cursor-pointer no-underline text-center block">
+                                    Mantenimiento Temporal
                                 </Link>
                             </div>
                             <div className="p-5 flex-1 flex flex-col gap-2">
@@ -659,8 +647,18 @@ export default function Home() {
                         <a href="https://www.linkedin.com/company/trebol4devop/" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
                             <LinkIcon size={16} /> LinkedIn
                         </a>
+                        <Link to="/normas" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <ShieldCheck size={16} /> Normas de la comunidad
+                        </Link>
+                        <Link to="/normas#descargo" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <FileText size={16} /> Descargo
+                        </Link>
+                        <Link to="/normas#terminos" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <FileText size={16} /> Términos de servicio
+                        </Link>
                     </div>
-                    <p className="text-xs text-white/70">© {new Date().getFullYear()} - Trebol4Devop</p>
+                    <p className="text-xs text-white/70 mt-1">Datos académicos de referencia pública: <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-90 transition">portal.ingenieria.usac.edu.gt</a></p>
+                    <p className="text-xs text-white/70">© {new Date().getFullYear()} - PEMTREE (Espacio Estudiantil Independiente)</p>
                 </div>
             </footer>
 

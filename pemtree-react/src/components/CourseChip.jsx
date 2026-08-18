@@ -103,10 +103,10 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
                         <span
                             className={`planner-chip-warn planner-chip-warn-${advertencias.reputacion.nivel}`}
                             title={advertencias.reputacion.nivel === 'soloBuenos'
-                                ? `Todos sus catedráticos son bien recomendados (${advertencias.reputacion.promedio}%).`
+                                ? `Todas sus secciones son bien recomendadas (${advertencias.reputacion.promedio}%).`
                                 : advertencias.reputacion.nivel === 'variado'
-                                    ? `Recomendaciones variadas de sus catedráticos (${advertencias.reputacion.promedio}%).`
-                                    : `Recomendaciones desfavorables de sus catedráticos (${advertencias.reputacion.promedio}%).`}
+                                    ? `Recomendaciones variadas de sus secciones (${advertencias.reputacion.promedio}%).`
+                                    : `Recomendaciones desfavorables de sus secciones (${advertencias.reputacion.promedio}%).`}
                         >
                             {advertencias.reputacion.nivel === 'soloBuenos' ? <ThumbsUp size={9} />
                                 : advertencias.reputacion.nivel === 'variado' ? <Minus size={9} />

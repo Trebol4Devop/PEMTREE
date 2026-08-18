@@ -17,9 +17,8 @@ const CATALOGO_URL = '/json/catalogo.json';
 
 let catalogo = null;          // objeto completo del catálogo (o null si aún no carga)
 let catalogoPromise = null;   // evita fetchs duplicados mientras carga
-let reputacionCache = null;   // Map<docente_id uuid Supabase, { docente_id, total, recomendados, pct_recomienda, miVoto }>
+let reputacionCache = null;   // Map<"curso_codigo|seccion", { curso_codigo, seccion, total, recomendados, pct_recomienda, miVoto }>
 let reputacionPromise = null;
-let docenteIdPorClave = null; // Map<`${claveNombre}|${rol}`, uuid Supabase> — une el id `doc_*` del catálogo con el uuid de Supabase
 let docenteIndex = null;      // Map<id catálogo `doc_*`, docente> (caché perezoso)
 
 // ---------- Normalización de nombres (misma regla que el pipeline) ----------
@@ -152,7 +151,13 @@ export function getDocentesDeCurso(codigo, { rol, activos = true } = {}) {
     });
 }
 
-// ---------- Reputación (Supabase) ----------
+// ---------- Reputación de Secciones (Supabase) ----------
+
+export function claveSeccion(cursoCodigo, seccion) {
+    const c = String(cursoCodigo || '').trim();
+    const s = String(seccion || '').trim().toUpperCase();
+    return `${c}|${s}`;
+}
 
 export async function cargarReputacion(force = false) {
     if (reputacionCache && !force) return reputacionCache;
@@ -163,83 +168,57 @@ export async function cargarReputacion(force = false) {
     }
     reputacionPromise = (async () => {
         const map = new Map();
-        const idPorClave = new Map();
         try {
             const { data, error } = await supabase
-                .from('docente_reputation')
-                .select('docente_id, nombre, rol, total, recomendados, pct_recomienda');
+                .from('seccion_reputation')
+                .select('curso_codigo, seccion, total, recomendados, pct_recomienda');
             if (error) throw error;
             for (const fila of data || []) {
-                map.set(fila.docente_id, {
-                    docente_id: fila.docente_id,
+                const key = claveSeccion(fila.curso_codigo, fila.seccion);
+                map.set(key, {
+                    curso_codigo: String(fila.curso_codigo).trim(),
+                    seccion: String(fila.seccion).trim().toUpperCase(),
                     total: fila.total,
                     recomendados: fila.recomendados,
                     pct_recomienda: fila.pct_recomienda,
                     miVoto: null,
                 });
-                const clave = `${claveNombre(fila.nombre)}|${fila.rol}`;
-                if (!idPorClave.has(clave)) idPorClave.set(clave, fila.docente_id);
-            }
-
-            // El catálogo referencia docentes con ids `doc_rol_slug`, pero Supabase
-            // usa uuids. Se indexa por (claveNombre|rol) desde la tabla `docentes`
-            // (incluye variantes) para poder unir reputación y votos con el catálogo.
-            const { data: dbDocentes, error: errDocentes } = await supabase
-                .from('docentes')
-                .select('id, nombre, rol, nombre_variantes');
-            if (errDocentes) throw errDocentes;
-            const setClave = (nombre, rol, uuid) => {
-                const clave = `${claveNombre(nombre)}|${rol}`;
-                if (!idPorClave.has(clave)) idPorClave.set(clave, uuid);
-            };
-            for (const d of dbDocentes || []) {
-                setClave(d.nombre, d.rol, d.id);
-                for (const v of d.nombre_variantes || []) setClave(v, d.rol, d.id);
             }
 
             const { data: { user } } = await supabase.auth.getUser();
             if (user) {
                 const { data: misVotos, error: errVotos } = await supabase
-                    .from('docente_reviews')
-                    .select('docente_id, recomienda')
+                    .from('seccion_reviews')
+                    .select('curso_codigo, seccion, recomienda')
                     .eq('user_id', user.id);
                 if (!errVotos) {
                     for (const voto of misVotos || []) {
-                        const rec = map.get(voto.docente_id) || {
-                            docente_id: voto.docente_id,
+                        const key = claveSeccion(voto.curso_codigo, voto.seccion);
+                        const rec = map.get(key) || {
+                            curso_codigo: String(voto.curso_codigo).trim(),
+                            seccion: String(voto.seccion).trim().toUpperCase(),
                             total: 0,
                             recomendados: 0,
                             pct_recomienda: null,
                             miVoto: null,
                         };
                         rec.miVoto = voto.recomienda;
-                        map.set(voto.docente_id, rec);
+                        map.set(key, rec);
                     }
                 }
             }
         } catch (err) {
-            console.warn('No se pudo cargar la reputación de docentes:', err.message);
+            console.warn('No se pudo cargar la reputación de secciones:', err.message);
         }
         reputacionCache = map;
-        docenteIdPorClave = idPorClave;
         return map;
     })();
     return reputacionPromise;
 }
 
-export function getReputacionDocente(docente) {
-    if (!reputacionCache || !docente) return null;
-    const uuid = docenteIdPorClave
-        ? docenteIdPorClave.get(`${claveNombre(docente.nombre)}|${docente.rol}`)
-        : null;
-    if (!uuid) return null;
-    return reputacionCache.get(uuid) || null;
-}
-
-export function reputacionPorNombre(nombreRaw, rol) {
-    if (!reputacionCache) return null;
-    const docente = getDocente(nombreRaw, rol);
-    return docente ? getReputacionDocente(docente) : null;
+export function getReputacionSeccion(cursoCodigo, seccion) {
+    if (!reputacionCache || !cursoCodigo || !seccion) return null;
+    return reputacionCache.get(claveSeccion(cursoCodigo, seccion)) || null;
 }
 
 /**
@@ -255,47 +234,42 @@ export function nivelReputacion(reputacion) {
     return 'mala';
 }
 
-export function docentesDeCursoConReputacion(codigo, { rol, activos = true } = {}) {
-    const docentes = getDocentesDeCurso(codigo, { rol, activos });
-    return docentes.map(d => ({ ...d, reputacion: getReputacionDocente(d) }));
-}
-
 /**
- * Registra/actualiza el voto del usuario actual sobre un docente (1 por usuario/docente).
- * `docente` es el objeto del catálogo; se resuelve su uuid de Supabase por (nombre, rol).
+ * Registra/actualiza el voto del usuario actual sobre una sección de curso (1 voto por usuario/curso/sección).
  * @returns {{data:object|null, error:object|null}}
  */
-export async function recomendarDocente(docente, recomienda) {
+export async function recomendarSeccion(cursoCodigo, seccion, recomienda) {
     if (!isSupabaseConfigured || !supabase) {
         return { data: null, error: { message: 'Supabase no está configurado' } };
     }
-    if (!docenteIdPorClave) {
-        try {
-            await cargarReputacion();
-        } catch { /* se reporta como no sincronizado */ }
-    }
-    const docenteId = docenteIdPorClave
-        ? docenteIdPorClave.get(`${claveNombre(docente.nombre)}|${docente.rol}`)
-        : null;
-    if (!docenteId) {
-        return { data: null, error: { message: 'Este docente aún no está sincronizado; no se puede opinar sobre él.' } };
+    if (!cursoCodigo || !seccion) {
+        return { data: null, error: { message: 'Curso o sección no válidos' } };
     }
     const { data: { user } } = await supabase.auth.getUser();
     if (!user) {
         return { data: null, error: { message: 'Necesitas iniciar sesión para opinar' } };
     }
+    const c = String(cursoCodigo).trim();
+    const s = String(seccion).trim().toUpperCase();
     const { data, error } = await supabase
-        .from('docente_reviews')
+        .from('seccion_reviews')
         .upsert(
-            { docente_id: docenteId, user_id: user.id, recomienda: !!recomienda },
-            { onConflict: 'docente_id,user_id' }
+            { curso_codigo: c, seccion: s, user_id: user.id, recomienda: !!recomienda },
+            { onConflict: 'curso_codigo,seccion,user_id' }
         );
     if (!error) {
         reputacionCache = null;
         reputacionPromise = null;
-        docenteIdPorClave = null;
     }
     return { data, error };
+}
+
+// Compatibilidad / Aliases
+export function getReputacionDocente() { return null; }
+export function reputacionPorNombre() { return null; }
+export function recomendarDocente() { return { data: null, error: { message: 'Las recomendaciones ahora son por sección' } }; }
+export function docentesDeCursoConReputacion(codigo, { rol, activos = true } = {}) {
+    return getDocentesDeCurso(codigo, { rol, activos });
 }
 
 // ---------- Modelo v4: secciones, docentes por periodo y recomendaciones ----------

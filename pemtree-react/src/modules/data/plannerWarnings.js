@@ -7,7 +7,7 @@
 //  - Reputación: ¿las recomendaciones de los catedráticos de ese ciclo son favorables?
 //  - Vacaciones: horas de cursos MAGISTRALES por día (máx 4h; lab/práctica/complementarios no cuentan).
 
-import { getCursoInfo, getCicloConDatos, getDocentePorId, getReputacionDocente } from './catalogo';
+import { getCursoInfo, getCicloConDatos, getReputacionSeccion } from './catalogo';
 import { calcularTraslapeMinutos, esTraslapePermitido, duracionMinutos } from './scraper';
 
 const MAX_MAGISTRAL_VACACIONES = 4; // horas
@@ -80,14 +80,13 @@ export function advertenciasDeCurso(codigo, tipoPeriodo) {
         });
     }
 
-    // 3) Reputación de los catedráticos de ese ciclo
+    // 3) Reputación de las secciones de ese ciclo
     const pcts = [];
-    const vistos = new Set();
+    const seccionesVistas = new Set();
     for (const s of secciones) {
-        if (!s.catedraticoId || vistos.has(s.catedraticoId)) continue;
-        vistos.add(s.catedraticoId);
-        const docente = getDocentePorId(s.catedraticoId);
-        const rep = docente ? getReputacionDocente(docente) : null;
+        if (!s.seccion || seccionesVistas.has(s.seccion)) continue;
+        seccionesVistas.add(s.seccion);
+        const rep = getReputacionSeccion(codigo, s.seccion);
         if (rep && rep.total > 0 && rep.pct_recomienda != null) pcts.push(rep.pct_recomienda);
     }
     let reputacion = null;
@@ -100,7 +99,7 @@ export function advertenciasDeCurso(codigo, tipoPeriodo) {
         else nivel = 'variado';
         reputacion = { promedio, votantes: pcts.length, nivel };
         if (nivel === 'negativo') {
-            avisos.push({ tipo: 'reputacionNegativa', nivel: 'warn', texto: `Recomendaciones desfavorables de sus catedráticos (${promedio}%).` });
+            avisos.push({ tipo: 'reputacionNegativa', nivel: 'warn', texto: `Recomendaciones desfavorables de sus secciones (${promedio}%).` });
         }
     }
 

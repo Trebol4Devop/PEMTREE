@@ -17,8 +17,8 @@ const pensumNames = {
 };
 
 export default function Seo({ 
-  title = 'PEMTREE | Grafo de Estudios USAC',
-  description = 'PEMTREE es una aplicación web interactiva que permite explorar y visualizar rutas académicas del PENSUM CLAR 2022 USAC para todas las carreras de ingeniería.',
+  title = 'PEMTREE | Red Estudiantil de Ingeniería',
+  description = 'PEMTREE es un espacio estudiantil independiente no oficial que permite explorar y visualizar rutas académicas del PENSUM CLAR 2022/2025 para carreras de ingeniería.',
   pensum = null,
   pathname = ''
 }) {
@@ -33,7 +33,7 @@ export default function Seo({
     : fullTitle;
 
   const pensumDescription = pensum && pensumNames[pensum]
-    ? `Explora el pensum ${pensumNames[pensum]} de Ingeniería. Visualiza prerrequisitos, créditos y rutas académicas interactivas.`
+    ? `Explora el pensum ${pensumNames[pensum]} de Ingeniería. Visualiza prerrequisitos, créditos y rutas académicas interactivas en este espacio estudiantil independiente.`
     : description;
 
   const jsonLdBase = {
@@ -54,14 +54,14 @@ export default function Seo({
     permissions: 'browser session storage',
     author: {
       '@type': 'Organization',
-      name: 'Trebol4Devop',
-      url: 'https://github.com/trebol4devop'
+      name: 'PEMTREE - Espacio Estudiantil Independiente',
+      url: BASE_URL
     },
     educationalLevel: 'University',
     educationalUse: 'Course Planning',
     about: {
       '@type': 'Thing',
-      description: 'Universidad de San Carlos de Guatemala (USAC) Pensum CLAR 2022'
+      description: 'Red Estudiantil de Ingeniería - Pensum CLAR 2022/2025'
     }
   };
 
@@ -107,7 +107,6 @@ export default function Seo({
       <meta name="twitter:title" content={pensumTitle} />
       <meta name="twitter:description" content={pensumDescription} />
       <meta name="twitter:image" content={ogImage} />
-      <meta name="twitter:site" content="@trebol4devop" />
 
       <script type="application/ld+json">{JSON.stringify(jsonLdBase)}</script>
       {breadcrumbJsonLd && <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>}
