@@ -6,7 +6,7 @@ import {
     Copy, AlertTriangle, Download, Pin, Filter,
     Sparkles, GitMerge, ChevronDown,
     MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink,
-    FileText
+    FileText, Mail, Link as LinkIcon
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import CareerCard from '../components/CareerCard';
@@ -533,43 +533,6 @@ export default function Home() {
                                 ))}
                             </div>
                         </div>
-                    </div>
-                </div>
-            </section>
-
-            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
-                <div className="max-w-6xl mx-auto text-center">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">
-                        Desarrollado por <span className="text-[#0052CC] dark:text-[#74C0FC]">Trebol4Devop</span>
-                    </h2>
-                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 mt-2">
-                        Estudiantes de la Universidad de San Carlos de Guatemala (USAC).
-                    </p>
-
-                    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {team.map(member => (
-                            <div key={member.name} className="bg-[#F4F5F7] dark:bg-[#1C2636] rounded-2xl p-6 shadow-sm border border-transparent hover:border-[#DEEBFF] dark:hover:border-[#3E4C5E] transition-colors">
-                                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#DEEBFF] to-[#DEEBFF] dark:from-[#1C2636] dark:to-[#0E1624] flex items-center justify-center overflow-hidden ring-1 ring-black/10 dark:ring-white/10">
-                                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
-                                </div>
-                                <h3 className="mt-4 text-base font-extrabold text-[#172B4D] dark:text-slate-100">
-                                    {member.name}
-                                </h3>
-                                <p className="text-[11px] font-extrabold text-[#172B4D] dark:text-slate-300 tracking-widest mt-2">
-                                    {member.role.toUpperCase()}
-                                </p>
-                                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[#7A869A] dark:text-slate-400">
-                                    <a href={member.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
-                                        <GitBranch size={14} />
-                                        <span>GitHub</span>
-                                    </a>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-10 text-xs text-[#5E6C84] dark:text-slate-400 border-t border-[#DFE1E6] dark:border-[#3E4C5E] pt-6">
-                        Tecnologias: <span className="font-semibold text-[#172B4D] dark:text-slate-100">React&Vite</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">Node.js</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">TailwindCSS</span>
                     </div>
                 </div>
             </section>

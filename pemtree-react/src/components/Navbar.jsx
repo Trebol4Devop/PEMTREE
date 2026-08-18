@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, Menu, Sun, Moon, Coffee } from 'lucide-react';
+import { X, Menu, Sun, Moon, Coffee, CircleUserRound } from 'lucide-react';
 
 export default function Navbar({ isDarkMode, onToggleTheme }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -82,20 +82,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </svg>
                     <span className="hidden md:inline">PayPal</span>
                 </a>
-
-                <Link
-                    to="/notificaciones"
-                    className="relative p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300 transition-transform duration-150 active:scale-[0.96] flex items-center justify-center no-underline"
-                    aria-label="Notificaciones del foro"
-                    title="Notificaciones del foro"
-                >
-                    <Bell size={16} className="sm:w-5 sm:h-5" />
-                    {unreadCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] text-[10px] font-bold flex items-center justify-center">
-                            {unreadCount > 9 ? '9+' : unreadCount}
-                        </span>
-                    )}
-                </Link>
 
                 <button
                     onClick={onToggleTheme}

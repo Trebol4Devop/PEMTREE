@@ -8,7 +8,6 @@ import Home from './pages/Home';
 import Visualizer from './pages/Visualizer';
 import Maintenance from './pages/Maintenance';
 import Normas from './pages/Normas';
-import Notifications from './pages/Notifications';
 
 function AppLayout() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -24,7 +23,7 @@ function AppLayout() {
           <Route path="/grupos" element={<Maintenance />} />
           <Route path="/normas" element={<Normas />} />
           <Route path="/mis-publicaciones" element={<Maintenance />} />
-          <Route path="/notificaciones" element={<Notifications />} />
+          <Route path="/notificaciones" element={<Maintenance />} />
         </Routes>
       </main>
     </div>
