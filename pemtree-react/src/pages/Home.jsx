@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
-    Lock, BarChart4, GitBranch, Mail, Link as LinkIcon,
+    Lock, BarChart4, GitBranch, Coffee,
     Compass, Calendar, Clock, Search, CheckCircle2,
     Copy, AlertTriangle, Download, Pin, Filter,
-    Sparkles, GitMerge, ChevronDown, Coffee,
+    Sparkles, GitMerge, ChevronDown,
     MessageSquare, Users, ShieldCheck, Bell, ThumbsUp, MessageCircle, ExternalLink,
     FileText
 } from 'lucide-react';
@@ -104,33 +104,6 @@ export default function Home() {
             items: groups.get(key),
         }));
     })();
-
-    const team = [
-        {
-            name: 'Jose Monzon',
-            role: 'Frontend Developer & UI/UX Designer',
-            avatar: 'https://github.com/0520Jose.png',
-            github: 'https://github.com/0520Jose'
-        },
-        {
-            name: 'Diego Vasquez',
-            role: 'QA & Testing',
-            avatar: 'https://github.com/DiegVas.png',
-            github: 'https://github.com/DiegVas'
-        },
-        {
-            name: 'Carlos del Cid',
-            role: 'Backend Developer',
-            avatar: 'https://github.com/Carlosdelcid05.png',
-            github: 'https://github.com/Carlosdelcid05'
-        },
-        {
-            name: 'Ottoniel Vasquez',
-            role: 'Backend Developer',
-            avatar: 'https://github.com/Farot3.png',
-            github: 'https://github.com/Farot3'
-        }
-    ];
 
     const faqs = [
         {
@@ -484,43 +457,6 @@ export default function Home() {
             </section>
 
             <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
-                <div className="max-w-6xl mx-auto text-center">
-                    <h2 className="text-3xl md:text-4xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">
-                        Desarrollado por <span className="text-[#0052CC] dark:text-[#74C0FC]">Trebol4Devop</span>
-                    </h2>
-                    <p className="text-sm text-[#5E6C84] dark:text-slate-400 mt-2">
-                        Estudiantes de la Universidad de San Carlos de Guatemala (USAC).
-                    </p>
-
-                    <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {team.map(member => (
-                            <div key={member.name} className="bg-[#F4F5F7] dark:bg-[#1C2636] rounded-2xl p-6 shadow-sm border border-transparent hover:border-[#DEEBFF] dark:hover:border-[#3E4C5E] transition-colors">
-                                <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-[#DEEBFF] to-[#DEEBFF] dark:from-[#1C2636] dark:to-[#0E1624] flex items-center justify-center overflow-hidden">
-                                    <img src={member.avatar} alt={member.name} className="w-full h-full object-cover" />
-                                </div>
-                                <h3 className="mt-4 text-base font-extrabold text-[#172B4D] dark:text-slate-100">
-                                    {member.name}
-                                </h3>
-                                <p className="text-[11px] font-extrabold text-[#172B4D] dark:text-slate-300 tracking-widest mt-2">
-                                    {member.role.toUpperCase()}
-                                </p>
-                                <div className="mt-3 flex items-center justify-center gap-2 text-xs text-[#7A869A] dark:text-slate-400">
-                                    <a href={member.github} target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
-                                        <GitBranch size={14} />
-                                        <span>GitHub</span>
-                                    </a>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
-
-                    <div className="mt-10 text-xs text-[#5E6C84] dark:text-slate-400 border-t border-[#DFE1E6] dark:border-[#3E4C5E] pt-6">
-                        Tecnologias: <span className="font-semibold text-[#172B4D] dark:text-slate-100">React&Vite</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">Node.js</span> • <span className="font-semibold text-[#172B4D] dark:text-slate-100">TailwindCSS</span>
-                    </div>
-                </div>
-            </section>
-
-            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-12">
                         <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
@@ -578,18 +514,15 @@ export default function Home() {
 
             <footer className="bg-[#172B4D] dark:bg-[#0E1624] text-white py-8 px-4 mt-auto select-none w-full shrink-0">
                 <div className="max-w-6xl mx-auto flex flex-col items-center gap-3">
-                    <img src="/images/logo_trebol.png" alt="Trebol4Devop" className="w-9 h-9 logo-trebol" />
+                    <img src="/images/logo_trebol.png" alt="PEMTREE Logo" className="w-9 h-9 logo-trebol" />
                     <p className="text-sm font-bold text-center"><strong>PEMTREE</strong> — Red Estudiantil de Ingeniería</p>
                     <p className="text-xs text-blue-200/90 dark:text-slate-300 font-semibold bg-white/10 dark:bg-white/5 px-3.5 py-1 rounded-full border border-white/10 text-center">
                         Espacio estudiantil independiente no oficial
                     </p>
                     <p className="text-xs text-slate-300/80 dark:text-slate-400 text-center max-w-xl leading-relaxed">
-                        Proyecto comunitario independiente y de código abierto desarrollado por estudiantes para fines de consulta académica y orientación.
+                        Proyecto comunitario independiente y de código abierto desarrollado de forma libre por y para estudiantes para fines de consulta académica y orientación.
                     </p>
                     <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm font-semibold mt-1">
-                        <a href="https://github.com/trebol4devop" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
-                            <GitBranch size={16} /> GitHub
-                        </a>
                         <a href="https://politicas-de-privacidad-trebol4devop.netlify.app/policy.html?id=privacy_es_pemtree" target="_blank" rel="noopener noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
                             <Lock size={16} /> Privacidad
                         </a>
@@ -599,15 +532,12 @@ export default function Home() {
                         <Link to="/normas#descargo" className="flex items-center gap-2 hover:opacity-90 transition">
                             <FileText size={16} /> Descargo
                         </Link>
-                        <a href="mailto:trebol4devop@proton.me" className="flex items-center gap-2 hover:opacity-90 transition">
-                            <Mail size={16} /> Contacto
-                        </a>
-                        <a href="https://www.linkedin.com/company/trebol4devop/" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition">
-                            <LinkIcon size={16} /> LinkedIn
-                        </a>
+                        <Link to="/normas#terminos" className="flex items-center gap-2 hover:opacity-90 transition">
+                            <FileText size={16} /> Términos de servicio
+                        </Link>
                     </div>
                     <p className="text-xs text-white/70 mt-1">Datos académicos de referencia pública: <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-90 transition">portal.ingenieria.usac.edu.gt</a></p>
-                    <p className="text-xs text-white/70">© {new Date().getFullYear()} - Trebol4Devop</p>
+                    <p className="text-xs text-white/70">© {new Date().getFullYear()} - PEMTREE (Espacio Estudiantil Independiente)</p>
                 </div>
             </footer>
 

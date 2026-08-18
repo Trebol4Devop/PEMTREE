@@ -54,8 +54,8 @@ export default function Seo({
     permissions: 'browser session storage',
     author: {
       '@type': 'Organization',
-      name: 'Trebol4Devop',
-      url: 'https://github.com/trebol4devop'
+      name: 'PEMTREE - Espacio Estudiantil Independiente',
+      url: BASE_URL
     },
     educationalLevel: 'University',
     educationalUse: 'Course Planning',
@@ -107,7 +107,6 @@ export default function Seo({
       <meta name="twitter:title" content={pensumTitle} />
       <meta name="twitter:description" content={pensumDescription} />
       <meta name="twitter:image" content={ogImage} />
-      <meta name="twitter:site" content="@trebol4devop" />
 
       <script type="application/ld+json">{JSON.stringify(jsonLdBase)}</script>
       {breadcrumbJsonLd && <script type="application/ld+json">{JSON.stringify(breadcrumbJsonLd)}</script>}

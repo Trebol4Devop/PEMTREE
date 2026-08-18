@@ -1,11 +1,9 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { X, Menu, Sun, Moon, Coffee, Bell, CircleUserRound } from 'lucide-react';
-import { useNotifications } from '../context/NotificationsContext';
+import { X, Menu, Sun, Moon, Coffee } from 'lucide-react';
 
 export default function Navbar({ isDarkMode, onToggleTheme }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const { unreadCount } = useNotifications();
 
     const location = useLocation();
     const currentView = (() => {
@@ -16,10 +14,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
             if (v === 'schedule') return 'schedule';
             return 'graph';
         }
-        if (location.pathname === '/foro') return 'forum';
-        if (location.pathname === '/grupos') return 'groups';
-        if (location.pathname === '/mis-publicaciones') return 'myposts';
-        if (location.pathname === '/notificaciones') return 'notifications';
         return 'home';
     })();
 
@@ -83,36 +77,13 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <span className="hidden md:inline">PayPal</span>
                 </a>
 
-                <Link
-                    to="/notificaciones"
-                    className="relative p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300 transition flex items-center justify-center no-underline"
-                    aria-label="Notificaciones del foro"
-                    title="Notificaciones del foro"
-                >
-                    <Bell size={16} className="sm:w-5 sm:h-5" />
-                    {unreadCount > 0 && (
-                        <span className="absolute -top-0.5 -right-0.5 min-w-[16px] h-4 px-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] text-[10px] font-bold flex items-center justify-center">
-                            {unreadCount > 9 ? '9+' : unreadCount}
-                        </span>
-                    )}
-                </Link>
-
                 <button
                     onClick={onToggleTheme}
-                    className="p-1 sm:p-1.5 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] cursor-pointer border-none bg-transparent flex items-center justify-center text-[#5E6C84] dark:text-slate-300"
+                    className="p-1.5 sm:p-2 rounded-full hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] cursor-pointer border-none bg-transparent flex items-center justify-center text-[#5E6C84] dark:text-slate-300 transition"
                     aria-label="Toggle theme"
                 >
-                    {isDarkMode ? <Sun size={16} className="sm:w-5 sm:h-5 text-yellow-400" /> : <Moon size={16} className="sm:w-5 sm:h-5" />}
+                    {isDarkMode ? <Sun size={17} className="sm:w-5 sm:h-5 text-yellow-400" /> : <Moon size={17} className="sm:w-5 sm:h-5" />}
                 </button>
-
-                <Link
-                    to="/mis-publicaciones"
-                    className="relative flex items-center justify-center p-1 sm:p-1.5 rounded-full bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#5E6C84] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] transition shadow-xs no-underline"
-                    aria-label="Mis Publicaciones"
-                    title="Mis Publicaciones"
-                >
-                    <CircleUserRound size={18} className="sm:w-5 sm:h-5 text-[#0052CC] dark:text-[#4C9AFF]" />
-                </Link>
 
                 <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1 rounded hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#172B4D] dark:text-slate-200 cursor-pointer bg-transparent border-none flex items-center justify-center"
                     aria-label="Toggle menu"
