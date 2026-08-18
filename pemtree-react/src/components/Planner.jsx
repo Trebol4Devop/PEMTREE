@@ -890,8 +890,8 @@ export default function Planner({ currentPensum, openHelp }) {
                     onClose={dismissWarning}
                     className="mb-3"
                 >
-                    <strong>Este sitio no es oficial de la Facultad de Ingeniería.</strong>
-                    <span> Los horarios y planes de estudio reflejados aquí podrían no estar actualizados con respecto al portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
+                    <strong>Espacio estudiantil independiente no oficial.</strong>
+                    <span> Este sitio es un proyecto comunitario independiente y no es una página oficial de la Facultad de Ingeniería ni de la Universidad de San Carlos de Guatemala. Los horarios y planes reflejados aquí son de referencia pública y podrían diferir del portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
                 </WarningBanner>
             )}
 

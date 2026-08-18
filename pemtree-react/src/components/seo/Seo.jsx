@@ -17,8 +17,8 @@ const pensumNames = {
 };
 
 export default function Seo({ 
-  title = 'PEMTREE | Grafo de Estudios USAC',
-  description = 'PEMTREE es una aplicación web interactiva que permite explorar y visualizar rutas académicas del PENSUM CLAR 2022 USAC para todas las carreras de ingeniería.',
+  title = 'PEMTREE | Red Estudiantil de Ingeniería',
+  description = 'PEMTREE es un espacio estudiantil independiente no oficial que permite explorar y visualizar rutas académicas del PENSUM CLAR 2022/2025 para carreras de ingeniería.',
   pensum = null,
   pathname = ''
 }) {
@@ -33,7 +33,7 @@ export default function Seo({
     : fullTitle;
 
   const pensumDescription = pensum && pensumNames[pensum]
-    ? `Explora el pensum ${pensumNames[pensum]} de Ingeniería. Visualiza prerrequisitos, créditos y rutas académicas interactivas.`
+    ? `Explora el pensum ${pensumNames[pensum]} de Ingeniería. Visualiza prerrequisitos, créditos y rutas académicas interactivas en este espacio estudiantil independiente.`
     : description;
 
   const jsonLdBase = {
@@ -61,7 +61,7 @@ export default function Seo({
     educationalUse: 'Course Planning',
     about: {
       '@type': 'Thing',
-      description: 'Universidad de San Carlos de Guatemala (USAC) Pensum CLAR 2022'
+      description: 'Red Estudiantil de Ingeniería - Pensum CLAR 2022/2025'
     }
   };
 

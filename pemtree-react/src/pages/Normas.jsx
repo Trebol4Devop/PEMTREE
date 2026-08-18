@@ -39,6 +39,14 @@ const MODERATION_RULES = [
     'Las decisiones de moderación buscan mantener un ambiente respetuoso y libre de spam para toda la comunidad.',
 ];
 
+const TERMS_OF_SERVICE = [
+    'Responsabilidad legal exclusiva del autor: Cada usuario es el único y exclusivo responsable legal de cualquier publicación, mensaje, comentario, enlace, imagen o dato que comparta en la plataforma.',
+    'Exención de responsabilidad de PEMTREE y administradores: PEMTREE y su equipo de desarrollo actúan como un espacio técnico e informativo comunitario independiente ("Espacio estudiantil independiente no oficial") y no asumen responsabilidad alguna (civil, penal o administrativa) por el contenido o conducta de terceros.',
+    'Aceptación expresa de términos: Al crear publicaciones, publicar comentarios, proponer enlaces o interactuar en cualquier módulo, el usuario declara y acepta expresamente estos Términos de Servicio.',
+    'Prohibición de material ilícito: Queda estrictamente prohibido compartir material confidencial, datos privados de terceros sin su consentimiento, contenido que infrinja derechos de propiedad intelectual, difamatorio o contrario a la ley.',
+    'Facultad de moderación: Los moderadores y administradores podrán suspender, bloquear u ocultar contenido y cuentas que infrinjan estas reglas, sin que ello implique supervisión previa obligatoria ni corresponsabilidad sobre lo publicado.',
+];
+
 const SOURCES = [
     { label: 'Portal de Ingeniería (FIUSAC)', url: 'https://portal.ingenieria.usac.edu.gt' },
     { label: 'Redes de Estudio FIUSAC', url: 'https://redesestudio.ingenieria.usac.edu.gt/redesDeEstudio' },
@@ -99,6 +107,12 @@ export default function Normas() {
                             <div>
                                 <div className="flex items-center gap-2 flex-wrap">
                                     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Normas de la Comunidad</h1>
+                                    <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                        Red Estudiantil de Ingeniería
+                                    </span>
+                                    <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
+                                        Espacio estudiantil independiente no oficial
+                                    </span>
                                 </div>
                                 <p className="text-sm text-blue-100 dark:text-slate-300 mt-1 max-w-xl leading-relaxed">
                                     Reglas y buenas prácticas para el Foro Estudiantil y los Grupos de WhatsApp. Léelas antes de participar: un ambiente sano depende de todos.
@@ -151,6 +165,22 @@ export default function Normas() {
                             <Info size={15} className="shrink-0 mt-0.5" />
                             <span className="flex-1">
                                 El contenido bloqueado por moderación queda oculto para toda la comunidad, incluso para su autor. Los moderadores y administradores pueden restaurarlo si la decisión fue errónea.
+                            </span>
+                        </div>
+                    </Card>
+
+                    {/* Términos de Servicio y Responsabilidad Legal */}
+                    <Card id="terminos">
+                        <SectionTitle
+                            icon={Scale}
+                            title="Términos de Servicio y Responsabilidad Legal del Contenido"
+                            subtitle="Condiciones de uso y responsabilidad exclusiva del usuario sobre el material publicado."
+                        />
+                        <RuleList items={TERMS_OF_SERVICE} />
+                        <div className="mt-5 flex items-start gap-2.5 bg-amber-50 dark:bg-[#4A3A1A]/40 border border-amber-200/70 dark:border-[#F59E0B]/30 text-[#92400E] dark:text-[#FCD34D] rounded-xl px-3.5 py-2.5 text-[11px] sm:text-xs font-semibold leading-snug">
+                            <ShieldCheck size={15} className="shrink-0 mt-0.5" />
+                            <span className="flex-1">
+                                <strong>Aceptación expresa:</strong> Al publicar cualquier contenido o enlace en PEMTREE, el usuario acepta de forma vinculante que es el único y exclusivo responsable legal por dicho material.
                             </span>
                         </div>
                     </Card>
@@ -216,18 +246,18 @@ export default function Normas() {
                         <div className="mt-5 flex items-start gap-2.5 bg-amber-50 dark:bg-[#4A3A1A]/40 border border-amber-200/70 dark:border-[#F59E0B]/30 text-[#92400E] dark:text-[#FCD34D] rounded-xl px-3.5 py-2.5 text-[11px] sm:text-xs font-semibold leading-snug">
                             <Flag size={15} className="shrink-0 mt-0.5" />
                             <span className="flex-1">
-                                PEMTREE no es una página oficial de la Universidad de San Carlos de Guatemala ni de la Facultad de Ingeniería. Es una herramienta informativa creada por estudiantes para estudiantes.
+                                <strong>Espacio estudiantil independiente no oficial:</strong> PEMTREE no es una página oficial de la Universidad de San Carlos de Guatemala ni de la Facultad de Ingeniería. Es una herramienta comunitaria creada por y para estudiantes.
                             </span>
                         </div>
                     </Card>
 
                     <div className="text-center pb-2">
                         <Link
-                            to="/foro"
+                            to="/visualizador"
                             className="inline-flex items-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md no-underline"
                         >
-                            <MessageSquare size={15} />
-                            Ir al Foro Estudiantil
+                            <ArrowLeft size={15} />
+                            Ir al Visualizador
                         </Link>
                     </div>
                 </div>

@@ -1,39 +1,37 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ThumbsUp, ThumbsDown, LogIn } from 'lucide-react';
-import { cargarReputacion, getDocente, getReputacionDocente, recomendarDocente } from '../modules/data/catalogo';
+import { cargarReputacion, getReputacionSeccion, recomendarSeccion } from '../modules/data/catalogo';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 function nivelSentimiento(pct) {
-    if (pct >= 70) return { label: 'Muy recomendado', color: '#2E9E5B' };
+    if (pct >= 70) return { label: 'Muy recomendada', color: '#2E9E5B' };
     if (pct >= 50) return { label: 'Recomendaciones mixtas', color: '#B7791F' };
-    return { label: 'Poco recomendado', color: '#C0392B' };
+    return { label: 'Poco recomendada', color: '#C0392B' };
 }
 
 /**
- * Reseñas de un catedrático estilo Steam (compacto): barra + % de recomendación
- * con icono de opiniones, y botones de recomendar/no recomendar. Las descripciones
- * textuales se muestran en tooltips (title). `nombre` es el nombre del catedrático
- * tal como aparece en el horario. Requiere sesión (Supabase) para votar.
+ * Reseñas de una sección de curso estilo Steam (compacto): barra + % de recomendación
+ * con icono de opiniones, y botones de recomendar/no recomendar.
+ * Vinculado exclusivamente al curso y su sección (sin vincular nombres personales).
  */
-export default function DocenteReviews({ nombre }) {
-    const docente = useMemo(() => getDocente(nombre), [nombre]);
+export default function DocenteReviews({ cursoCodigo, seccion }) {
     const [, setVersion] = useState(0);
     const [busy, setBusy] = useState(false);
     const [needLogin, setNeedLogin] = useState(false);
     const [feedback, setFeedback] = useState(null);
 
-    const rep = docente ? getReputacionDocente(docente) : null;
+    const rep = (cursoCodigo && seccion) ? getReputacionSeccion(cursoCodigo, seccion) : null;
 
     useEffect(() => {
-        if (!docente) return;
+        if (!cursoCodigo || !seccion) return;
         let active = true;
         cargarReputacion()
             .catch(() => {})
             .finally(() => { if (active) setVersion(v => v + 1); });
         return () => { active = false; };
-    }, [docente]);
+    }, [cursoCodigo, seccion]);
 
-    if (!docente) return null;
+    if (!cursoCodigo || !seccion) return null;
 
     const pct = rep && rep.total > 0 ? rep.pct_recomienda : null;
     const sent = pct != null ? nivelSentimiento(pct) : null;
@@ -43,12 +41,12 @@ export default function DocenteReviews({ nombre }) {
         setBusy(true);
         setFeedback(null);
         setNeedLogin(false);
-        const { error } = await recomendarDocente(docente, recomienda);
+        const { error } = await recomendarSeccion(cursoCodigo, seccion, recomienda);
         if (error) {
             setFeedback({ type: 'error', text: error.message });
             if (error.message && /iniciar sesi/i.test(error.message)) setNeedLogin(true);
         } else {
-            try { await cargarReputacion(); } catch { /* la caché ya se invalidó; se reintenta sola */ }
+            try { await cargarReputacion(); } catch { /* la caché ya se invalidó */ }
             setVersion(v => v + 1);
         }
         setBusy(false);
@@ -76,7 +74,7 @@ export default function DocenteReviews({ nombre }) {
                 <span
                     className="schedule-reco-pct"
                     style={{ color: 'var(--text-muted)' }}
-                    title="Sin opiniones aún — sé el primero en recomendar"
+                    title="Sin opiniones aún — sé el primero en recomendar esta sección"
                 >
                     0%
                 </span>
@@ -87,8 +85,8 @@ export default function DocenteReviews({ nombre }) {
                 className={`schedule-reco-btn up ${rep?.miVoto === true ? 'active' : ''}`}
                 onClick={() => votar(true)}
                 disabled={busy}
-                title={rep?.miVoto === true ? 'Quitar mi recomendación' : 'Recomendar a este catedrático'}
-                aria-label={rep?.miVoto === true ? 'Quitar mi recomendación' : 'Recomendar a este catedrático'}
+                title={rep?.miVoto === true ? 'Quitar mi recomendación' : 'Recomendar esta sección'}
+                aria-label={rep?.miVoto === true ? 'Quitar mi recomendación' : 'Recomendar esta sección'}
             >
                 <ThumbsUp size={11} />
             </button>
@@ -97,8 +95,8 @@ export default function DocenteReviews({ nombre }) {
                 className={`schedule-reco-btn down ${rep?.miVoto === false ? 'active' : ''}`}
                 onClick={() => votar(false)}
                 disabled={busy}
-                title={rep?.miVoto === false ? 'Quitar mi voto' : 'No recomendar a este catedrático'}
-                aria-label={rep?.miVoto === false ? 'Quitar mi voto' : 'No recomendar a este catedrático'}
+                title={rep?.miVoto === false ? 'Quitar mi voto' : 'No recomendar esta sección'}
+                aria-label={rep?.miVoto === false ? 'Quitar mi voto' : 'No recomendar esta sección'}
             >
                 <ThumbsDown size={11} />
             </button>
@@ -119,3 +117,5 @@ export default function DocenteReviews({ nombre }) {
         </div>
     );
 }
+
+export { DocenteReviews as SeccionReviews };

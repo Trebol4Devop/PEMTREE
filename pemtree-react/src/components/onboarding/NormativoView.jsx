@@ -55,7 +55,7 @@ export default function NormativoView({ isDarkMode }) {
   return (
     <div className="space-y-3">
       <p className={`text-xs sm:text-sm leading-relaxed ${isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}`}>
-        Resumen del <strong>Normativo General de Evaluacion y Promocion</strong> de la Facultad de Ingenieria, USAC. Consulta el documento completo para detalles.
+        Resumen informativo del <strong>Normativo General de Evaluación y Promoción</strong> de la Facultad de Ingeniería (Acta 33-2021). Consulta siempre los documentos oficiales para trámites formales.
       </p>
       {NORMATIVO_RULES.map((rule, i) => (
         <RuleCard key={i} rule={rule} isDarkMode={isDarkMode} />

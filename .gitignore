@@ -9,3 +9,7 @@ dist/
 # Database backups and SQL scripts
 pemtree.sql
 *.sql
+
+# Antigravity agent configs with secrets
+.agents/
+

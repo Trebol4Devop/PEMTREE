@@ -34,13 +34,17 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
 
     return (
         <nav className="h-12 sm:h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-2 sm:px-4 flex items-center justify-between transition-colors duration-300 shrink-0 select-none">
-            <div className="flex items-center gap-3 sm:gap-6 min-w-0">
+            <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                 <Link to="/" className={homeLinkClass}>
                     <span className="w-7 h-7 sm:w-9 sm:h-9 rounded-full flex items-center justify-center flex-shrink-0">
                         <img src="/images/logo_trebol.png" alt="PEMTREE Logo" className="w-5 h-5 sm:w-6 sm:h-6 logo-trebol-blue" />
                     </span>
                     <span className="font-extrabold tracking-tight text-[#0052CC] dark:text-slate-100 hidden sm:inline">PEMTREE</span>
                 </Link>
+
+                <span className="hidden xl:inline-flex items-center text-[10px] font-semibold text-[#5E6C84] dark:text-slate-400 bg-[#F4F5F7] dark:bg-[#0E1624] px-2.5 py-0.5 rounded-full border border-[#DFE1E6] dark:border-[#3E4C5E] whitespace-nowrap">
+                    Espacio estudiantil independiente no oficial
+                </span>
 
                 <div className="hidden lg:flex items-center gap-1 lg:gap-2 text-xs sm:text-sm font-medium">
                     <Link to="/visualizador" className={boardLinkClass(currentView === 'graph')}>
@@ -51,12 +55,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/visualizador?view=schedule" className={boardLinkClass(currentView === 'schedule')}>
                         Horarios
-                    </Link>
-                    <Link to="/foro" className={boardLinkClass(currentView === 'forum')}>
-                        Foro anonimo
-                    </Link>
-                    <Link to="/grupos" className={boardLinkClass(currentView === 'groups')}>
-                        Grupos Estudiantiles
                     </Link>
                 </div>
             </div>
@@ -125,6 +123,9 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
 
             {mobileMenuOpen && (
                 <div className="absolute top-12 sm:top-14 left-0 w-full bg-white dark:bg-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-2 px-2 flex flex-col gap-1 text-xs sm:text-sm font-semibold z-30 lg:hidden shadow-lg max-h-[calc(100dvh-3rem)] overflow-y-auto" style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}>
+                    <div className="px-2.5 py-1.5 text-[11px] font-semibold text-[#5E6C84] dark:text-slate-400 bg-[#F4F5F7] dark:bg-[#0E1624] rounded-lg border border-[#DFE1E6] dark:border-[#3E4C5E] text-center mb-1">
+                        Espacio estudiantil independiente no oficial
+                    </div>
                     <Link to="/" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'home' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Inicio
                     </Link>
@@ -136,15 +137,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/visualizador?view=schedule" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'schedule' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Horarios
-                    </Link>
-                    <Link to="/foro" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'forum' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
-                        Foro Anónimo
-                    </Link>
-                    <Link to="/grupos" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'groups' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
-                        Grupos Estudiantiles
-                    </Link>
-                    <Link to="/notificaciones" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'notifications' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
-                        Notificaciones {unreadCount > 0 && <span className="ml-1 inline-flex items-center justify-center min-w-[16px] h-4 px-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] text-[10px] font-bold">{unreadCount > 9 ? '9+' : unreadCount}</span>}
                     </Link>
                     <div className="border-t border-[#DFE1E6] dark:border-[#3E4C5E] my-1 pt-2 px-1 flex items-center gap-1.5">
                         <a
