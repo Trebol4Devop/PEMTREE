@@ -1,9 +1,30 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { X, Menu, Sun, Moon, Coffee, CircleUserRound } from 'lucide-react';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+import AuthModal from './AuthModal';
 
 export default function Navbar({ isDarkMode, onToggleTheme }) {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+    const [authModalOpen, setAuthModalOpen] = useState(false);
+    const [user, setUser] = useState(null);
+
+    useEffect(() => {
+        if (!isSupabaseConfigured || !supabase) return;
+        supabase.auth.getSession().then(({ data: { session } }) => {
+            setUser(session?.user || null);
+        });
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user || null);
+        });
+        return () => subscription.unsubscribe();
+    }, []);
+
+    useEffect(() => {
+        const handleOpenAuth = () => setAuthModalOpen(true);
+        window.addEventListener('pemtree-open-auth-modal', handleOpenAuth);
+        return () => window.removeEventListener('pemtree-open-auth-modal', handleOpenAuth);
+    }, []);
 
     const location = useLocation();
     const currentView = (() => {
@@ -27,6 +48,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
     const homeLinkClass = 'flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg transition-transform duration-150 active:scale-[0.96] cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold';
 
     return (
+        <>
         <nav className="h-12 sm:h-14 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] sticky top-0 z-40 px-2 sm:px-4 flex items-center justify-between transition-colors duration-300 shrink-0 select-none">
             <div className="flex items-center gap-2 sm:gap-4 min-w-0">
                 <Link to="/" className={homeLinkClass}>
@@ -49,12 +71,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/visualizador?view=schedule" className={boardLinkClass(currentView === 'schedule')}>
                         Horarios
-                    </Link>
-                    <Link to="/foro" className={boardLinkClass(currentView === 'forum')}>
-                        Foro anónimo
-                    </Link>
-                    <Link to="/grupos" className={boardLinkClass(currentView === 'groups')}>
-                        Grupos Estudiantiles
                     </Link>
                 </div>
             </div>
@@ -91,14 +107,18 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     {isDarkMode ? <Sun size={17} className="sm:w-5 sm:h-5 text-yellow-400" /> : <Moon size={17} className="sm:w-5 sm:h-5" />}
                 </button>
 
-                <Link
-                    to="/mis-publicaciones"
-                    className="relative flex items-center justify-center p-1 sm:p-1.5 rounded-full bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#5E6C84] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] transition-transform duration-150 active:scale-[0.96] shadow-xs no-underline ring-1 ring-black/10 dark:ring-white/10"
-                    aria-label="Mis Publicaciones"
-                    title="Mis Publicaciones"
+                <button
+                    type="button"
+                    onClick={() => setAuthModalOpen(true)}
+                    className="relative flex items-center justify-center p-1 sm:p-1.5 rounded-full bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#5E6C84] dark:text-slate-300 border border-[#DFE1E6] dark:border-[#3E4C5E] transition-transform duration-150 active:scale-[0.96] shadow-xs cursor-pointer ring-1 ring-black/10 dark:ring-white/10"
+                    aria-label={user ? 'Mi Cuenta · Recomendaciones' : 'Iniciar sesión para recomendar'}
+                    title={user ? 'Mi Cuenta · Recomendaciones activas' : 'Iniciar sesión para opinar y recomendar'}
                 >
-                    <CircleUserRound size={18} className="sm:w-5 sm:h-5 text-[#0052CC] dark:text-[#4C9AFF]" />
-                </Link>
+                    <CircleUserRound size={18} className={`sm:w-5 sm:h-5 ${user ? 'text-[#059669] dark:text-[#10B981]' : 'text-[#0052CC] dark:text-[#4C9AFF]'}`} />
+                    {user && (
+                        <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-[#059669] ring-2 ring-white dark:ring-[#1C2636]" />
+                    )}
+                </button>
 
                 <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="lg:hidden p-1 rounded hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#172B4D] dark:text-slate-200 cursor-pointer bg-transparent border-none flex items-center justify-center"
                     aria-label="Toggle menu"
@@ -124,6 +144,14 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <Link to="/visualizador?view=schedule" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'schedule' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Horarios
                     </Link>
+                    <button
+                        type="button"
+                        onClick={() => { setMobileMenuOpen(false); setAuthModalOpen(true); }}
+                        className="w-full text-left py-2 px-2 sm:px-3 rounded text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] bg-transparent border-none cursor-pointer text-xs sm:text-sm font-semibold flex items-center justify-between"
+                    >
+                        <span>{user ? 'Mi Cuenta (Recomendaciones)' : 'Iniciar sesión / Recomendaciones'}</span>
+                        {user && <span className="w-2 h-2 rounded-full bg-[#059669]" />}
+                    </button>
                     <div className="border-t border-[#DFE1E6] dark:border-[#3E4C5E] my-1 pt-2 px-1 flex items-center gap-1.5">
                         <a
                             href="https://buymeacoffee.com/trebol4devop"
@@ -149,5 +177,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                 </div>
             )}
         </nav>
+        <AuthModal isOpen={authModalOpen} onClose={() => setAuthModalOpen(false)} />
+        </>
     );
 }

@@ -8,8 +8,8 @@ export const ANUNCIOS = [
     titulo: '¡Bienvenido al nuevo sistema de tutoriales!',
     fecha: '2026-08-14',
     cuerpo:
-      'Cada sección de PEMTREE ahora tiene su propia guía paso a paso para que aprendas a usarla: ' +
-      'Visualizador, Planificador, Horarios, Foro y Grupos Estudiantiles. ' +
+      'Cada sección de PEMTREE cuenta con su propia guía paso a paso para que aprendas a usarla: ' +
+      'Visualizador, Planificador y Armador de Horarios. ' +
       'Abre el tutorial de la pantalla en la que estés y, si tienes dudas, usa el botón de ayuda (?).',
   },
   {

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ThumbsUp, ThumbsDown, LogIn } from 'lucide-react';
 import { cargarReputacion, getReputacionSeccion, recomendarSeccion } from '../modules/data/catalogo';
-import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
 function nivelSentimiento(pct) {
     if (pct >= 70) return { label: 'Muy recomendada', color: '#2E9E5B' };
@@ -52,12 +51,8 @@ export default function DocenteReviews({ cursoCodigo, seccion }) {
         setBusy(false);
     }
 
-    async function iniciarSesion() {
-        if (!isSupabaseConfigured || !supabase) return;
-        await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.origin + '/visualizador' },
-        });
+    function iniciarSesion() {
+        window.dispatchEvent(new CustomEvent('pemtree-open-auth-modal'));
     }
 
     return (

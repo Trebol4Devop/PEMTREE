@@ -1,7 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { ThemeProvider, useTheme } from './theme/ThemeContext';
-import { NotificationsProvider } from './context/NotificationsContext';
 import { OnboardingProvider } from './context/OnboardingContext';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
@@ -35,11 +34,9 @@ function App() {
     <HelmetProvider>
       <ThemeProvider>
         <BrowserRouter>
-          <NotificationsProvider>
-            <OnboardingProvider>
-              <AppLayout />
-            </OnboardingProvider>
-          </NotificationsProvider>
+          <OnboardingProvider>
+            <AppLayout />
+          </OnboardingProvider>
         </BrowserRouter>
       </ThemeProvider>
     </HelmetProvider>

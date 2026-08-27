@@ -1,13 +1,12 @@
 import { useNavigate } from 'react-router-dom';
 import {
-    Cpu, CalendarRange, Clock, MessageSquare, Users, ArrowUpRight,
+    Cpu, CalendarRange, Clock,
 } from 'lucide-react';
 import { Modal } from './ui';
 import { NodeStyleBar } from './CareerCard';
 import { useTheme } from '../theme/ThemeContext';
 
 const SCHEDULE_COLORS = ['#8B5CF6', '#14B8A6', '#F97316', '#EC4899'];
-const GREEN = '#22C55E';
 
 function FocalCircle({ icon: Icon, color, bg, size = 20 }) {
     return (
@@ -144,42 +143,10 @@ function ScheduleSymbol({ blue, neutral }) {
     );
 }
 
-function ForoSymbol({ blueLight, neutral }) {
-    return (
-        <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-            {[0, 1].map((i) => (
-                <div key={i} className="rounded-md border p-1" style={{ borderColor: neutral }}>
-                    <div className="flex items-center gap-1 mb-1">
-                        <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: neutral }} />
-                        <span className="h-1 flex-1 rounded" style={{ backgroundColor: neutral }} />
-                    </div>
-                    <div className="w-8 h-1.5 rounded" style={{ backgroundColor: blueLight }} />
-                </div>
-            ))}
-        </div>
-    );
-}
-
-function GroupsSymbol({ blue, greenLight, neutral }) {
-    return (
-        <div className="flex-1 flex flex-col gap-1.5 min-w-0">
-            {[0, 1].map((i) => (
-                <div key={i} className="rounded-md border p-1" style={{ borderColor: neutral }}>
-                    <div className="w-9 h-1.5 rounded mb-1" style={{ backgroundColor: greenLight }} />
-                    <div className="h-2.5 rounded flex items-center justify-end px-1" style={{ backgroundColor: blue }}>
-                        <ArrowUpRight size={8} className="text-white" strokeWidth={3} />
-                    </div>
-                </div>
-            ))}
-        </div>
-    );
-}
-
 function DestinationCard({ destination, colors, isDarkMode, onGo }) {
     const blue = isDarkMode ? '#4C9AFF' : '#0052CC';
     const blueLight = isDarkMode ? '#0C295E' : '#DEEBFF';
     const neutral = isDarkMode ? '#3E4C5E' : '#E4E7EC';
-    const greenLight = isDarkMode ? 'rgba(34,197,94,0.18)' : '#DCFCE7';
     const pensum = colors?.color1 || blue;
     const pensumSecondary = colors?.color2 || blueLight;
 
@@ -206,18 +173,6 @@ function DestinationCard({ destination, colors, isDarkMode, onGo }) {
             headerDecor = <Clock size={13} className="text-white" />;
             focal = <FocalCircle icon={Clock} color={blue} bg={`${blue}1f`} />;
             symbol = <ScheduleSymbol blue={blue} neutral={neutral} />;
-            break;
-        case 'foro':
-            headerLabel = 'Foro';
-            headerDecor = <MessageSquare size={13} className="text-white" />;
-            focal = <FocalCircle icon={MessageSquare} color={blue} bg={blueLight} />;
-            symbol = <ForoSymbol blueLight={blueLight} neutral={neutral} />;
-            break;
-        case 'grupos':
-            headerLabel = 'Grupos';
-            headerDecor = <span className="w-2 h-2 rounded-full shrink-0" style={{ backgroundColor: GREEN }} />;
-            focal = <FocalCircle icon={Users} color={GREEN} bg={greenLight} />;
-            symbol = <GroupsSymbol blue={blue} greenLight={greenLight} neutral={neutral} />;
             break;
         default:
             break;
@@ -281,74 +236,42 @@ export default function SiteLauncher({ open, onClose, selectedCareer }) {
     const navigate = useNavigate();
     const { isDarkMode } = useTheme();
 
-    const destinations = {
-        tools: [
-            { id: 'visualizador', title: 'Visualizador', subtitle: 'Explora la ruta de tu pensum', route: '/visualizador' },
-            { id: 'planificador', title: 'Planificador', subtitle: 'Arma tu línea académica', route: '/visualizador?view=planner' },
-            { id: 'horarios', title: 'Armador de Horarios', subtitle: 'Combina secciones sin traslapes', route: '/visualizador?view=schedule' },
-        ],
-        community: [
-            { id: 'foro', title: 'Foro Estudiantil', subtitle: 'Dudas anónimas de la comunidad', route: '/foro' },
-            { id: 'grupos', title: 'Grupos Estudiantiles', subtitle: 'Comunidades y enlaces de tu carrera', route: '/grupos' },
-        ],
-    };
+    const destinations = [
+        { id: 'visualizador', title: 'Visualizador', subtitle: 'Explora la ruta de tu pensum', route: '/visualizador' },
+        { id: 'planificador', title: 'Planificador', subtitle: 'Arma tu línea académica', route: '/visualizador?view=planner' },
+        { id: 'horarios', title: 'Armador de Horarios', subtitle: 'Combina secciones sin traslapes', route: '/visualizador?view=schedule' },
+    ];
 
     const handleGo = (route) => {
         onClose();
         navigate(route);
     };
 
-    const sectionTitle = (text) => (
-        <h3 className="text-[11px] font-extrabold uppercase tracking-widest text-center text-[#5E6C84] dark:text-slate-400">
-            {text}
-        </h3>
-    );
-
     return (
         <Modal
             isOpen={open}
             onClose={onClose}
-            title="¿A qué sitio deseas ir?"
+            title="¿A qué herramienta deseas ir?"
             size="lg"
             className="max-w-[760px]"
-            contentClassName="pb-2"
+            contentClassName="pb-4"
         >
-            <p className="text-xs sm:text-sm text-center text-[#5E6C84] dark:text-slate-400 -mt-2 mb-5">
+            <p className="text-xs sm:text-sm text-center text-[#5E6C84] dark:text-slate-400 -mt-2 mb-6">
                 {selectedCareer?.name
-                    ? `Elegiste ${selectedCareer.name}. ¿Qué quieres hacer ahora?`
-                    : 'Elige una herramienta o una comunidad para continuar.'}
+                    ? `Elegiste ${selectedCareer.name}. Elige una herramienta para continuar:`
+                    : 'Elige una herramienta para continuar:'}
             </p>
 
-            <div className="space-y-6">
-                <div className="space-y-3">
-                    {sectionTitle('Herramientas')}
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                        {destinations.tools.map((d) => (
-                            <DestinationCard
-                                key={d.id}
-                                destination={d}
-                                colors={selectedCareer?.colors}
-                                isDarkMode={isDarkMode}
-                                onGo={handleGo}
-                            />
-                        ))}
-                    </div>
-                </div>
-
-                <div className="space-y-3">
-                    {sectionTitle('Comunidad')}
-                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-md mx-auto">
-                        {destinations.community.map((d) => (
-                            <DestinationCard
-                                key={d.id}
-                                destination={d}
-                                colors={selectedCareer?.colors}
-                                isDarkMode={isDarkMode}
-                                onGo={handleGo}
-                            />
-                        ))}
-                    </div>
-                </div>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                {destinations.map((d) => (
+                    <DestinationCard
+                        key={d.id}
+                        destination={d}
+                        colors={selectedCareer?.colors}
+                        isDarkMode={isDarkMode}
+                        onGo={handleGo}
+                    />
+                ))}
             </div>
         </Modal>
     );
