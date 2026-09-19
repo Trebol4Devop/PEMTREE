@@ -32,6 +32,7 @@ export const SCREEN_KEYS = {
   VISUALIZADOR: 'visualizador',
   PLANIFICADOR: 'planificador',
   HORARIOS: 'horarios',
+  RECUENTO: 'recuento',
   FORO: 'foro',
   GRUPOS: 'grupos',
 };
@@ -261,6 +262,31 @@ export const SCREENS = {
         descripcion:
           'Los grupos con más "me gusta" suben en el listado, así ayudas a que otros estudiantes encuentren ' +
           'los grupos más activos.',
+      },
+    ],
+  },
+  recuento: {
+    key: 'recuento',
+    titulo: 'Recuento académico',
+    descripcionCorta: 'Tu avance, tu plan y tu horario en una sola vista.',
+    pasos: [
+      {
+        icon: GraduationCap,
+        titulo: '¿Qué es?',
+        descripcion:
+          'Recuento reúne lo que ya hiciste: créditos aprobados, cursos en curso, tu avance por semestre y tu plan de estudios.',
+      },
+      {
+        icon: Calendar,
+        titulo: 'Tu plan y tu horario',
+        descripcion:
+          'Revisa los cursos y créditos de cada semestre o vacaciones, tu promedio, y el horario que armaste para el periodo activo.',
+      },
+      {
+        icon: Users,
+        titulo: 'Avisos y comunidad',
+        descripcion:
+          'Verás avisos del planificador (aperturas, traslapes, límites de vacaciones) y sugerencias de grupos de estudio y publicaciones destacadas.',
       },
     ],
   },
