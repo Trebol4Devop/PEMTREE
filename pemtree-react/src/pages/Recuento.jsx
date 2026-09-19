@@ -671,7 +671,7 @@ export default function Recuento() {
                             {avisos.length === 0 ? (
                                 <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#E3FCEF] dark:bg-[#064223]/25 border border-[#ABF5D1] dark:border-[#0E5832] text-xs sm:text-sm font-semibold text-[#006644] dark:text-[#57D9A3]">
                                     <CheckCircle2 size={16} className="shrink-0" />
-                                    <span>Plan sin advertencias de apertura ni traslapes.</span>
+                                    <span>Sin advertencias de apertura ni traslapes.</span>
                                 </div>
                             ) : (
                                 <div className="flex flex-col gap-2.5">
@@ -711,6 +711,31 @@ export default function Recuento() {
                                     ))}
                                 </div>
                             )}
+
+                            {/* Aviso comunitario: recomendación de secciones cursadas */}
+                            <div className="p-3.5 rounded-xl bg-[#EAE6FF] dark:bg-[#28224D]/40 border border-[#C0B6F2] dark:border-[#5243AA] flex flex-col gap-2.5">
+                                <div className="flex items-start gap-2.5">
+                                    <div className="p-1.5 rounded-lg bg-[#5243AA] text-white dark:bg-[#8777D9] dark:text-[#0E1624] shrink-0 mt-0.5 shadow-2xs">
+                                        <ThumbsUp size={15} />
+                                    </div>
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-xs sm:text-sm font-extrabold text-[#5243AA] dark:text-[#C0B6F2]">
+                                            ¡Apoya a la comunidad con tus recomendaciones!
+                                        </span>
+                                        <p className="text-xs text-[#172B4D] dark:text-slate-200 leading-relaxed m-0">
+                                            Deja tu recomendación en las secciones que ya has llevado. Tu voto anónimo ayuda a tus compañeros a elegir catedrático y armar su horario.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => handleIrAHorario()}
+                                    className="self-end inline-flex items-center gap-1.5 text-xs font-bold text-[#5243AA] dark:text-[#C0B6F2] hover:underline cursor-pointer bg-transparent border-none p-0"
+                                >
+                                    <span>Recomendar secciones en Horarios</span>
+                                    <ArrowRight size={13} />
+                                </button>
+                            </div>
                         </Card>
                     </div>
                 </div>
