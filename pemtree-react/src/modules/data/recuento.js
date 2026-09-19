@@ -237,6 +237,8 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
     const obligatorios = { total: 0, aprobados: 0, creditosTotal: 0, creditosAprobados: 0 };
     const optativos = { total: 0, aprobados: 0, creditosTotal: 0, creditosAprobados: 0 };
     const semestreMap = new Map();
+    const cursosCursando = [];
+    const cursosDisponibles = [];
 
     for (const c of cursos) {
         const cr = Number(c.creditos) || 0;
@@ -315,6 +317,14 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
         } else if (isCursando) {
             enCurso++;
             creditosEnCurso += cr;
+            cursosCursando.push({
+                id: c.id,
+                codigo: c.codigo,
+                nombre: c.nombre,
+                semestre: c.semestre,
+                creditos: cr,
+                obligatorio: Boolean(c.obligatorio)
+            });
             if (c.semestre && c.semestre >= 1) {
                 const s = semestreMap.get(c.semestre);
                 if (s) {
@@ -337,6 +347,14 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
             }
             if (disp) {
                 disponibles++;
+                cursosDisponibles.push({
+                    id: c.id,
+                    codigo: c.codigo,
+                    nombre: c.nombre,
+                    semestre: c.semestre,
+                    creditos: cr,
+                    obligatorio: Boolean(c.obligatorio)
+                });
             }
         }
     }
@@ -632,7 +650,9 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
             bloqueados,
             obligatorios,
             optativos,
-            porSemestre
+            porSemestre,
+            cursosCursando,
+            cursosDisponibles
         },
         plan: {
             existe,

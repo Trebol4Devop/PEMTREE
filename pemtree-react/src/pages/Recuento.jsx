@@ -143,33 +143,116 @@ export default function Recuento() {
         async function loadCommunity() {
             if (!data) return;
 
-            const carreraId = data.pensum?.carrera?.id || null;
+            // 1. Carreras relevantes del estudiante (principal, simultánea y área común)
+            const carrerasSet = new Set();
+            const pensumCarreraId = data.pensum?.carrera?.id;
+            if (pensumCarreraId) carrerasSet.add(pensumCarreraId);
 
-            const cursosRelevantes = [];
+            try {
+                const pensumActual = localStorage.getItem('pemtree_pensum_actual');
+                if (pensumActual) carrerasSet.add(pensumActual);
+
+                const tieneSimultanea = localStorage.getItem('pemtree_schedule_simultanea') === 'true' || Boolean(data.plan?.simultanea);
+                if (tieneSimultanea) {
+                    const segCarrera = localStorage.getItem('pemtree_schedule_segunda_carrera') || localStorage.getItem('pemtree_plan_segunda_carrera');
+                    if (segCarrera) carrerasSet.add(segCarrera);
+                }
+            } catch {
+                // Ignore localStorage read errors
+            }
+
+            // 2. Extraer cursos vigentes con sus nombres y secciones
+            const cursosMap = new Map();
+
+            // A. Cursos en el horario activo vigente (máxima prioridad)
+            if (data.horario?.cursosDetalle && Array.isArray(data.horario.cursosDetalle)) {
+                for (const c of data.horario.cursosDetalle) {
+                    if (c.codigo) {
+                        cursosMap.set(String(c.codigo), {
+                            codigo: String(c.codigo),
+                            nombre: c.nombre || '',
+                            seccion: c.secciones?.[0] || null,
+                            estado: 'horario'
+                        });
+                    }
+                }
+            }
+
+            // B. Cursos marcados como "cursando" en progreso
+            if (data.progreso?.cursosCursando && Array.isArray(data.progreso.cursosCursando)) {
+                for (const c of data.progreso.cursosCursando) {
+                    const cod = String(c.codigo);
+                    if (!cursosMap.has(cod)) {
+                        cursosMap.set(cod, {
+                            codigo: cod,
+                            nombre: c.nombre || '',
+                            seccion: null,
+                            estado: 'cursando',
+                            semestre: c.semestre
+                        });
+                    }
+                }
+            }
+
+            // C. Cursos del planificador
             if (data.plan && Array.isArray(data.plan.lineas)) {
                 for (const line of data.plan.lineas) {
                     for (const block of line.blocks || []) {
                         for (const c of block.cursos || []) {
-                            if (c.codigo && !cursosRelevantes.includes(c.codigo)) {
-                                cursosRelevantes.push(c.codigo);
+                            const cod = String(c.codigo);
+                            if (cod && !cursosMap.has(cod)) {
+                                cursosMap.set(cod, {
+                                    codigo: cod,
+                                    nombre: c.nombre || '',
+                                    seccion: null,
+                                    estado: 'plan',
+                                    semestre: c.semestre
+                                });
                             }
                         }
                     }
                 }
             }
 
+            // D. Cursos disponibles para cursar
+            if (data.progreso?.cursosDisponibles && Array.isArray(data.progreso.cursosDisponibles)) {
+                for (const c of data.progreso.cursosDisponibles.slice(0, 10)) {
+                    const cod = String(c.codigo);
+                    if (!cursosMap.has(cod)) {
+                        cursosMap.set(cod, {
+                            codigo: cod,
+                            nombre: c.nombre || '',
+                            seccion: null,
+                            estado: 'disponible',
+                            semestre: c.semestre
+                        });
+                    }
+                }
+            }
+
+            // E. Evaluar si aplican cursos o grupos de Área Común (semestres 1 a 3)
+            const semestresActivos = Array.from(cursosMap.values()).map(c => c.semestre).filter(Boolean);
+            const tieneAreaComun = semestresActivos.some(s => s <= 3) ||
+                (data.progreso?.porSemestre || []).slice(0, 3).some(s => (s.aprobados < s.total) || s.enCurso > 0);
+            if (tieneAreaComun) {
+                carrerasSet.add('area_comun');
+            }
+
+            const listaCarreras = Array.from(carrerasSet);
+            const listaCursos = Array.from(cursosMap.values());
+
             setCommunityLoading(true);
 
             try {
                 const [gruposRes, postRes] = await Promise.all([
                     fetchGruposSugeridos({
-                        carrera: carreraId,
-                        cursos: cursosRelevantes.slice(0, 8),
-                        userId: user?.id || null,
+                        carreras: listaCarreras,
+                        cursos: listaCursos,
                         limit: 3
                     }),
                     fetchMensajeDestacado({
-                        carrera: carreraId
+                        carreras: listaCarreras,
+                        cursos: listaCursos
                     })
                 ]);
 
