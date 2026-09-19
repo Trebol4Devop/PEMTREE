@@ -1,6 +1,6 @@
 // src/pages/Recuento.jsx - Vista de resumen académico del estudiante y comunidad
 import { useEffect, useState, useMemo } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import {
     GraduationCap,
     Clock,
@@ -10,8 +10,6 @@ import {
     ArrowRight,
     CheckCircle2,
     BookOpen,
-    CalendarRange,
-    Calendar,
     ExternalLink,
     ThumbsUp,
     RefreshCw,
@@ -250,17 +248,12 @@ export default function Recuento() {
         .filter(s => s.total > 0)
         .sort((a, b) => (a.aprobados / a.total) - (b.aprobados / b.total))[0];
 
-    // Bloques restantes del plan (excluyendo el destacado)
-    const otrosBloquesPlan = (plan.lineas[0]?.blocks || []).filter(
-        b => b.blockId !== plan.bloqueActual?.blockId
-    );
-
     return (
         <div className="flex-1 overflow-y-auto bg-[#F4F5F7] dark:bg-[#0E1624] transition-colors duration-300">
             <Seo
                 pathname="/recuento"
                 title="Recuento académico"
-                description="Resumen de tu avance en el pensum: créditos, plan por semestre, horario y avisos."
+                description="Resumen de tu avance en el pensum: créditos, horario y avisos."
             />
 
             <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
@@ -407,10 +400,10 @@ export default function Recuento() {
                     </div>
                 </Card>
 
-                {/* 3. Panel Central: Avance por Semestre + Planificación y Horario */}
+                {/* 3. Panel Central: Avance por Semestre, Horario y Avisos */}
                 <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    {/* Columna Izquierda (Avance detallado y Plan) */}
-                    <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
+                    {/* Columna Izquierda (Avance detallado) */}
+                    <div className="lg:col-span-7 xl:col-span-7 flex flex-col gap-6">
                         {/* A. Avance por semestre */}
                         <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
                             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
@@ -550,156 +543,11 @@ export default function Recuento() {
                                 </div>
                             )}
                         </Card>
-
-                        {/* B. Mi plan */}
-                        <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
-                            <div className="flex items-center justify-between flex-wrap gap-2">
-                                <div className="flex items-center gap-2.5 flex-wrap">
-                                    <h2 className="text-base sm:text-lg lg:text-xl font-extrabold text-[#172B4D] dark:text-slate-100">
-                                        Mi plan
-                                    </h2>
-                                    {plan.periodoActual && (
-                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-[#EAE6FF] dark:bg-[#352C63]/50 text-[#5243AA] dark:text-[#C0B6F2] border border-[#C0B6F2] dark:border-[#5243AA]">
-                                            <Calendar size={13} />
-                                            <span>{plan.periodoActual.nombre}</span>
-                                        </span>
-                                    )}
-                                </div>
-                                <Link
-                                    to="/visualizador?view=planner"
-                                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline"
-                                >
-                                    <span>Planificador</span>
-                                    <ArrowRight size={14} />
-                                </Link>
-                            </div>
-
-                            {!plan.existe ? (
-                                <EmptyState
-                                    icon={CalendarRange}
-                                    title="Aún no has armado tu plan"
-                                    description="Organiza tus cursos por semestre y escuela de vacaciones en el planificador."
-                                    actionLabel="Ir al Planificador"
-                                    onAction={() => navigate('/visualizador?view=planner')}
-                                />
-                            ) : (
-                                <div className="flex flex-col gap-4">
-                                    {/* Bloque destacado (Ciclo activo o próximo disponible) */}
-                                    {plan.bloqueActual && (
-                                        <div
-                                            className={`p-4 sm:p-5 rounded-2xl flex flex-col gap-3 transition-all ${
-                                                plan.esBloquePeriodoActual
-                                                    ? 'bg-[#E3FCEF] dark:bg-[#064223]/35 border-2 border-[#57D9A3] dark:border-[#0E5832]'
-                                                    : 'bg-[#DEEBFF] dark:bg-[#0C295E]/40 border-2 border-[#B3D4FF] dark:border-[#0C295E]'
-                                            }`}
-                                        >
-                                            <div className="flex items-center justify-between flex-wrap gap-2">
-                                                <div className="flex items-center gap-2 flex-wrap">
-                                                    <span
-                                                        className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-md ${
-                                                            plan.esBloquePeriodoActual
-                                                                ? 'bg-[#006644] text-white dark:bg-[#57D9A3] dark:text-[#0E1624]'
-                                                                : 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]'
-                                                        }`}
-                                                    >
-                                                        {plan.esBloquePeriodoActual ? 'Periodo activo' : 'Próximo periodo'}
-                                                    </span>
-                                                    <span
-                                                        className={`text-sm sm:text-base font-extrabold ${
-                                                            plan.esBloquePeriodoActual
-                                                                ? 'text-[#006644] dark:text-[#57D9A3]'
-                                                                : 'text-[#0052CC] dark:text-[#4C9AFF]'
-                                                        }`}
-                                                    >
-                                                        {plan.bloqueActual.tipo === 'semestre'
-                                                            ? `Semestre ${plan.bloqueActual.numero}`
-                                                            : `Vacaciones ${plan.bloqueActual.numero}`}
-                                                        {' '}
-                                                        <span className="font-normal opacity-85">
-                                                            ({plan.bloqueActual.paridad === 'impar' ? 'Impar' : 'Par'})
-                                                        </span>
-                                                    </span>
-                                                </div>
-                                                <span
-                                                    className={`text-sm sm:text-base font-black ${
-                                                        plan.esBloquePeriodoActual
-                                                            ? 'text-[#006644] dark:text-[#57D9A3]'
-                                                            : 'text-[#0052CC] dark:text-[#4C9AFF]'
-                                                    }`}
-                                                >
-                                                    {plan.bloqueActual.creditos} CR
-                                                </span>
-                                            </div>
-
-                                            <div className="flex flex-wrap gap-2 pt-1">
-                                                {plan.bloqueActual.cursos.map(c => (
-                                                    <Link
-                                                        key={c.id}
-                                                        to="/visualizador?view=planner"
-                                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200 hover:border-[#0052CC] dark:hover:border-[#4C9AFF] transition-colors no-underline shadow-2xs"
-                                                    >
-                                                        <span>{c.nombre}</span>
-                                                        <span className="text-xs font-bold text-[#5E6C84] dark:text-slate-400">
-                                                            {c.creditos} CR
-                                                        </span>
-                                                    </Link>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* Otros bloques planificados */}
-                                    {otrosBloquesPlan.length > 0 && (
-                                        <div className="flex flex-col gap-2.5 pt-1">
-                                            <span className="text-xs sm:text-sm font-bold text-[#5E6C84] dark:text-slate-300">
-                                                Siguientes bloques proyectados ({otrosBloquesPlan.length})
-                                            </span>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                                                {otrosBloquesPlan.map(b => (
-                                                    <div
-                                                        key={b.blockId}
-                                                        className="p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2"
-                                                    >
-                                                        <div className="flex items-center justify-between text-xs sm:text-sm">
-                                                            <div className="flex items-center gap-2">
-                                                                <span className="font-bold text-[#172B4D] dark:text-slate-200">
-                                                                    {b.tipo === 'semestre' ? `Semestre ${b.numero}` : `Vacaciones ${b.numero}`}
-                                                                </span>
-                                                                <span className="text-[11px] font-bold px-1.5 py-0.2 rounded bg-[#EBECF0] dark:bg-[#1C2636] text-[#5E6C84] dark:text-slate-400">
-                                                                    {b.paridad === 'impar' ? 'Impar' : 'Par'}
-                                                                </span>
-                                                            </div>
-                                                            <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-300">
-                                                                {b.creditos} CR
-                                                            </span>
-                                                        </div>
-                                                        <div className="flex flex-wrap gap-1.5">
-                                                            {b.cursos.map(c => (
-                                                                <Link
-                                                                    key={c.id}
-                                                                    to="/visualizador?view=planner"
-                                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200 hover:border-[#0052CC] dark:hover:border-[#4C9AFF] transition-colors no-underline"
-                                                                >
-                                                                    <span className="truncate max-w-[160px]">{c.nombre}</span>
-                                                                    <span className="text-[11px] text-[#5E6C84] dark:text-slate-400">
-                                                                        {c.creditos}
-                                                                    </span>
-                                                                </Link>
-                                                            ))}
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </Card>
                     </div>
 
                     {/* Columna Derecha (Horario y Avisos) */}
-                    <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
-                        {/* C. Mi horario */}
+                    <div className="lg:col-span-5 xl:col-span-5 flex flex-col gap-6">
+                        {/* B. Mi horario */}
                         <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
                             <div className="flex items-center justify-between flex-wrap gap-2">
                                 <div className="flex items-center gap-2 flex-wrap">
@@ -807,7 +655,7 @@ export default function Recuento() {
                             )}
                         </Card>
 
-                        {/* D. Avisos del planificador */}
+                        {/* C. Avisos */}
                         <Card className="flex flex-col gap-3.5 p-5 sm:p-6 shadow-xs">
                             <div className="flex items-center justify-between">
                                 <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">

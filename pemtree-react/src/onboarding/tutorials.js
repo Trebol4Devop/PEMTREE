@@ -268,19 +268,19 @@ export const SCREENS = {
   recuento: {
     key: 'recuento',
     titulo: 'Recuento académico',
-    descripcionCorta: 'Tu avance, tu plan y tu horario en una sola vista.',
+    descripcionCorta: 'Tu avance, tu horario y avisos en una sola vista.',
     pasos: [
       {
         icon: GraduationCap,
         titulo: '¿Qué es?',
         descripcion:
-          'Recuento reúne lo que ya hiciste: créditos aprobados, cursos en curso, tu avance por semestre y tu plan de estudios.',
+          'Recuento reúne lo que ya hiciste: créditos aprobados, cursos en curso, tu avance por semestre y tu horario.',
       },
       {
-        icon: Calendar,
-        titulo: 'Tu plan y tu horario',
+        icon: Clock,
+        titulo: 'Avance y horario',
         descripcion:
-          'Revisa los cursos y créditos de cada semestre o vacaciones, tu promedio, y el horario que armaste para el periodo activo.',
+          'Revisa los cursos y créditos de cada semestre, tu promedio y el horario que armaste para el periodo activo.',
       },
       {
         icon: Users,
