@@ -63,6 +63,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
     if (m === 12) {
         return {
             tipoPeriodo: 'vacaciones-par',
+            schedulePeriod: 'vacaciones2',
             tipo: 'vacaciones',
             paridad: 'par',
             nombre: 'Vacaciones de Diciembre (Par)',
@@ -75,6 +76,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
     if (m >= 1 && m <= 4) {
         return {
             tipoPeriodo: 'semestre-impar',
+            schedulePeriod: 'semestre1',
             tipo: 'semestre',
             paridad: 'impar',
             nombre: 'Primer Semestre (Impar)',
@@ -85,6 +87,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
         if (dia <= 15) {
             return {
                 tipoPeriodo: 'semestre-impar',
+                schedulePeriod: 'semestre1',
                 tipo: 'semestre',
                 paridad: 'impar',
                 nombre: 'Primer Semestre (Impar)',
@@ -94,6 +97,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
             // 16 a 31 de mayo: previo a vacaciones de junio
             return {
                 tipoPeriodo: 'vacaciones-impar',
+                schedulePeriod: 'vacaciones1',
                 tipo: 'vacaciones',
                 paridad: 'impar',
                 nombre: 'Vacaciones de Junio (Impar)',
@@ -106,6 +110,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
     if (m === 6) {
         return {
             tipoPeriodo: 'vacaciones-impar',
+            schedulePeriod: 'vacaciones1',
             tipo: 'vacaciones',
             paridad: 'impar',
             nombre: 'Vacaciones de Junio (Impar)',
@@ -118,6 +123,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
     if (m >= 7 && m <= 10) {
         return {
             tipoPeriodo: 'semestre-par',
+            schedulePeriod: 'semestre2',
             tipo: 'semestre',
             paridad: 'par',
             nombre: 'Segundo Semestre (Par)',
@@ -128,6 +134,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
         if (dia <= 15) {
             return {
                 tipoPeriodo: 'semestre-par',
+                schedulePeriod: 'semestre2',
                 tipo: 'semestre',
                 paridad: 'par',
                 nombre: 'Segundo Semestre (Par)',
@@ -137,6 +144,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
             // 16 a 30 de noviembre: previo a vacaciones de diciembre
             return {
                 tipoPeriodo: 'vacaciones-par',
+                schedulePeriod: 'vacaciones2',
                 tipo: 'vacaciones',
                 paridad: 'par',
                 nombre: 'Vacaciones de Diciembre (Par)',
@@ -147,11 +155,27 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
 
     return {
         tipoPeriodo: 'semestre-par',
+        schedulePeriod: 'semestre2',
         tipo: 'semestre',
         paridad: 'par',
         nombre: 'Segundo Semestre (Par)',
         etiquetaCorta: 'Semestre Par'
     };
+}
+
+export function tipoPeriodoASchedulePeriod(tipoPeriodo) {
+    switch (tipoPeriodo) {
+        case 'semestre-impar':
+            return 'semestre1';
+        case 'semestre-par':
+            return 'semestre2';
+        case 'vacaciones-impar':
+            return 'vacaciones1';
+        case 'vacaciones-par':
+            return 'vacaciones2';
+        default:
+            return 'semestre1';
+    }
 }
 
 /**
@@ -485,32 +509,62 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
     const planTotalCreditos = primeraLinea ? primeraLinea.totalCreditos : 0;
     const planTotalCursos = primeraLinea ? primeraLinea.blocks.reduce((acc, b) => acc + b.cursos.length, 0) : 0;
 
-    // 3. Horario
-    const periodo = localStorage.getItem('pemtree_schedule_period') || 'semestre1';
-    let scheduleObj = {};
-    try {
-        const rawSch = localStorage.getItem(`pemtree_schedule_${key}_${periodo}`);
-        if (rawSch) scheduleObj = JSON.parse(rawSch) || {};
-    } catch (e) {
-        console.warn('Recuento: error leyendo horario', e);
-    }
+    // 3. Horario (determinado por el periodo académico activo según calendario de fechas)
+    const periodoActivoScheduleId = periodoActual.schedulePeriod || tipoPeriodoASchedulePeriod(periodoActual.tipoPeriodo);
 
-    let horarioCursosCount = 0;
-    let horarioSeccionesCount = 0;
-    let totalHoras = 0;
+    const procesarHorarioPeriodo = (pId) => {
+        let schObj = {};
+        try {
+            const rawSch = localStorage.getItem(`pemtree_schedule_${key}_${pId}`);
+            if (rawSch) schObj = JSON.parse(rawSch) || {};
+        } catch (e) {
+            console.warn(`Recuento: error leyendo horario ${pId}`, e);
+        }
 
-    for (const arr of Object.values(scheduleObj)) {
-        if (Array.isArray(arr) && arr.length > 0) {
-            horarioCursosCount++;
-            for (const sec of arr) {
-                horarioSeccionesCount++;
-                const diasCount = Array.isArray(sec.dias) && sec.dias.length > 0 ? sec.dias.length : 1;
-                const dur = duracionHoras(sec.inicio, sec.final);
-                totalHoras += dur * diasCount;
+        let cCount = 0;
+        let sCount = 0;
+        let tHoras = 0;
+        const cursosList = [];
+
+        for (const [code, arr] of Object.entries(schObj)) {
+            if (Array.isArray(arr) && arr.length > 0) {
+                cCount++;
+                const cModel = cursos.find(c => String(c.codigo) === String(code));
+                const secNombres = arr.map(s => s.seccion).filter(Boolean);
+                cursosList.push({
+                    codigo: code,
+                    nombre: cModel?.nombre || `Curso ${code}`,
+                    creditos: cModel?.creditos || 0,
+                    secciones: secNombres,
+                    totalSecciones: arr.length
+                });
+
+                for (const sec of arr) {
+                    sCount++;
+                    const diasCount = Array.isArray(sec.dias) && sec.dias.length > 0 ? sec.dias.length : 1;
+                    const dur = duracionHoras(sec.inicio, sec.final);
+                    tHoras += dur * diasCount;
+                }
             }
         }
-    }
-    const horasSemana = Math.round(totalHoras * 10) / 10;
+
+        return {
+            periodo: pId,
+            cursos: cCount,
+            secciones: sCount,
+            horasSemana: Math.round(tHoras * 10) / 10,
+            cursosDetalle: cursosList
+        };
+    };
+
+    const metricasPeriodoActivo = procesarHorarioPeriodo(periodoActivoScheduleId);
+
+    const periodosHorario = {
+        semestre1: procesarHorarioPeriodo('semestre1'),
+        semestre2: procesarHorarioPeriodo('semestre2'),
+        vacaciones1: procesarHorarioPeriodo('vacaciones1'),
+        vacaciones2: procesarHorarioPeriodo('vacaciones2')
+    };
 
     // 4. Avisos
     let avisos = [];
@@ -595,10 +649,15 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
             suficiencias
         },
         horario: {
-            periodo,
-            cursos: horarioCursosCount,
-            secciones: horarioSeccionesCount,
-            horasSemana,
+            periodo: periodoActivoScheduleId,
+            periodoActivo: periodoActivoScheduleId,
+            nombrePeriodoActivo: periodoActual.nombre,
+            paridad: periodoActual.paridad,
+            cursos: metricasPeriodoActivo.cursos,
+            secciones: metricasPeriodoActivo.secciones,
+            horasSemana: metricasPeriodoActivo.horasSemana,
+            cursosDetalle: metricasPeriodoActivo.cursosDetalle,
+            periodos: periodosHorario,
             actualizadoEl: null
         },
         avisos

@@ -56,6 +56,7 @@ export default function Recuento() {
     const [error, setError] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
     const [filtroSemestre, setFiltroSemestre] = useState('todos');
+    const [horarioPeriodoFiltro, setHorarioPeriodoFiltro] = useState(null);
 
     const [communityLoading, setCommunityLoading] = useState(true);
     const [grupos, setGrupos] = useState([]);
@@ -235,7 +236,15 @@ export default function Recuento() {
     }
 
     const { pensum, progreso, plan, horario, avisos } = data;
-    const periodoLegible = PERIOD_LABELS[horario.periodo] || horario.periodo;
+    const periodoSeleccionadoId = horarioPeriodoFiltro || horario.periodoActivo || horario.periodo || 'semestre1';
+    const datosHorarioPeriodo = horario.periodos?.[periodoSeleccionadoId] || horario;
+    const nombrePeriodoSeleccionado = PERIOD_LABELS[periodoSeleccionadoId] || periodoSeleccionadoId;
+    const esPeriodoActivoCalendario = (periodoSeleccionadoId === (horario.periodoActivo || horario.periodo));
+
+    const handleIrAHorario = (pId = periodoSeleccionadoId) => {
+        localStorage.setItem('pemtree_schedule_period', pId);
+        navigate('/visualizador?view=schedule');
+    };
 
     const flojo = [...progreso.porSemestre]
         .filter(s => s.total > 0)
@@ -693,43 +702,107 @@ export default function Recuento() {
                         {/* C. Mi horario */}
                         <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                                <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">
-                                    Mi horario ({periodoLegible})
-                                </h2>
-                                <Link
-                                    to="/visualizador?view=schedule"
-                                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline"
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">
+                                        Mi horario
+                                    </h2>
+                                    {esPeriodoActivoCalendario && (
+                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#E3FCEF] dark:bg-[#064223]/50 text-[#006644] dark:text-[#57D9A3] border border-[#ABF5D1] dark:border-[#0E5832]">
+                                            Ciclo activo
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => handleIrAHorario(periodoSeleccionadoId)}
+                                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer bg-transparent border-none p-0"
                                 >
-                                    <span>{horario.secciones === 0 ? 'Armar' : 'Editar'}</span>
+                                    <span>{datosHorarioPeriodo.secciones === 0 ? 'Armar' : 'Editar'}</span>
                                     <ArrowRight size={14} />
-                                </Link>
+                                </button>
                             </div>
 
-                            {horario.secciones === 0 ? (
+                            {/* Selector de periodo/semestre */}
+                            <div className="grid grid-cols-4 gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] text-center text-xs font-bold">
+                                {[
+                                    { id: 'semestre1', label: 'Sem 1', full: 'Semestre 1' },
+                                    { id: 'semestre2', label: 'Sem 2', full: 'Semestre 2' },
+                                    { id: 'vacaciones1', label: 'Vac 1', full: 'Vacaciones 1' },
+                                    { id: 'vacaciones2', label: 'Vac 2', full: 'Vacaciones 2' },
+                                ].map(p => {
+                                    const isSelected = periodoSeleccionadoId === p.id;
+                                    const isActivo = (horario.periodoActivo || horario.periodo) === p.id;
+                                    const tieneDatos = (horario.periodos?.[p.id]?.secciones || 0) > 0;
+
+                                    return (
+                                        <button
+                                            key={p.id}
+                                            type="button"
+                                            onClick={() => setHorarioPeriodoFiltro(p.id)}
+                                            className={`py-1.5 px-1 rounded-lg transition-all cursor-pointer border-none flex items-center justify-center gap-1 ${
+                                                isSelected
+                                                    ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs'
+                                                    : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
+                                            }`}
+                                        >
+                                            <span>{p.label}</span>
+                                            {isActivo && (
+                                                <span className="w-1.5 h-1.5 rounded-full bg-[#006644] dark:bg-[#57D9A3]" title="Periodo actual según calendario" />
+                                            )}
+                                            {tieneDatos && !isActivo && (
+                                                <span className="w-1 h-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Contenido según periodo seleccionado */}
+                            {datosHorarioPeriodo.secciones === 0 ? (
                                 <div className="p-4 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3 text-sm text-[#5E6C84] dark:text-slate-400">
-                                    <span>Sin secciones seleccionadas para {periodoLegible}.</span>
-                                    <Link
-                                        to="/visualizador?view=schedule"
-                                        className="inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] text-white no-underline transition-colors self-start shadow-xs"
+                                    <span>Sin secciones armadas para {nombrePeriodoSeleccionado}.</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleIrAHorario(periodoSeleccionadoId)}
+                                        className="inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] text-white no-underline transition-colors self-start shadow-xs cursor-pointer border-none"
                                     >
-                                        <span>Armar horario</span>
+                                        <span>Armar {nombrePeriodoSeleccionado}</span>
                                         <ArrowRight size={14} />
-                                    </Link>
+                                    </button>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-3 gap-2 p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center">
-                                    <div className="flex flex-col">
-                                        <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Cursos</span>
-                                        <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{horario.cursos}</span>
+                                <div className="flex flex-col gap-3">
+                                    <div className="grid grid-cols-3 gap-2 p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center">
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Cursos</span>
+                                            <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{datosHorarioPeriodo.cursos}</span>
+                                        </div>
+                                        <div className="flex flex-col border-x border-[#DFE1E6] dark:border-[#3E4C5E] px-1">
+                                            <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Secciones</span>
+                                            <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{datosHorarioPeriodo.secciones}</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Carga</span>
+                                            <span className="text-base sm:text-lg font-black text-[#0052CC] dark:text-[#4C9AFF] mt-1">{datosHorarioPeriodo.horasSemana} h/sem</span>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-col border-x border-[#DFE1E6] dark:border-[#3E4C5E] px-1">
-                                        <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Secciones</span>
-                                        <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{horario.secciones}</span>
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Carga</span>
-                                        <span className="text-base sm:text-lg font-black text-[#0052CC] dark:text-[#4C9AFF] mt-1">{horario.horasSemana} h/sem</span>
-                                    </div>
+
+                                    {/* Cursos en el horario del semestre */}
+                                    {datosHorarioPeriodo.cursosDetalle && datosHorarioPeriodo.cursosDetalle.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5 pt-1">
+                                            {datosHorarioPeriodo.cursosDetalle.map(c => (
+                                                <div
+                                                    key={c.codigo}
+                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200"
+                                                >
+                                                    <span className="truncate max-w-[150px]">{c.nombre}</span>
+                                                    <span className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                                        Sec. {c.secciones.join(', ')}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </Card>
