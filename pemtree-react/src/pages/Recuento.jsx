@@ -14,7 +14,8 @@ import {
     Calendar,
     ExternalLink,
     ThumbsUp,
-    RefreshCw
+    RefreshCw,
+    Sparkles
 } from 'lucide-react';
 import Seo from '../components/seo/Seo';
 import HelpButton from '../components/onboarding/HelpButton';
@@ -143,10 +144,8 @@ export default function Recuento() {
         async function loadCommunity() {
             if (!data) return;
 
-            // Extraer carrera del pensum cargado
             const carreraId = data.pensum?.carrera?.id || null;
 
-            // Extraer códigos de cursos relevantes: enCurso, disponibles o los primeros del plan
             const cursosRelevantes = [];
             if (data.plan && Array.isArray(data.plan.lineas)) {
                 for (const line of data.plan.lineas) {
@@ -201,12 +200,12 @@ export default function Recuento() {
     if (loading) {
         return (
             <div className="flex-1 overflow-y-auto bg-[#F4F5F7] dark:bg-[#0E1624] p-4 sm:p-6 transition-colors duration-300">
-                <div className="max-w-7xl mx-auto flex flex-col gap-4">
-                    <div className="h-9 w-44 bg-slate-200 dark:bg-[#1C2636] rounded-md animate-pulse" />
-                    <div className="h-36 bg-slate-200 dark:bg-[#1C2636] rounded-xl animate-pulse" />
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
-                        <div className="lg:col-span-8 h-80 bg-slate-200 dark:bg-[#1C2636] rounded-xl animate-pulse" />
-                        <div className="lg:col-span-4 h-80 bg-slate-200 dark:bg-[#1C2636] rounded-xl animate-pulse" />
+                <div className="max-w-7xl mx-auto flex flex-col gap-5">
+                    <div className="h-10 w-52 bg-slate-200 dark:bg-[#1C2636] rounded-lg animate-pulse" />
+                    <div className="h-44 bg-slate-200 dark:bg-[#1C2636] rounded-2xl animate-pulse" />
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div className="lg:col-span-8 h-96 bg-slate-200 dark:bg-[#1C2636] rounded-2xl animate-pulse" />
+                        <div className="lg:col-span-4 h-96 bg-slate-200 dark:bg-[#1C2636] rounded-2xl animate-pulse" />
                     </div>
                 </div>
             </div>
@@ -217,16 +216,16 @@ export default function Recuento() {
     if (error || !data) {
         return (
             <div className="flex-1 overflow-y-auto bg-[#F4F5F7] dark:bg-[#0E1624] p-4 sm:p-6 transition-colors duration-300">
-                <div className="max-w-md mx-auto my-12">
-                    <Card className="flex flex-col items-center gap-3 p-6 text-center">
-                        <AlertTriangle className="w-10 h-10 text-[#BF2600] dark:text-[#FF6369]" />
-                        <h2 className="text-base font-bold text-[#172B4D] dark:text-slate-100">
+                <div className="max-w-md mx-auto my-14">
+                    <Card className="flex flex-col items-center gap-3.5 p-6 text-center">
+                        <AlertTriangle className="w-12 h-12 text-[#BF2600] dark:text-[#FF6369]" />
+                        <h2 className="text-lg font-bold text-[#172B4D] dark:text-slate-100">
                             No pudimos cargar tu recuento
                         </h2>
-                        <p className="text-xs text-[#5E6C84] dark:text-slate-400">
-                            {error || 'Ocurrió un error inesperado al consolidar los datos de tu pensum.'}
+                        <p className="text-sm text-[#5E6C84] dark:text-slate-400">
+                            {error || 'Ocurrió un error al consolidar los datos de tu pensum.'}
                         </p>
-                        <Button variant="primary" onClick={handleRetry} className="mt-2 text-xs">
+                        <Button variant="primary" onClick={handleRetry} className="mt-2 text-sm font-semibold">
                             Reintentar
                         </Button>
                     </Card>
@@ -238,25 +237,11 @@ export default function Recuento() {
     const { pensum, progreso, plan, horario, avisos } = data;
     const periodoLegible = PERIOD_LABELS[horario.periodo] || horario.periodo;
 
-    // Semestre con menor avance
     const flojo = [...progreso.porSemestre]
         .filter(s => s.total > 0)
         .sort((a, b) => (a.aprobados / a.total) - (b.aprobados / b.total))[0];
 
-    const planFechaFormateada = plan.actualizadoEl
-        ? (() => {
-            try {
-                return new Date(plan.actualizadoEl).toLocaleDateString('es-GT', {
-                    dateStyle: 'medium',
-                    timeStyle: 'short'
-                });
-            } catch {
-                return null;
-            }
-        })()
-        : null;
-
-    // Bloques restantes del plan (excluyendo el bloque actual destacado)
+    // Bloques restantes del plan (excluyendo el destacado)
     const otrosBloquesPlan = (plan.lineas[0]?.blocks || []).filter(
         b => b.blockId !== plan.bloqueActual?.blockId
     );
@@ -269,21 +254,21 @@ export default function Recuento() {
                 description="Resumen de tu avance en el pensum: créditos, plan por semestre, horario y avisos."
             />
 
-            <div className="max-w-7xl mx-auto p-3.5 sm:p-6 flex flex-col gap-4 sm:gap-5">
+            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
                 {/* 1. Cabecera */}
-                <div className="flex items-center justify-between gap-3">
+                <div className="flex items-center justify-between gap-4">
                     <div className="min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                            <h1 className="text-xl sm:text-2xl font-extrabold text-[#172B4D] dark:text-slate-100 tracking-tight">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#172B4D] dark:text-slate-100 tracking-tight">
                                 Recuento
                             </h1>
                             {pseudonimoComunidad && (
-                                <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]">
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]">
                                     Hola, {pseudonimoComunidad}
                                 </span>
                             )}
                         </div>
-                        <p className="text-xs text-[#5E6C84] dark:text-slate-400 mt-0.5">
+                        <p className="text-sm font-medium text-[#5E6C84] dark:text-slate-400 mt-1">
                             {pensum.carrera?.nombre || 'Ingeniería'}
                             {pensum.pensumInfo?.cohort ? ` · Cohorte ${pensum.pensumInfo.cohort}` : ''}
                         </p>
@@ -291,140 +276,145 @@ export default function Recuento() {
                     <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda del recuento" />
                 </div>
 
-                {/* 2. Resumen Ejecutivo: Avance en Créditos y Métricas Clave */}
-                <Card className="p-4 sm:p-5 flex flex-col gap-4">
-                    {/* Barra de progreso global con desglose segmentado */}
-                    <div className="flex flex-col gap-2">
-                        <div className="flex flex-wrap items-center justify-between gap-2">
-                            <div className="flex items-baseline gap-2.5">
-                                <span className="text-2xl sm:text-3xl font-extrabold text-[#0052CC] dark:text-[#4C9AFF] tracking-tight">
+                {/* 2. Resumen Ejecutivo: Avance General y Métricas Clave */}
+                <Card className="p-5 sm:p-6 flex flex-col gap-5 shadow-xs">
+                    {/* Barra de progreso global */}
+                    <div className="flex flex-col gap-3">
+                        <div className="flex flex-wrap items-baseline justify-between gap-3">
+                            <div className="flex items-baseline gap-3">
+                                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0052CC] dark:text-[#4C9AFF] tracking-tight">
                                     {progreso.porcentaje}%
                                 </span>
-                                <span className="text-xs sm:text-sm font-medium text-[#5E6C84] dark:text-slate-300">
-                                    avance en créditos ({progreso.creditosAprobados} de {progreso.totalCreditos} CR)
+                                <span className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-200">
+                                    {progreso.creditosAprobados} de {progreso.totalCreditos} créditos
                                 </span>
                             </div>
                             {plan.simultanea && (
-                                <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#0052CC]/20">
+                                <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#0052CC]/20">
                                     Carrera simultánea
                                 </span>
                             )}
                         </div>
 
-                        <div className="w-full h-2.5 rounded-full bg-[#DFE1E6] dark:bg-[#1C2636] overflow-hidden flex">
+                        {/* Barra de progreso */}
+                        <div className="w-full h-3.5 sm:h-4 rounded-full bg-[#DFE1E6] dark:bg-[#1C2636] overflow-hidden flex shadow-inner">
                             {progreso.totalCreditos > 0 && (
                                 <>
                                     <div
                                         className="h-full bg-[#0052CC] dark:bg-[#4C9AFF] transition-all duration-500"
                                         style={{ width: `${Math.min(100, (progreso.obligatorios.creditosAprobados / progreso.totalCreditos) * 100)}%` }}
-                                        title={`Obligatorios aprobados: ${progreso.obligatorios.creditosAprobados} CR`}
+                                        title={`Obligatorios: ${progreso.obligatorios.creditosAprobados} CR`}
                                     />
                                     <div
                                         className="h-full bg-[#5243AA] dark:bg-[#8777D9] transition-all duration-500"
                                         style={{ width: `${Math.min(100, (progreso.optativos.creditosAprobados / progreso.totalCreditos) * 100)}%` }}
-                                        title={`Optativos aprobados: ${progreso.optativos.creditosAprobados} CR`}
+                                        title={`Optativos: ${progreso.optativos.creditosAprobados} CR`}
                                     />
                                 </>
                             )}
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-between text-[11px] text-[#5E6C84] dark:text-slate-400 gap-x-4 gap-y-1">
-                            <div className="flex items-center gap-3">
-                                <span className="inline-flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
-                                    <span>Obligatorios: <strong className="text-[#172B4D] dark:text-slate-200">{progreso.obligatorios.creditosAprobados}</strong>/{progreso.obligatorios.creditosTotal} CR ({progreso.obligatorios.aprobados} de {progreso.obligatorios.total})</span>
+                        {/* Leyenda de obligatorios / optativos */}
+                        <div className="flex flex-wrap items-center justify-between text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 gap-x-5 gap-y-1 pt-0.5">
+                            <div className="flex items-center gap-4 flex-wrap">
+                                <span className="inline-flex items-center gap-2 font-medium">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
+                                    <span>Obligatorios: <strong className="text-[#172B4D] dark:text-slate-100 font-bold">{progreso.obligatorios.creditosAprobados}</strong>/{progreso.obligatorios.creditosTotal} CR</span>
                                 </span>
-                                <span className="inline-flex items-center gap-1.5">
-                                    <span className="w-2 h-2 rounded-full bg-[#5243AA] dark:bg-[#8777D9]" />
-                                    <span>Optativos: <strong className="text-[#172B4D] dark:text-slate-200">{progreso.optativos.creditosAprobados}</strong>/{progreso.optativos.creditosTotal} CR ({progreso.optativos.aprobados} de {progreso.optativos.total})</span>
+                                <span className="inline-flex items-center gap-2 font-medium">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#5243AA] dark:bg-[#8777D9]" />
+                                    <span>Optativos: <strong className="text-[#172B4D] dark:text-slate-100 font-bold">{progreso.optativos.creditosAprobados}</strong>/{progreso.optativos.creditosTotal} CR</span>
                                 </span>
                             </div>
                             {progreso.idiomaEquivalencia && (
-                                <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">
-                                    Equivalencia de idioma incluida
+                                <span className="text-xs text-[#5E6C84] dark:text-slate-400">
+                                    Incluye equivalencia de idioma
                                 </span>
                             )}
                         </div>
                     </div>
 
                     {/* 4 KPIs de estado académico */}
-                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
-                        <div className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#006644] dark:text-[#57D9A3]">
-                                <CheckCircle2 size={13} />
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#006644] dark:text-[#57D9A3]">
+                                <CheckCircle2 size={16} />
                                 <span>Aprobados</span>
                             </div>
-                            <span className="text-xl font-bold text-[#172B4D] dark:text-slate-100 mt-0.5">
-                                {progreso.aprobados}
-                            </span>
-                            <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">
-                                cursos acreditados
-                            </span>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {progreso.aprobados}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    cursos
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#0052CC] dark:text-[#4C9AFF]">
-                                <Clock size={13} />
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                <Clock size={16} />
                                 <span>En curso</span>
                             </div>
-                            <span className="text-xl font-bold text-[#172B4D] dark:text-slate-100 mt-0.5">
-                                {progreso.enCurso}
-                            </span>
-                            <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">
-                                {progreso.creditosEnCurso} CR en asignación
-                            </span>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {progreso.enCurso}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    cursos ({progreso.creditosEnCurso} CR)
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#D97706] dark:text-[#FBBF24]">
-                                <BookOpen size={13} />
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#D97706] dark:text-[#FBBF24]">
+                                <BookOpen size={16} />
                                 <span>Disponibles</span>
                             </div>
-                            <span className="text-xl font-bold text-[#172B4D] dark:text-slate-100 mt-0.5">
-                                {progreso.disponibles}
-                            </span>
-                            <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">
-                                {progreso.bloqueados} bloqueados
-                            </span>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {progreso.disponibles}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    cursos
+                                </span>
+                            </div>
                         </div>
 
-                        <div className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col">
-                            <div className="flex items-center gap-1.5 text-[11px] font-semibold text-[#5243AA] dark:text-[#8777D9]">
-                                <GraduationCap size={13} />
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#5243AA] dark:text-[#8777D9]">
+                                <GraduationCap size={16} />
                                 <span>Promedio</span>
                             </div>
-                            <span className="text-xl font-bold text-[#172B4D] dark:text-slate-100 mt-0.5">
-                                {plan.promedio !== null ? plan.promedio.toFixed(1) : '—'}
-                            </span>
-                            <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">
-                                {plan.promedio !== null ? 'Ponderado' : 'Sin configurar'}
-                            </span>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {plan.promedio !== null ? plan.promedio.toFixed(1) : '—'}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    {plan.promedio !== null ? 'Ponderado' : 'Sin configurar'}
+                                </span>
+                            </div>
                         </div>
                     </div>
                 </Card>
 
-                {/* 3. Estructura Principal en 2 Columnas */}
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-                    {/* Columna Izquierda: Avance detallado y Planificación */}
-                    <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-4 sm:gap-5">
+                {/* 3. Panel Central: Avance por Semestre + Planificación y Horario */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Columna Izquierda (Avance detallado y Plan) */}
+                    <div className="lg:col-span-7 xl:col-span-8 flex flex-col gap-6">
                         {/* A. Avance por semestre */}
-                        <Card className="flex flex-col gap-3.5 p-4 sm:p-5">
-                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                                <div>
-                                    <h2 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
-                                        Avance por semestre
-                                    </h2>
-                                    <p className="text-xs text-[#5E6C84] dark:text-slate-400">
-                                        Cursos aprobados por ciclo
-                                    </p>
-                                </div>
+                        <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <h2 className="text-base sm:text-lg lg:text-xl font-extrabold text-[#172B4D] dark:text-slate-100">
+                                    Avance por semestre
+                                </h2>
 
-                                {/* Selector de vista compacto */}
-                                <div className="flex items-center gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-lg border border-[#DFE1E6] dark:border-[#3E4C5E] text-xs font-semibold self-start sm:self-auto">
+                                {/* Filtros compactos */}
+                                <div className="flex items-center gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-lg border border-[#DFE1E6] dark:border-[#3E4C5E] text-xs sm:text-sm font-bold self-start sm:self-auto">
                                     <button
                                         type="button"
                                         onClick={() => setFiltroSemestre('todos')}
-                                        className={`px-2 py-0.5 rounded-md transition-colors cursor-pointer border-none ${
+                                        className={`px-3 py-1 rounded-md transition-colors cursor-pointer border-none ${
                                             filtroSemestre === 'todos'
                                                 ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs'
                                                 : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
@@ -435,36 +425,36 @@ export default function Recuento() {
                                     <button
                                         type="button"
                                         onClick={() => setFiltroSemestre('obligatorios')}
-                                        className={`flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors cursor-pointer border-none ${
+                                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors cursor-pointer border-none ${
                                             filtroSemestre === 'obligatorios'
                                                 ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs'
                                                 : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
                                         }`}
                                     >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
+                                        <span className="w-2 h-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
                                         <span>Obligatorios</span>
                                     </button>
                                     <button
                                         type="button"
                                         onClick={() => setFiltroSemestre('optativos')}
-                                        className={`flex items-center gap-1 px-2 py-0.5 rounded-md transition-colors cursor-pointer border-none ${
+                                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors cursor-pointer border-none ${
                                             filtroSemestre === 'optativos'
                                                 ? 'bg-white dark:bg-[#1C2636] text-[#5243AA] dark:text-[#8777D9] shadow-xs'
                                                 : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
                                         }`}
                                     >
-                                        <span className="w-1.5 h-1.5 rounded-full bg-[#5243AA] dark:bg-[#8777D9]" />
+                                        <span className="w-2 h-2 rounded-full bg-[#5243AA] dark:bg-[#8777D9]" />
                                         <span>Optativos</span>
                                     </button>
                                 </div>
                             </div>
 
                             {progreso.porSemestre.length === 0 ? (
-                                <div className="text-xs italic text-[#5E6C84] dark:text-slate-400 py-6 text-center">
-                                    Marca cursos como completados para visualizar tu avance por semestre.
+                                <div className="text-sm italic text-[#5E6C84] dark:text-slate-400 py-8 text-center">
+                                    Marca cursos como completados para visualizar tu avance por ciclo.
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     {progreso.porSemestre.map(s => {
                                         const obligTotal = s.obligatoriosTotal;
                                         const obligAprob = s.obligatoriosAprobados;
@@ -481,38 +471,36 @@ export default function Recuento() {
                                         return (
                                             <div
                                                 key={s.semestre}
-                                                className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-1.5"
+                                                className="p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2"
                                             >
-                                                <div className="flex items-center justify-between text-xs">
-                                                    <div className="flex items-center gap-1.5">
-                                                        <span className="font-bold text-[#172B4D] dark:text-slate-100">
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
                                                             Semestre {s.semestre}
                                                         </span>
-                                                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded bg-black/5 dark:bg-white/5 text-[#5E6C84] dark:text-slate-300">
+                                                        <span className="text-xs font-black px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-[#5E6C84] dark:text-slate-300">
                                                             {semPct}%
                                                         </span>
                                                     </div>
-                                                    <span className="text-[11px] font-semibold text-[#5E6C84] dark:text-slate-400">
-                                                        {semAprob}/{semTotal} cursos
+                                                    <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-300">
+                                                        {semAprob} / {semTotal}
                                                     </span>
                                                 </div>
 
-                                                {/* Mini barra de progreso segmentada */}
-                                                <div className="w-full h-2 rounded-full bg-[#DFE1E6] dark:bg-[#1C2636] overflow-hidden flex">
+                                                {/* Barra de progreso */}
+                                                <div className="w-full h-2.5 rounded-full bg-[#DFE1E6] dark:bg-[#1C2636] overflow-hidden flex">
                                                     {filtroSemestre === 'todos' ? (
                                                         <>
                                                             {obligPct > 0 && (
                                                                 <div
                                                                     className="h-full bg-[#0052CC] dark:bg-[#4C9AFF] transition-all duration-500"
                                                                     style={{ width: `${obligPct}%` }}
-                                                                    title={`Obligatorios: ${obligAprob}/${obligTotal}`}
                                                                 />
                                                             )}
                                                             {optPct > 0 && (
                                                                 <div
                                                                     className="h-full bg-[#5243AA] dark:bg-[#8777D9] transition-all duration-500"
                                                                     style={{ width: `${optPct}%` }}
-                                                                    title={`Optativos: ${optAprob}/${optTotal}`}
                                                                 />
                                                             )}
                                                         </>
@@ -528,14 +516,14 @@ export default function Recuento() {
                                                     )}
                                                 </div>
 
-                                                {/* Desglose compacto en vista general */}
+                                                {/* Desglose conciso */}
                                                 {filtroSemestre === 'todos' && (
-                                                    <div className="flex items-center justify-between text-[10px] text-[#5E6C84] dark:text-slate-400 pt-0.5">
-                                                        <span>{obligAprob}/{obligTotal} oblig.</span>
+                                                    <div className="flex items-center justify-between text-xs text-[#5E6C84] dark:text-slate-400">
+                                                        <span>{obligAprob}/{obligTotal} obligatorios</span>
                                                         {optTotal > 0 ? (
-                                                            <span>{optAprob}/{optTotal} opt.</span>
+                                                            <span>{optAprob}/{optTotal} optativos</span>
                                                         ) : (
-                                                            <span className="opacity-60">Sin optativos</span>
+                                                            <span className="opacity-50 italic">Sin optativos</span>
                                                         )}
                                                     </div>
                                                 )}
@@ -546,45 +534,34 @@ export default function Recuento() {
                             )}
 
                             {flojo && progreso.aprobados > 0 && (
-                                <div className="text-[11px] text-[#5E6C84] dark:text-slate-400 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
+                                <div className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
                                     <span>
-                                        Menor avance general: <strong className="text-[#172B4D] dark:text-slate-200">Semestre {flojo.semestre}</strong> ({flojo.aprobados} de {flojo.total} aprobados).
-                                    </span>
-                                    <span className="hidden sm:inline text-[10px] opacity-80">
-                                        Oblig: {flojo.obligatoriosAprobados}/{flojo.obligatoriosTotal} · Opt: {flojo.optativosAprobados}/{flojo.optativosTotal}
+                                        Menor avance general: <strong className="text-[#172B4D] dark:text-slate-200">Semestre {flojo.semestre}</strong> ({flojo.aprobados} de {flojo.total} aprobados)
                                     </span>
                                 </div>
                             )}
                         </Card>
 
                         {/* B. Mi plan */}
-                        <Card className="flex flex-col gap-4 p-4 sm:p-5">
+                        <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                                <div>
-                                    <div className="flex items-center gap-2 flex-wrap">
-                                        <h2 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
-                                            Mi plan
-                                        </h2>
-                                        {plan.periodoActual && (
-                                            <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-[#EAE6FF] dark:bg-[#352C63]/50 text-[#5243AA] dark:text-[#C0B6F2] border border-[#C0B6F2] dark:border-[#5243AA]">
-                                                <Calendar size={12} />
-                                                <span>Ciclo actual: {plan.periodoActual.nombre}</span>
-                                            </span>
-                                        )}
-                                    </div>
-                                    {plan.existe && (
-                                        <p className="text-xs text-[#5E6C84] dark:text-slate-400 mt-1">
-                                            {plan.totalCreditos} créditos · {plan.totalCursos} cursos proyectados
-                                            {planFechaFormateada && ` · Actualizado el ${planFechaFormateada}`}
-                                        </p>
+                                <div className="flex items-center gap-2.5 flex-wrap">
+                                    <h2 className="text-base sm:text-lg lg:text-xl font-extrabold text-[#172B4D] dark:text-slate-100">
+                                        Mi plan
+                                    </h2>
+                                    {plan.periodoActual && (
+                                        <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-[#EAE6FF] dark:bg-[#352C63]/50 text-[#5243AA] dark:text-[#C0B6F2] border border-[#C0B6F2] dark:border-[#5243AA]">
+                                            <Calendar size={13} />
+                                            <span>{plan.periodoActual.nombre}</span>
+                                        </span>
                                     )}
                                 </div>
                                 <Link
                                     to="/visualizador?view=planner"
-                                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#0052CC] dark:text-[#4C9AFF] hover:underline"
+                                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline"
                                 >
-                                    <span>Ir al Planificador</span>
-                                    <ArrowRight size={13} />
+                                    <span>Planificador</span>
+                                    <ArrowRight size={14} />
                                 </Link>
                             </div>
 
@@ -592,34 +569,34 @@ export default function Recuento() {
                                 <EmptyState
                                     icon={CalendarRange}
                                     title="Aún no has armado tu plan"
-                                    description="Organiza tus cursos por semestre y escuela de vacaciones en el planificador para proyectar tu graduación."
+                                    description="Organiza tus cursos por semestre y escuela de vacaciones en el planificador."
                                     actionLabel="Ir al Planificador"
                                     onAction={() => navigate('/visualizador?view=planner')}
                                 />
                             ) : (
-                                <div className="flex flex-col gap-3.5">
+                                <div className="flex flex-col gap-4">
                                     {/* Bloque destacado (Ciclo activo o próximo disponible) */}
                                     {plan.bloqueActual && (
                                         <div
-                                            className={`p-3.5 rounded-xl flex flex-col gap-2.5 transition-all ${
+                                            className={`p-4 sm:p-5 rounded-2xl flex flex-col gap-3 transition-all ${
                                                 plan.esBloquePeriodoActual
-                                                    ? 'bg-[#E3FCEF] dark:bg-[#064223]/30 border border-[#ABF5D1] dark:border-[#0E5832]'
-                                                    : 'bg-[#DEEBFF] dark:bg-[#0C295E]/40 border border-[#B3D4FF] dark:border-[#0C295E]'
+                                                    ? 'bg-[#E3FCEF] dark:bg-[#064223]/35 border-2 border-[#57D9A3] dark:border-[#0E5832]'
+                                                    : 'bg-[#DEEBFF] dark:bg-[#0C295E]/40 border-2 border-[#B3D4FF] dark:border-[#0C295E]'
                                             }`}
                                         >
                                             <div className="flex items-center justify-between flex-wrap gap-2">
                                                 <div className="flex items-center gap-2 flex-wrap">
                                                     <span
-                                                        className={`text-[10px] font-extrabold uppercase tracking-wider px-2 py-0.5 rounded ${
+                                                        className={`text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-md ${
                                                             plan.esBloquePeriodoActual
                                                                 ? 'bg-[#006644] text-white dark:bg-[#57D9A3] dark:text-[#0E1624]'
                                                                 : 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]'
                                                         }`}
                                                     >
-                                                        {plan.esBloquePeriodoActual ? 'Plan del ciclo activo' : 'Próximo plan'}
+                                                        {plan.esBloquePeriodoActual ? 'Periodo activo' : 'Próximo periodo'}
                                                     </span>
                                                     <span
-                                                        className={`text-xs font-bold ${
+                                                        className={`text-sm sm:text-base font-extrabold ${
                                                             plan.esBloquePeriodoActual
                                                                 ? 'text-[#006644] dark:text-[#57D9A3]'
                                                                 : 'text-[#0052CC] dark:text-[#4C9AFF]'
@@ -629,18 +606,13 @@ export default function Recuento() {
                                                             ? `Semestre ${plan.bloqueActual.numero}`
                                                             : `Vacaciones ${plan.bloqueActual.numero}`}
                                                         {' '}
-                                                        <span className="opacity-80 font-normal">
+                                                        <span className="font-normal opacity-85">
                                                             ({plan.bloqueActual.paridad === 'impar' ? 'Impar' : 'Par'})
                                                         </span>
                                                     </span>
-                                                    {!plan.esBloquePeriodoActual && plan.periodoActual && (
-                                                        <span className="text-[11px] text-[#5E6C84] dark:text-slate-400">
-                                                            (Sin cursos en {plan.periodoActual.etiquetaCorta})
-                                                        </span>
-                                                    )}
                                                 </div>
                                                 <span
-                                                    className={`text-xs font-extrabold ${
+                                                    className={`text-sm sm:text-base font-black ${
                                                         plan.esBloquePeriodoActual
                                                             ? 'text-[#006644] dark:text-[#57D9A3]'
                                                             : 'text-[#0052CC] dark:text-[#4C9AFF]'
@@ -650,15 +622,15 @@ export default function Recuento() {
                                                 </span>
                                             </div>
 
-                                            <div className="flex flex-wrap gap-1.5">
+                                            <div className="flex flex-wrap gap-2 pt-1">
                                                 {plan.bloqueActual.cursos.map(c => (
                                                     <Link
                                                         key={c.id}
                                                         to="/visualizador?view=planner"
-                                                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200 hover:border-[#0052CC] dark:hover:border-[#4C9AFF] transition-colors no-underline"
+                                                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs sm:text-sm font-semibold bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200 hover:border-[#0052CC] dark:hover:border-[#4C9AFF] transition-colors no-underline shadow-2xs"
                                                     >
                                                         <span>{c.nombre}</span>
-                                                        <span className="text-[10px] font-bold text-[#5E6C84] dark:text-slate-400">
+                                                        <span className="text-xs font-bold text-[#5E6C84] dark:text-slate-400">
                                                             {c.creditos} CR
                                                         </span>
                                                     </Link>
@@ -667,40 +639,40 @@ export default function Recuento() {
                                         </div>
                                     )}
 
-                                    {/* Otros bloques planificados (sin duplicar el bloque actual) */}
+                                    {/* Otros bloques planificados */}
                                     {otrosBloquesPlan.length > 0 && (
-                                        <div className="flex flex-col gap-2 pt-1">
-                                            <span className="text-xs font-bold text-[#5E6C84] dark:text-slate-300">
-                                                Siguientes bloques proyectados
+                                        <div className="flex flex-col gap-2.5 pt-1">
+                                            <span className="text-xs sm:text-sm font-bold text-[#5E6C84] dark:text-slate-300">
+                                                Siguientes bloques proyectados ({otrosBloquesPlan.length})
                                             </span>
-                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                                                 {otrosBloquesPlan.map(b => (
                                                     <div
                                                         key={b.blockId}
-                                                        className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-1.5"
+                                                        className="p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2"
                                                     >
-                                                        <div className="flex items-center justify-between text-xs">
-                                                            <div className="flex items-center gap-1.5">
+                                                        <div className="flex items-center justify-between text-xs sm:text-sm">
+                                                            <div className="flex items-center gap-2">
                                                                 <span className="font-bold text-[#172B4D] dark:text-slate-200">
                                                                     {b.tipo === 'semestre' ? `Semestre ${b.numero}` : `Vacaciones ${b.numero}`}
                                                                 </span>
-                                                                <span className="text-[10px] font-semibold px-1.5 py-0.2 rounded bg-[#EBECF0] dark:bg-[#1C2636] text-[#5E6C84] dark:text-slate-400">
+                                                                <span className="text-[11px] font-bold px-1.5 py-0.2 rounded bg-[#EBECF0] dark:bg-[#1C2636] text-[#5E6C84] dark:text-slate-400">
                                                                     {b.paridad === 'impar' ? 'Impar' : 'Par'}
                                                                 </span>
                                                             </div>
-                                                            <span className="text-[11px] font-semibold text-[#5E6C84] dark:text-slate-400">
+                                                            <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-300">
                                                                 {b.creditos} CR
                                                             </span>
                                                         </div>
-                                                        <div className="flex flex-wrap gap-1">
+                                                        <div className="flex flex-wrap gap-1.5">
                                                             {b.cursos.map(c => (
                                                                 <Link
                                                                     key={c.id}
                                                                     to="/visualizador?view=planner"
-                                                                    className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200 hover:border-[#0052CC] dark:hover:border-[#4C9AFF] transition-colors no-underline"
+                                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200 hover:border-[#0052CC] dark:hover:border-[#4C9AFF] transition-colors no-underline"
                                                                 >
-                                                                    <span className="truncate max-w-[150px]">{c.nombre}</span>
-                                                                    <span className="text-[9px] text-[#5E6C84] dark:text-slate-400">
+                                                                    <span className="truncate max-w-[160px]">{c.nombre}</span>
+                                                                    <span className="text-[11px] text-[#5E6C84] dark:text-slate-400">
                                                                         {c.creditos}
                                                                     </span>
                                                                 </Link>
@@ -716,84 +688,84 @@ export default function Recuento() {
                         </Card>
                     </div>
 
-                    {/* Columna Derecha: Contexto Operativo y Comunidad */}
-                    <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-4 sm:gap-5">
+                    {/* Columna Derecha (Horario y Avisos) */}
+                    <div className="lg:col-span-5 xl:col-span-4 flex flex-col gap-6">
                         {/* C. Mi horario */}
-                        <Card className="flex flex-col gap-3 p-4 sm:p-5">
+                        <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
                             <div className="flex items-center justify-between flex-wrap gap-2">
-                                <h2 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
+                                <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">
                                     Mi horario ({periodoLegible})
                                 </h2>
                                 <Link
                                     to="/visualizador?view=schedule"
-                                    className="inline-flex items-center gap-1 text-xs font-semibold text-[#0052CC] dark:text-[#4C9AFF] hover:underline"
+                                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline"
                                 >
                                     <span>{horario.secciones === 0 ? 'Armar' : 'Editar'}</span>
-                                    <ArrowRight size={13} />
+                                    <ArrowRight size={14} />
                                 </Link>
                             </div>
 
                             {horario.secciones === 0 ? (
-                                <div className="p-3 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2 text-xs text-[#5E6C84] dark:text-slate-400">
-                                    <span>Aún no tienes secciones seleccionadas para {periodoLegible}.</span>
+                                <div className="p-4 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3 text-sm text-[#5E6C84] dark:text-slate-400">
+                                    <span>Sin secciones seleccionadas para {periodoLegible}.</span>
                                     <Link
                                         to="/visualizador?view=schedule"
-                                        className="inline-flex items-center justify-center gap-1 py-1.5 px-3 rounded-lg text-xs font-semibold bg-[#0052CC] hover:bg-[#0747A6] text-white no-underline transition-colors self-start"
+                                        className="inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] text-white no-underline transition-colors self-start shadow-xs"
                                     >
                                         <span>Armar horario</span>
-                                        <ArrowRight size={12} />
+                                        <ArrowRight size={14} />
                                     </Link>
                                 </div>
                             ) : (
-                                <div className="grid grid-cols-3 gap-2 p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center">
+                                <div className="grid grid-cols-3 gap-2 p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center">
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">Cursos</span>
-                                        <span className="text-base sm:text-lg font-bold text-[#172B4D] dark:text-slate-100">{horario.cursos}</span>
+                                        <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Cursos</span>
+                                        <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{horario.cursos}</span>
                                     </div>
                                     <div className="flex flex-col border-x border-[#DFE1E6] dark:border-[#3E4C5E] px-1">
-                                        <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">Secciones</span>
-                                        <span className="text-base sm:text-lg font-bold text-[#172B4D] dark:text-slate-100">{horario.secciones}</span>
+                                        <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Secciones</span>
+                                        <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{horario.secciones}</span>
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="text-[10px] text-[#5E6C84] dark:text-slate-400">Carga</span>
-                                        <span className="text-base sm:text-lg font-bold text-[#0052CC] dark:text-[#4C9AFF]">{horario.horasSemana} h/sem</span>
+                                        <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Carga</span>
+                                        <span className="text-base sm:text-lg font-black text-[#0052CC] dark:text-[#4C9AFF] mt-1">{horario.horasSemana} h/sem</span>
                                     </div>
                                 </div>
                             )}
                         </Card>
 
                         {/* D. Avisos del planificador */}
-                        <Card className="flex flex-col gap-3 p-4 sm:p-5">
+                        <Card className="flex flex-col gap-3.5 p-5 sm:p-6 shadow-xs">
                             <div className="flex items-center justify-between">
-                                <h2 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
-                                    Avisos del planificador
+                                <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">
+                                    Avisos
                                 </h2>
                                 {avisos.length > 0 && (
-                                    <span className="text-[11px] font-semibold px-2 py-0.5 rounded-full bg-[#FFEBE6] dark:bg-[#5E1A1A] text-[#BF2600] dark:text-[#FF6369]">
+                                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FFEBE6] dark:bg-[#5E1A1A] text-[#BF2600] dark:text-[#FF6369]">
                                         {avisos.length} {avisos.length === 1 ? 'aviso' : 'avisos'}
                                     </span>
                                 )}
                             </div>
 
                             {avisos.length === 0 ? (
-                                <div className="flex items-center gap-2 p-2.5 rounded-lg bg-[#E3FCEF] dark:bg-[#064223]/25 border border-[#ABF5D1] dark:border-[#0E5832] text-xs text-[#006644] dark:text-[#57D9A3]">
-                                    <CheckCircle2 size={14} className="shrink-0" />
-                                    <span>Plan sin traslapes ni advertencias de apertura.</span>
+                                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#E3FCEF] dark:bg-[#064223]/25 border border-[#ABF5D1] dark:border-[#0E5832] text-xs sm:text-sm font-semibold text-[#006644] dark:text-[#57D9A3]">
+                                    <CheckCircle2 size={16} className="shrink-0" />
+                                    <span>Plan sin advertencias de apertura ni traslapes.</span>
                                 </div>
                             ) : (
-                                <div className="flex flex-col gap-2">
+                                <div className="flex flex-col gap-2.5">
                                     {avisos.map((item, idx) => (
                                         <div
                                             key={idx}
-                                            className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-1.5"
+                                            className="p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2"
                                         >
-                                            <div className="flex items-center justify-between text-xs font-bold text-[#172B4D] dark:text-slate-200">
+                                            <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-200">
                                                 <span>{item.nombre}</span>
-                                                <span className="text-[10px] font-medium text-[#5E6C84] dark:text-slate-400">
+                                                <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">
                                                     Bloque {item.blockId}
                                                 </span>
                                             </div>
-                                            <div className="flex flex-col gap-1">
+                                            <div className="flex flex-col gap-1.5">
                                                 {item.avisos.map((av, aIdx) => {
                                                     const isError = av.nivel === 'error';
                                                     const isWarn = av.nivel === 'warn';
@@ -806,9 +778,9 @@ export default function Recuento() {
                                                     return (
                                                         <div
                                                             key={aIdx}
-                                                            className={`flex items-start gap-1.5 p-1.5 rounded text-[11px] border ${badgeClasses}`}
+                                                            className={`flex items-start gap-2 p-2 rounded-lg text-xs font-medium border ${badgeClasses}`}
                                                         >
-                                                            <AlertTriangle size={13} className="shrink-0 mt-0.5" />
+                                                            <AlertTriangle size={14} className="shrink-0 mt-0.5" />
                                                             <span>{av.texto}</span>
                                                         </div>
                                                     );
@@ -819,133 +791,182 @@ export default function Recuento() {
                                 </div>
                             )}
                         </Card>
-
-                        {/* E. Bloque Comunidad */}
-                        <Card className="flex flex-col gap-3.5 p-4 sm:p-5">
-                            <div>
-                                <h2 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
-                                    Comunidad USAC
-                                </h2>
-                                <p className="text-xs text-[#5E6C84] dark:text-slate-400">
-                                    Grupos sugeridos y foro
-                                </p>
-                            </div>
-
-                            {!isSupabaseConfigured || !supabase ? (
-                                <EmptyState
-                                    icon={Users}
-                                    title="Comunidad no disponible"
-                                    description="Servicios comunitarios no configurados temporalmente."
-                                />
-                            ) : communityLoading ? (
-                                <div className="flex items-center justify-center py-6 text-xs text-[#5E6C84] dark:text-slate-400 gap-2">
-                                    <RefreshCw size={13} className="animate-spin text-[#0052CC] dark:text-[#4C9AFF]" />
-                                    <span>Cargando comunidad…</span>
-                                </div>
-                            ) : (
-                                <div className="flex flex-col gap-3.5">
-                                    {/* Grupos sugeridos */}
-                                    <div className="flex flex-col gap-2">
-                                        <span className="text-[11px] font-bold uppercase tracking-wider text-[#5E6C84] dark:text-slate-400">
-                                            Grupos de estudio
-                                        </span>
-
-                                        {grupos.length === 0 ? (
-                                            <p className="text-xs text-[#5E6C84] dark:text-slate-400 italic py-1">
-                                                Aún no hay grupos registrados para tus cursos.
-                                            </p>
-                                        ) : (
-                                            <div className="flex flex-col gap-2">
-                                                {grupos.map(g => (
-                                                    <div
-                                                        key={g.id}
-                                                        className="p-2.5 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between gap-2"
-                                                    >
-                                                        <div className="min-w-0 flex flex-col">
-                                                            <div className="flex items-center gap-1.5">
-                                                                <span className="text-[9px] font-extrabold uppercase px-1.5 py-0.2 rounded bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]">
-                                                                    {formatPlatform(g.platform)}
-                                                                </span>
-                                                                <h4 className="text-xs font-bold text-[#172B4D] dark:text-slate-100 truncate">
-                                                                    {g.title}
-                                                                </h4>
-                                                            </div>
-                                                            {g.curso && (
-                                                                <span className="text-[10px] font-semibold text-[#0052CC] dark:text-[#4C9AFF] truncate">
-                                                                    {g.curso}{g.section ? ` · Sec. ${g.section}` : ''}
-                                                                </span>
-                                                            )}
-                                                        </div>
-
-                                                        {g.link && (
-                                                            <a
-                                                                href={g.link}
-                                                                target="_blank"
-                                                                rel="noopener noreferrer"
-                                                                className="shrink-0 inline-flex items-center gap-1 py-1 px-2.5 rounded-md text-[11px] font-bold bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] no-underline transition-colors"
-                                                            >
-                                                                <span>Unirme</span>
-                                                                <ExternalLink size={10} />
-                                                            </a>
-                                                        )}
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Post destacado */}
-                                    {destacado && (
-                                        <div className="p-3 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-1.5">
-                                            <div className="flex items-center justify-between text-[10px] text-[#5E6C84] dark:text-slate-400">
-                                                <span className="font-extrabold uppercase text-[#FFAB00]">
-                                                    {destacado.is_pinned ? 'Destacado en foro' : 'Popular en foro'}
-                                                </span>
-                                                <span>Por {destacado.author_alias || 'Anónimo'}</span>
-                                            </div>
-
-                                            <h4 className="text-xs font-bold text-[#172B4D] dark:text-slate-100 line-clamp-1">
-                                                {destacado.title}
-                                            </h4>
-
-                                            <p className="text-[11px] text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2">
-                                                {truncateText(destacado.content, 120)}
-                                            </p>
-
-                                            <div className="flex items-center gap-3 text-[10px] font-semibold text-[#5E6C84] dark:text-slate-400 pt-0.5">
-                                                <span className="inline-flex items-center gap-1">
-                                                    <ThumbsUp size={11} />
-                                                    {destacado.likes || 0}
-                                                </span>
-                                                <span className="inline-flex items-center gap-1">
-                                                    <MessageSquare size={11} />
-                                                    {destacado.comment_count || 0}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    )}
-
-                                    {/* CTA de sesión si no autenticado */}
-                                    {!user && (
-                                        <div className="p-2.5 rounded-lg bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-1.5 text-center">
-                                            <p className="text-[11px] text-[#5E6C84] dark:text-slate-300">
-                                                Inicia sesión para ver grupos adaptados a tus cursos actuales.
-                                            </p>
-                                            <Button
-                                                variant="secondary"
-                                                size="sm"
-                                                onClick={() => window.dispatchEvent(new Event('pemtree-open-auth-modal'))}
-                                                className="w-full text-xs py-1"
-                                            >
-                                                Iniciar sesión
-                                            </Button>
-                                        </div>
-                                    )}
-                                </div>
-                            )}
-                        </Card>
                     </div>
                 </div>
+
+                {/* 4. SECCIÓN COMUNIDAD: MÁXIMA NOTORIEDAD Y FOTOS REPRESENTATIVAS */}
+                <Card className="flex flex-col gap-6 p-5 sm:p-7 shadow-xs">
+                    <div className="flex items-center justify-between flex-wrap gap-3 border-b border-[#DFE1E6] dark:border-[#3E4C5E] pb-4">
+                        <div>
+                            <div className="flex items-center gap-2.5">
+                                <Users className="w-6 h-6 text-[#0052CC] dark:text-[#4C9AFF]" />
+                                <h2 className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 tracking-tight">
+                                    Comunidad USAC
+                                </h2>
+                            </div>
+                            <p className="text-xs sm:text-sm font-medium text-[#5E6C84] dark:text-slate-400 mt-1">
+                                Grupos de estudio con tus compañeros de clase y publicaciones destacadas del foro
+                            </p>
+                        </div>
+                    </div>
+
+                    {!isSupabaseConfigured || !supabase ? (
+                        <EmptyState
+                            icon={Users}
+                            title="Comunidad no disponible"
+                            description="Los servicios comunitarios no están configurados temporalmente."
+                        />
+                    ) : communityLoading ? (
+                        <div className="flex items-center justify-center py-12 text-sm font-semibold text-[#5E6C84] dark:text-slate-400 gap-3">
+                            <RefreshCw size={16} className="animate-spin text-[#0052CC] dark:text-[#4C9AFF]" />
+                            <span>Cargando comunidad estudiantil…</span>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-6">
+                            {/* Grilla de Grupos de Estudio con Imágenes */}
+                            <div className="flex flex-col gap-3.5">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm sm:text-base font-extrabold text-[#172B4D] dark:text-slate-200">
+                                        Grupos de estudio sugeridos
+                                    </h3>
+                                    <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400">
+                                        {grupos.length} {grupos.length === 1 ? 'grupo disponible' : 'grupos disponibles'}
+                                    </span>
+                                </div>
+
+                                {grupos.length === 0 ? (
+                                    <div className="p-6 rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center text-sm text-[#5E6C84] dark:text-slate-400">
+                                        Aún no hay grupos registrados para los cursos de tu pensum actual.
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {grupos.map(g => (
+                                            <div
+                                                key={g.id}
+                                                className="rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow group"
+                                            >
+                                                {/* Imagen representativa o Banner */}
+                                                {g.image_url ? (
+                                                    <div className="relative w-full h-36 sm:h-40 overflow-hidden bg-slate-100 dark:bg-black/30">
+                                                        <img
+                                                            src={g.image_url}
+                                                            alt={g.title}
+                                                            onError={(e) => {
+                                                                e.currentTarget.style.display = 'none';
+                                                            }}
+                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                        />
+                                                        <span className="absolute top-3 left-3 text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#0E1624]/90 text-[#0052CC] dark:text-[#4C9AFF] shadow-xs backdrop-blur-xs">
+                                                            {formatPlatform(g.platform)}
+                                                        </span>
+                                                        <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#0E1624]/90 text-[#172B4D] dark:text-slate-200 shadow-xs backdrop-blur-xs">
+                                                            <ThumbsUp size={12} />
+                                                            {g.upvotes || 0}
+                                                        </span>
+                                                    </div>
+                                                ) : (
+                                                    <div className="w-full h-24 bg-gradient-to-r from-[#DEEBFF] to-[#EAE6FF] dark:from-[#0C295E]/50 dark:to-[#352C63]/50 flex items-center justify-between px-4 border-b border-[#DFE1E6] dark:border-[#3E4C5E]">
+                                                        <span className="text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]">
+                                                            {formatPlatform(g.platform)}
+                                                        </span>
+                                                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5E6C84] dark:text-slate-300 bg-white/70 dark:bg-black/30 px-2 py-0.5 rounded-md">
+                                                            <ThumbsUp size={12} />
+                                                            {g.upvotes || 0}
+                                                        </span>
+                                                    </div>
+                                                )}
+
+                                                {/* Contenido del grupo */}
+                                                <div className="p-4 sm:p-5 flex flex-col justify-between gap-3.5 flex-1">
+                                                    <div className="flex flex-col gap-1.5">
+                                                        {g.curso && (
+                                                            <span className="text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                                                {g.curso}{g.section ? ` · Sección ${g.section}` : ''}
+                                                            </span>
+                                                        )}
+                                                        <h4 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100 leading-snug line-clamp-2">
+                                                            {g.title}
+                                                        </h4>
+                                                        {g.description && (
+                                                            <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2 mt-0.5">
+                                                                {truncateText(g.description, 130)}
+                                                            </p>
+                                                        )}
+                                                    </div>
+
+                                                    {g.link && (
+                                                        <a
+                                                            href={g.link}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] no-underline transition-colors shadow-xs"
+                                                        >
+                                                            <span>Unirme al grupo</span>
+                                                            <ExternalLink size={14} />
+                                                        </a>
+                                                    )}
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Publicación destacada del Foro */}
+                            {destacado && (
+                                <div className="p-5 sm:p-6 rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3">
+                                    <div className="flex items-center justify-between flex-wrap gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-lg bg-[#FFAB00]/20 text-[#B45309] dark:text-[#FFAB00]">
+                                                <Sparkles size={13} />
+                                                <span>{destacado.is_pinned ? 'Destacado en el foro' : 'Popular en el foro'}</span>
+                                            </span>
+                                        </div>
+                                        <span className="text-xs sm:text-sm font-semibold text-[#5E6C84] dark:text-slate-400">
+                                            Por {destacado.author_alias || 'Anónimo'}
+                                        </span>
+                                    </div>
+
+                                    <h4 className="text-base sm:text-lg font-bold text-[#172B4D] dark:text-slate-100">
+                                        {destacado.title}
+                                    </h4>
+
+                                    <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                        {truncateText(destacado.content, 220)}
+                                    </p>
+
+                                    <div className="flex items-center gap-4 text-xs sm:text-sm font-bold text-[#5E6C84] dark:text-slate-400 pt-1">
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <ThumbsUp size={14} />
+                                            <span>{destacado.likes || 0}</span>
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <MessageSquare size={14} />
+                                            <span>{destacado.comment_count || 0}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Banner de inicio de sesión si no autenticado */}
+                            {!user && (
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xs">
+                                    <div className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300">
+                                        Inicia sesión con tu cuenta para descubrir grupos de estudio personalizados para tus cursos.
+                                    </div>
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={() => window.dispatchEvent(new Event('pemtree-open-auth-modal'))}
+                                        className="shrink-0 text-xs sm:text-sm font-bold py-2 px-4"
+                                    >
+                                        Iniciar sesión
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </Card>
             </div>
         </div>
     );
