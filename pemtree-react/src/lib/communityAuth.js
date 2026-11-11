@@ -1,6 +1,8 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 
-const DEFAULT_COMMUNITY_URL = 'http://localhost:3000';
+const DEFAULT_COMMUNITY_URL = import.meta.env.PROD
+    ? 'https://zanate.pages.dev'
+    : 'http://localhost:3000';
 
 export const getCommunityAuthUrl = () => {
     return (
@@ -65,7 +67,7 @@ export const handleCommunityAuthCallback = async () => {
     const savedState = sessionStorage.getItem('pemtree_auth_state');
     if (savedState) {
         sessionStorage.removeItem('pemtree_auth_state');
-        if (state && state !== savedState) {
+        if (state !== savedState) {
             throw new Error('Validación de seguridad fallida (State mismatch). Por favor intenta de nuevo.');
         }
     }
