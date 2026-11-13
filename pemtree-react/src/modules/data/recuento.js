@@ -50,8 +50,8 @@ export async function prepararRecuento() {
 
 /**
  * Determina el periodo académico actual según la fecha del sistema:
- * - Vacaciones: 1 dic - 31 dic (par), 1 jun - 30 jun (impar)
- * - Semestres: 15 ene - 15 may (impar), 15 jul - 15 nov (par)
+ * - Vacaciones: 1 dic - 31 dic , 1 jun - 30 jun (impar)
+ * - Semestres: 15 ene - 15 may (impar), 15 jul - 15 nov 
  * @param {Date|string|number} [fecha=new Date()]
  */
 export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
@@ -59,14 +59,14 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
     const m = d.getMonth() + 1; // 1-12
     const dia = d.getDate(); // 1-31
 
-    // 1 de diciembre a 31 de diciembre: Vacaciones de Diciembre (Par)
+    // 1 de diciembre a 31 de diciembre: Vacaciones de Diciembre 
     if (m === 12) {
         return {
             tipoPeriodo: 'vacaciones-par',
             schedulePeriod: 'vacaciones2',
             tipo: 'vacaciones',
             paridad: 'par',
-            nombre: 'Vacaciones de Diciembre (Par)',
+            nombre: 'Vacaciones de Diciembre ',
             etiquetaCorta: 'Vacaciones Par'
         };
     }
@@ -126,7 +126,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
             schedulePeriod: 'semestre2',
             tipo: 'semestre',
             paridad: 'par',
-            nombre: 'Segundo Semestre (Par)',
+            nombre: 'Segundo Semestre ',
             etiquetaCorta: 'Semestre Par'
         };
     }
@@ -137,7 +137,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
                 schedulePeriod: 'semestre2',
                 tipo: 'semestre',
                 paridad: 'par',
-                nombre: 'Segundo Semestre (Par)',
+                nombre: 'Segundo Semestre ',
                 etiquetaCorta: 'Semestre Par'
             };
         } else {
@@ -147,7 +147,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
                 schedulePeriod: 'vacaciones2',
                 tipo: 'vacaciones',
                 paridad: 'par',
-                nombre: 'Vacaciones de Diciembre (Par)',
+                nombre: 'Vacaciones de Diciembre ',
                 etiquetaCorta: 'Vacaciones Par'
             };
         }
@@ -158,7 +158,7 @@ export function obtenerPeriodoAcademicoActual(fecha = new Date()) {
         schedulePeriod: 'semestre2',
         tipo: 'semestre',
         paridad: 'par',
-        nombre: 'Segundo Semestre (Par)',
+        nombre: 'Segundo Semestre ',
         etiquetaCorta: 'Semestre Par'
     };
 }
@@ -237,8 +237,6 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
     const obligatorios = { total: 0, aprobados: 0, creditosTotal: 0, creditosAprobados: 0 };
     const optativos = { total: 0, aprobados: 0, creditosTotal: 0, creditosAprobados: 0 };
     const semestreMap = new Map();
-    const cursosCursando = [];
-    const cursosDisponibles = [];
 
     for (const c of cursos) {
         const cr = Number(c.creditos) || 0;
@@ -317,14 +315,6 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
         } else if (isCursando) {
             enCurso++;
             creditosEnCurso += cr;
-            cursosCursando.push({
-                id: c.id,
-                codigo: c.codigo,
-                nombre: c.nombre,
-                semestre: c.semestre,
-                creditos: cr,
-                obligatorio: Boolean(c.obligatorio)
-            });
             if (c.semestre && c.semestre >= 1) {
                 const s = semestreMap.get(c.semestre);
                 if (s) {
@@ -347,14 +337,6 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
             }
             if (disp) {
                 disponibles++;
-                cursosDisponibles.push({
-                    id: c.id,
-                    codigo: c.codigo,
-                    nombre: c.nombre,
-                    semestre: c.semestre,
-                    creditos: cr,
-                    obligatorio: Boolean(c.obligatorio)
-                });
             }
         }
     }
@@ -650,9 +632,7 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
             bloqueados,
             obligatorios,
             optativos,
-            porSemestre,
-            cursosCursando,
-            cursosDisponibles
+            porSemestre
         },
         plan: {
             existe,

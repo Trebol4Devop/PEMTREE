@@ -39,6 +39,166 @@ function formatPlatform(platform) {
     return p.charAt(0).toUpperCase() + p.slice(1);
 }
 
+function getPlatformInfo(group) {
+    const rawPlatform = String(group?.platform || '').toLowerCase().trim();
+    const link = String(group?.link || '').toLowerCase().trim();
+    const title = String(group?.title || '').toLowerCase().trim();
+    const desc = String(group?.description || '').toLowerCase().trim();
+
+    // 1. WhatsApp
+    if (
+        rawPlatform.includes('whatsapp') ||
+        rawPlatform === 'wa' ||
+        link.includes('chat.whatsapp.com') ||
+        link.includes('wa.me') ||
+        link.includes('whatsapp.com') ||
+        title.includes('whatsapp') ||
+        desc.includes('whatsapp')
+    ) {
+        return {
+            id: 'whatsapp',
+            label: 'WhatsApp',
+            bannerGradient: 'bg-gradient-to-r from-[#DCFCE7] via-[#D1FAE5] to-[#BBF7D0] dark:from-[#064E3B]/70 dark:via-[#065F46]/60 dark:to-[#047857]/40 border-b border-[#86EFAC]/70 dark:border-[#059669]/40',
+            badge: 'bg-[#25D366] text-white shadow-xs',
+            imageBadgeText: 'text-[#15803D] dark:text-[#4ADE80]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.48A11.82 11.82 0 0123.943 11.89c-.003 6.556-5.338 11.892-11.893 11.892h-.005a11.88 11.88 0 01-5.683-1.448L.057 24zm6.547-4.143l.417.247a9.88 9.88 0 005.025 1.378h.004c5.448 0 9.882-4.434 9.885-9.884a9.83 9.83 0 00-2.893-6.994 9.82 9.82 0 00-6.988-2.898c-5.452 0-9.887 4.434-9.888 9.884 0 1.888.528 3.731 1.53 5.313l.272.426-.998 3.647 3.706-.972zm10.868-6.475c-.297-.15-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 2. Discord
+    if (
+        rawPlatform.includes('discord') ||
+        link.includes('discord.gg') ||
+        link.includes('discord.com') ||
+        title.includes('discord') ||
+        desc.includes('discord')
+    ) {
+        return {
+            id: 'discord',
+            label: 'Discord',
+            bannerGradient: 'bg-gradient-to-r from-[#EEF2FF] via-[#E0E7FF] to-[#EDE9FE] dark:from-[#312E81]/70 dark:via-[#3730A3]/60 dark:to-[#4338CA]/40 border-b border-[#C7D2FE]/70 dark:border-[#4F46E5]/30',
+            badge: 'bg-[#5865F2] text-white shadow-xs',
+            imageBadgeText: 'text-[#5865F2] dark:text-[#818CF8]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.893.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 3. Telegram
+    if (
+        rawPlatform.includes('telegram') ||
+        rawPlatform === 'tg' ||
+        link.includes('t.me') ||
+        link.includes('telegram.me') ||
+        link.includes('telegram.org') ||
+        title.includes('telegram') ||
+        desc.includes('telegram')
+    ) {
+        return {
+            id: 'telegram',
+            label: 'Telegram',
+            bannerGradient: 'bg-gradient-to-r from-[#E0F2FE] via-[#BAE6FD] to-[#E0F2FE] dark:from-[#0C4A6E]/70 dark:via-[#0369A1]/60 dark:to-[#0284C7]/40 border-b border-[#BAE6FD]/80 dark:border-[#0284C7]/30',
+            badge: 'bg-[#229ED9] text-white shadow-xs',
+            imageBadgeText: 'text-[#0284C7] dark:text-[#38BDF8]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.46c.537-.194 1.006.131.832.94z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 4. Google Drive / Classroom
+    if (
+        rawPlatform.includes('drive') ||
+        rawPlatform.includes('classroom') ||
+        rawPlatform.includes('google') ||
+        link.includes('drive.google.com') ||
+        link.includes('classroom.google.com') ||
+        link.includes('docs.google.com') ||
+        title.includes('drive') ||
+        title.includes('classroom') ||
+        desc.includes('drive')
+    ) {
+        const isClassroom = rawPlatform.includes('classroom') || link.includes('classroom.google.com') || title.includes('classroom');
+        return {
+            id: isClassroom ? 'classroom' : 'drive',
+            label: isClassroom ? 'Classroom' : 'Drive',
+            bannerGradient: 'bg-gradient-to-r from-[#FEF3C7] via-[#FFFBEB] to-[#ECFDF5] dark:from-[#78350F]/60 dark:via-[#713F12]/50 dark:to-[#064E3B]/40 border-b border-[#FDE68A]/80 dark:border-[#B45309]/30',
+            badge: 'bg-[#0F9D58] text-white shadow-xs',
+            imageBadgeText: 'text-[#0F9D58] dark:text-[#34D399]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5zm1.72 1.5l5.14 9h6.86l-5.14-9H9.43zm-3.43 12h13.71l3.43 6H2.57l3.43-6z" />
+                </svg>
+            )
+        };
+    }
+
+    // 5. Microsoft Teams
+    if (
+        rawPlatform.includes('teams') ||
+        link.includes('teams.microsoft.com') ||
+        link.includes('teams.live.com') ||
+        title.includes('teams') ||
+        desc.includes('teams')
+    ) {
+        return {
+            id: 'teams',
+            label: 'MS Teams',
+            bannerGradient: 'bg-gradient-to-r from-[#EDE9FE] via-[#F5F3FF] to-[#EDE9FE] dark:from-[#4C1D95]/70 dark:via-[#5B21B6]/60 dark:to-[#6D28D9]/40 border-b border-[#DDD6FE]/80 dark:border-[#6D28D9]/30',
+            badge: 'bg-[#6264A7] text-white shadow-xs',
+            imageBadgeText: 'text-[#6264A7] dark:text-[#A78BFA]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16.5 6a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm3 2h-6a2 2 0 00-2 2v6a2 2 0 002 2h6a2 2 0 002-2v-6a2 2 0 00-2-2zM9 8a3 3 0 100-6 3 3 0 000 6zm3.5 3h-7A2.5 2.5 0 003 13.5V19a2 2 0 002 2h7.5a2 2 0 002-2v-5.5a2.5 2.5 0 00-2-2.5z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 6. Facebook / Messenger
+    if (
+        rawPlatform.includes('facebook') ||
+        rawPlatform.includes('messenger') ||
+        link.includes('facebook.com') ||
+        link.includes('messenger.com') ||
+        link.includes('m.me') ||
+        link.includes('fb.me')
+    ) {
+        return {
+            id: 'facebook',
+            label: 'Facebook',
+            bannerGradient: 'bg-gradient-to-r from-[#DBEAFE] via-[#BFDBFE] to-[#DBEAFE] dark:from-[#1E3A8A]/70 dark:via-[#1D4ED8]/60 dark:to-[#2563EB]/40 border-b border-[#BFDBFE]/80 dark:border-[#1D4ED8]/30',
+            badge: 'bg-[#1877F2] text-white shadow-xs',
+            imageBadgeText: 'text-[#1877F2] dark:text-[#60A5FA]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 7. Fallback / Grupo general
+    const fallbackLabel = formatPlatform(group?.platform);
+    return {
+        id: 'default',
+        label: fallbackLabel,
+        bannerGradient: 'bg-gradient-to-r from-[#DEEBFF] to-[#EAE6FF] dark:from-[#0C295E]/50 dark:to-[#352C63]/50 border-b border-[#DFE1E6] dark:border-[#3E4C5E]',
+        badge: 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624] shadow-xs',
+        imageBadgeText: 'text-[#0052CC] dark:text-[#4C9AFF]',
+        icon: <Users size={13} className="shrink-0" />
+    };
+}
+
 function truncateText(text, maxLength) {
     if (!text) return '';
     if (text.length <= maxLength) return text;
@@ -53,7 +213,7 @@ export default function Recuento() {
     const [data, setData] = useState(null);
     const [error, setError] = useState(null);
     const [retryCount, setRetryCount] = useState(0);
-    const [filtroSemestre, setFiltroSemestre] = useState('todos');
+    const [filtroSemestre, setFiltroSemestre] = useState('obligatorios');
     const [horarioPeriodoFiltro, setHorarioPeriodoFiltro] = useState(null);
 
     const [communityLoading, setCommunityLoading] = useState(true);
@@ -519,18 +679,6 @@ export default function Recuento() {
                                         <span className="w-2 h-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
                                         <span>Obligatorios</span>
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => setFiltroSemestre('optativos')}
-                                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors cursor-pointer border-none ${
-                                            filtroSemestre === 'optativos'
-                                                ? 'bg-white dark:bg-[#1C2636] text-[#5243AA] dark:text-[#8777D9] shadow-xs'
-                                                : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
-                                        }`}
-                                    >
-                                        <span className="w-2 h-2 rounded-full bg-[#5243AA] dark:bg-[#8777D9]" />
-                                        <span>Optativos</span>
-                                    </button>
                                 </div>
                             </div>
 
@@ -546,8 +694,8 @@ export default function Recuento() {
                                         const optTotal = s.optativosTotal;
                                         const optAprob = s.optativosAprobados;
 
-                                        const semTotal = filtroSemestre === 'obligatorios' ? obligTotal : filtroSemestre === 'optativos' ? optTotal : s.total;
-                                        const semAprob = filtroSemestre === 'obligatorios' ? obligAprob : filtroSemestre === 'optativos' ? optAprob : s.aprobados;
+                                        const semTotal = filtroSemestre === 'obligatorios' ? obligTotal : s.total;
+                                        const semAprob = filtroSemestre === 'obligatorios' ? obligAprob : s.aprobados;
                                         const semPct = semTotal > 0 ? Math.round((semAprob / semTotal) * 100) : 0;
 
                                         const obligPct = s.total > 0 ? (obligAprob / s.total) * 100 : 0;
@@ -591,11 +739,7 @@ export default function Recuento() {
                                                         </>
                                                     ) : (
                                                         <div
-                                                            className={`h-full transition-all duration-500 ${
-                                                                filtroSemestre === 'obligatorios'
-                                                                    ? 'bg-[#0052CC] dark:bg-[#4C9AFF]'
-                                                                    : 'bg-[#5243AA] dark:bg-[#8777D9]'
-                                                            }`}
+                                                            className="h-full bg-[#0052CC] dark:bg-[#4C9AFF] transition-all duration-500"
                                                             style={{ width: `${semPct}%` }}
                                                         />
                                                     )}
@@ -830,7 +974,7 @@ export default function Recuento() {
                             <div className="flex items-center gap-2.5">
                                 <Users className="w-6 h-6 text-[#0052CC] dark:text-[#4C9AFF]" />
                                 <h2 className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 tracking-tight">
-                                    Comunidad USAC
+                                    Zanate
                                 </h2>
                             </div>
                             <p className="text-xs sm:text-sm font-medium text-[#5E6C84] dark:text-slate-400 mt-1">
@@ -869,74 +1013,79 @@ export default function Recuento() {
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                                        {grupos.map(g => (
-                                            <div
-                                                key={g.id}
-                                                className="rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow group"
-                                            >
-                                                {/* Imagen representativa o Banner */}
-                                                {g.image_url ? (
-                                                    <div className="relative w-full h-36 sm:h-40 overflow-hidden bg-slate-100 dark:bg-black/30">
-                                                        <img
-                                                            src={g.image_url}
-                                                            alt={g.title}
-                                                            onError={(e) => {
-                                                                e.currentTarget.style.display = 'none';
-                                                            }}
-                                                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                                                        />
-                                                        <span className="absolute top-3 left-3 text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#0E1624]/90 text-[#0052CC] dark:text-[#4C9AFF] shadow-xs backdrop-blur-xs">
-                                                            {formatPlatform(g.platform)}
-                                                        </span>
-                                                        <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#0E1624]/90 text-[#172B4D] dark:text-slate-200 shadow-xs backdrop-blur-xs">
-                                                            <ThumbsUp size={12} />
-                                                            {g.upvotes || 0}
-                                                        </span>
-                                                    </div>
-                                                ) : (
-                                                    <div className="w-full h-24 bg-gradient-to-r from-[#DEEBFF] to-[#EAE6FF] dark:from-[#0C295E]/50 dark:to-[#352C63]/50 flex items-center justify-between px-4 border-b border-[#DFE1E6] dark:border-[#3E4C5E]">
-                                                        <span className="text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]">
-                                                            {formatPlatform(g.platform)}
-                                                        </span>
-                                                        <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#5E6C84] dark:text-slate-300 bg-white/70 dark:bg-black/30 px-2 py-0.5 rounded-md">
-                                                            <ThumbsUp size={12} />
-                                                            {g.upvotes || 0}
-                                                        </span>
-                                                    </div>
-                                                )}
-
-                                                {/* Contenido del grupo */}
-                                                <div className="p-4 sm:p-5 flex flex-col justify-between gap-3.5 flex-1">
-                                                    <div className="flex flex-col gap-1.5">
-                                                        {g.curso && (
-                                                            <span className="text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF]">
-                                                                {g.curso}{g.section ? ` · Sección ${g.section}` : ''}
+                                        {grupos.map(g => {
+                                            const platformInfo = getPlatformInfo(g);
+                                            return (
+                                                <div
+                                                    key={g.id}
+                                                    className="rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow group"
+                                                >
+                                                    {/* Imagen representativa o Banner */}
+                                                    {g.image_url ? (
+                                                        <div className="relative w-full h-36 sm:h-40 overflow-hidden bg-slate-100 dark:bg-black/30">
+                                                            <img
+                                                                src={g.image_url}
+                                                                alt={g.title}
+                                                                onError={(e) => {
+                                                                    e.currentTarget.style.display = 'none';
+                                                                }}
+                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            />
+                                                            <span className={`absolute top-3 left-3 inline-flex items-center gap-1.5 text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-white/95 dark:bg-[#0E1624]/95 ${platformInfo.imageBadgeText} shadow-xs backdrop-blur-xs`}>
+                                                                {platformInfo.icon}
+                                                                <span>{platformInfo.label}</span>
                                                             </span>
-                                                        )}
-                                                        <h4 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100 leading-snug line-clamp-2">
-                                                            {g.title}
-                                                        </h4>
-                                                        {g.description && (
-                                                            <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2 mt-0.5">
-                                                                {truncateText(g.description, 130)}
-                                                            </p>
+                                                            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#0E1624]/90 text-[#172B4D] dark:text-slate-200 shadow-xs backdrop-blur-xs">
+                                                                <ThumbsUp size={12} />
+                                                                {g.upvotes || 0}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`w-full h-24 ${platformInfo.bannerGradient} flex items-center justify-between px-4 transition-colors`}>
+                                                            <span className={`inline-flex items-center gap-1.5 text-xs font-black uppercase px-2.5 py-1 rounded-lg ${platformInfo.badge}`}>
+                                                                {platformInfo.icon}
+                                                                <span>{platformInfo.label}</span>
+                                                            </span>
+                                                            <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-white drop-shadow-sm">
+                                                                <ThumbsUp size={18} className="shrink-0" />
+                                                                <span>{g.upvotes || 0}</span>
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Contenido del grupo */}
+                                                    <div className="p-4 sm:p-5 flex flex-col justify-between gap-3.5 flex-1">
+                                                        <div className="flex flex-col gap-1.5">
+                                                            {g.curso && (
+                                                                <span className="text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                                                    {g.curso}{g.section ? ` · Sección ${g.section}` : ''}
+                                                                </span>
+                                                            )}
+                                                            <h4 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100 leading-snug line-clamp-2">
+                                                                {g.title}
+                                                            </h4>
+                                                            {g.description && (
+                                                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2 mt-0.5">
+                                                                    {truncateText(g.description, 130)}
+                                                                </p>
+                                                            )}
+                                                        </div>
+
+                                                        {g.link && (
+                                                            <a
+                                                                href={g.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] no-underline transition-colors shadow-xs"
+                                                            >
+                                                                <span>Unirme al grupo</span>
+                                                                <ExternalLink size={14} />
+                                                            </a>
                                                         )}
                                                     </div>
-
-                                                    {g.link && (
-                                                        <a
-                                                            href={g.link}
-                                                            target="_blank"
-                                                            rel="noopener noreferrer"
-                                                            className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] no-underline transition-colors shadow-xs"
-                                                        >
-                                                            <span>Unirme al grupo</span>
-                                                            <ExternalLink size={14} />
-                                                        </a>
-                                                    )}
                                                 </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 )}
                             </div>

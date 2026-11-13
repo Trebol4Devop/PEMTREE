@@ -1,6 +1,6 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 
-const DEFAULT_COMMUNITY_URL = 'http://localhost:3000';
+const DEFAULT_COMMUNITY_URL = 'https://zanate.pages.dev/';
 
 export const getCommunityAuthUrl = () => {
     return (
