@@ -1,0 +1,1151 @@
+// src/pages/Recuento.jsx - Vista de resumen académico del estudiante y comunidad
+import { useEffect, useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+    GraduationCap,
+    Clock,
+    AlertTriangle,
+    Users,
+    MessageSquare,
+    ArrowRight,
+    CheckCircle2,
+    BookOpen,
+    ExternalLink,
+    ThumbsUp,
+    RefreshCw,
+    Sparkles
+} from 'lucide-react';
+import Seo from '../components/seo/Seo';
+import HelpButton from '../components/onboarding/HelpButton';
+import { Card, EmptyState, Button } from '../components/ui';
+import { useScreenWelcome } from '../context/OnboardingContext';
+import { prepararRecuento, buildRecuento } from '../modules/data/recuento';
+import { fetchGruposSugeridos, fetchMensajeDestacado } from '../lib/recuentoCommunity';
+import { supabase, isSupabaseConfigured } from '../lib/supabase';
+
+const PERIOD_LABELS = {
+    semestre1: 'Semestre 1',
+    semestre2: 'Semestre 2',
+    vacaciones1: 'Vacaciones 1',
+    vacaciones2: 'Vacaciones 2',
+};
+
+function formatPlatform(platform) {
+    if (!platform) return 'Grupo';
+    const p = String(platform).toLowerCase();
+    if (p === 'whatsapp') return 'WhatsApp';
+    if (p === 'telegram') return 'Telegram';
+    if (p === 'discord') return 'Discord';
+    return p.charAt(0).toUpperCase() + p.slice(1);
+}
+
+function getPlatformInfo(group) {
+    const rawPlatform = String(group?.platform || '').toLowerCase().trim();
+    const link = String(group?.link || '').toLowerCase().trim();
+    const title = String(group?.title || '').toLowerCase().trim();
+    const desc = String(group?.description || '').toLowerCase().trim();
+
+    // 1. WhatsApp
+    if (
+        rawPlatform.includes('whatsapp') ||
+        rawPlatform === 'wa' ||
+        link.includes('chat.whatsapp.com') ||
+        link.includes('wa.me') ||
+        link.includes('whatsapp.com') ||
+        title.includes('whatsapp') ||
+        desc.includes('whatsapp')
+    ) {
+        return {
+            id: 'whatsapp',
+            label: 'WhatsApp',
+            bannerGradient: 'bg-gradient-to-r from-[#DCFCE7] via-[#D1FAE5] to-[#BBF7D0] dark:from-[#064E3B]/70 dark:via-[#065F46]/60 dark:to-[#047857]/40 border-b border-[#86EFAC]/70 dark:border-[#059669]/40',
+            badge: 'bg-[#25D366] text-white shadow-xs',
+            imageBadgeText: 'text-[#15803D] dark:text-[#4ADE80]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.16 5.335 5.495 0 12.05 0a11.82 11.82 0 018.413 3.48A11.82 11.82 0 0123.943 11.89c-.003 6.556-5.338 11.892-11.893 11.892h-.005a11.88 11.88 0 01-5.683-1.448L.057 24zm6.547-4.143l.417.247a9.88 9.88 0 005.025 1.378h.004c5.448 0 9.882-4.434 9.885-9.884a9.83 9.83 0 00-2.893-6.994 9.82 9.82 0 00-6.988-2.898c-5.452 0-9.887 4.434-9.888 9.884 0 1.888.528 3.731 1.53 5.313l.272.426-.998 3.647 3.706-.972zm10.868-6.475c-.297-.15-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 2. Discord
+    if (
+        rawPlatform.includes('discord') ||
+        link.includes('discord.gg') ||
+        link.includes('discord.com') ||
+        title.includes('discord') ||
+        desc.includes('discord')
+    ) {
+        return {
+            id: 'discord',
+            label: 'Discord',
+            bannerGradient: 'bg-gradient-to-r from-[#EEF2FF] via-[#E0E7FF] to-[#EDE9FE] dark:from-[#312E81]/70 dark:via-[#3730A3]/60 dark:to-[#4338CA]/40 border-b border-[#C7D2FE]/70 dark:border-[#4F46E5]/30',
+            badge: 'bg-[#5865F2] text-white shadow-xs',
+            imageBadgeText: 'text-[#5865F2] dark:text-[#818CF8]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20.317 4.37a19.791 19.791 0 00-4.885-1.515.074.074 0 00-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 00-5.487 0 12.64 12.64 0 00-.617-1.25.077.077 0 00-.079-.037A19.736 19.736 0 003.677 4.37a.07.07 0 00-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 00.031.057 19.9 19.9 0 005.993 3.03.078.078 0 00.084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 01-1.872-.892.077.077 0 01-.008-.128 10.2 10.2 0 00.372-.292.074.074 0 01.077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 01.078.01c.12.098.246.198.373.292a.077.077 0 01-.006.127 12.299 12.299 0 01-1.873.893.077.077 0 00-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 00.084.028 19.839 19.839 0 006.002-3.03.077.077 0 00.032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 00-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 3. Telegram
+    if (
+        rawPlatform.includes('telegram') ||
+        rawPlatform === 'tg' ||
+        link.includes('t.me') ||
+        link.includes('telegram.me') ||
+        link.includes('telegram.org') ||
+        title.includes('telegram') ||
+        desc.includes('telegram')
+    ) {
+        return {
+            id: 'telegram',
+            label: 'Telegram',
+            bannerGradient: 'bg-gradient-to-r from-[#E0F2FE] via-[#BAE6FD] to-[#E0F2FE] dark:from-[#0C4A6E]/70 dark:via-[#0369A1]/60 dark:to-[#0284C7]/40 border-b border-[#BAE6FD]/80 dark:border-[#0284C7]/30',
+            badge: 'bg-[#229ED9] text-white shadow-xs',
+            imageBadgeText: 'text-[#0284C7] dark:text-[#38BDF8]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.446 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.871 4.326-2.962-.924c-.643-.204-.657-.643.136-.953l11.57-4.46c.537-.194 1.006.131.832.94z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 4. Google Drive / Classroom
+    if (
+        rawPlatform.includes('drive') ||
+        rawPlatform.includes('classroom') ||
+        rawPlatform.includes('google') ||
+        link.includes('drive.google.com') ||
+        link.includes('classroom.google.com') ||
+        link.includes('docs.google.com') ||
+        title.includes('drive') ||
+        title.includes('classroom') ||
+        desc.includes('drive')
+    ) {
+        const isClassroom = rawPlatform.includes('classroom') || link.includes('classroom.google.com') || title.includes('classroom');
+        return {
+            id: isClassroom ? 'classroom' : 'drive',
+            label: isClassroom ? 'Classroom' : 'Drive',
+            bannerGradient: 'bg-gradient-to-r from-[#FEF3C7] via-[#FFFBEB] to-[#ECFDF5] dark:from-[#78350F]/60 dark:via-[#713F12]/50 dark:to-[#064E3B]/40 border-b border-[#FDE68A]/80 dark:border-[#B45309]/30',
+            badge: 'bg-[#0F9D58] text-white shadow-xs',
+            imageBadgeText: 'text-[#0F9D58] dark:text-[#34D399]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7.71 3.5L1.15 15l3.43 6 6.55-11.5L7.71 3.5zm1.72 1.5l5.14 9h6.86l-5.14-9H9.43zm-3.43 12h13.71l3.43 6H2.57l3.43-6z" />
+                </svg>
+            )
+        };
+    }
+
+    // 5. Microsoft Teams
+    if (
+        rawPlatform.includes('teams') ||
+        link.includes('teams.microsoft.com') ||
+        link.includes('teams.live.com') ||
+        title.includes('teams') ||
+        desc.includes('teams')
+    ) {
+        return {
+            id: 'teams',
+            label: 'MS Teams',
+            bannerGradient: 'bg-gradient-to-r from-[#EDE9FE] via-[#F5F3FF] to-[#EDE9FE] dark:from-[#4C1D95]/70 dark:via-[#5B21B6]/60 dark:to-[#6D28D9]/40 border-b border-[#DDD6FE]/80 dark:border-[#6D28D9]/30',
+            badge: 'bg-[#6264A7] text-white shadow-xs',
+            imageBadgeText: 'text-[#6264A7] dark:text-[#A78BFA]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M16.5 6a2.5 2.5 0 100-5 2.5 2.5 0 000 5zm3 2h-6a2 2 0 00-2 2v6a2 2 0 002 2h6a2 2 0 002-2v-6a2 2 0 00-2-2zM9 8a3 3 0 100-6 3 3 0 000 6zm3.5 3h-7A2.5 2.5 0 003 13.5V19a2 2 0 002 2h7.5a2 2 0 002-2v-5.5a2.5 2.5 0 00-2-2.5z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 6. Facebook / Messenger
+    if (
+        rawPlatform.includes('facebook') ||
+        rawPlatform.includes('messenger') ||
+        link.includes('facebook.com') ||
+        link.includes('messenger.com') ||
+        link.includes('m.me') ||
+        link.includes('fb.me')
+    ) {
+        return {
+            id: 'facebook',
+            label: 'Facebook',
+            bannerGradient: 'bg-gradient-to-r from-[#DBEAFE] via-[#BFDBFE] to-[#DBEAFE] dark:from-[#1E3A8A]/70 dark:via-[#1D4ED8]/60 dark:to-[#2563EB]/40 border-b border-[#BFDBFE]/80 dark:border-[#1D4ED8]/30',
+            badge: 'bg-[#1877F2] text-white shadow-xs',
+            imageBadgeText: 'text-[#1877F2] dark:text-[#60A5FA]',
+            icon: (
+                <svg className="w-3.5 h-3.5 shrink-0 fill-current" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                </svg>
+            )
+        };
+    }
+
+    // 7. Fallback / Grupo general
+    const fallbackLabel = formatPlatform(group?.platform);
+    return {
+        id: 'default',
+        label: fallbackLabel,
+        bannerGradient: 'bg-gradient-to-r from-[#DEEBFF] to-[#EAE6FF] dark:from-[#0C295E]/50 dark:to-[#352C63]/50 border-b border-[#DFE1E6] dark:border-[#3E4C5E]',
+        badge: 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624] shadow-xs',
+        imageBadgeText: 'text-[#0052CC] dark:text-[#4C9AFF]',
+        icon: <Users size={13} className="shrink-0" />
+    };
+}
+
+function truncateText(text, maxLength) {
+    if (!text) return '';
+    if (text.length <= maxLength) return text;
+    return text.slice(0, maxLength).trim() + '…';
+}
+
+export default function Recuento() {
+    const { openHelp } = useScreenWelcome('recuento');
+    const navigate = useNavigate();
+
+    const [loading, setLoading] = useState(true);
+    const [data, setData] = useState(null);
+    const [error, setError] = useState(null);
+    const [retryCount, setRetryCount] = useState(0);
+    const [filtroSemestre, setFiltroSemestre] = useState('obligatorios');
+    const [horarioPeriodoFiltro, setHorarioPeriodoFiltro] = useState(null);
+
+    const [communityLoading, setCommunityLoading] = useState(true);
+    const [grupos, setGrupos] = useState([]);
+    const [destacado, setDestacado] = useState(null);
+    const [user, setUser] = useState(null);
+
+    // Seudónimo de la comunidad (prioriza alias guardado en localStorage > metadata > alias generado de la comunidad)
+    const pseudonimoComunidad = useMemo(() => {
+        const saved = typeof window !== 'undefined' ? localStorage.getItem('pemtree_forum_alias') : null;
+        if (saved && saved.trim()) return saved.trim();
+
+        const metaAlias = user?.user_metadata?.alias || user?.user_metadata?.pseudonimo || user?.user_metadata?.author_alias;
+        if (metaAlias && metaAlias.trim()) return metaAlias.trim();
+
+        if (user) {
+            const rawName = user.user_metadata?.full_name || user.user_metadata?.name || user.user_metadata?.display_name || '';
+            const initials = rawName
+                ? rawName.split(' ').filter(Boolean).map(n => n[0]).join('').toUpperCase()
+                : 'USAC';
+            const idCode = user.id
+                ? Math.abs(user.id.split('').reduce((acc, char) => acc + char.charCodeAt(0), 0)) % 900 + 100
+                : 482;
+            return `Estudiante ${initials} #${idCode}`;
+        }
+
+        return null;
+    }, [user]);
+
+    const handleRetry = () => {
+        setLoading(true);
+        setError(null);
+        setRetryCount(c => c + 1);
+    };
+
+    // Carga de sesión de Supabase
+    useEffect(() => {
+        if (!isSupabaseConfigured || !supabase) return;
+
+        supabase.auth.getSession().then(({ data: sessionData }) => {
+            setUser(sessionData?.session?.user ?? null);
+        });
+
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+            setUser(session?.user ?? null);
+        });
+
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+
+    // Carga de datos locales (Fase 1)
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadData() {
+            try {
+                setLoading(true);
+                const ctx = await prepararRecuento();
+                const result = buildRecuento(ctx);
+                if (!cancelled) {
+                    setData(result);
+                    setError(null);
+                }
+            } catch (err) {
+                console.error('Error cargando datos de recuento:', err);
+                if (!cancelled) {
+                    setError('No se pudieron cargar los datos de tu avance.');
+                }
+            } finally {
+                if (!cancelled) setLoading(false);
+            }
+        }
+
+        loadData();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [retryCount]);
+
+    // Carga comunitaria de Supabase (Fase 2)
+    useEffect(() => {
+        let cancelled = false;
+
+        async function loadCommunity() {
+            if (!data) return;
+
+            // 1. Carreras relevantes del estudiante (principal, simultánea y área común)
+            const carrerasSet = new Set();
+            const pensumCarreraId = data.pensum?.carrera?.id;
+            if (pensumCarreraId) carrerasSet.add(pensumCarreraId);
+
+            try {
+                const pensumActual = localStorage.getItem('pemtree_pensum_actual');
+                if (pensumActual) carrerasSet.add(pensumActual);
+
+                const tieneSimultanea = localStorage.getItem('pemtree_schedule_simultanea') === 'true' || Boolean(data.plan?.simultanea);
+                if (tieneSimultanea) {
+                    const segCarrera = localStorage.getItem('pemtree_schedule_segunda_carrera') || localStorage.getItem('pemtree_plan_segunda_carrera');
+                    if (segCarrera) carrerasSet.add(segCarrera);
+                }
+            } catch {
+                // Ignore localStorage read errors
+            }
+
+            // 2. Extraer cursos vigentes con sus nombres y secciones
+            const cursosMap = new Map();
+
+            // A. Cursos en el horario activo vigente (máxima prioridad)
+            if (data.horario?.cursosDetalle && Array.isArray(data.horario.cursosDetalle)) {
+                for (const c of data.horario.cursosDetalle) {
+                    if (c.codigo) {
+                        cursosMap.set(String(c.codigo), {
+                            codigo: String(c.codigo),
+                            nombre: c.nombre || '',
+                            seccion: c.secciones?.[0] || null,
+                            estado: 'horario'
+                        });
+                    }
+                }
+            }
+
+            // B. Cursos marcados como "cursando" en progreso
+            if (data.progreso?.cursosCursando && Array.isArray(data.progreso.cursosCursando)) {
+                for (const c of data.progreso.cursosCursando) {
+                    const cod = String(c.codigo);
+                    if (!cursosMap.has(cod)) {
+                        cursosMap.set(cod, {
+                            codigo: cod,
+                            nombre: c.nombre || '',
+                            seccion: null,
+                            estado: 'cursando',
+                            semestre: c.semestre
+                        });
+                    }
+                }
+            }
+
+            // C. Cursos del planificador
+            if (data.plan && Array.isArray(data.plan.lineas)) {
+                for (const line of data.plan.lineas) {
+                    for (const block of line.blocks || []) {
+                        for (const c of block.cursos || []) {
+                            const cod = String(c.codigo);
+                            if (cod && !cursosMap.has(cod)) {
+                                cursosMap.set(cod, {
+                                    codigo: cod,
+                                    nombre: c.nombre || '',
+                                    seccion: null,
+                                    estado: 'plan',
+                                    semestre: c.semestre
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            // D. Cursos disponibles para cursar
+            if (data.progreso?.cursosDisponibles && Array.isArray(data.progreso.cursosDisponibles)) {
+                for (const c of data.progreso.cursosDisponibles.slice(0, 10)) {
+                    const cod = String(c.codigo);
+                    if (!cursosMap.has(cod)) {
+                        cursosMap.set(cod, {
+                            codigo: cod,
+                            nombre: c.nombre || '',
+                            seccion: null,
+                            estado: 'disponible',
+                            semestre: c.semestre
+                        });
+                    }
+                }
+            }
+
+            // E. Evaluar si aplican cursos o grupos de Área Común (semestres 1 a 3)
+            const semestresActivos = Array.from(cursosMap.values()).map(c => c.semestre).filter(Boolean);
+            const tieneAreaComun = semestresActivos.some(s => s <= 3) ||
+                (data.progreso?.porSemestre || []).slice(0, 3).some(s => (s.aprobados < s.total) || s.enCurso > 0);
+            if (tieneAreaComun) {
+                carrerasSet.add('area_comun');
+            }
+
+            const listaCarreras = Array.from(carrerasSet);
+            const listaCursos = Array.from(cursosMap.values());
+
+            setCommunityLoading(true);
+
+            try {
+                const [gruposRes, postRes] = await Promise.all([
+                    fetchGruposSugeridos({
+                        carreras: listaCarreras,
+                        cursos: listaCursos,
+                        limit: 3
+                    }),
+                    fetchMensajeDestacado({
+                        carreras: listaCarreras,
+                        cursos: listaCursos
+                    })
+                ]);
+
+                if (!cancelled) {
+                    setGrupos(gruposRes || []);
+                    setDestacado(postRes || null);
+                }
+            } catch (err) {
+                console.warn('Error cargando datos comunitarios en Recuento:', err);
+                if (!cancelled) {
+                    setGrupos([]);
+                    setDestacado(null);
+                }
+            } finally {
+                if (!cancelled) setCommunityLoading(false);
+            }
+        }
+
+        loadCommunity();
+
+        return () => {
+            cancelled = true;
+        };
+    }, [data, user]);
+
+    // Estado de carga inicial
+    if (loading) {
+        return (
+            <div className="flex-1 overflow-y-auto bg-[#F4F5F7] dark:bg-[#0E1624] p-4 sm:p-6 transition-colors duration-300">
+                <div className="max-w-7xl mx-auto flex flex-col gap-5">
+                    <div className="h-10 w-52 bg-slate-200 dark:bg-[#1C2636] rounded-lg animate-pulse" />
+                    <div className="h-44 bg-slate-200 dark:bg-[#1C2636] rounded-2xl animate-pulse" />
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <div className="lg:col-span-8 h-96 bg-slate-200 dark:bg-[#1C2636] rounded-2xl animate-pulse" />
+                        <div className="lg:col-span-4 h-96 bg-slate-200 dark:bg-[#1C2636] rounded-2xl animate-pulse" />
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    // Estado de error
+    if (error || !data) {
+        return (
+            <div className="flex-1 overflow-y-auto bg-[#F4F5F7] dark:bg-[#0E1624] p-4 sm:p-6 transition-colors duration-300">
+                <div className="max-w-md mx-auto my-14">
+                    <Card className="flex flex-col items-center gap-3.5 p-6 text-center">
+                        <AlertTriangle className="w-12 h-12 text-[#BF2600] dark:text-[#FF6369]" />
+                        <h2 className="text-lg font-bold text-[#172B4D] dark:text-slate-100">
+                            No pudimos cargar tu recuento
+                        </h2>
+                        <p className="text-sm text-[#5E6C84] dark:text-slate-400">
+                            {error || 'Ocurrió un error al consolidar los datos de tu pensum.'}
+                        </p>
+                        <Button variant="primary" onClick={handleRetry} className="mt-2 text-sm font-semibold">
+                            Reintentar
+                        </Button>
+                    </Card>
+                </div>
+            </div>
+        );
+    }
+
+    const { pensum, progreso, plan, horario, avisos } = data;
+    const periodoSeleccionadoId = horarioPeriodoFiltro || horario.periodoActivo || horario.periodo || 'semestre1';
+    const datosHorarioPeriodo = horario.periodos?.[periodoSeleccionadoId] || horario;
+    const nombrePeriodoSeleccionado = PERIOD_LABELS[periodoSeleccionadoId] || periodoSeleccionadoId;
+    const esPeriodoActivoCalendario = (periodoSeleccionadoId === (horario.periodoActivo || horario.periodo));
+
+    const handleIrAHorario = (pId = periodoSeleccionadoId) => {
+        localStorage.setItem('pemtree_schedule_period', pId);
+        navigate('/visualizador?view=schedule');
+    };
+
+    const flojo = [...progreso.porSemestre]
+        .filter(s => s.total > 0)
+        .sort((a, b) => (a.aprobados / a.total) - (b.aprobados / b.total))[0];
+
+    return (
+        <div className="flex-1 overflow-y-auto bg-[#F4F5F7] dark:bg-[#0E1624] transition-colors duration-300">
+            <Seo
+                pathname="/recuento"
+                title="Recuento académico"
+                description="Resumen de tu avance en el pensum: créditos, horario y avisos."
+            />
+
+            <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6">
+                {/* 1. Cabecera */}
+                <div className="flex items-center justify-between gap-4">
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-3 flex-wrap">
+                            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-[#172B4D] dark:text-slate-100 tracking-tight">
+                                Recuento
+                            </h1>
+                            {pseudonimoComunidad && (
+                                <span className="inline-flex items-center px-3 py-1 rounded-full text-xs sm:text-sm font-bold bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]">
+                                    Hola, {pseudonimoComunidad}
+                                </span>
+                            )}
+                        </div>
+                        <p className="text-sm font-medium text-[#5E6C84] dark:text-slate-400 mt-1">
+                            {pensum.carrera?.nombre || 'Ingeniería'}
+                            {pensum.pensumInfo?.cohort ? ` · Cohorte ${pensum.pensumInfo.cohort}` : ''}
+                        </p>
+                    </div>
+                    <HelpButton onClick={openHelp} className="shrink-0" title="Ayuda del recuento" />
+                </div>
+
+                {/* 2. Resumen Ejecutivo: Avance General y Métricas Clave */}
+                <Card className="p-5 sm:p-6 flex flex-col gap-5 shadow-xs">
+                    {/* Barra de progreso global */}
+                    <div className="flex flex-col gap-3">
+                        <div className="flex flex-wrap items-baseline justify-between gap-3">
+                            <div className="flex items-baseline gap-3">
+                                <span className="text-3xl sm:text-4xl lg:text-5xl font-black text-[#0052CC] dark:text-[#4C9AFF] tracking-tight">
+                                    {progreso.porcentaje}%
+                                </span>
+                                <span className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-200">
+                                    {progreso.creditosAprobados} de {progreso.totalCreditos} créditos
+                                </span>
+                            </div>
+                            {plan.simultanea && (
+                                <span className="text-xs font-extrabold px-3 py-1 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#0052CC]/20">
+                                    Carrera simultánea
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Barra de progreso */}
+                        <div className="w-full h-3.5 sm:h-4 rounded-full bg-[#DFE1E6] dark:bg-[#1C2636] overflow-hidden flex shadow-inner">
+                            {progreso.totalCreditos > 0 && (
+                                <>
+                                    <div
+                                        className="h-full bg-[#0052CC] dark:bg-[#4C9AFF] transition-all duration-500"
+                                        style={{ width: `${Math.min(100, (progreso.obligatorios.creditosAprobados / progreso.totalCreditos) * 100)}%` }}
+                                        title={`Obligatorios: ${progreso.obligatorios.creditosAprobados} CR`}
+                                    />
+                                    <div
+                                        className="h-full bg-[#5243AA] dark:bg-[#8777D9] transition-all duration-500"
+                                        style={{ width: `${Math.min(100, (progreso.optativos.creditosAprobados / progreso.totalCreditos) * 100)}%` }}
+                                        title={`Optativos: ${progreso.optativos.creditosAprobados} CR`}
+                                    />
+                                </>
+                            )}
+                        </div>
+
+                        {/* Leyenda de obligatorios / optativos */}
+                        <div className="flex flex-wrap items-center justify-between text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 gap-x-5 gap-y-1 pt-0.5">
+                            <div className="flex items-center gap-4 flex-wrap">
+                                <span className="inline-flex items-center gap-2 font-medium">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
+                                    <span>Obligatorios: <strong className="text-[#172B4D] dark:text-slate-100 font-bold">{progreso.obligatorios.creditosAprobados}</strong>/{progreso.obligatorios.creditosTotal} CR</span>
+                                </span>
+                                <span className="inline-flex items-center gap-2 font-medium">
+                                    <span className="w-2.5 h-2.5 rounded-full bg-[#5243AA] dark:bg-[#8777D9]" />
+                                    <span>Optativos: <strong className="text-[#172B4D] dark:text-slate-100 font-bold">{progreso.optativos.creditosAprobados}</strong>/{progreso.optativos.creditosTotal} CR</span>
+                                </span>
+                            </div>
+                            {progreso.idiomaEquivalencia && (
+                                <span className="text-xs text-[#5E6C84] dark:text-slate-400">
+                                    Incluye equivalencia de idioma
+                                </span>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* 4 KPIs de estado académico */}
+                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 pt-4 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#006644] dark:text-[#57D9A3]">
+                                <CheckCircle2 size={16} />
+                                <span>Aprobados</span>
+                            </div>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {progreso.aprobados}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    cursos
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                <Clock size={16} />
+                                <span>En curso</span>
+                            </div>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {progreso.enCurso}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    cursos ({progreso.creditosEnCurso} CR)
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#D97706] dark:text-[#FBBF24]">
+                                <BookOpen size={16} />
+                                <span>Disponibles</span>
+                            </div>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {progreso.disponibles}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    cursos
+                                </span>
+                            </div>
+                        </div>
+
+                        <div className="p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between">
+                            <div className="flex items-center gap-2 text-xs sm:text-sm font-bold text-[#5243AA] dark:text-[#8777D9]">
+                                <GraduationCap size={16} />
+                                <span>Promedio</span>
+                            </div>
+                            <div className="mt-2">
+                                <span className="text-2xl sm:text-3xl font-black text-[#172B4D] dark:text-slate-100">
+                                    {plan.promedio !== null ? plan.promedio.toFixed(1) : '—'}
+                                </span>
+                                <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400 ml-1.5">
+                                    {plan.promedio !== null ? 'Ponderado' : 'Sin configurar'}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </Card>
+
+                {/* 3. Panel Central: Avance por Semestre, Horario y Avisos */}
+                <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    {/* Columna Izquierda (Avance detallado) */}
+                    <div className="lg:col-span-7 xl:col-span-7 flex flex-col gap-6">
+                        {/* A. Avance por semestre */}
+                        <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
+                            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                                <h2 className="text-base sm:text-lg lg:text-xl font-extrabold text-[#172B4D] dark:text-slate-100">
+                                    Avance por semestre
+                                </h2>
+
+                                {/* Filtros compactos */}
+                                <div className="flex items-center gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-lg border border-[#DFE1E6] dark:border-[#3E4C5E] text-xs sm:text-sm font-bold self-start sm:self-auto">
+                                    <button
+                                        type="button"
+                                        onClick={() => setFiltroSemestre('todos')}
+                                        className={`px-3 py-1 rounded-md transition-colors cursor-pointer border-none ${
+                                            filtroSemestre === 'todos'
+                                                ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs'
+                                                : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        Todos
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => setFiltroSemestre('obligatorios')}
+                                        className={`flex items-center gap-1.5 px-3 py-1 rounded-md transition-colors cursor-pointer border-none ${
+                                            filtroSemestre === 'obligatorios'
+                                                ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs'
+                                                : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
+                                        }`}
+                                    >
+                                        <span className="w-2 h-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
+                                        <span>Obligatorios</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            {progreso.porSemestre.length === 0 ? (
+                                <div className="text-sm italic text-[#5E6C84] dark:text-slate-400 py-8 text-center">
+                                    Marca cursos como completados para visualizar tu avance por ciclo.
+                                </div>
+                            ) : (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {progreso.porSemestre.map(s => {
+                                        const obligTotal = s.obligatoriosTotal;
+                                        const obligAprob = s.obligatoriosAprobados;
+                                        const optTotal = s.optativosTotal;
+                                        const optAprob = s.optativosAprobados;
+
+                                        const semTotal = filtroSemestre === 'obligatorios' ? obligTotal : s.total;
+                                        const semAprob = filtroSemestre === 'obligatorios' ? obligAprob : s.aprobados;
+                                        const semPct = semTotal > 0 ? Math.round((semAprob / semTotal) * 100) : 0;
+
+                                        const obligPct = s.total > 0 ? (obligAprob / s.total) * 100 : 0;
+                                        const optPct = s.total > 0 ? (optAprob / s.total) * 100 : 0;
+
+                                        return (
+                                            <div
+                                                key={s.semestre}
+                                                className="p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2"
+                                            >
+                                                <div className="flex items-center justify-between">
+                                                    <div className="flex items-center gap-2">
+                                                        <span className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100">
+                                                            Semestre {s.semestre}
+                                                        </span>
+                                                        <span className="text-xs font-black px-2 py-0.5 rounded bg-black/5 dark:bg-white/5 text-[#5E6C84] dark:text-slate-300">
+                                                            {semPct}%
+                                                        </span>
+                                                    </div>
+                                                    <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-300">
+                                                        {semAprob} / {semTotal}
+                                                    </span>
+                                                </div>
+
+                                                {/* Barra de progreso */}
+                                                <div className="w-full h-2.5 rounded-full bg-[#DFE1E6] dark:bg-[#1C2636] overflow-hidden flex">
+                                                    {filtroSemestre === 'todos' ? (
+                                                        <>
+                                                            {obligPct > 0 && (
+                                                                <div
+                                                                    className="h-full bg-[#0052CC] dark:bg-[#4C9AFF] transition-all duration-500"
+                                                                    style={{ width: `${obligPct}%` }}
+                                                                />
+                                                            )}
+                                                            {optPct > 0 && (
+                                                                <div
+                                                                    className="h-full bg-[#5243AA] dark:bg-[#8777D9] transition-all duration-500"
+                                                                    style={{ width: `${optPct}%` }}
+                                                                />
+                                                            )}
+                                                        </>
+                                                    ) : (
+                                                        <div
+                                                            className="h-full bg-[#0052CC] dark:bg-[#4C9AFF] transition-all duration-500"
+                                                            style={{ width: `${semPct}%` }}
+                                                        />
+                                                    )}
+                                                </div>
+
+                                                {/* Desglose conciso */}
+                                                {filtroSemestre === 'todos' && (
+                                                    <div className="flex items-center justify-between text-xs text-[#5E6C84] dark:text-slate-400">
+                                                        <span>{obligAprob}/{obligTotal} obligatorios</span>
+                                                        {optTotal > 0 ? (
+                                                            <span>{optAprob}/{optTotal} optativos</span>
+                                                        ) : (
+                                                            <span className="opacity-50 italic">Sin optativos</span>
+                                                        )}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+                            )}
+
+                            {flojo && progreso.aprobados > 0 && (
+                                <div className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-400 pt-3 border-t border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between">
+                                    <span>
+                                        Menor avance general: <strong className="text-[#172B4D] dark:text-slate-200">Semestre {flojo.semestre}</strong> ({flojo.aprobados} de {flojo.total} aprobados)
+                                    </span>
+                                </div>
+                            )}
+                        </Card>
+                    </div>
+
+                    {/* Columna Derecha (Horario y Avisos) */}
+                    <div className="lg:col-span-5 xl:col-span-5 flex flex-col gap-6">
+                        {/* B. Mi horario */}
+                        <Card className="flex flex-col gap-4 p-5 sm:p-6 shadow-xs">
+                            <div className="flex items-center justify-between flex-wrap gap-2">
+                                <div className="flex items-center gap-2 flex-wrap">
+                                    <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">
+                                        Mi horario
+                                    </h2>
+                                    {esPeriodoActivoCalendario && (
+                                        <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded-full bg-[#E3FCEF] dark:bg-[#064223]/50 text-[#006644] dark:text-[#57D9A3] border border-[#ABF5D1] dark:border-[#0E5832]">
+                                            Ciclo activo
+                                        </span>
+                                    )}
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => handleIrAHorario(periodoSeleccionadoId)}
+                                    className="inline-flex items-center gap-1 text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer bg-transparent border-none p-0"
+                                >
+                                    <span>{datosHorarioPeriodo.secciones === 0 ? 'Armar' : 'Editar'}</span>
+                                    <ArrowRight size={14} />
+                                </button>
+                            </div>
+
+                            {/* Selector de periodo/semestre */}
+                            <div className="grid grid-cols-4 gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] text-center text-xs font-bold">
+                                {[
+                                    { id: 'semestre1', label: 'Sem 1', full: 'Semestre 1' },
+                                    { id: 'semestre2', label: 'Sem 2', full: 'Semestre 2' },
+                                    { id: 'vacaciones1', label: 'Vac 1', full: 'Vacaciones 1' },
+                                    { id: 'vacaciones2', label: 'Vac 2', full: 'Vacaciones 2' },
+                                ].map(p => {
+                                    const isSelected = periodoSeleccionadoId === p.id;
+                                    const isActivo = (horario.periodoActivo || horario.periodo) === p.id;
+                                    const tieneDatos = (horario.periodos?.[p.id]?.secciones || 0) > 0;
+
+                                    return (
+                                        <button
+                                            key={p.id}
+                                            type="button"
+                                            onClick={() => setHorarioPeriodoFiltro(p.id)}
+                                            className={`py-1.5 px-1 rounded-lg transition-all cursor-pointer border-none flex items-center justify-center gap-1 ${
+                                                isSelected
+                                                    ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs'
+                                                    : 'bg-transparent text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D] dark:hover:text-slate-200'
+                                            }`}
+                                        >
+                                            <span>{p.label}</span>
+                                            {isActivo && (
+                                                <span className="w-1.5 h-1.5 rounded-full bg-[#006644] dark:bg-[#57D9A3]" title="Periodo actual según calendario" />
+                                            )}
+                                            {tieneDatos && !isActivo && (
+                                                <span className="w-1 h-1 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF]" />
+                                            )}
+                                        </button>
+                                    );
+                                })}
+                            </div>
+
+                            {/* Contenido según periodo seleccionado */}
+                            {datosHorarioPeriodo.secciones === 0 ? (
+                                <div className="p-4 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3 text-sm text-[#5E6C84] dark:text-slate-400">
+                                    <span>Sin secciones armadas para {nombrePeriodoSeleccionado}.</span>
+                                    <button
+                                        type="button"
+                                        onClick={() => handleIrAHorario(periodoSeleccionadoId)}
+                                        className="inline-flex items-center justify-center gap-1.5 py-2 px-4 rounded-lg text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] text-white no-underline transition-colors self-start shadow-xs cursor-pointer border-none"
+                                    >
+                                        <span>Armar {nombrePeriodoSeleccionado}</span>
+                                        <ArrowRight size={14} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-3">
+                                    <div className="grid grid-cols-3 gap-2 p-3.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center">
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Cursos</span>
+                                            <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{datosHorarioPeriodo.cursos}</span>
+                                        </div>
+                                        <div className="flex flex-col border-x border-[#DFE1E6] dark:border-[#3E4C5E] px-1">
+                                            <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Secciones</span>
+                                            <span className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 mt-1">{datosHorarioPeriodo.secciones}</span>
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">Carga</span>
+                                            <span className="text-base sm:text-lg font-black text-[#0052CC] dark:text-[#4C9AFF] mt-1">{datosHorarioPeriodo.horasSemana} h/sem</span>
+                                        </div>
+                                    </div>
+
+                                    {/* Cursos en el horario del semestre */}
+                                    {datosHorarioPeriodo.cursosDetalle && datosHorarioPeriodo.cursosDetalle.length > 0 && (
+                                        <div className="flex flex-wrap gap-1.5 pt-1">
+                                            {datosHorarioPeriodo.cursosDetalle.map(c => (
+                                                <div
+                                                    key={c.codigo}
+                                                    className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-semibold bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-200"
+                                                >
+                                                    <span className="truncate max-w-[150px]">{c.nombre}</span>
+                                                    <span className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                                        Sec. {c.secciones.join(', ')}
+                                                    </span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </Card>
+
+                        {/* C. Avisos */}
+                        <Card className="flex flex-col gap-3.5 p-5 sm:p-6 shadow-xs">
+                            <div className="flex items-center justify-between">
+                                <h2 className="text-base sm:text-lg font-extrabold text-[#172B4D] dark:text-slate-100">
+                                    Avisos
+                                </h2>
+                                {avisos.length > 0 && (
+                                    <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-[#FFEBE6] dark:bg-[#5E1A1A] text-[#BF2600] dark:text-[#FF6369]">
+                                        {avisos.length} {avisos.length === 1 ? 'aviso' : 'avisos'}
+                                    </span>
+                                )}
+                            </div>
+
+                            {avisos.length === 0 ? (
+                                <div className="flex items-center gap-2.5 p-3 rounded-xl bg-[#E3FCEF] dark:bg-[#064223]/25 border border-[#ABF5D1] dark:border-[#0E5832] text-xs sm:text-sm font-semibold text-[#006644] dark:text-[#57D9A3]">
+                                    <CheckCircle2 size={16} className="shrink-0" />
+                                    <span>Sin advertencias de apertura ni traslapes.</span>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-2.5">
+                                    {avisos.map((item, idx) => (
+                                        <div
+                                            key={idx}
+                                            className="p-3 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-2"
+                                        >
+                                            <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-200">
+                                                <span>{item.nombre}</span>
+                                                <span className="text-xs font-medium text-[#5E6C84] dark:text-slate-400">
+                                                    Bloque {item.blockId}
+                                                </span>
+                                            </div>
+                                            <div className="flex flex-col gap-1.5">
+                                                {item.avisos.map((av, aIdx) => {
+                                                    const isError = av.nivel === 'error';
+                                                    const isWarn = av.nivel === 'warn';
+                                                    const badgeClasses = isError
+                                                        ? 'text-[#BF2600] dark:text-[#FF6369] bg-[#FFEBE6] dark:bg-[#5E1A1A] border-[#FFBDAD] dark:border-[#BF2600]'
+                                                        : isWarn
+                                                        ? 'text-[#B45309] dark:text-[#FBBF24] bg-[#FFFBEB] dark:bg-[#4A3206] border-[#FDE68A] dark:border-[#B45309]'
+                                                        : 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] border-[#B3D4FF] dark:border-[#0052CC]';
+
+                                                    return (
+                                                        <div
+                                                            key={aIdx}
+                                                            className={`flex items-start gap-2 p-2 rounded-lg text-xs font-medium border ${badgeClasses}`}
+                                                        >
+                                                            <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+                                                            <span>{av.texto}</span>
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Aviso comunitario: recomendación de secciones cursadas */}
+                            <div className="p-3.5 rounded-xl bg-[#EAE6FF] dark:bg-[#28224D]/40 border border-[#C0B6F2] dark:border-[#5243AA] flex flex-col gap-2.5">
+                                <div className="flex items-start gap-2.5">
+                                    <div className="p-1.5 rounded-lg bg-[#5243AA] text-white dark:bg-[#8777D9] dark:text-[#0E1624] shrink-0 mt-0.5 shadow-2xs">
+                                        <ThumbsUp size={15} />
+                                    </div>
+                                    <div className="flex flex-col gap-0.5">
+                                        <span className="text-xs sm:text-sm font-extrabold text-[#5243AA] dark:text-[#C0B6F2]">
+                                            ¡Apoya a la comunidad con tus recomendaciones!
+                                        </span>
+                                        <p className="text-xs text-[#172B4D] dark:text-slate-200 leading-relaxed m-0">
+                                            Deja tu recomendación en las secciones que ya has llevado. Tu voto anónimo ayuda a tus compañeros a elegir catedrático y armar su horario.
+                                        </p>
+                                    </div>
+                                </div>
+                                <button
+                                    type="button"
+                                    onClick={() => handleIrAHorario()}
+                                    className="self-end inline-flex items-center gap-1.5 text-xs font-bold text-[#5243AA] dark:text-[#C0B6F2] hover:underline cursor-pointer bg-transparent border-none p-0"
+                                >
+                                    <span>Recomendar secciones en Horarios</span>
+                                    <ArrowRight size={13} />
+                                </button>
+                            </div>
+                        </Card>
+                    </div>
+                </div>
+
+                {/* 4. SECCIÓN COMUNIDAD: MÁXIMA NOTORIEDAD Y FOTOS REPRESENTATIVAS */}
+                <Card className="flex flex-col gap-6 p-5 sm:p-7 shadow-xs">
+                    <div className="flex items-center justify-between flex-wrap gap-3 border-b border-[#DFE1E6] dark:border-[#3E4C5E] pb-4">
+                        <div>
+                            <div className="flex items-center gap-2.5">
+                                <Users className="w-6 h-6 text-[#0052CC] dark:text-[#4C9AFF]" />
+                                <h2 className="text-xl sm:text-2xl font-black text-[#172B4D] dark:text-slate-100 tracking-tight">
+                                    Zanate
+                                </h2>
+                            </div>
+                            <p className="text-xs sm:text-sm font-medium text-[#5E6C84] dark:text-slate-400 mt-1">
+                                Grupos de estudio con tus compañeros de clase y publicaciones destacadas del foro
+                            </p>
+                        </div>
+                    </div>
+
+                    {!isSupabaseConfigured || !supabase ? (
+                        <EmptyState
+                            icon={Users}
+                            title="Comunidad no disponible"
+                            description="Los servicios comunitarios no están configurados temporalmente."
+                        />
+                    ) : communityLoading ? (
+                        <div className="flex items-center justify-center py-12 text-sm font-semibold text-[#5E6C84] dark:text-slate-400 gap-3">
+                            <RefreshCw size={16} className="animate-spin text-[#0052CC] dark:text-[#4C9AFF]" />
+                            <span>Cargando comunidad estudiantil…</span>
+                        </div>
+                    ) : (
+                        <div className="flex flex-col gap-6">
+                            {/* Grilla de Grupos de Estudio con Imágenes */}
+                            <div className="flex flex-col gap-3.5">
+                                <div className="flex items-center justify-between">
+                                    <h3 className="text-sm sm:text-base font-extrabold text-[#172B4D] dark:text-slate-200">
+                                        Grupos de estudio sugeridos
+                                    </h3>
+                                    <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-400">
+                                        {grupos.length} {grupos.length === 1 ? 'grupo disponible' : 'grupos disponibles'}
+                                    </span>
+                                </div>
+
+                                {grupos.length === 0 ? (
+                                    <div className="p-6 rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] text-center text-sm text-[#5E6C84] dark:text-slate-400">
+                                        Aún no hay grupos registrados para los cursos de tu pensum actual.
+                                    </div>
+                                ) : (
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                        {grupos.map(g => {
+                                            const platformInfo = getPlatformInfo(g);
+                                            return (
+                                                <div
+                                                    key={g.id}
+                                                    className="rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] overflow-hidden flex flex-col justify-between hover:shadow-md transition-shadow group"
+                                                >
+                                                    {/* Imagen representativa o Banner */}
+                                                    {g.image_url ? (
+                                                        <div className="relative w-full h-36 sm:h-40 overflow-hidden bg-slate-100 dark:bg-black/30">
+                                                            <img
+                                                                src={g.image_url}
+                                                                alt={g.title}
+                                                                onError={(e) => {
+                                                                    e.currentTarget.style.display = 'none';
+                                                                }}
+                                                                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                                                            />
+                                                            <span className={`absolute top-3 left-3 inline-flex items-center gap-1.5 text-xs font-black uppercase px-2.5 py-1 rounded-lg bg-white/95 dark:bg-[#0E1624]/95 ${platformInfo.imageBadgeText} shadow-xs backdrop-blur-xs`}>
+                                                                {platformInfo.icon}
+                                                                <span>{platformInfo.label}</span>
+                                                            </span>
+                                                            <span className="absolute top-3 right-3 inline-flex items-center gap-1.5 text-xs font-bold px-2.5 py-1 rounded-lg bg-white/90 dark:bg-[#0E1624]/90 text-[#172B4D] dark:text-slate-200 shadow-xs backdrop-blur-xs">
+                                                                <ThumbsUp size={12} />
+                                                                {g.upvotes || 0}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <div className={`w-full h-24 ${platformInfo.bannerGradient} flex items-center justify-between px-4 transition-colors`}>
+                                                            <span className={`inline-flex items-center gap-1.5 text-xs font-black uppercase px-2.5 py-1 rounded-lg ${platformInfo.badge}`}>
+                                                                {platformInfo.icon}
+                                                                <span>{platformInfo.label}</span>
+                                                            </span>
+                                                            <span className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-white drop-shadow-sm">
+                                                                <ThumbsUp size={18} className="shrink-0" />
+                                                                <span>{g.upvotes || 0}</span>
+                                                            </span>
+                                                        </div>
+                                                    )}
+
+                                                    {/* Contenido del grupo */}
+                                                    <div className="p-4 sm:p-5 flex flex-col justify-between gap-3.5 flex-1">
+                                                        <div className="flex flex-col gap-1.5">
+                                                            {g.curso && (
+                                                                <span className="text-xs sm:text-sm font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                                                                    {g.curso}{g.section ? ` · Sección ${g.section}` : ''}
+                                                                </span>
+                                                            )}
+                                                            <h4 className="text-sm sm:text-base font-bold text-[#172B4D] dark:text-slate-100 leading-snug line-clamp-2">
+                                                                {g.title}
+                                                            </h4>
+                                                            {g.description && (
+                                                                <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed line-clamp-2 mt-0.5">
+                                                                    {truncateText(g.description, 130)}
+                                                                </p>
+                                                            )}
+                                                        </div>
+
+                                                        {g.link && (
+                                                            <a
+                                                                href={g.link}
+                                                                target="_blank"
+                                                                rel="noopener noreferrer"
+                                                                className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl text-xs sm:text-sm font-bold bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] no-underline transition-colors shadow-xs"
+                                                            >
+                                                                <span>Unirme al grupo</span>
+                                                                <ExternalLink size={14} />
+                                                            </a>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Publicación destacada del Foro */}
+                            {destacado && (
+                                <div className="p-5 sm:p-6 rounded-2xl bg-[#F4F5F7] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col gap-3">
+                                    <div className="flex items-center justify-between flex-wrap gap-2">
+                                        <div className="flex items-center gap-2">
+                                            <span className="inline-flex items-center gap-1 text-xs font-black uppercase tracking-wider px-2.5 py-1 rounded-lg bg-[#FFAB00]/20 text-[#B45309] dark:text-[#FFAB00]">
+                                                <Sparkles size={13} />
+                                                <span>{destacado.is_pinned ? 'Destacado en el foro' : 'Popular en el foro'}</span>
+                                            </span>
+                                        </div>
+                                        <span className="text-xs sm:text-sm font-semibold text-[#5E6C84] dark:text-slate-400">
+                                            Por {destacado.author_alias || 'Anónimo'}
+                                        </span>
+                                    </div>
+
+                                    <h4 className="text-base sm:text-lg font-bold text-[#172B4D] dark:text-slate-100">
+                                        {destacado.title}
+                                    </h4>
+
+                                    <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                                        {truncateText(destacado.content, 220)}
+                                    </p>
+
+                                    <div className="flex items-center gap-4 text-xs sm:text-sm font-bold text-[#5E6C84] dark:text-slate-400 pt-1">
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <ThumbsUp size={14} />
+                                            <span>{destacado.likes || 0}</span>
+                                        </span>
+                                        <span className="inline-flex items-center gap-1.5">
+                                            <MessageSquare size={14} />
+                                            <span>{destacado.comment_count || 0}</span>
+                                        </span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Banner de inicio de sesión si no autenticado */}
+                            {!user && (
+                                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 p-4 sm:p-5 rounded-2xl bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-2xs">
+                                    <div className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300">
+                                        Inicia sesión con tu cuenta para descubrir grupos de estudio personalizados para tus cursos.
+                                    </div>
+                                    <Button
+                                        variant="primary"
+                                        size="sm"
+                                        onClick={() => window.dispatchEvent(new Event('pemtree-open-auth-modal'))}
+                                        className="shrink-0 text-xs sm:text-sm font-bold py-2 px-4"
+                                    >
+                                        Iniciar sesión
+                                    </Button>
+                                </div>
+                            )}
+                        </div>
+                    )}
+                </Card>
+            </div>
+        </div>
+    );
+}

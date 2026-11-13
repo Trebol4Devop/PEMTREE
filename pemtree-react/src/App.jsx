@@ -9,6 +9,7 @@ import Visualizer from './pages/Visualizer';
 import Maintenance from './pages/Maintenance';
 import AuthCallback from './pages/AuthCallback';
 import Normas from './pages/Normas';
+import Recuento from './pages/Recuento';
 
 function AppLayout() {
   const { isDarkMode, toggleTheme } = useTheme();
@@ -30,6 +31,7 @@ function AppLayout() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/visualizador" element={<Visualizer />} />
+          <Route path="/recuento" element={<Recuento />} />
           <Route path="/auth/callback" element={<AuthCallback />} />
           <Route path="/foro" element={<Maintenance />} />
           <Route path="/grupos" element={<Maintenance />} />

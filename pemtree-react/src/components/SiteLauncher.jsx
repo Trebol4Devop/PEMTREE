@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import {
-    Cpu, CalendarRange, Clock,
+    Cpu, CalendarRange, Clock, GraduationCap,
 } from 'lucide-react';
 import { Modal } from './ui';
 import { NodeStyleBar } from './CareerCard';
@@ -174,6 +174,11 @@ function DestinationCard({ destination, colors, isDarkMode, onGo }) {
             focal = <FocalCircle icon={Clock} color={blue} bg={`${blue}1f`} />;
             symbol = <ScheduleSymbol blue={blue} neutral={neutral} />;
             break;
+        case 'recuento':
+            headerDecor = <GraduationCap size={13} className="text-white" />;
+            focal = <FocalCircle icon={GraduationCap} color={blue} bg={`${blue}1f`} />;
+            symbol = <PlannerSymbol primary={pensum} secondary={pensumSecondary} />;
+            break;
         default:
             break;
     }
@@ -240,6 +245,7 @@ export default function SiteLauncher({ open, onClose, selectedCareer }) {
         { id: 'visualizador', title: 'Visualizador', subtitle: 'Explora la ruta de tu pensum', route: '/visualizador' },
         { id: 'planificador', title: 'Planificador', subtitle: 'Arma tu línea académica', route: '/visualizador?view=planner' },
         { id: 'horarios', title: 'Armador de Horarios', subtitle: 'Combina secciones sin traslapes', route: '/visualizador?view=schedule' },
+        { id: 'recuento', title: 'Recuento', subtitle: 'Tu avance académico en resumen', route: '/recuento' },
     ];
 
     const handleGo = (route) => {
@@ -262,7 +268,7 @@ export default function SiteLauncher({ open, onClose, selectedCareer }) {
                     : 'Elige una herramienta para continuar:'}
             </p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 {destinations.map((d) => (
                     <DestinationCard
                         key={d.id}

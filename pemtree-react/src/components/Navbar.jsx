@@ -35,6 +35,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
             if (v === 'schedule') return 'schedule';
             return 'graph';
         }
+        if (location.pathname === '/recuento') return 'recuento';
         return 'home';
     })();
 
@@ -58,10 +59,6 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <span className="font-extrabold tracking-tight text-[#0052CC] dark:text-slate-100 hidden sm:inline">PEMTREE</span>
                 </Link>
 
-                <span className="hidden xl:inline-flex items-center text-[10px] font-semibold text-[#5E6C84] dark:text-slate-400 bg-[#F4F5F7] dark:bg-[#0E1624] px-2.5 py-0.5 rounded-full border border-[#DFE1E6] dark:border-[#3E4C5E] whitespace-nowrap">
-                    Espacio estudiantil independiente no oficial
-                </span>
-
                 <div className="hidden lg:flex items-center gap-1 lg:gap-2 text-xs sm:text-sm font-medium">
                     <Link to="/visualizador" className={boardLinkClass(currentView === 'graph')}>
                         Visualizador
@@ -71,6 +68,9 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/visualizador?view=schedule" className={boardLinkClass(currentView === 'schedule')}>
                         Horarios
+                    </Link>
+                    <Link to="/recuento" className={boardLinkClass(currentView === 'recuento')}>
+                        Recuento
                     </Link>
                 </div>
             </div>
@@ -143,6 +143,9 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     </Link>
                     <Link to="/visualizador?view=schedule" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'schedule' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
                         Horarios
+                    </Link>
+                    <Link to="/recuento" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline ${currentView === 'recuento' ? 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' : 'text-slate-700 dark:text-slate-200 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] active:bg-[#F4F5F7] dark:active:bg-[#3E4C5E]'}`}>
+                        Recuento
                     </Link>
                     <button
                         type="button"

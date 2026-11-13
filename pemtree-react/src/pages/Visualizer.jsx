@@ -621,9 +621,6 @@ export default function Visualizer() {
                             {carreraTitulo}
                         </span>
                     )}
-                    <span className="hidden 2xl:inline-block text-[9px] font-semibold text-[#5E6C84] dark:text-slate-400 bg-black/5 dark:bg-white/5 px-2 py-0.5 rounded border border-[#DFE1E6] dark:border-[#3E4C5E] whitespace-nowrap" title="Espacio estudiantil independiente no oficial">
-                        Espacio estudiantil independiente no oficial
-                    </span>
                 </div>
                 <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <button
