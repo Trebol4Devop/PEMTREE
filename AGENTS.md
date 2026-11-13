@@ -5,7 +5,7 @@
 - **Package manager: pnpm** (required — netlify.toml uses `pnpm run build`).
 - **No typecheck step.** No TypeScript; all `.js`/`.jsx`.
 - **Lint:** `pnpm lint` (ESLint with react-hooks + react-refresh plugins). No test runner.
-- **Env:** `pemtree-react/.env` needs `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (or `VITE_SUPABASE_PUBLISHABLE_KEY`) for community features. `vite.config.js` sets `envPrefix: ['VITE_', 'NEXT_PUBLIC_']`. Without env, `src/lib/supabase.js` exports `supabase = null` and the app degrades gracefully.
+- **Env:** `pemtree-react/.env` needs `VITE_SUPABASE_URL` + `VITE_SUPABASE_ANON_KEY` (or `VITE_SUPABASE_PUBLISHABLE_KEY`) for community features. `vite.config.js` sets `envPrefix: ['VITE_', 'NEXT_PUBLIC_']`. Without env, `src/lib/supabase.js` exports `supabase = null` and the app degrades gracefully. El SSO con Zanate usa `VITE_COMMUNITY_AUTH_URL` (producción: `https://zanate.pages.dev`; default del build de producción ya apunta ahí).
 
 ## Commands (run from `pemtree-react/`)
 - `pnpm dev` — Vite dev server (`host: true`; useful for testing on a phone on the LAN)
