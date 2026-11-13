@@ -5,6 +5,7 @@
 [build.environment]
   NODE_VERSION = "20"
   PNPM_VERSION = "9"
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY,VITE_SUPABASE_ANON_KEY"
 
 [[headers]]
   for = "/json/*"
