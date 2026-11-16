@@ -205,12 +205,9 @@ export default function Home() {
             >
                 <div className="absolute inset-0 bg-white/45 dark:bg-[#0E1624]/55"></div>
                 <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 text-center max-w-6xl mx-auto flex flex-col items-center relative z-10">
-                    <div className="flex flex-wrap items-center justify-center gap-2.5 mb-6">
-                        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full shadow-xs">
+                    <div className="flex items-center justify-center mb-6">
+                        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full shadow-xs text-center">
                             Red Estudiantil de Ingeniería
-                        </span>
-                        <span className="text-[11px] font-bold text-[#5E6C84] dark:text-slate-300 bg-white/80 dark:bg-[#1C2636]/80 backdrop-blur-xs border border-[#DFE1E6] dark:border-[#3E4C5E] px-3.5 py-1 rounded-full shadow-xs">
-                            Espacio estudiantil independiente no oficial
                         </span>
                     </div>
 
@@ -505,11 +502,13 @@ export default function Home() {
                 </div>
             </section>
 
-            <footer className="bg-[#172B4D] dark:bg-[#0E1624] text-white py-8 px-4 mt-auto select-none w-full shrink-0">
-                <div className="max-w-6xl mx-auto flex flex-col items-center gap-3">
-                    <img src="/images/logo_trebol.png" alt="Trebol4Devop" className="w-9 h-9 logo-trebol" />
-                    <p className="text-sm font-semibold text-center"><strong>PEMTREE</strong> es un proyecto con fines educativos.</p>
-                    <div className="flex items-center flex-wrap justify-center gap-6 text-sm font-semibold">
+            <footer className="bg-[#172B4D] dark:bg-[#0E1624] text-white py-12 px-6 mt-auto select-none w-full shrink-0">
+                <div className="max-w-6xl mx-auto flex flex-col items-center gap-6">
+                    <div className="flex flex-col items-center gap-3">
+                        <img src="/images/logo_trebol.png" alt="Trebol4Devop" className="w-9 h-9 logo-trebol" />
+                        <p className="text-sm font-semibold text-center leading-relaxed"><strong>PEMTREE</strong> es un proyecto con fines educativos.</p>
+                    </div>
+                    <div className="flex items-center flex-wrap justify-center gap-x-8 gap-y-4 py-1 text-sm font-semibold">
                         <a href="https://github.com/trebol4devop" target="_blank" rel="noreferrer" className="flex items-center gap-2 hover:opacity-90 transition text-white no-underline">
                             <GitBranch size={16} /> GitHub
                         </a>
@@ -532,8 +531,10 @@ export default function Home() {
                             <FileText size={16} /> Términos de servicio
                         </Link>
                     </div>
-                    <p className="text-xs text-white/70 mt-1">Datos académicos de referencia pública: <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-90 transition">portal.ingenieria.usac.edu.gt</a></p>
-                    <p className="text-xs text-white/70">© {new Date().getFullYear()} - PEMTREE (Espacio Estudiantil Independiente)</p>
+                    <div className="w-full pt-5 border-t border-white/10 flex flex-col items-center gap-2.5 text-center">
+                        <p className="text-xs text-white/70 leading-relaxed">Datos académicos de referencia pública: <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-90 transition">portal.ingenieria.usac.edu.gt</a></p>
+                        <p className="text-xs text-white/70">© {new Date().getFullYear()} - PEMTREE</p>
+                    </div>
                 </div>
             </footer>
 
