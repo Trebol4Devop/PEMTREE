@@ -1,2 +1,15 @@
 # Local Netlify folder
 .netlify
+
+
+node_modules/
+dist/
+.parcel-cache/
+
+# Database backups and SQL scripts
+pemtree.sql
+*.sql
+
+# Antigravity agent configs with secrets
+.agents/
+

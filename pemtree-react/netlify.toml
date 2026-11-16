@@ -1,0 +1,37 @@
+[build]
+  command = "pnpm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "20"
+  PNPM_VERSION = "9"
+  SECRETS_SCAN_OMIT_KEYS = "VITE_SUPABASE_URL,VITE_SUPABASE_PUBLISHABLE_KEY,VITE_SUPABASE_ANON_KEY"
+
+[[headers]]
+  for = "/json/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/pensum_color/*"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/*.json"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Content-Type = "application/json; charset=utf-8"
+
+[[headers]]
+  for = "/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache, must-revalidate"
+    Service-Worker-Allowed = "/"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

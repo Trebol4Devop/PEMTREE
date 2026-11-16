@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>404 - PEMTREE</title>
+    <meta name="robots" content="noindex" />
+    <script>
+      sessionStorage.setItem('redirected', 'true');
+      window.location.replace('/');
+    </script>
+    <style>
+      * { margin: 0; padding: 0; box-sizing: border-box; }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        background: #0E1624;
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        text-align: center;
+      }
+      .container { padding: 2rem; }
+      h1 { font-size: 6rem; margin-bottom: 1rem; color: #4C9AFF; }
+      h2 { font-size: 1.5rem; margin-bottom: 2rem; color: #8FA8C0; }
+      p { color: #5E6C84; margin-bottom: 2rem; }
+      a {
+        display: inline-block;
+        background: #4C9AFF;
+        color: #0E1624;
+        padding: 12px 24px;
+        border-radius: 8px;
+        text-decoration: none;
+        font-weight: bold;
+        transition: background 0.3s;
+      }
+      a:hover { background: #2684FF; }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>404</h1>
+      <h2>Página no encontrada</h2>
+      <p>Redirigiendo al inicio...</p>
+      <a href="/">Volver a PEMTREE</a>
+    </div>
+  </body>
+</html>

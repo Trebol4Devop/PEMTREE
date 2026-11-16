@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://pemtree.netlify.app/sitemap.xml

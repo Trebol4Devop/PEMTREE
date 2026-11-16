@@ -1,0 +1,722 @@
+[
+  {
+    "codigo": "0017",
+    "semestre": "1",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 1",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA SOCIAL HUMANÍSTICA 2"
+  },
+  {
+    "codigo": "0069",
+    "semestre": "1",
+    "nombre": "ÁREA TÉCNICA COMPLEMENTARIA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0101",
+    "semestre": "1",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ÁREA MATEMÁTICA BÁSICA 2, FÍSICA BÁSICA"
+  },
+  {
+    "codigo": "0354",
+    "semestre": "1",
+    "nombre": "QUÍMICA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "QUÍMICA 4, PRINCIPIOS DE METROLOGÍA"
+  },
+  {
+    "codigo": "0027",
+    "semestre": "1",
+    "nombre": "BIOLOGÍA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0039",
+    "semestre": "1",
+    "nombre": "DEPORTES 1",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "DEPORTES 2"
+  },
+  {
+    "codigo": "0371",
+    "semestre": "1",
+    "nombre": "INTRODUCCIÓN A LA INGENIERÍA QUÍMICA",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0005",
+    "semestre": "2",
+    "nombre": "TÉCNICAS DE ESTUDIO E INVESTIGACIÓN",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "Ninguno",
+    "post_requisitos": "ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0019",
+    "semestre": "2",
+    "nombre": "ÁREA SOCIAL HUMANÍSTICA 2",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0017",
+    "post_requisitos": "ÉTICA PROFESIONAL, LÓGICA, FILOSOFÍA DE LA CIENCIA"
+  },
+  {
+    "codigo": "0103",
+    "semestre": "2",
+    "nombre": "ÁREA MATEMÁTICA BÁSICA 2",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 1, FÍSICA 1, PRÁCTICAS INICIALES"
+  },
+  {
+    "codigo": "0147",
+    "semestre": "2",
+    "nombre": "FÍSICA BÁSICA",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0101",
+    "post_requisitos": "FÍSICA 1"
+  },
+  {
+    "codigo": "0356",
+    "semestre": "2",
+    "nombre": "QUÍMICA 4",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0354",
+    "post_requisitos": "ECOLOGÍA, QUÍMICA ORGÁNICA 1, ANÁLISIS CUALITATIVO, FÍSICO QUÍMICA 1, BALANCE DE MASA Y ENERGÍA"
+  },
+  {
+    "codigo": "0075",
+    "semestre": "2",
+    "nombre": "DIBUJO COMPUTARIZADO",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0610",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0028",
+    "semestre": "3",
+    "nombre": "ECOLOGÍA",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356",
+    "post_requisitos": "QUÍMICA AMBIENTAL"
+  },
+  {
+    "codigo": "0107",
+    "semestre": "3",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 1",
+    "creditos": 9,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "ÁREA MATEMÁTICA INTERMEDIA 2, ÁREA MATEMÁTICA INTERMEDIA 3, FÍSICA 2, ESTADÍSTICA 1"
+  },
+  {
+    "codigo": "0150",
+    "semestre": "3",
+    "nombre": "FÍSICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103, 0147",
+    "post_requisitos": "FÍSICA 2"
+  },
+  {
+    "codigo": "0358",
+    "semestre": "3",
+    "nombre": "QUÍMICA ORGÁNICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356",
+    "post_requisitos": "QUÍMICA ORGÁNICA 2"
+  },
+  {
+    "codigo": "0362",
+    "semestre": "3",
+    "nombre": "ANÁLISIS CUALITATIVO",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356",
+    "post_requisitos": "ANÁLISIS CUANTITATIVO"
+  },
+  {
+    "codigo": "2025",
+    "semestre": "3",
+    "nombre": "PRÁCTICAS INICIALES",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0103",
+    "post_requisitos": "PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0112",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 3, MATEMÁTICA APLICADA 1"
+  },
+  {
+    "codigo": "0114",
+    "semestre": "4",
+    "nombre": "ÁREA MATEMÁTICA INTERMEDIA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107",
+    "post_requisitos": "MATEMÁTICA APLICADA 3, MATEMÁTICA APLICADA 1, FÍSICO QUÍMICA 1, BALANCE DE MASA Y ENERGÍA, INGENIERÍA ELÉCTRICA 1"
+  },
+  {
+    "codigo": "0152",
+    "semestre": "4",
+    "nombre": "FÍSICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0150",
+    "post_requisitos": "PRINCIPIOS DE METROLOGÍA, INGENIERÍA ELÉCTRICA 1"
+  },
+  {
+    "codigo": "0360",
+    "semestre": "4",
+    "nombre": "QUÍMICA ORGÁNICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0358",
+    "post_requisitos": "MICROBIOLOGÍA, BIOQUÍMICA 1, ANÁLISIS INSTRUMENTAL"
+  },
+  {
+    "codigo": "0364",
+    "semestre": "4",
+    "nombre": "ANÁLISIS CUANTITATIVO",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0362",
+    "post_requisitos": "ANÁLISIS INSTRUMENTAL, PRÁCTICAS INTERMEDIAS"
+  },
+  {
+    "codigo": "0116",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 3",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "IQ-3 TRANSFERENCIA DE CALOR"
+  },
+  {
+    "codigo": "0118",
+    "semestre": "5",
+    "nombre": "MATEMÁTICA APLICADA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0112, 0114",
+    "post_requisitos": "FLUJO DE FLUIDOS"
+  },
+  {
+    "codigo": "0380",
+    "semestre": "5",
+    "nombre": "FÍSICO QUÍMICA 1",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0356, 0114",
+    "post_requisitos": "QUÍMICA AMBIENTAL, FÍSICO QUÍMICA 2, LABORATORIO DE FÍSICO QUÍMICA 1, FLUJO DE FLUIDOS"
+  },
+  {
+    "codigo": "0410",
+    "semestre": "5",
+    "nombre": "BALANCE DE MASA Y ENERGÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0114, 0356",
+    "post_requisitos": "FLUJO DE FLUIDOS"
+  },
+  {
+    "codigo": "0732",
+    "semestre": "5",
+    "nombre": "ESTADÍSTICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0107, 0005",
+    "post_requisitos": "MICROBIOLOGÍA, PSICOLOGÍA INDUSTRIAL, PRINCIPIOS DE METROLOGÍA, INGENIERÍA ECONÓMICA 1"
+  },
+  {
+    "codigo": "0001",
+    "semestre": "5",
+    "nombre": "ÉTICA PROFESIONAL",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0010",
+    "semestre": "5",
+    "nombre": "LÓGICA",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0018",
+    "semestre": "5",
+    "nombre": "FILOSOFÍA DE LA CIENCIA",
+    "creditos": 1,
+    "tipo": "Electivo",
+    "pre_requisitos": "0019",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0370",
+    "semestre": "6",
+    "nombre": "QUÍMICA AMBIENTAL",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0028, 0380",
+    "post_requisitos": "CONTROL DE CONTAMINANTES INDUSTRIALES"
+  },
+  {
+    "codigo": "0382",
+    "semestre": "6",
+    "nombre": "FÍSICO QUÍMICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0380",
+    "post_requisitos": "TERMODINÁMICA 3"
+  },
+  {
+    "codigo": "0386",
+    "semestre": "6",
+    "nombre": "LABORATORIO DE FÍSICO QUÍMICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0380",
+    "post_requisitos": "LABORATORIO DE FÍSICO QUÍMICA 2"
+  },
+  {
+    "codigo": "0412",
+    "semestre": "6",
+    "nombre": "FLUJO DE FLUIDOS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0118, 0380, 0410",
+    "post_requisitos": "IQ-3 TRANSFERENCIA DE CALOR, INGENIERÍA DE LA PRODUCCIÓN, FUNDAMENTOS DE ADMINISTRACIÓN, PRÁCTICAS INTERMEDIAS, GESTIÓN DE LA INNOVACIÓN Y LA TECNOLOGÍA EN LA INDUSTRIA, RECURSOS Y PROCESOS DE CENTRO AMÉRICA, TECNOLOGÍA DE LOS ALIMENTOS"
+  },
+  {
+    "codigo": "0440",
+    "semestre": "6",
+    "nombre": "MICROBIOLOGÍA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0360, 0732",
+    "post_requisitos": "CALIDAD DEL AGUA, SALUD Y SEGURIDAD OCUPACIONAL, BIOINGENIERÍA 1"
+  },
+  {
+    "codigo": "0022",
+    "semestre": "6",
+    "nombre": "PSICOLOGÍA INDUSTRIAL",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732",
+    "post_requisitos": "ADMINISTRACIÓN DE RECURSOS HUMANOS"
+  },
+  {
+    "codigo": "0040",
+    "semestre": "6",
+    "nombre": "DEPORTES 2",
+    "creditos": 2,
+    "tipo": "Electivo",
+    "pre_requisitos": "0039",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0361",
+    "semestre": "6",
+    "nombre": "BIOQUÍMICA 1",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0360",
+    "post_requisitos": "TECNOLOGÍA DE LOS ALIMENTOS"
+  },
+  {
+    "codigo": "0366",
+    "semestre": "6",
+    "nombre": "ANÁLISIS INSTRUMENTAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0364, 0360",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0388",
+    "semestre": "7",
+    "nombre": "LABORATORIO DE FÍSICO QUÍMICA 2",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0386",
+    "post_requisitos": "IQ-4 TRANSFERENCIA DE MASA, LABORATORIO DE INGENIERÍA QUÍMICA 1"
+  },
+  {
+    "codigo": "0394",
+    "semestre": "7",
+    "nombre": "TERMODINÁMICA 3",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0382",
+    "post_requisitos": "TERMODINÁMICA 4, CONTROL DE CONTAMINANTES INDUSTRIALES, INGENIERÍA DEL AZÚCAR"
+  },
+  {
+    "codigo": "0414",
+    "semestre": "7",
+    "nombre": "IQ-3 TRANSFERENCIA DE CALOR",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0116, 0412",
+    "post_requisitos": "IQ-4 TRANSFERENCIA DE MASA, LABORATORIO DE INGENIERÍA QUÍMICA 1, CONTROL DE CONTAMINANTES INDUSTRIALES, OPERACIONES Y PROCESOS EN LA INDUSTRIA FARMACÉUTICA"
+  },
+  {
+    "codigo": "0630",
+    "semestre": "7",
+    "nombre": "INGENIERÍA DE LA PRODUCCIÓN",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0412",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0672",
+    "semestre": "7",
+    "nombre": "FUNDAMENTOS DE ADMINISTRACIÓN",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0412",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "2036",
+    "semestre": "7",
+    "nombre": "PRÁCTICAS INTERMEDIAS",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2025, 0364, 0412",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA QUÍMICA"
+  },
+  {
+    "codigo": "0368",
+    "semestre": "7",
+    "nombre": "PRINCIPIOS DE METROLOGÍA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0732, 0152, 0354",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0419",
+    "semestre": "7",
+    "nombre": "GESTIÓN DE LA INNOVACIÓN Y LA TECNOLOGÍA EN LA INDUSTRIA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0412",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0435",
+    "semestre": "7",
+    "nombre": "RECURSOS Y PROCESOS DE CENTRO AMÉRICA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0412",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0472",
+    "semestre": "7",
+    "nombre": "TECNOLOGÍA DE LOS ALIMENTOS",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0361, 0412",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0396",
+    "semestre": "8",
+    "nombre": "TERMODINÁMICA 4",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0394",
+    "post_requisitos": "CINÉTICA DE PROCESOS QUÍMICOS, CONSERVACIÓN DE ENERGÍA EN LA INDUSTRIA, PROCESOS QUÍMICOS INDUSTRIALES, SEPARACIÓN POR MEDIO DE MEMBRANAS SELECTIVAS, DINÁMICA DE PROCESOS QUÍMICOS"
+  },
+  {
+    "codigo": "0416",
+    "semestre": "8",
+    "nombre": "IQ-4 TRANSFERENCIA DE MASA",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0388, 0414",
+    "post_requisitos": "CINÉTICA DE PROCESOS QUÍMICOS, IQ-5 TRANSFERENCIA DE MASA EN UNIDADES CONTINUAS, LABORATORIO DE INGENIERÍA QUÍMICA 2, INGENIERÍA ECONÓMICA 3, OPERACIONES UNITARIAS COMP(IQ-6), INGENIERÍA DEL AZÚCAR, BIOINGENIERÍA 1, CONSERVACIÓN DE ENERGÍA EN LA INDUSTRIA"
+  },
+  {
+    "codigo": "0428",
+    "semestre": "8",
+    "nombre": "LABORATORIO DE INGENIERÍA QUÍMICA 1",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0388, 0414",
+    "post_requisitos": "IQ-5 TRANSFERENCIA DE MASA EN UNIDADES CONTINUAS, LABORATORIO DE INGENIERÍA QUÍMICA 2"
+  },
+  {
+    "codigo": "0700",
+    "semestre": "8",
+    "nombre": "INGENIERÍA ECONÓMICA 1",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0732",
+    "post_requisitos": "INGENIERÍA ECONÓMICA 3"
+  },
+  {
+    "codigo": "0198",
+    "semestre": "8",
+    "nombre": "CALIDAD DEL AGUA",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0440",
+    "post_requisitos": "CALIDAD DEL AIRE"
+  },
+  {
+    "codigo": "0200",
+    "semestre": "8",
+    "nombre": "INGENIERÍA ELÉCTRICA 1",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0114, 0152",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0437",
+    "semestre": "8",
+    "nombre": "CONTROL DE CONTAMINANTES INDUSTRIALES",
+    "creditos": 3,
+    "tipo": "Electivo",
+    "pre_requisitos": "0370, 0394, 0414",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0482",
+    "semestre": "8",
+    "nombre": "OPERACIONES Y PROCESOS EN LA INDUSTRIA FARMACÉUTICA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0414",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0643",
+    "semestre": "8",
+    "nombre": "SALUD Y SEGURIDAD OCUPACIONAL",
+    "creditos": 5,
+    "tipo": "Electivo",
+    "pre_requisitos": "0440",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0659",
+    "semestre": "8",
+    "nombre": "ADMINISTRACIÓN DE RECURSOS HUMANOS",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0022",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0398",
+    "semestre": "9",
+    "nombre": "CINÉTICA DE PROCESOS QUÍMICOS",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0396, 0416",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA QUÍMICA, SEMINARIO DE INVESTIGACIÓN QUÍMICA, SEMINARIO DE INVESTIGACIÓN E.P.S. QUÍMICA"
+  },
+  {
+    "codigo": "0418",
+    "semestre": "9",
+    "nombre": "IQ-5 TRANSFERENCIA DE MASA EN UNIDADES CONTINUAS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0416, 0428",
+    "post_requisitos": "PROCESOS QUÍMICOS INDUSTRIALES, DISEÑO DE EQUIPO, DISEÑO DE PLANTAS, PRÁCTICAS FINALES INGENIERÍA QUÍMICA, SEMINARIO DE INVESTIGACIÓN QUÍMICA, SEMINARIO DE INVESTIGACIÓN E.P.S. QUÍMICA, SEPARACIÓN POR MEDIO DE MEMBRANAS SELECTIVAS, GESTIÓN TOTAL DE LA CALIDAD, EXTRACCIONES INDUSTRIALES, DINÁMICA DE PROCESOS QUÍMICOS"
+  },
+  {
+    "codigo": "0430",
+    "semestre": "9",
+    "nombre": "LABORATORIO DE INGENIERÍA QUÍMICA 2",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0416, 0428",
+    "post_requisitos": "PRÁCTICAS FINALES INGENIERÍA QUÍMICA"
+  },
+  {
+    "codigo": "0704",
+    "semestre": "9",
+    "nombre": "INGENIERÍA ECONÓMICA 3",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0700, 0416",
+    "post_requisitos": "DISEÑO DE EQUIPO, DISEÑO DE PLANTAS"
+  },
+  {
+    "codigo": "0429",
+    "semestre": "9",
+    "nombre": "OPERACIONES UNITARIAS COMP(IQ-6)",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0416",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0433",
+    "semestre": "9",
+    "nombre": "INGENIERÍA DEL AZÚCAR",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0394, 0416",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0442",
+    "semestre": "9",
+    "nombre": "BIOINGENIERÍA 1",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0416, 0440",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0484",
+    "semestre": "9",
+    "nombre": "CONSERVACIÓN DE ENERGÍA EN LA INDUSTRIA",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0416, 0396",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0434",
+    "semestre": "10",
+    "nombre": "PROCESOS QUÍMICOS INDUSTRIALES",
+    "creditos": 4,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0396, 0418",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0436",
+    "semestre": "10",
+    "nombre": "DISEÑO DE EQUIPO",
+    "creditos": 6,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0704, 0418",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0486",
+    "semestre": "10",
+    "nombre": "DISEÑO DE PLANTAS",
+    "creditos": 5,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0418, 0704",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "2002",
+    "semestre": "10",
+    "nombre": "PRÁCTICAS FINALES INGENIERÍA QUÍMICA",
+    "creditos": 0,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "2036, 0418, 0430, 0398",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7902",
+    "semestre": "10",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN QUÍMICA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0418, 0398",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "7982",
+    "semestre": "10",
+    "nombre": "SEMINARIO DE INVESTIGACIÓN E.P.S. QUÍMICA",
+    "creditos": 3,
+    "tipo": "Obligatorio",
+    "pre_requisitos": "0418, 0398",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0196",
+    "semestre": "10",
+    "nombre": "CALIDAD DEL AIRE",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0198",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0409",
+    "semestre": "10",
+    "nombre": "SEPARACIÓN POR MEDIO DE MEMBRANAS SELECTIVAS",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0418, 0396",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0421",
+    "semestre": "10",
+    "nombre": "GESTIÓN TOTAL DE LA CALIDAD",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0418",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0423",
+    "semestre": "10",
+    "nombre": "EXTRACCIONES INDUSTRIALES",
+    "creditos": 6,
+    "tipo": "Electivo",
+    "pre_requisitos": "0418",
+    "post_requisitos": "Ninguno"
+  },
+  {
+    "codigo": "0432",
+    "semestre": "10",
+    "nombre": "DINÁMICA DE PROCESOS QUÍMICOS",
+    "creditos": 4,
+    "tipo": "Electivo",
+    "pre_requisitos": "0396, 0418",
+    "post_requisitos": "Ninguno"
+  }
+]
