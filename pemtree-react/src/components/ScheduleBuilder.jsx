@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
-import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin, BookOpen } from 'lucide-react';
+import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin, BookOpen, Trash2 } from 'lucide-react';
 import {
     cargarHorarios,
     minutos as mins,
@@ -15,7 +15,7 @@ import { cargarCatalogo, getCatalogo, getCarreraDePensum, getPensumInfo } from '
 import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
 import ExportModal from './ExportModal';
 import DocenteReviews from './DocenteReviews';
-import { WarningBanner } from './ui';
+import { WarningBanner, Modal, Button } from './ui';
 import HelpButton from './onboarding/HelpButton';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -119,6 +119,7 @@ export default function ScheduleBuilder({ openHelp }) {
     const gridRef = useRef(null);
     const savedSettingsRef = useRef(null);
     const [showExportModal, setShowExportModal] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [showCourses, setShowCourses] = useState(false);
     const [exportSettings, setExportSettings] = useState({
         paletteName: 'Default',
@@ -491,6 +492,13 @@ export default function ScheduleBuilder({ openHelp }) {
     function dismissWarning() {
         setShowWarning(false);
         localStorage.setItem('pemtree_horario_warning_dismissed', 'true');
+    }
+
+    function handleResetSchedule() {
+        const key = getScheduleStorageKey(sectionsPeriodRef.current);
+        localStorage.removeItem(key);
+        setSelectedSections({});
+        setShowResetConfirm(false);
     }
 
     /**
@@ -1686,6 +1694,15 @@ export default function ScheduleBuilder({ openHelp }) {
         <button className="schedule-btn" onClick={openExport} disabled={allSelected.length === 0} title="Descargar imagen del horario">
         <Download size={14} />
         </button>
+        <button
+          className="schedule-btn"
+          onClick={() => setShowResetConfirm(true)}
+          disabled={allSelected.length === 0}
+          title="Reiniciar horario (eliminar cursos seleccionados)"
+          aria-label="Reiniciar horario"
+        >
+          <Trash2 size={14} />
+        </button>
         {openHelp && <HelpButton onClick={openHelp} className="schedule-help-btn" />}
         </div>
         </div>
@@ -1968,6 +1985,38 @@ export default function ScheduleBuilder({ openHelp }) {
             onPreview={doPreview}
             onClose={closeExportModal}
             />
+        )}
+
+        {showResetConfirm && (
+            <Modal
+                isOpen={showResetConfirm}
+                onClose={() => setShowResetConfirm(false)}
+                title="Reiniciar Horario"
+                icon={Trash2}
+                size="sm"
+            >
+                <div className="flex flex-col gap-4">
+                    <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                        ¿Estás seguro de que deseas eliminar todas las materias seleccionadas de tu horario para <strong>{PERIODS.find(p => p.id === currentPeriod)?.label || currentPeriod}</strong>?
+                    </p>
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setShowResetConfirm(false)}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={handleResetSchedule}
+                        >
+                            Reiniciar Horario
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         )}
         </div>
     );
