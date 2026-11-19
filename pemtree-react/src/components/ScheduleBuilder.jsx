@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo, Fragment, useRef } from 'react';
-import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin, BookOpen } from 'lucide-react';
+import { Calendar, Download, RefreshCw, Search, AlertTriangle, Check, X, ChevronRight, Clock, Pin, BookOpen, Trash2 } from 'lucide-react';
 import {
     cargarHorarios,
     minutos as mins,
@@ -15,7 +15,7 @@ import { cargarCatalogo, getCatalogo, getCarreraDePensum, getPensumInfo } from '
 import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
 import ExportModal from './ExportModal';
 import DocenteReviews from './DocenteReviews';
-import { WarningBanner } from './ui';
+import { WarningBanner, Modal, Button } from './ui';
 import HelpButton from './onboarding/HelpButton';
 
 const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
@@ -119,7 +119,11 @@ export default function ScheduleBuilder({ openHelp }) {
     const gridRef = useRef(null);
     const savedSettingsRef = useRef(null);
     const [showExportModal, setShowExportModal] = useState(false);
+    const [showResetConfirm, setShowResetConfirm] = useState(false);
     const [showCourses, setShowCourses] = useState(false);
+    const [highlightedCourse, setHighlightedCourse] = useState(null);
+    const clickTimeoutRef = useRef(null);
+    const highlightTimeoutRef = useRef(null);
     const [exportSettings, setExportSettings] = useState({
         paletteName: 'Default',
         fontFamily: 'Segoe UI',
@@ -148,6 +152,13 @@ export default function ScheduleBuilder({ openHelp }) {
         }
         window.addEventListener('pemtree-pensum-ready', handlePensumReady);
         return () => window.removeEventListener('pemtree-pensum-ready', handlePensumReady);
+    }, []);
+
+    useEffect(() => {
+        return () => {
+            if (clickTimeoutRef.current) clearTimeout(clickTimeoutRef.current);
+            if (highlightTimeoutRef.current) clearTimeout(highlightTimeoutRef.current);
+        };
     }, []);
 
     // Carga del catálogo + carrera actual (filtro por carrera)
@@ -456,6 +467,77 @@ export default function ScheduleBuilder({ openHelp }) {
         });
     }
 
+    function removeSection(seccion) {
+        setSelectedSections(prev => {
+            const key = seccion.codigo;
+            const existing = prev[key] || [];
+            // Elimina las ranuras que corresponden a la sección y tipo del curso
+            const remaining = existing.filter(s =>
+                !(s.seccion === seccion.seccion && (s.tipo || '') === (seccion.tipo || ''))
+            );
+            if (remaining.length === 0) {
+                const next = { ...prev };
+                delete next[key];
+                return next;
+            }
+            return { ...prev, [key]: remaining };
+        });
+    }
+
+    function focusCourseInList(codigo) {
+        setShowCourses(true);
+        setCourseSearch('');
+        setModalidadFilter('todas');
+        setExpandedCourses(prev => ({ ...prev, [codigo]: true }));
+        setHighlightedCourse(codigo);
+
+        if (highlightTimeoutRef.current) {
+            clearTimeout(highlightTimeoutRef.current);
+        }
+        highlightTimeoutRef.current = setTimeout(() => {
+            setHighlightedCourse(null);
+        }, 2500);
+
+        setTimeout(() => {
+            const el = document.getElementById(`schedule-course-${codigo}`);
+            if (el) {
+                el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+        }, 100);
+    }
+
+    function handleBlockClick(e, seccion) {
+        e.stopPropagation();
+        if (e.detail === 2) {
+            if (clickTimeoutRef.current) {
+                clearTimeout(clickTimeoutRef.current);
+                clickTimeoutRef.current = null;
+            }
+            removeSection(seccion);
+            return;
+        }
+        if (e.detail > 2) {
+            return;
+        }
+
+        if (clickTimeoutRef.current) {
+            clearTimeout(clickTimeoutRef.current);
+        }
+        clickTimeoutRef.current = setTimeout(() => {
+            focusCourseInList(seccion.codigo);
+            clickTimeoutRef.current = null;
+        }, 260);
+    }
+
+    function handleBlockDoubleClick(e, seccion) {
+        e.stopPropagation();
+        if (clickTimeoutRef.current) {
+            clearTimeout(clickTimeoutRef.current);
+            clickTimeoutRef.current = null;
+        }
+        removeSection(seccion);
+    }
+
     function isSectionSelected(seccion) {
         const key = seccion.codigo;
         const existing = selectedSections[key] || [];
@@ -491,6 +573,13 @@ export default function ScheduleBuilder({ openHelp }) {
     function dismissWarning() {
         setShowWarning(false);
         localStorage.setItem('pemtree_horario_warning_dismissed', 'true');
+    }
+
+    function handleResetSchedule() {
+        const key = getScheduleStorageKey(sectionsPeriodRef.current);
+        localStorage.removeItem(key);
+        setSelectedSections({});
+        setShowResetConfirm(false);
     }
 
     /**
@@ -1509,7 +1598,7 @@ export default function ScheduleBuilder({ openHelp }) {
                         );
 
                         const overlapDur = (groupForSlot.overlapEnd ?? groupForSlot.endMin) - (groupForSlot.overlapStart ?? groupForSlot.startMin);
-                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\n${otros.length > 0 ? `Traslape permitido (${overlapDur} min) con:\n${otros.map(o => `${o.codigo} - ${o.seccion} · ${o.nombre}\n${o.inicio}-${o.final} · ${o.catedratico}`).join('\n')}` : ''}`;
+                        const blockTitle = `${activo.codigo} - ${activo.seccion}\n${activo.nombre}\n${activo.inicio}-${activo.final}\n${activo.edificio} ${activo.salon}\n${activo.catedratico}\n\n${otros.length > 0 ? `Traslape permitido (${overlapDur} min) con:\n${otros.map(o => `${o.codigo} - ${o.seccion} · ${o.nombre}\n${o.inicio}-${o.final} · ${o.catedratico}`).join('\n')}\n\n` : ''}• 1 clic: ubicar en la lista de cursos\n• Doble clic: eliminar del horario`;
 
                         blocks.push(
                             <div key={`group-block-${groupKey(groupForSlot)}`}
@@ -1525,7 +1614,8 @@ export default function ScheduleBuilder({ openHelp }) {
                                     position: 'relative',
                                     minHeight: '80px'
                                 }}
-                                onClick={() => cycleGroup(groupForSlot)}>
+                                onClick={(e) => handleBlockClick(e, activo)}
+                                onDoubleClick={(e) => handleBlockDoubleClick(e, activo)}>
                                 {blockContent}
                             </div>
                         );
@@ -1597,7 +1687,7 @@ export default function ScheduleBuilder({ openHelp }) {
                         </>
                     );
 
-                    const blockTitle = `${seccion.codigo} - ${seccion.seccion}\n${seccion.nombre}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}`;
+                    const blockTitle = `${seccion.codigo} - ${seccion.seccion}\n${seccion.nombre}\n${seccion.inicio}-${seccion.final}\n${seccion.edificio} ${seccion.salon}\n${seccion.catedratico}\n\n• 1 clic: ubicar en la lista de cursos\n• Doble clic: eliminar del horario`;
 
                     blocks.push(
                         <div key={`block-${sl}-${dia}`}
@@ -1613,7 +1703,8 @@ export default function ScheduleBuilder({ openHelp }) {
                                 zIndex: 2,
                                 position: 'relative'
                             }}
-                            onClick={() => toggleSection(seccion)}>
+                            onClick={(e) => handleBlockClick(e, seccion)}
+                            onDoubleClick={(e) => handleBlockDoubleClick(e, seccion)}>
                             {blockContent}
                         </div>
                     );
@@ -1685,6 +1776,15 @@ export default function ScheduleBuilder({ openHelp }) {
         </button>
         <button className="schedule-btn" onClick={openExport} disabled={allSelected.length === 0} title="Descargar imagen del horario">
         <Download size={14} />
+        </button>
+        <button
+          className="schedule-btn"
+          onClick={() => setShowResetConfirm(true)}
+          disabled={allSelected.length === 0}
+          title="Reiniciar horario (eliminar cursos seleccionados)"
+          aria-label="Reiniciar horario"
+        >
+          <Trash2 size={14} />
         </button>
         {openHelp && <HelpButton onClick={openHelp} className="schedule-help-btn" />}
         </div>
@@ -1812,7 +1912,11 @@ export default function ScheduleBuilder({ openHelp }) {
                 />
             </div>
             {filteredCourses.map(curso => (
-                <div key={curso.codigo} className="schedule-course-item">
+                <div
+                    key={curso.codigo}
+                    id={`schedule-course-${curso.codigo}`}
+                    className={`schedule-course-item ${highlightedCourse === curso.codigo ? 'schedule-course-item-highlighted' : ''}`}
+                >
                 <div
                 className="schedule-course-header"
                 onClick={() => !pinnedCourses[curso.codigo] && toggleCourseExpand(curso.codigo)}
@@ -1968,6 +2072,38 @@ export default function ScheduleBuilder({ openHelp }) {
             onPreview={doPreview}
             onClose={closeExportModal}
             />
+        )}
+
+        {showResetConfirm && (
+            <Modal
+                isOpen={showResetConfirm}
+                onClose={() => setShowResetConfirm(false)}
+                title="Reiniciar Horario"
+                icon={Trash2}
+                size="sm"
+            >
+                <div className="flex flex-col gap-4">
+                    <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">
+                        ¿Estás seguro de que deseas eliminar todas las materias seleccionadas de tu horario para <strong>{PERIODS.find(p => p.id === currentPeriod)?.label || currentPeriod}</strong>?
+                    </p>
+                    <div className="flex items-center justify-end gap-2 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
+                        <Button
+                            variant="secondary"
+                            size="sm"
+                            onClick={() => setShowResetConfirm(false)}
+                        >
+                            Cancelar
+                        </Button>
+                        <Button
+                            variant="danger"
+                            size="sm"
+                            onClick={handleResetSchedule}
+                        >
+                            Reiniciar Horario
+                        </Button>
+                    </div>
+                </div>
+            </Modal>
         )}
         </div>
     );
