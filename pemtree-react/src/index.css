@@ -1964,6 +1964,7 @@ html.dark .schedule-count-lab {
     font-weight: 500;
     color: var(--text-secondary);
     cursor: pointer;
+    user-select: none;
     transition: all 0.15s;
     text-align: center;
 }
@@ -2274,6 +2275,7 @@ html.dark .schedule-separator-dots {
     flex-direction: column;
     justify-content: flex-start;
     cursor: pointer;
+    user-select: none;
     transition: all 0.15s;
     line-height: 1.3;
     gap: 5px;
@@ -2373,6 +2375,7 @@ html.dark .schedule-block {
     border-radius: 6px;
     overflow: hidden;
     cursor: pointer;
+    user-select: none;
     transition: all 0.15s;
 }
 
@@ -2383,6 +2386,21 @@ html.dark .schedule-block {
 
 html.dark .schedule-course-item:hover {
     box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+.schedule-course-item.schedule-course-item-highlighted {
+    border-color: var(--primary, #3b82f6) !important;
+    box-shadow: 0 0 0 2px var(--primary, #3b82f6), 0 4px 12px rgba(0, 0, 0, 0.18) !important;
+    animation: course-item-highlight-pulse 0.9s ease-in-out infinite alternate;
+}
+
+@keyframes course-item-highlight-pulse {
+    0% {
+        box-shadow: 0 0 0 2px var(--primary, #3b82f6), 0 2px 6px rgba(0, 0, 0, 0.12);
+    }
+    100% {
+        box-shadow: 0 0 0 4px var(--primary, #3b82f6), 0 4px 16px rgba(0, 0, 0, 0.28);
+    }
 }
 
 .schedule-course-header {
@@ -2861,6 +2879,7 @@ html.dark .schedule-error {
     font-size: 0.75rem;
     color: var(--text-primary);
     cursor: pointer;
+    user-select: none;
     transition: all 0.15s;
     white-space: nowrap;
     flex-shrink: 0;
@@ -3290,6 +3309,7 @@ html.dark .export-modal-section h3 {
     border-radius: 8px;
     background: transparent;
     cursor: pointer;
+    user-select: none;
     transition: all 0.15s;
     min-width: 80px;
 }
