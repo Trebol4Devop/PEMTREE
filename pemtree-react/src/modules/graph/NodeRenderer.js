@@ -3,7 +3,7 @@
 import { TextUtils } from '../utils/TextUtils.js';
 import { cursoMap, currentPensumColors } from '../data/cursos.js';
 import { getNodeDimensions } from './dimensions.js';
-import { getBaseColors, NODE_FILLS, NODE_STROKES, SECTION_TEXT, CODE_COMPLETED, WARNING_COLORS } from '../../theme/tokens.js';
+import { getBaseColors, NODE_FILLS, NODE_STROKES, SECTION_TEXT, PRIMARY_SECTION_TEXT, CODE_COMPLETED, WARNING_COLORS } from '../../theme/tokens.js';
 
 export class NodeRenderer {
     constructor() {
@@ -196,12 +196,9 @@ export class NodeRenderer {
     _actualizarTextos(group, curso, temaOscuro, sectionColors) {
         const codeText = group.querySelector('[data-tipo="codigo"]');
         if (codeText) {
-            let codeTextColor;
-            if (curso.completado) {
-                codeTextColor = temaOscuro ? CODE_COMPLETED.dark : CODE_COMPLETED.light;
-            } else {
-                codeTextColor = sectionColors.text;
-            }
+            const codeTextColor = curso.completado
+                ? (temaOscuro ? CODE_COMPLETED.dark : CODE_COMPLETED.light)
+                : PRIMARY_SECTION_TEXT;
             let suffix = '';
             if (curso.completado) suffix = ' ✓';
             else if (curso.cursando) suffix = ' ●';
@@ -218,8 +215,13 @@ export class NodeRenderer {
             t.setAttribute('fill', sectionColors.text);
         });
 
+        const obligatorioDot = group.querySelector('[data-tipo="obligatorio"]');
+        if (obligatorioDot) {
+            obligatorioDot.setAttribute('fill', sectionColors.text);
+        }
+
         group.querySelectorAll('[data-tipo="prereq"]').forEach(t => {
-            t.setAttribute('fill', sectionColors.text);
+            t.setAttribute('fill', PRIMARY_SECTION_TEXT);
         });
     }
 
@@ -472,12 +474,9 @@ export class NodeRenderer {
         const centerW = nodeWidth - (2 * lateralWidth);
         const rightX = centerX + centerW;
 
-        let codeTextColor;
-        if (curso.completado) {
-            codeTextColor = temaOscuro ? CODE_COMPLETED.dark : CODE_COMPLETED.light;
-        } else {
-            codeTextColor = sectionColors.text;
-        }
+        const codeTextColor = curso.completado
+            ? (temaOscuro ? CODE_COMPLETED.dark : CODE_COMPLETED.light)
+            : PRIMARY_SECTION_TEXT;
 
         const codeText = document.createElementNS(this.svgNS, "text");
         codeText.setAttribute("data-tipo", "codigo");
@@ -486,7 +485,7 @@ export class NodeRenderer {
         codeText.setAttribute("font-family", "Segoe UI, Arial");
         codeText.setAttribute("font-size", isMobile ? "8" : "10");
         codeText.setAttribute("text-anchor", "middle");
-        codeText.setAttribute("font-weight", "bold");
+        codeText.setAttribute("font-weight", "600");
         codeText.setAttribute("fill", codeTextColor);
         let codeSuffix = '';
         if (curso.completado) codeSuffix = ' ✓';
@@ -500,6 +499,7 @@ export class NodeRenderer {
         creditsText.setAttribute("y", curso.y + halfH + halfH / 2 + (isMobile ? 3 : 5));
         creditsText.setAttribute("font-family", "Segoe UI, Arial");
         creditsText.setAttribute("font-size", isMobile ? "7" : "9");
+        creditsText.setAttribute("font-weight", "500");
         creditsText.setAttribute("text-anchor", "middle");
         creditsText.setAttribute("fill", sectionColors.text);
         creditsText.textContent = String(curso.creditos);
@@ -521,6 +521,7 @@ export class NodeRenderer {
             ln.setAttribute("y", startY + (index * lineHeight));
             ln.setAttribute("font-family", "Segoe UI, Arial");
             ln.setAttribute("font-size", String(nameFontSize));
+            ln.setAttribute("font-weight", "400");
             ln.setAttribute("text-anchor", "middle");
             ln.setAttribute("fill", sectionColors.text);
             ln.textContent = line;
@@ -531,10 +532,11 @@ export class NodeRenderer {
         if (curso.obligatorio) {
             const dot = document.createElementNS(this.svgNS, "circle");
             const dotR = isMobile ? 2 : 3;
+            dot.setAttribute("data-tipo", "obligatorio");
             dot.setAttribute("cx", centerX + centerW - (dotR + 4));
             dot.setAttribute("cy", curso.y + (dotR + 4));
             dot.setAttribute("r", dotR);
-            dot.setAttribute("fill", "#e74c3c");
+            dot.setAttribute("fill", sectionColors.text);
             group.appendChild(dot);
         }
 
@@ -556,8 +558,9 @@ export class NodeRenderer {
                 t.setAttribute("y", startYReq + idx * lineHeightReq);
                 t.setAttribute("font-family", "Segoe UI, Arial");
                 t.setAttribute("font-size", isMobile ? "7" : "9");
+                t.setAttribute("font-weight", "500");
                 t.setAttribute("text-anchor", "middle");
-                t.setAttribute("fill", sectionColors.text);
+                t.setAttribute("fill", PRIMARY_SECTION_TEXT);
                 t.textContent = code;
                 group.appendChild(t);
             });

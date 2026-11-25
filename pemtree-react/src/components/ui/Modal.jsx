@@ -47,7 +47,7 @@ export default function Modal({
         <div className="flex items-center justify-between px-5 py-4 border-b border-[#DFE1E6] dark:border-[#3E4C5E] shrink-0">
           <div className="flex items-center gap-2.5">
             {Icon && (
-              <div className="w-8 h-8 rounded-xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
+              <div className="w-8 h-8 rounded-xl bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center">
                 <Icon size={18} />
               </div>
             )}

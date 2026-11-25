@@ -80,10 +80,10 @@ export default function AuthModal({ isOpen, onClose }) {
                                 <img
                                     src={avatarUrl}
                                     alt={displayName}
-                                    className="w-12 h-12 rounded-full border-2 border-[#0052CC] dark:border-[#4C9AFF] object-cover shrink-0"
+                                    className="w-12 h-12 rounded-full border-2 border-[#3B6988] dark:border-[#6BA3C8] object-cover shrink-0"
                                 />
                             ) : (
-                                <div className="w-12 h-12 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center font-extrabold text-base shrink-0">
+                                <div className="w-12 h-12 rounded-full bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center font-extrabold text-base shrink-0">
                                     <User size={22} />
                                 </div>
                             )}
@@ -92,21 +92,21 @@ export default function AuthModal({ isOpen, onClose }) {
                                     <h3 className="font-extrabold text-sm sm:text-base text-[#172B4D] dark:text-white truncate">
                                         {displayName}
                                     </h3>
-                                    <ShieldCheck size={16} className="text-[#059669] dark:text-[#10B981] shrink-0" title="Sesión activa verificada" />
+                                    <ShieldCheck size={16} className="text-[#4A7C6A] dark:text-[#6BA892] shrink-0" title="Sesión activa verificada" />
                                 </div>
                                 {email && (
                                     <p className="text-xs text-[#5E6C84] dark:text-slate-400 truncate mt-0.5">
                                         {email}
                                     </p>
                                 )}
-                                <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-[#059669] dark:text-[#10B981] bg-[#E3FCEF] dark:bg-[#0A3622] px-2 py-0.5 rounded-md uppercase tracking-wider">
+                                <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-[#4A7C6A] dark:text-[#6BA892] bg-[#E8F1EE] dark:bg-[#1A2B25] px-2 py-0.5 rounded-md uppercase tracking-wider">
                                     Listo para opinar
                                 </span>
                             </div>
                         </div>
 
-                        <div className="bg-[#DEEBFF]/50 dark:bg-[#0C295E]/40 border border-[#0052CC]/20 dark:border-[#4C9AFF]/20 rounded-xl p-3.5 text-xs text-[#172B4D] dark:text-slate-200 flex flex-col gap-2 leading-relaxed">
-                            <div className="flex items-center gap-2 font-bold text-[#0052CC] dark:text-[#4C9AFF]">
+                        <div className="bg-[#E6EFF5]/50 dark:bg-[#1A2B38]/40 border border-[#3B6988]/20 dark:border-[#6BA3C8]/20 rounded-xl p-3.5 text-xs text-[#172B4D] dark:text-slate-200 flex flex-col gap-2 leading-relaxed">
+                            <div className="flex items-center gap-2 font-bold text-[#3B6988] dark:text-[#6BA3C8]">
                                 <Sparkles size={14} className="shrink-0" />
                                 <span>¿Cómo participar en las recomendaciones?</span>
                             </div>
@@ -141,7 +141,7 @@ export default function AuthModal({ isOpen, onClose }) {
                     // Estado sin iniciar sesión
                     <div className="flex flex-col gap-4">
                         <div className="text-center">
-                            <div className="w-12 h-12 rounded-2xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center mx-auto mb-2.5">
+                            <div className="w-12 h-12 rounded-2xl bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center mx-auto mb-2.5">
                                 <ThumbsUp size={24} />
                             </div>
                             <h3 className="font-extrabold text-base sm:text-lg text-[#172B4D] dark:text-white">
@@ -154,11 +154,11 @@ export default function AuthModal({ isOpen, onClose }) {
 
                         <div className="flex flex-col gap-2 p-3 bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl text-xs text-[#5E6C84] dark:text-slate-300">
                             <div className="flex items-start gap-2">
-                                <ThumbsUp size={14} className="text-[#059669] dark:text-[#10B981] shrink-0 mt-0.5" />
+                                <ThumbsUp size={14} className="text-[#4A7C6A] dark:text-[#6BA892] shrink-0 mt-0.5" />
                                 <span><strong>Vota en tiempo real:</strong> Recomienda secciones en el Armador de Horarios y Planificador.</span>
                             </div>
                             <div className="flex items-start gap-2">
-                                <ShieldCheck size={14} className="text-[#0052CC] dark:text-[#4C9AFF] shrink-0 mt-0.5" />
+                                <ShieldCheck size={14} className="text-[#3B6988] dark:text-[#6BA3C8] shrink-0 mt-0.5" />
                                 <span><strong>Privacidad garantizada:</strong> Tu voto es anónimo ante otros estudiantes; no se publican comentarios ni nombres personales.</span>
                             </div>
                             <div className="flex items-start gap-2">
@@ -171,7 +171,7 @@ export default function AuthModal({ isOpen, onClose }) {
                             type="button"
                             onClick={handleCommunityLogin}
                             disabled={loading}
-                            className="w-full flex items-center justify-center gap-2.5 bg-[#0052CC] hover:bg-[#0747A6] active:scale-[0.98] text-white font-bold text-xs sm:text-sm py-2.5 px-4 rounded-xl transition shadow-xs cursor-pointer disabled:opacity-50"
+                            className="w-full flex items-center justify-center gap-2.5 bg-[#3B6988] hover:bg-[#2C526B] active:scale-[0.98] text-white font-bold text-xs sm:text-sm py-2.5 px-4 rounded-xl transition shadow-xs cursor-pointer disabled:opacity-50"
                         >
                             <User size={16} className="shrink-0" />
                             <span>{loading ? 'Redirigiendo a la Comunidad...' : 'Iniciar sesión con la Comunidad'}</span>

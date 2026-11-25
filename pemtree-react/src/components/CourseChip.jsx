@@ -20,15 +20,12 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
         })
         .filter(Boolean);
 
-    const chipPrimary = isSuficiencia ? '#059669' : primary;
-    const chipSecondary = isSuficiencia ? '#d1fae5' : secondary;
-    const chipText = isSuficiencia ? '#059669' : textFill;
-    const chipCenter = isSuficiencia ? '#E3FCEF' : secondary;
+    const chipPrimary = isSuficiencia ? '#4A7C6A' : primary;
+    const chipSecondary = isSuficiencia ? '#D5E6DF' : secondary;
+    const chipText = isSuficiencia ? '#4A7C6A' : textFill;
+    const chipCenter = isSuficiencia ? '#E8F1EE' : secondary;
 
     const isDark = document.documentElement.classList.contains('dark');
-    const codeTextColor = curso.completado
-        ? (isDark ? '#10b981' : '#059669')
-        : chipText;
     const codeSuffix = curso.completado ? ' ✓' : (curso.cursando ? ' ●' : '');
 
     return (
@@ -64,36 +61,36 @@ export default function CourseChip({ curso, onDragStart, onRemove, isSuficiencia
         >
             <div className="planner-chip-left">
                 <div className="planner-chip-left-top" style={{ backgroundColor: chipPrimary }}>
-                    <span className="planner-chip-code" style={{ color: isSuficiencia ? '#fff' : codeTextColor }}>
+                    <span className="planner-chip-code" style={{ color: curso.completado ? (isDark ? '#6ee7b7' : '#ffffff') : '#ffffff' }}>
                         {curso.codigo}{codeSuffix}
                     </span>
                 </div>
                 <div className="planner-chip-left-bottom" style={{ backgroundColor: chipSecondary }}>
                     <span className="planner-chip-credits" style={{ color: chipText }}>
-                        {curso.creditos} cr
+                        {curso.creditos}
                     </span>
                 </div>
             </div>
             <div className="planner-chip-center" style={{ backgroundColor: chipCenter }}>
-                {curso.obligatorio && !curso.completado && !isSuficiencia && (
-                    <span className="planner-chip-obligatorio-marker">●</span>
-                )}
                 <span className="planner-chip-name" style={{ color: chipText }}>
                     {curso.nombre}
                 </span>
+                {curso.obligatorio && !isSuficiencia && (
+                    <span className="planner-chip-obligatorio-marker" style={{ color: chipText }} title="Curso obligatorio">•</span>
+                )}
             </div>
             <div className="planner-chip-right" style={{ backgroundColor: chipPrimary }}>
                 {isSuficiencia ? (
                     <span className="planner-chip-prereq" style={{ color: '#fff', fontSize: '0.5rem', fontWeight: 800 }}>SUF</span>
                 ) : prereqCodes.length > 0 ? (
                     prereqCodes.map(code => (
-                        <span key={code} className="planner-chip-prereq" style={{ color: textFill }}>
+                        <span key={code} className="planner-chip-prereq" style={{ color: '#ffffff' }}>
                             {code}
                         </span>
                     ))
                 ) : (
-                    <span className="planner-chip-prereq planner-chip-prereq-none" style={{ color: textFill }}>
-                        —
+                    <span className="planner-chip-prereq planner-chip-prereq-none" style={{ color: 'rgba(255,255,255,0.65)' }}>
+                        
                     </span>
                 )}
             </div>

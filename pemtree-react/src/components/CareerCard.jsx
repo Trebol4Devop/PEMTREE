@@ -48,7 +48,7 @@ function CareerIcon({ base, primary }) {
 }
 
 export default function CareerCard({ name, shortName, base, jsonFile, colors, year, esAntiguo, onSelect }) {
-    const primary = colors?.color1 || '#0052CC';
+    const primary = colors?.color1 || '#3B6988';
     const secondary = colors?.color2 || primary;
 
     const badgeText = esAntiguo ? (year ? `ANTIGUO ${year}` : 'ANTIGUO') : (year ? `CLAR ${year}` : '');

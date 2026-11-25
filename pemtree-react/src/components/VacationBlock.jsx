@@ -1,9 +1,27 @@
 import { AlertTriangle, Trash2 } from 'lucide-react';
 import CourseChip from './CourseChip';
 
+const ORDINAL_VACATIONS = [
+    '',
+    'PRIMERAS',
+    'SEGUNDAS',
+    'TERCERAS',
+    'CUARTAS',
+    'QUINTAS',
+    'SEXTAS',
+    'SÉPTIMAS',
+    'OCTAVAS',
+    'NOVENAS',
+    'DÉCIMAS',
+    'UNDÉCIMAS',
+    'DUODÉCIMAS',
+];
+
 export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, mergedMap, onToggle, advertenciasMap, blockId, magTotales }) {
     const isFull = courses.length >= 2;
     const excedeMagistral = magTotales && magTotales.excede;
+    const ordinalTitle = ORDINAL_VACATIONS[vacNum] || `${vacNum}ªs`;
+    const ratio = Math.min(courses.length / 2, 1);
 
     return (
         <div
@@ -20,22 +38,40 @@ export default function VacationBlock({ vacNum, courses, onDrop, onRemoveChip, m
             }}
         >
             <div className="planner-block-header planner-block-header-vacation">
-                <span className="planner-block-label">Vac {vacNum}</span>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                    <span className="planner-block-capacity">{courses.length}/2</span>
-                    {onToggle && (
-                        <button 
-                            type="button" 
-                            onClick={() => onToggle(vacNum)}
-                            title="Eliminar escuela de vacaciones"
-                            style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', opacity: 0.6 }}
-                            onMouseEnter={e => e.currentTarget.style.opacity = 1}
-                            onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
-                        >
-                            <Trash2 size={13} />
-                        </button>
-                    )}
+                <div className="planner-sem-diagonal" aria-hidden="true">
+                    <div className="planner-sem-diagonal-corner" />
+                    <span className="planner-sem-number">{vacNum}</span>
                 </div>
+                <div className="planner-sem-header-content">
+                    <div className="planner-sem-title-row">
+                        <div className="planner-sem-title">
+                            <small>{ordinalTitle}</small>
+                            <small>VACACIONES</small>
+                        </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                            <span className="planner-block-capacity">{courses.length}/2</span>
+                            {onToggle && (
+                                <button
+                                    type="button"
+                                    onClick={() => onToggle(vacNum)}
+                                    title="Eliminar escuela de vacaciones"
+                                    style={{ background: 'none', border: 'none', color: 'inherit', cursor: 'pointer', padding: 0, display: 'flex', alignItems: 'center', opacity: 0.6 }}
+                                    onMouseEnter={e => e.currentTarget.style.opacity = 1}
+                                    onMouseLeave={e => e.currentTarget.style.opacity = 0.6}
+                                >
+                                    <Trash2 size={13} />
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                    <div className="planner-sem-divider" />
+                </div>
+            </div>
+            <div className="planner-credit-bar">
+                <div
+                    className="planner-credit-bar-fill"
+                    style={{ width: `${ratio * 100}%` }}
+                />
             </div>
             <div className="planner-block-body">
                 {courses.length === 0 && !isFull && (

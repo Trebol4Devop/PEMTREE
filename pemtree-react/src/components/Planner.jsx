@@ -159,13 +159,11 @@ function getPlannedIds(plan) {
     return ids;
 }
 
-function sumLineCredits(line, resolveMap, suficiencias) {
+function sumLineCredits(line, resolveMap) {
     if (!line || !resolveMap) return 0;
-    const sufSet = new Set(suficiencias);
     let total = 0;
     for (const ids of Object.values(line.plan || {})) {
         for (const id of ids) {
-            if (sufSet.has(id)) continue;
             const c = resolveMap.get(id);
             if (c) total += parseInt(c.creditos, 10) || 0;
         }
@@ -513,8 +511,8 @@ export default function Planner({ currentPensum, openHelp }) {
 
     const lineCredits = useCallback((line) => {
         const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
-        return sumLineCredits(line, resolveMap, suficiencias);
-    }, [simultaneous, mergedCursoMap, suficiencias]);
+        return sumLineCredits(line, resolveMap);
+    }, [simultaneous, mergedCursoMap]);
 
     const updateLine = useCallback((lineId, updater) => {
         setLines(prev => {
@@ -628,7 +626,7 @@ export default function Planner({ currentPensum, openHelp }) {
             const course = mergedCursoMap.get(courseId);
             if (course) {
                 const currentCredits = targetCourses
-                    .filter(id => !suficiencias.includes(id))
+                    .filter(id => id !== courseId)
                     .map(id => mergedCursoMap.get(id))
                     .filter(Boolean)
                     .reduce((sum, c) => sum + (c.creditos || 0), 0);
@@ -662,6 +660,10 @@ export default function Planner({ currentPensum, openHelp }) {
                     let found = false;
                     for (let i = 0; i < targetOrder; i++) {
                         if ((linePlan[lineBlocks[i].id] || []).includes(prereqId)) { found = true; break; }
+                    }
+                    // Los cursos aprobados por suficiencia desbloquean sus postrequisitos en el mismo semestre
+                    if (!found && targetCourses.includes(prereqId) && suficiencias.includes(prereqId)) {
+                        found = true;
                     }
                     if (!found) {
                         const pc = mergedCursoMap.get(prereqId);
@@ -953,28 +955,28 @@ export default function Planner({ currentPensum, openHelp }) {
                     )}
                     {simultaneous && secondLoading && <span className="planner-promedio-limit">Cargando...</span>}
                     {simultaneous && secondPensum && !secondLoading && (
-                        <span className="planner-promedio-limit" style={{ color: '#059669' }}>
+                        <span className="planner-promedio-limit" style={{ color: '#4A7C6A' }}>
                             +{secondCursoMap.size} cursos
                         </span>
                     )}
                     <span className="planner-promedio-limit">Máx: {maxCredits} cr/sem</span>
                     <button
                         type="button"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer border shadow-sm bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E]"
+                        className="flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer border-0 bg-transparent text-[#172B4D] dark:text-[#f1f5f9] hover:opacity-70"
                         onClick={() => setShowShareModal(true)}
                         title="Compartir o exportar tu planificación"
+                        aria-label="Compartir o exportar tu planificación"
                     >
-                        <Share2 size={15} />
-                        <span className="hidden sm:inline">Compartir / Exportar</span>
+                        <Share2 size={16} />
                     </button>
                     <button
                         type="button"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer border shadow-sm bg-white dark:bg-[#1C2636] text-[#059669] dark:text-[#34D399] border-[#059669]/30 dark:border-[#34D399]/30 hover:bg-[#D1FAE5] dark:hover:bg-[#064E3B]"
+                        className="flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer border-0 bg-transparent text-[#172B4D] dark:text-[#f1f5f9] hover:opacity-70"
                         onClick={() => { setSharedPlanData(null); setShowImportModal(true); }}
                         title="Importar planificación"
+                        aria-label="Importar planificación"
                     >
-                        <Upload size={15} />
-                        <span className="hidden sm:inline">Importar</span>
+                        <Upload size={16} />
                     </button>
                     <button
                         className="planner-pool-toggle-bar"
@@ -1104,7 +1106,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                             );
                                         } else if (block.type === 'vacation_hidden') {
                                             el = (
-                                                <div key={block.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.5rem' }}>
+                                                <div key={block.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.5rem', flexShrink: 0 }}>
                                                     <button 
                                                         className="planner-add-semester"
                                                         style={{ padding: '0.3rem 0.5rem', fontSize: '0.75rem', height: 'fit-content' }}
@@ -1231,9 +1233,9 @@ export default function Planner({ currentPensum, openHelp }) {
                                 const body = encodeURIComponent('¡Hola!\n\nTe comparto mi planificación universitaria de cursos en PEMTREE. Puedes abrirla directamente en este enlace:\n\n' + currentShareLink);
                                 window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
                             }}
-                            className="flex items-center gap-3 p-3.5 rounded-lg border border-[#0052CC]/40 bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 hover:bg-[#0052CC]/20 transition cursor-pointer text-left"
+                            className="flex items-center gap-3 p-3.5 rounded-lg border border-[#3B6988]/40 bg-[#3B6988]/10 dark:bg-[#6BA3C8]/15 hover:bg-[#3B6988]/20 transition cursor-pointer text-left"
                         >
-                            <div className="p-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white shrink-0">
+                            <div className="p-2 rounded-full bg-[#3B6988] dark:bg-[#6BA3C8] text-white shrink-0">
                                 <Mail size={20} />
                             </div>
                             <div className="min-w-0">
@@ -1264,7 +1266,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                     addToast('¡Enlace copiado al portapapeles!');
                                     setTimeout(() => setLinkCopied(false), 3000);
                                 }}
-                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer ${linkCopied ? 'bg-[#059669] text-white' : 'bg-[#0052CC] dark:bg-[#4C9AFF] text-white hover:bg-[#003D99]'}`}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer border-0 bg-transparent ${linkCopied ? 'text-[#4A7C6A] dark:text-[#6BA892]' : 'text-[#3B6988] dark:text-[#6BA3C8] hover:opacity-80'}`}
                             >
                                 {linkCopied ? <Check size={14} /> : <Copy size={14} />}
                                 <span>{linkCopied ? '¡Copiado!' : 'Copiar'}</span>
@@ -1280,7 +1282,7 @@ export default function Planner({ currentPensum, openHelp }) {
                         <button
                             type="button"
                             onClick={handleDownloadJSON}
-                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border border-[#059669] text-[#059669] dark:text-[#34D399] dark:border-[#34D399] hover:bg-[#059669]/10 w-full sm:w-auto justify-center"
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border-0 bg-transparent text-[#4A7C6A] dark:text-[#6BA892] hover:opacity-80 w-full sm:w-auto justify-center"
                         >
                             <Download size={15} />
                             <span>Descargar Archivo (.json)</span>
@@ -1297,8 +1299,8 @@ export default function Planner({ currentPensum, openHelp }) {
             >
                 {sharedPlanData ? (
                     <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-4">
-                        <div className="p-4 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] border border-[#0052CC]/30">
-                            <h4 className="font-bold text-sm text-[#0052CC] dark:text-[#4C9AFF] flex items-center gap-2 mb-1">
+                        <div className="p-4 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] border border-[#3B6988]/30">
+                            <h4 className="font-bold text-sm text-[#3B6988] dark:text-[#6BA3C8] flex items-center gap-2 mb-1">
                                 <Check size={18} /> Planificación encontrada lista para importar
                             </h4>
                             <p className="text-xs text-[#172B4D] dark:text-slate-200 mt-1">
@@ -1335,7 +1337,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                 1. Selecciona un archivo (.json) descargado previamente:
                             </label>
                             <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#CBD5E1] dark:border-[#3E4C5E] rounded-lg p-6 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#1C2636] transition-colors">
-                                <Upload size={28} className="text-[#0052CC] dark:text-[#4C9AFF] mb-2" />
+                                <Upload size={28} className="text-[#3B6988] dark:text-[#6BA3C8] mb-2" />
                                 <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-200 text-center">Haz clic para buscar o arrastra tu archivo JSON</span>
                                 <span className="text-[0.68rem] text-slate-500 mt-1">Archivo exportado desde PEMTREE</span>
                                 <input
@@ -1391,7 +1393,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                             addToast('El código no se pudo procesar. Verifica que esté completo.');
                                         }
                                     }}
-                                    className="px-3.5 py-2 rounded-md bg-[#0052CC] dark:bg-[#4C9AFF] text-white text-xs font-bold hover:bg-[#003D99] transition cursor-pointer"
+                                    className="px-3.5 py-2 rounded-md bg-[#3B6988] dark:bg-[#6BA3C8] text-white text-xs font-bold hover:bg-[#003D99] transition cursor-pointer"
                                 >
                                     Cargar
                                 </button>

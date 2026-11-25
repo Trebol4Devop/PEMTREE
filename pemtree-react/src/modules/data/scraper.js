@@ -99,7 +99,7 @@ export function detectarConflictosSemestral(horarios) {
                 
                 const info = { dia, curso1: a, curso2: b, minutos: traslape };
                 
-                if (traslape >= 50) {
+                if (traslape > 50) {
                     conflictos.push(info);
                 } else {
                     traslapesMenores.push(info);

@@ -128,7 +128,7 @@ const CommentLayerItem = ({
                         <span className="font-semibold text-[#172B4D] dark:text-[#E2E8F0] tracking-tight flex items-center gap-1">
                             {comment.author_alias || 'Estudiante'}
                             {comment.user_id === post.user_id && (
-                                <span className="bg-[#0052CC]/10 text-[#0052CC] dark:bg-[#4C9AFF]/20 dark:text-[#4C9AFF] text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">
+                                <span className="bg-[#3B6988]/10 text-[#3B6988] dark:bg-[#6BA3C8]/20 dark:text-[#6BA3C8] text-[9px] px-1.5 py-0.2 rounded font-bold uppercase tracking-wider">
                                     Autor
                                 </span>
                             )}
@@ -159,8 +159,8 @@ const CommentLayerItem = ({
                             }}
                             className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer ${
                                 isReplying 
-                                    ? 'bg-[#0052CC] text-white dark:bg-[#4C9AFF] dark:text-[#0E1624]' 
-                                    : 'text-[#0052CC] hover:bg-[#DEEBFF] dark:text-[#4C9AFF] dark:hover:bg-[#0C295E]'
+                                    ? 'bg-[#3B6988] text-white dark:bg-[#6BA3C8] dark:text-[#0E1624]' 
+                                    : 'text-[#3B6988] hover:bg-[#E6EFF5] dark:text-[#6BA3C8] dark:hover:bg-[#1A2B38]'
                             }`}
                             title="Comentar sobre esta respuesta"
                         >
@@ -174,7 +174,7 @@ const CommentLayerItem = ({
                                         e.stopPropagation();
                                         handleRestoreComment(post.id, comment.id);
                                     }}
-                                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
+                                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer text-[#4A7C6A] hover:bg-[#E8F1EE] dark:text-[#6BA892] dark:hover:bg-[#1A2B25]`}
                                     title="Restaurar comentario (solo administración/moderación)"
                                 >
                                     <RotateCcw size={12} />
@@ -237,12 +237,12 @@ const CommentLayerItem = ({
                                         handleAddComment(post.id, comment.id);
                                     }
                                 }}
-                                className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-lg px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-white placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] transition"
+                                className="flex-1 bg-white dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-lg px-2.5 py-1.5 text-xs text-[#172B4D] dark:text-white placeholder-[#7A869A] focus:outline-none focus:border-[#3B6988] transition"
                                 autoFocus
                             />
                             <button
                                 onClick={() => handleAddComment(post.id, comment.id)}
-                                className="bg-[#0052CC] hover:bg-[#003D99] text-white px-2.5 py-1.5 rounded-lg font-semibold text-xs transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
+                                className="bg-[#3B6988] hover:bg-[#003D99] text-white px-2.5 py-1.5 rounded-lg font-semibold text-xs transition cursor-pointer flex items-center gap-1 shadow-2xs shrink-0"
                                 title="Enviar respuesta en capa"
                             >
                                 <Send size={13} />
@@ -250,7 +250,7 @@ const CommentLayerItem = ({
                             </button>
                         </div>
                         <p className="text-[10px] text-[#5E6C84] dark:text-slate-400 leading-tight">
-                            Al responder aceptas los <Link to="/normas#terminos" target="_blank" className="underline font-semibold text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> (responsabilidad legal exclusiva).
+                            Al responder aceptas los <Link to="/normas#terminos" target="_blank" className="underline font-semibold text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> (responsabilidad legal exclusiva).
                         </p>
                     </div>
                 )}
@@ -1070,16 +1070,16 @@ export default function Forum() {
         <div className="flex-1 flex flex-col items-center overflow-y-auto w-full bg-[#F4F5F7] dark:bg-[#0F1726] hide-scrollbar select-none">
             
             {/* Header Banner */}
-            <div className="w-full bg-gradient-to-r from-[#0052CC] to-[#0747A6] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-10 px-4 shrink-0 text-white shadow-sm">
+            <div className="w-full bg-gradient-to-r from-[#3B6988] to-[#2C526B] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-10 px-4 shrink-0 text-white shadow-sm">
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-[#4C9AFF]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
-                            <MessageSquare size={28} className="text-white dark:text-[#4C9AFF]" />
+                        <div className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-[#6BA3C8]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
+                            <MessageSquare size={28} className="text-white dark:text-[#6BA3C8]" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2 flex-wrap">
                                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Foro Estudiantil</h1>
-                                <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#6BA3C8]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                                     Red Estudiantil de Ingeniería
                                 </span>
                                 <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
@@ -1160,7 +1160,7 @@ export default function Forum() {
                                 setNewCarrera(selectedCarrera || 'todas');
                                 setIsCreateModalOpen(true);
                             }}
-                            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
+                            className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0"
                         >
                             <Plus size={16} />
                             <span>Crear Publicación</span>
@@ -1200,7 +1200,7 @@ export default function Forum() {
                             placeholder="Buscar por curso, catedrático, palabra en comentarios o alias..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border border-transparent focus:border-[#0052CC] dark:focus:border-[#4C9AFF] focus:outline-none transition"
+                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border-0 focus:outline-none transition"
                         />
                     </div>
 
@@ -1209,24 +1209,24 @@ export default function Forum() {
                         <select
                             value={selectedCarrera}
                             onChange={(e) => setSelectedCarrera(e.target.value)}
-                            className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer"
+                            className="bg-transparent text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border-0 focus:outline-none cursor-pointer"
                         >
                             {CARRERAS.map(c => (
                                 <option key={c.id} value={c.id}>{c.label}</option>
                             ))}
                         </select>
 
-                        <div className="flex items-center gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 text-xs font-bold w-full sm:w-auto">
+                        <div className="flex items-center gap-1 bg-transparent p-1 rounded-xl border-0 text-xs font-bold w-full sm:w-auto">
                             <button
                                 onClick={() => setSortBy('recent')}
-                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 ${sortBy === 'recent' ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
+                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 border-0 bg-transparent ${sortBy === 'recent' ? 'text-[#3B6988] dark:text-[#6BA3C8]' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
                             >
                                 <Clock size={13} />
                                 <span>Recientes</span>
                             </button>
                             <button
                                 onClick={() => setSortBy('likes')}
-                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 ${sortBy === 'likes' ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
+                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 border-0 bg-transparent ${sortBy === 'likes' ? 'text-[#3B6988] dark:text-[#6BA3C8]' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
                             >
                                 <ThumbsUp size={13} />
                                 <span>Populares</span>
@@ -1245,7 +1245,7 @@ export default function Forum() {
                                 onClick={() => setSelectedCategory(cat.id)}
                                 className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap cursor-pointer border shrink-0 sm:shrink ${
                                     active
-                                        ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 shadow-xs'
+                                        ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border-[#3B6988]/30 dark:border-[#6BA3C8]/30 shadow-xs'
                                         : 'bg-white dark:bg-[#1C2636] text-[#5E6C84] dark:text-slate-300 border-[#DFE1E6] dark:border-[#3E4C5E] hover:bg-[#F4F5F7] dark:hover:bg-[#2E3C50]'
                                 }`}
                             >
@@ -1277,7 +1277,7 @@ export default function Forum() {
                 <div className="flex flex-col gap-4">
                     {loading ? (
                         <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-12 border border-[#DFE1E6] dark:border-[#3E4C5E] text-center flex flex-col items-center justify-center gap-3">
-                            <div className="w-8 h-8 border-3 border-[#0052CC] border-t-transparent rounded-full animate-spin"></div>
+                            <div className="w-8 h-8 border-3 border-[#3B6988] border-t-transparent rounded-full animate-spin"></div>
                             <p className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando consultas de la comunidad...</p>
                         </div>
                     ) : filteredPosts.length === 0 ? (
@@ -1310,14 +1310,14 @@ export default function Forum() {
                                 <div 
                                     key={post.id}
                                     id={`post-${post.id}`}
-                                    className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs hover:border-[#0052CC]/40 dark:hover:border-[#4C9AFF]/40 transition-all overflow-hidden"
+                                    className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs hover:border-[#3B6988]/40 dark:hover:border-[#6BA3C8]/40 transition-all overflow-hidden"
                                 >
                                     <div className="p-5 sm:p-6 flex flex-col gap-3">
                                         
                                         {/* Meta Header */}
                                         <div className="flex items-center justify-between gap-3 flex-wrap">
                                             <div className="flex items-center gap-2">
-                                                <div className="w-7 h-7 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-bold shrink-0">
+                                                <div className="w-7 h-7 rounded-full bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center text-xs font-bold shrink-0">
                                                     <User size={14} />
                                                 </div>
                                                 <span className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200">
@@ -1334,7 +1334,7 @@ export default function Forum() {
                                                                 e.stopPropagation();
                                                                 handleRestorePost(post.id);
                                                             }}
-                                                            className={`p-1 rounded-lg transition cursor-pointer ml-1 flex items-center gap-1 text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
+                                                            className={`p-1 rounded-lg transition cursor-pointer ml-1 flex items-center gap-1 text-[#4A7C6A] hover:bg-[#E8F1EE] dark:text-[#6BA892] dark:hover:bg-[#1A2B25]`}
                                                             title="Restaurar publicación (solo administración/moderación)"
                                                         >
                                                             <RotateCcw size={13} />
@@ -1434,8 +1434,8 @@ export default function Forum() {
                                                     onClick={() => handleLike(post.id)}
                                                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition font-bold text-xs cursor-pointer border ${
                                                         userLikes.includes(post.id)
-                                                            ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 shadow-sm'
-                                                            : 'bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#42526E] hover:text-[#0052CC] dark:text-slate-300 dark:hover:text-[#4C9AFF] border-transparent'
+                                                            ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border-[#3B6988]/30 dark:border-[#6BA3C8]/30 shadow-sm'
+                                                            : 'bg-[#F4F5F7] hover:bg-[#E6EFF5] dark:bg-[#0E1624] dark:hover:bg-[#1A2B38] text-[#42526E] hover:text-[#3B6988] dark:text-slate-300 dark:hover:text-[#6BA3C8] border-transparent'
                                                     }`}
                                                 >
                                                     <ThumbsUp size={14} />
@@ -1446,7 +1446,7 @@ export default function Forum() {
                                                     onClick={() => setExpandedPostId(isExpanded ? null : post.id)}
                                                     className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl transition font-bold text-xs cursor-pointer border ${
                                                         isExpanded
-                                                            ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30'
+                                                            ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border-[#3B6988]/30'
                                                             : 'bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#0E1624] dark:hover:bg-[#2E3C50] text-[#42526E] dark:text-slate-300 border-transparent'
                                                     }`}
                                                 >
@@ -1505,23 +1505,23 @@ export default function Forum() {
                                                                 value={commentTexts[post.id] || ''}
                                                                 onChange={(e) => setCommentTexts(prev => ({ ...prev, [post.id]: e.target.value }))}
                                                                 onKeyDown={(e) => { if (e.key === 'Enter') handleAddComment(post.id); }}
-                                                                className="flex-1 bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2 text-xs text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF]"
+                                                                className="flex-1 bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl px-3.5 py-2 text-xs text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] focus:outline-none focus:border-[#3B6988] dark:focus:border-[#6BA3C8]"
                                                             />
                                                             <button
                                                                 onClick={() => handleAddComment(post.id)}
-                                                                className="bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:text-[#0E1624] text-white p-2 rounded-xl transition cursor-pointer shrink-0"
+                                                                className="bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:text-[#0E1624] text-white p-2 rounded-xl transition cursor-pointer shrink-0"
                                                                 title="Publicar respuesta"
                                                             >
                                                                 <Send size={15} />
                                                             </button>
                                                         </div>
                                                         <p className="text-[10px] text-[#5E6C84] dark:text-slate-400 px-1 leading-tight">
-                                                            Al responder aceptas los <Link to="/normas#terminos" target="_blank" className="underline font-semibold text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> (eres el único responsable legal de tu contenido).
+                                                            Al responder aceptas los <Link to="/normas#terminos" target="_blank" className="underline font-semibold text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> (eres el único responsable legal de tu contenido).
                                                         </p>
                                                     </div>
                                                 ) : (
-                                                    <div className="mt-2 p-3 rounded-xl bg-[#DEEBFF]/60 dark:bg-[#0C295E]/60 border border-[#0052CC]/30 dark:border-[#4C9AFF]/30 text-center">
-                                                        <p className="text-xs font-bold text-[#0052CC] dark:text-[#7DD3FC]">
+                                                    <div className="mt-2 p-3 rounded-xl bg-[#E6EFF5]/60 dark:bg-[#1A2B38]/60 border border-[#3B6988]/30 dark:border-[#6BA3C8]/30 text-center">
+                                                        <p className="text-xs font-bold text-[#3B6988] dark:text-[#7DD3FC]">
                                                             Debes iniciar sesión con Google en la parte superior para responder o comentar en esta publicación.
                                                         </p>
                                                     </div>
@@ -1590,13 +1590,13 @@ export default function Forum() {
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200 flex items-center justify-between">
                                 <span className="flex items-center gap-1.5">
-                                    <ImageIcon size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <ImageIcon size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <span>Adjuntar imagen (Opcional)</span>
                                 </span>
-                                {isCompressingImg && <span className="text-[11px] text-[#0052CC] dark:text-[#4C9AFF] animate-pulse">Procesando imagen...</span>}
+                                {isCompressingImg && <span className="text-[11px] text-[#3B6988] dark:text-[#6BA3C8] animate-pulse">Procesando imagen...</span>}
                             </label>
                             <div className="flex items-center gap-2">
-                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
+                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#E6EFF5] dark:bg-[#0E1624] dark:hover:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
                                     <ImageIcon size={15} />
                                     <span>Seleccionar imagen desde tu dispositivo</span>
                                     <input
@@ -1625,9 +1625,9 @@ export default function Forum() {
 
                         <div className="bg-[#F4F5F7] dark:bg-[#0E1624]/60 p-3.5 rounded-2xl border border-[#DFE1E6]/80 dark:border-[#3E4C5E]/80 flex items-center justify-between gap-2">
                             <div className="flex items-center gap-2">
-                                <ShieldCheck size={16} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                <ShieldCheck size={16} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                 <span className="text-xs font-semibold text-[#5E6C84] dark:text-slate-300">
-                                    Publicando bajo tu perfil: <strong className="text-[#0052CC] dark:text-[#4C9AFF]">{activeAlias}</strong>
+                                    Publicando bajo tu perfil: <strong className="text-[#3B6988] dark:text-[#6BA3C8]">{activeAlias}</strong>
                                 </span>
                             </div>
                             <button
@@ -1636,7 +1636,7 @@ export default function Forum() {
                                     setProfileInputText(activeAlias);
                                     setIsProfileModalOpen(true);
                                 }}
-                                className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline cursor-pointer flex items-center gap-1 bg-transparent border-none"
+                                className="text-[11px] font-bold text-[#3B6988] dark:text-[#6BA3C8] hover:underline cursor-pointer flex items-center gap-1 bg-transparent border-none"
                             >
                                 <Edit3 size={12} />
                                 <span>Cambiar</span>
@@ -1650,10 +1650,10 @@ export default function Forum() {
                                     required
                                     checked={acceptedTerms}
                                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                                    className="w-4 h-4 mt-0.5 rounded accent-[#0052CC] shrink-0 cursor-pointer"
+                                    className="w-4 h-4 mt-0.5 rounded accent-[#3B6988] shrink-0 cursor-pointer"
                                 />
                                 <span className="text-[11px] sm:text-xs leading-relaxed">
-                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaro que <strong>soy el único responsable legal del contenido que publico</strong> en este espacio estudiantil independiente.
+                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> y declaro que <strong>soy el único responsable legal del contenido que publico</strong> en este espacio estudiantil independiente.
                                 </span>
                             </label>
                         </div>
@@ -1700,7 +1700,7 @@ export default function Forum() {
                                 onChange={(e) => setProfileInputText(e.target.value)}
                             />
                             <div className="mt-3 p-2.5 rounded-xl bg-amber-50/70 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-[11px] text-slate-700 dark:text-slate-300 leading-snug">
-                                Al participar aceptas los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y reconoces que <strong>eres el único responsable legal</strong> del contenido que publicas en este espacio comunitario.
+                                Al participar aceptas los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> y reconoces que <strong>eres el único responsable legal</strong> del contenido que publicas en este espacio comunitario.
                             </div>
                         </div>
 
@@ -1738,8 +1738,8 @@ export default function Forum() {
                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                             customAlert.type === 'error' ? 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]' :
                             customAlert.type === 'warning' ? 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]' :
-                            customAlert.type === 'success' ? 'bg-[#E3FCEF] dark:bg-[#0A3622] text-[#059669] dark:text-[#10b981]' :
-                            'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
+                            customAlert.type === 'success' ? 'bg-[#E8F1EE] dark:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892]' :
+                            'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8]'
                         }`}>
                             {customAlert.type === 'error' ? <AlertCircle size={28} /> :
                              customAlert.type === 'warning' ? <AlertTriangle size={28} /> :
@@ -1856,7 +1856,7 @@ export default function Forum() {
                                 <span className="text-xs font-bold text-[#172B4D] dark:text-slate-300">
                                     Usuario reportado:
                                 </span>
-                                <span className="text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-2.5 py-0.5 rounded-full">
+                                <span className="text-xs font-extrabold text-[#3B6988] dark:text-[#6BA3C8] bg-[#E6EFF5] dark:bg-[#1A2B38] px-2.5 py-0.5 rounded-full">
                                     {reportModal.reportedUserAlias}
                                 </span>
                             </div>
@@ -1907,7 +1907,7 @@ export default function Forum() {
                         <div className="max-h-[60vh] overflow-y-auto flex flex-col gap-3 pr-1">
                             {adminReports.length === 0 ? (
                                 <div className="text-center py-10 flex flex-col items-center gap-2">
-                                    <CheckCircle2 size={36} className="text-[#059669] dark:text-[#10b981]" />
+                                    <CheckCircle2 size={36} className="text-[#4A7C6A] dark:text-[#6BA892]" />
                                     <p className="text-sm font-bold text-[#172B4D] dark:text-slate-200">¡Todo en orden!</p>
                                     <p className="text-xs text-[#7A869A] dark:text-slate-400">Actualmente no hay reportes de mal comportamiento registrados en la base de datos.</p>
                                 </div>

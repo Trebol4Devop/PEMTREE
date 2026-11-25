@@ -4,7 +4,7 @@ function RuleCard({ rule, isDarkMode }) {
   return (
     <div className={`rounded-2xl p-4 border border-[#DFE1E6] dark:border-[#3E4C5E] ${isDarkMode ? 'bg-[#1C2636]' : 'bg-[#F4F5F7]'}`}>
       <div className="flex items-center gap-2 mb-2">
-        <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624]">{rule.icon}</span>
+        <span className="w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold flex-shrink-0 bg-[#3B6988] dark:bg-[#6BA3C8] text-white dark:text-[#0E1624]">{rule.icon}</span>
         <h3 className={`font-bold text-sm leading-tight ${isDarkMode ? 'text-white' : 'text-[#172B4D]'}`}>{rule.title}</h3>
       </div>
       {rule.description && (
@@ -38,7 +38,7 @@ function RuleCard({ rule, isDarkMode }) {
         <ul className={`mt-2.5 space-y-1.5 ${isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}`}>
           {rule.bullets.map((b, bi) => (
             <li key={bi} className="flex items-start gap-2 text-xs sm:text-sm">
-              <span className="text-[#0052CC] dark:text-[#4C9AFF] mt-0.5 flex-shrink-0 font-bold">-</span>
+              <span className="text-[#3B6988] dark:text-[#6BA3C8] mt-0.5 flex-shrink-0 font-bold">-</span>
               <span>{b}</span>
             </li>
           ))}

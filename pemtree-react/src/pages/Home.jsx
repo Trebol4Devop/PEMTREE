@@ -47,9 +47,9 @@ export default function Home() {
                         .trim();
                     const col = (carrerasById.get(base) || {}).colores || {};
                     const colors = {
-                        color1: col.color1 || '#0052CC',
-                        color2: col.color2 || '#DEEBFF',
-                        color3: col.color3 || col.color1 || '#0052CC',
+                        color1: col.color1 || '#3B6988',
+                        color2: col.color2 || '#E6EFF5',
+                        color3: col.color3 || col.color1 || '#3B6988',
                     };
                     return { name: titleName, shortName, base, jsonFile: `/json/${file}`, colors, year, esAntiguo };
                 });
@@ -140,20 +140,20 @@ export default function Home() {
         const [isOpen, setIsOpen] = useState(false);
         return (
             <div 
-                className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] p-5 sm:p-6 hover:border-[#0052CC]/50 dark:hover:border-[#4C9AFF]/50 transition-all duration-200 cursor-pointer select-none shadow-xs group"
+                className="bg-white dark:bg-[#1C2636] rounded-2xl p-5 sm:p-6 hover:shadow-md transition-all duration-200 cursor-pointer select-none shadow-xs group"
                 onClick={() => setIsOpen(!isOpen)}
             >
                 <div className="flex items-center justify-between gap-4">
-                    <h3 className="font-bold text-sm sm:text-base text-[#172B4D] dark:text-slate-100 group-hover:text-[#0052CC] dark:group-hover:text-[#4C9AFF] transition-colors leading-snug">
+                    <h3 className="font-bold text-sm sm:text-base text-[#172B4D] dark:text-slate-100 group-hover:text-[#3B6988] dark:group-hover:text-[#6BA3C8] transition-colors leading-snug">
                         {question}
                     </h3>
-                    <div className={`w-8 h-8 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] text-[#5E6C84] dark:text-slate-400 flex items-center justify-center shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 bg-[#DEEBFF] text-[#0052CC] dark:bg-[#0C295E] dark:text-[#4C9AFF]' : ''}`}>
+                    <div className={`w-8 h-8 rounded-lg bg-[#F4F5F7] dark:bg-[#0E1624] text-[#5E6C84] dark:text-slate-400 flex items-center justify-center shrink-0 transition-transform duration-300 ${isOpen ? 'rotate-180 bg-[#E6EFF5] text-[#3B6988] dark:bg-[#1A2B38] dark:text-[#6BA3C8]' : ''}`}>
                         <ChevronDown size={18} />
                     </div>
                 </div>
                 <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100 mt-3.5' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
                     <div className="overflow-hidden">
-                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed border-t border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 pt-3.5">
+                        <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed pt-3.5">
                             {answer}
                         </p>
                     </div>
@@ -166,20 +166,20 @@ export default function Home() {
         const [isOpen, setIsOpen] = useState(false);
         return (
             <div 
-                className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624]/60 transition-all duration-200 cursor-pointer select-none group border border-transparent hover:border-[#DFE1E6]/60 dark:hover:border-[#3E4C5E]/60"
+                className="flex items-start gap-3 p-2.5 rounded-lg hover:bg-[#F4F5F7] dark:hover:bg-[#0E1624]/60 transition-all duration-200 cursor-pointer select-none group"
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <div className="w-7 h-7 rounded-md bg-[#F4F5F7] dark:bg-[#0E1624] text-[#5E6C84] dark:text-[#94A3B8] flex items-center justify-center shrink-0 mt-0.5 transition-colors duration-200 group-hover:text-[#0052CC] dark:group-hover:text-[#4C9AFF] group-hover:bg-[#DEEBFF]/60 dark:group-hover:bg-[#0C295E]/60">
+                <div className="w-7 h-7 rounded-md bg-[#F4F5F7] dark:bg-[#0E1624] text-[#5E6C84] dark:text-[#94A3B8] flex items-center justify-center shrink-0 mt-0.5 transition-colors duration-200 group-hover:text-[#3B6988] dark:group-hover:text-[#6BA3C8] group-hover:bg-[#E6EFF5]/60 dark:group-hover:bg-[#1A2B38]/60">
                     <Icon size={15} />
                 </div>
                 <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2 min-h-[28px]">
-                        <h4 className="font-semibold text-sm text-[#172B4D] dark:text-slate-200 group-hover:text-[#0052CC] dark:group-hover:text-[#4C9AFF] transition-colors leading-snug">
+                        <h4 className="font-semibold text-sm text-[#172B4D] dark:text-slate-200 group-hover:text-[#3B6988] dark:group-hover:text-[#6BA3C8] transition-colors leading-snug">
                             {title}
                         </h4>
                         <ChevronDown 
                             size={15} 
-                            className={`shrink-0 text-[#7A869A] dark:text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#0052CC] dark:text-[#4C9AFF]' : ''}`} 
+                            className={`shrink-0 text-[#7A869A] dark:text-slate-500 transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#3B6988] dark:text-[#6BA3C8]' : ''}`} 
                         />
                     </div>
                     <div className={`grid transition-all duration-300 ease-in-out ${isOpen ? 'grid-rows-[1fr] opacity-100 mt-1.5' : 'grid-rows-[0fr] opacity-0 mt-0'}`}>
@@ -206,7 +206,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-white/45 dark:bg-[#0E1624]/55"></div>
                 <div className="pt-24 sm:pt-32 pb-12 sm:pb-16 px-4 text-center max-w-6xl mx-auto flex flex-col items-center relative z-10">
                     <div className="flex items-center justify-center mb-6">
-                        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] px-3.5 py-1 rounded-full shadow-xs text-center">
+                        <span className="text-[11px] font-extrabold uppercase tracking-widest text-[#3B6988] dark:text-[#6BA3C8] bg-[#E6EFF5] dark:bg-[#1A2B38] px-3.5 py-1 rounded-full shadow-xs text-center">
                             Red Estudiantil de Ingeniería
                         </span>
                     </div>
@@ -258,10 +258,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0 flex-grow">
+            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] py-16 px-4 shrink-0 flex-grow">
                 <div className="max-w-7xl mx-auto">
                     <div className="text-center mb-12">
-                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#3B6988] dark:text-[#6BA3C8] bg-[#E6EFF5] dark:bg-[#1A2B38] inline-block px-3 py-1 rounded-full mb-4">
                             Herramientas
                         </p>
                         <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
@@ -274,10 +274,10 @@ export default function Home() {
 
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 xl:gap-8 items-stretch">
                         {/* Visualizador */}
-                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden flex flex-col h-full">
-                            <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between gap-4 h-[230px] shrink-0">
+                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                            <div className="p-6 flex flex-col justify-between gap-4 h-[230px] shrink-0">
                                 <div className="flex items-center gap-3.5">
-                                    <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
+                                    <div className="w-12 h-12 rounded-xl bg-[#3B6988]/10 dark:bg-[#6BA3C8]/15 text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center shrink-0">
                                         <Compass size={22} />
                                     </div>
                                     <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Visualizador</h3>
@@ -285,7 +285,7 @@ export default function Home() {
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Tablero interactivo con todos los cursos de tu pensum, organizados por semestre y por sus prerrequisitos.
                                 </p>
-                                <Link to="/visualizador" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
+                                <Link to="/visualizador" className="w-full bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Visualizador
                                 </Link>
                             </div>
@@ -304,10 +304,10 @@ export default function Home() {
                         </div>
 
                         {/* Planificador */}
-                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden flex flex-col h-full">
-                            <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between gap-4 h-[230px] shrink-0">
+                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                            <div className="p-6 flex flex-col justify-between gap-4 h-[230px] shrink-0">
                                 <div className="flex items-center gap-3.5">
-                                    <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
+                                    <div className="w-12 h-12 rounded-xl bg-[#3B6988]/10 dark:bg-[#6BA3C8]/15 text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center shrink-0">
                                         <Calendar size={22} />
                                     </div>
                                     <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Planificador</h3>
@@ -315,7 +315,7 @@ export default function Home() {
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Arrastra y suelta cursos en los semestres y escuelas de vacaciones para diseñar tu línea académica.
                                 </p>
-                                <Link to="/visualizador?view=planner" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
+                                <Link to="/visualizador?view=planner" className="w-full bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Planificador
                                 </Link>
                             </div>
@@ -333,10 +333,10 @@ export default function Home() {
                         </div>
 
                         {/* Armador de horarios */}
-                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm overflow-hidden flex flex-col h-full">
-                            <div className="p-6 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between gap-4 h-[230px] shrink-0">
+                        <div className="bg-white dark:bg-[#1C2636] rounded-2xl shadow-sm overflow-hidden flex flex-col h-full">
+                            <div className="p-6 flex flex-col justify-between gap-4 h-[230px] shrink-0">
                                 <div className="flex items-center gap-3.5">
-                                    <div className="w-12 h-12 rounded-xl bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0">
+                                    <div className="w-12 h-12 rounded-xl bg-[#3B6988]/10 dark:bg-[#6BA3C8]/15 text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center shrink-0">
                                         <Clock size={22} />
                                     </div>
                                     <h3 className="text-xl font-extrabold text-[#172B4D] dark:text-white tracking-tight">Armador de Horarios</h3>
@@ -344,7 +344,7 @@ export default function Home() {
                                 <p className="text-sm text-[#5E6C84] dark:text-slate-400 leading-relaxed line-clamp-3">
                                     Visualiza, combina y exporta tus horarios por semestre o vacaciones con datos actualizados de la facultad.
                                 </p>
-                                <Link to="/visualizador?view=schedule" className="w-full bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
+                                <Link to="/visualizador?view=schedule" className="w-full bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] dark:text-[#0E1624] text-white font-bold text-sm px-4 py-2.5 rounded-xl transition-transform duration-150 active:scale-[0.96] shadow-sm cursor-pointer no-underline text-center block">
                                     Abrir Horarios
                                 </Link>
                             </div>
@@ -365,10 +365,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="w-full bg-white dark:bg-[#0F1726] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
+            <section className="w-full bg-white dark:bg-[#0F1726] py-16 px-4 shrink-0">
                 <div className="max-w-6xl mx-auto">
                     <div className="text-center mb-12">
-                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#3B6988] dark:text-[#6BA3C8] bg-[#E6EFF5] dark:bg-[#1A2B38] inline-block px-3 py-1 rounded-full mb-4">
                             Guía Académica FIUSAC
                         </p>
                         <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
@@ -380,10 +380,10 @@ export default function Home() {
                     </div>
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl flex flex-col justify-between shadow-xs">
                             <div>
                                 <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
-                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">01</span>
+                                    <span className="w-8 h-8 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center text-xs font-black shrink-0">01</span>
                                     ¿Qué es el Rediseño Curricular CLAR?
                                 </h3>
                                 <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
@@ -395,10 +395,10 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl flex flex-col justify-between shadow-xs">
                             <div>
                                 <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
-                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">02</span>
+                                    <span className="w-8 h-8 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center text-xs font-black shrink-0">02</span>
                                     Límites de Créditos y Asignación
                                 </h3>
                                 <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
@@ -413,10 +413,10 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl flex flex-col justify-between shadow-xs">
                             <div>
                                 <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
-                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">03</span>
+                                    <span className="w-8 h-8 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center text-xs font-black shrink-0">03</span>
                                     Optimización de la Ruta Crítica
                                 </h3>
                                 <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
@@ -428,10 +428,10 @@ export default function Home() {
                             </div>
                         </div>
 
-                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] flex flex-col justify-between shadow-xs">
+                        <div className="bg-[#FAFBFC] dark:bg-[#1C2636] p-6 sm:p-8 rounded-2xl flex flex-col justify-between shadow-xs">
                             <div>
                                 <h3 className="text-lg font-extrabold text-[#172B4D] dark:text-white mb-3 flex items-center gap-2">
-                                    <span className="w-8 h-8 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center text-xs font-black shrink-0">04</span>
+                                    <span className="w-8 h-8 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center text-xs font-black shrink-0">04</span>
                                     Planificación de Horarios y Catedráticos
                                 </h3>
                                 <p className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed mb-4">
@@ -446,10 +446,10 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-16 px-4 shrink-0">
+            <section className="w-full bg-[#FAFBFC] dark:bg-[#0E1624] py-16 px-4 shrink-0">
                 <div className="max-w-4xl mx-auto">
                     <div className="text-center mb-12">
-                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E] inline-block px-3 py-1 rounded-full mb-4">
+                        <p className="text-[11px] font-extrabold uppercase tracking-widest text-[#3B6988] dark:text-[#6BA3C8] bg-[#E6EFF5] dark:bg-[#1A2B38] inline-block px-3 py-1 rounded-full mb-4">
                             Soporte & Ayuda
                         </p>
                         <h2 className="text-3xl md:text-4xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
@@ -468,7 +468,7 @@ export default function Home() {
                 </div>
             </section>
 
-            <section className="w-full bg-white dark:bg-[#0F1726] border-t border-[#DFE1E6] dark:border-[#3E4C5E] py-14 px-4 shrink-0">
+            <section className="w-full bg-white dark:bg-[#0F1726] py-14 px-4 shrink-0">
                 <div className="max-w-3xl mx-auto text-center">
                     <h2 className="text-2xl md:text-3xl font-extrabold text-[#172B4D] dark:text-white tracking-tight mb-3">
                         Apoya el desarrollo de PEMTREE
@@ -482,7 +482,7 @@ export default function Home() {
                             href="https://buymeacoffee.com/trebol4devop"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition-transform duration-150 active:scale-[0.96] text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
+                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 font-bold px-5 py-3 rounded-xl transition-transform duration-150 active:scale-[0.96] text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
                         >
                             <Coffee size={16} className="text-[#5E6C84] dark:text-slate-400 shrink-0" />
                             <span>Buy Me a Coffee</span>
@@ -491,7 +491,7 @@ export default function Home() {
                             href="https://www.paypal.com/paypalme/TrebolDevop"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] font-bold px-5 py-3 rounded-xl transition-transform duration-150 active:scale-[0.96] text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
+                            className="w-full sm:w-auto flex-1 flex items-center justify-center gap-2.5 bg-[#F4F5F7] dark:bg-[#1C2636] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 font-bold px-5 py-3 rounded-xl transition-transform duration-150 active:scale-[0.96] text-xs sm:text-sm no-underline cursor-pointer shadow-2xs"
                         >
                             <svg className="w-4 h-4 fill-[#5E6C84] dark:fill-slate-400 shrink-0" viewBox="0 0 24 24">
                                 <path d="M7.076 21.337H2.47a.641.641 0 0 1-.633-.74L4.944 3.72a.641.641 0 0 1 .632-.54H11.2c2.478 0 4.414.53 5.753 1.577 1.343 1.049 1.954 2.651 1.819 4.763-.15 2.34-1.123 4.184-2.894 5.483-1.768 1.298-4.148 1.956-7.074 1.956H7.818l-.742 4.378z"/>
@@ -531,7 +531,7 @@ export default function Home() {
                             <FileText size={16} /> Términos de servicio
                         </Link>
                     </div>
-                    <div className="w-full pt-5 border-t border-white/10 flex flex-col items-center gap-2.5 text-center">
+                    <div className="w-full pt-5 flex flex-col items-center gap-2.5 text-center">
                         <p className="text-xs text-white/70 leading-relaxed">Datos académicos de referencia pública: <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer" className="underline hover:opacity-90 transition">portal.ingenieria.usac.edu.gt</a></p>
                         <p className="text-xs text-white/70">© {new Date().getFullYear()} - PEMTREE</p>
                     </div>

@@ -1,13 +1,30 @@
 import CourseChip from './CourseChip';
 
+const ORDINAL_SEMESTERS = [
+    '',
+    'PRIMER',
+    'SEGUNDO',
+    'TERCER',
+    'CUARTO',
+    'QUINTO',
+    'SEXTO',
+    'SÉPTIMO',
+    'OCTAVO',
+    'NOVENO',
+    'DÉCIMO',
+    'UNDÉCIMO',
+    'DUODÉCIMO',
+];
+
 export default function SemesterBlock({ semesterNum, courses, maxCredits, suficiencias, onDrop, onRemoveChip, onToggleSuficiencia, mergedMap, advertenciasMap, blockId }) {
     const regularCourses = courses.filter(c => !suficiencias.includes(c.id));
     const suficienciaCourses = courses.filter(c => suficiencias.includes(c.id));
-    const totalCredits = regularCourses.reduce((sum, c) => sum + (c.creditos || 0), 0);
+    const totalCredits = courses.reduce((sum, c) => sum + (c.creditos || 0), 0);
     const ratio = maxCredits > 0 ? totalCredits / maxCredits : 0;
     const isOver = totalCredits > maxCredits;
     const isNear = ratio >= 0.8 && !isOver;
     const hasSuficiencia = suficienciaCourses.length > 0;
+    const ordinalTitle = ORDINAL_SEMESTERS[semesterNum] || `${semesterNum}°`;
 
     return (
         <div
@@ -24,10 +41,22 @@ export default function SemesterBlock({ semesterNum, courses, maxCredits, sufici
             }}
         >
             <div className="planner-block-header planner-block-header-semester">
-                <span className="planner-block-label">Sem {semesterNum}</span>
-                <span className={`planner-block-credits ${isOver ? 'planner-credits-over' : isNear ? 'planner-credits-near' : ''}`}>
-                    {totalCredits}/{maxCredits} cr
-                </span>
+                <div className="planner-sem-diagonal" aria-hidden="true">
+                    <div className="planner-sem-diagonal-corner" />
+                    <span className="planner-sem-number">{semesterNum}</span>
+                </div>
+                <div className="planner-sem-header-content">
+                    <div className="planner-sem-title-row">
+                        <div className="planner-sem-title">
+                            <small>{ordinalTitle}</small>
+                            <small>SEMESTRE</small>
+                        </div>
+                        <span className={`planner-block-credits ${isOver ? 'planner-credits-over' : isNear ? 'planner-credits-near' : ''}`}>
+                            {totalCredits}/{maxCredits} cr
+                        </span>
+                    </div>
+                    <div className="planner-sem-divider" />
+                </div>
             </div>
             <div className="planner-credit-bar">
                 <div

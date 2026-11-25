@@ -54,7 +54,10 @@ export default function CoursePool({ cursos, plannedIds, mergedMap, lineName }) 
                 <div className="planner-pool-header-text">
                     <h3 className="planner-pool-title">Cursos</h3>
                     {lineName && (
-                        <span className="planner-pool-subtitle" title={lineName}>{lineName}</span>
+                        <>
+                            <span className="planner-pool-dot" aria-hidden="true">•</span>
+                            <span className="planner-pool-subtitle" title={lineName}>{lineName}</span>
+                        </>
                     )}
                 </div>
                 <span className="planner-pool-count">{filtered.length}</span>

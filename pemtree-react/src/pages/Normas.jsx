@@ -56,7 +56,7 @@ const SOURCES = [
 function SectionTitle({ icon: Icon, title, subtitle }) {
     return (
         <div className="flex items-start gap-3 mb-5">
-            <div className="w-9 h-9 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center shrink-0 mt-0.5">
+            <div className="w-9 h-9 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center shrink-0 mt-0.5">
                 <Icon size={18} />
             </div>
             <div>
@@ -72,7 +72,7 @@ function RuleList({ items }) {
         <ul className="flex flex-col gap-2.5">
             {items.map((item, i) => (
                 <li key={i} className="flex items-start gap-2.5">
-                    <span className="w-5 h-5 rounded-full bg-[#F4F5F7] dark:bg-[#0E1624] text-[#0052CC] dark:text-[#4C9AFF] text-[10px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="w-5 h-5 rounded-full bg-[#F4F5F7] dark:bg-[#0E1624] text-[#3B6988] dark:text-[#6BA3C8] text-[10px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">
                         {i + 1}
                     </span>
                     <span className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{item}</span>
@@ -92,7 +92,7 @@ export default function Normas() {
             />
             <div className="flex-1 flex flex-col items-center overflow-y-auto w-full hide-scrollbar bg-[#FAFBFC] dark:bg-[#0E1624]">
                 {/* Header Banner */}
-                <div className="w-full bg-gradient-to-r from-[#0052CC] to-[#0747A6] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-10 px-4 shrink-0 text-white shadow-sm">
+                <div className="w-full bg-gradient-to-r from-[#3B6988] to-[#2C526B] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-10 px-4 shrink-0 text-white shadow-sm">
                     <div className="max-w-4xl mx-auto">
                         <Link
                             to="/"
@@ -101,13 +101,13 @@ export default function Normas() {
                             <ArrowLeft size={14} /> Inicio
                         </Link>
                         <div className="flex items-start gap-4">
-                            <div className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-[#4C9AFF]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
-                                <ShieldCheck size={28} className="text-white dark:text-[#4C9AFF]" />
+                            <div className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-[#6BA3C8]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
+                                <ShieldCheck size={28} className="text-white dark:text-[#6BA3C8]" />
                             </div>
                             <div>
                                 <div className="flex items-center gap-2 flex-wrap">
                                     <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Normas de la Comunidad</h1>
-                                    <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                    <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#6BA3C8]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                                         Red Estudiantil de Ingeniería
                                     </span>
                                     <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
@@ -196,7 +196,7 @@ export default function Normas() {
                         <ul className="flex flex-col gap-2 mb-4">
                             {DISCLAIMER.points.map((point, i) => (
                                 <li key={i} className="flex items-start gap-2">
-                                    <span className="w-4 h-4 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] text-[9px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">
+                                    <span className="w-4 h-4 rounded-full bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] text-[9px] font-extrabold flex items-center justify-center shrink-0 mt-0.5">
                                         ✓
                                     </span>
                                     <span className="text-xs sm:text-sm text-[#5E6C84] dark:text-slate-300 leading-relaxed">{point}</span>
@@ -212,7 +212,7 @@ export default function Normas() {
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1.5 bg-[#F4F5F7] dark:bg-[#0E1624] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] text-xs font-bold px-3.5 py-2 rounded-lg transition no-underline"
                                 >
-                                    <ExternalLink size={13} className="text-[#0052CC] dark:text-[#4C9AFF] shrink-0" />
+                                    <ExternalLink size={13} className="text-[#3B6988] dark:text-[#6BA3C8] shrink-0" />
                                     {link.label}
                                 </a>
                             ))}
@@ -238,7 +238,7 @@ export default function Normas() {
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-1.5 bg-[#F4F5F7] dark:bg-[#0E1624] hover:bg-[#EBECF0] dark:hover:bg-[#263346] text-[#172B4D] dark:text-slate-200 border border-[#DFE1E6] dark:border-[#3E4C5E] text-xs font-bold px-3.5 py-2 rounded-lg transition no-underline"
                                 >
-                                    <ExternalLink size={13} className="text-[#0052CC] dark:text-[#4C9AFF] shrink-0" />
+                                    <ExternalLink size={13} className="text-[#3B6988] dark:text-[#6BA3C8] shrink-0" />
                                     {link.label}
                                 </a>
                             ))}
@@ -254,7 +254,7 @@ export default function Normas() {
                     <div className="text-center pb-2">
                         <Link
                             to="/visualizador"
-                            className="inline-flex items-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md no-underline"
+                            className="inline-flex items-center gap-2 bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-5 py-2.5 rounded-xl transition shadow-md no-underline"
                         >
                             <ArrowLeft size={15} />
                             Ir al Visualizador

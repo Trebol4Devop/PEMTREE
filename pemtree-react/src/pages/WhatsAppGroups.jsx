@@ -866,7 +866,7 @@ export default function WhatsAppGroups() {
     return (
         <div className="flex flex-col h-full bg-[#F4F5F7] dark:bg-[#0E1624] overflow-y-auto">
             {/* Header section */}
-            <div className="bg-gradient-to-r from-[#0052CC] to-[#0747A6] dark:from-[#0C295E] dark:to-[#143A7B] text-white py-8 px-4 sm:px-8 shadow-md">
+            <div className="bg-gradient-to-r from-[#3B6988] to-[#2C526B] dark:from-[#1A2B38] dark:to-[#143A7B] text-white py-8 px-4 sm:px-8 shadow-md">
                 <div className="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-6">
                     <div className="flex flex-col gap-2">
                         <div className="flex items-center gap-2.5 flex-wrap">
@@ -966,7 +966,7 @@ export default function WhatsAppGroups() {
                             placeholder="Buscar por curso, sección, título o descripción..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border border-transparent focus:border-[#0052CC] dark:focus:border-[#4C9AFF] focus:outline-none transition"
+                            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border-0 focus:outline-none transition"
                         />
                         {searchQuery && (
                             <button 
@@ -984,7 +984,7 @@ export default function WhatsAppGroups() {
                             <select
                                 value={selectedCursoFilter}
                                 onChange={(e) => setSelectedCursoFilter(e.target.value)}
-                                className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
+                                className="bg-transparent text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border-0 focus:outline-none cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
                             >
                                 <option value="">Todos los Cursos</option>
                                 {availableCursosInGroups.map(cursoName => (
@@ -1001,7 +1001,7 @@ export default function WhatsAppGroups() {
                                     setCsvError('');
                                     setIsCsvModalOpen(true);
                                 }}
-                                className="flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0043A4] dark:bg-[#0C295E] dark:hover:bg-[#1A3A75] text-white dark:text-[#4C9AFF] border border-transparent dark:border-[#4C9AFF]/30 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer w-full sm:w-auto"
+                                className="flex items-center justify-center gap-2 bg-transparent text-[#3B6988] dark:text-[#6BA3C8] hover:opacity-80 border-0 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shrink-0 cursor-pointer w-full sm:w-auto"
                                 title="Cargar masivamente cursos desde archivo CSV"
                             >
                                 <FileSpreadsheet size={16} strokeWidth={2.5} />
@@ -1042,7 +1042,7 @@ export default function WhatsAppGroups() {
                                 }}
                                 className={`px-3.5 sm:px-4 py-2 rounded-xl text-xs sm:text-sm font-bold transition whitespace-nowrap cursor-pointer border shrink-0 sm:shrink ${
                                     isSelected
-                                        ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 shadow-xs'
+                                        ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border-[#3B6988]/30 dark:border-[#6BA3C8]/30 shadow-xs'
                                         : 'bg-white dark:bg-[#1C2636] text-[#5E6C84] dark:text-slate-300 border-[#DFE1E6] dark:border-[#3E4C5E] hover:bg-[#F4F5F7] dark:hover:bg-[#2E3C50]'
                                 }`}
                             >
@@ -1054,7 +1054,7 @@ export default function WhatsAppGroups() {
                 {/* Groups Grid / List */}
                 {loading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3">
-                        <div className="w-8 h-8 border-3 border-[#0052CC] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-3 border-[#3B6988] border-t-transparent rounded-full animate-spin"></div>
                         <span className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando grupos disponibles...</span>
                     </div>
                 ) : displayedGroups.length === 0 ? (
@@ -1150,7 +1150,7 @@ export default function WhatsAppGroups() {
                                             </span>
 
                                             <div className="flex items-center gap-1 font-semibold text-[#5E6C84] dark:text-slate-300 text-xs">
-                                                <CheckCircle2 size={14} className="text-[#059669] dark:text-[#10b981]" />
+                                                <CheckCircle2 size={14} className="text-[#4A7C6A] dark:text-[#6BA892]" />
                                                 <span>{group.upvotes || 0} útiles</span>
                                             </div>
                                         </div>
@@ -1169,7 +1169,7 @@ export default function WhatsAppGroups() {
                                                 className={`flex-grow flex items-center justify-center gap-2 font-bold text-xs sm:text-sm py-2 px-4 rounded-xl transition no-underline text-center shadow-sm ${
                                                     modInfo && modInfo.type === 'blocked'
                                                         ? 'bg-[#E4E6EA] dark:bg-[#2D333B] text-[#7A869A] dark:text-slate-400 cursor-not-allowed'
-                                                        : 'bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624]'
+                                                        : 'bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] text-white dark:text-[#0E1624]'
                                                 }`}
                                             >
                                                 <MessageSquare size={15} />
@@ -1182,7 +1182,7 @@ export default function WhatsAppGroups() {
                                                 title="Copiar enlace"
                                                 className={`py-2 px-3 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer ${
                                                     copiedId === group.id
-                                                        ? 'bg-[#F4F5F7] dark:bg-[#2D333B] border-[#0052CC]/50 dark:border-[#4C9AFF]/50 text-[#0052CC] dark:text-[#4C9AFF]'
+                                                        ? 'bg-[#F4F5F7] dark:bg-[#2D333B] border-[#3B6988]/50 dark:border-[#6BA3C8]/50 text-[#3B6988] dark:text-[#6BA3C8]'
                                                         : 'bg-transparent hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] border-[#DFE1E6] dark:border-[#3E4C5E] text-[#5E6C84] dark:text-slate-300'
                                                 }`}
                                             >
@@ -1195,7 +1195,7 @@ export default function WhatsAppGroups() {
                                                 title={isUpvoted ? 'Quitar confirmación' : 'Confirmar que este enlace funciona y es útil'}
                                                 className={`py-2 px-2.5 rounded-xl border transition cursor-pointer flex items-center justify-center ${
                                                     isUpvoted
-                                                        ? 'bg-[#0052CC] dark:bg-[#4C9AFF] text-white dark:text-[#0E1624] border-[#0052CC] dark:border-[#4C9AFF] font-bold'
+                                                        ? 'bg-[#3B6988] dark:bg-[#6BA3C8] text-white dark:text-[#0E1624] border-[#3B6988] dark:border-[#6BA3C8] font-bold'
                                                         : 'bg-transparent hover:bg-[#F4F5F7] dark:hover:bg-[#2D333B] border-[#DFE1E6] dark:border-[#3E4C5E] text-[#7A869A] dark:text-slate-400'
                                                 }`}
                                             >
@@ -1215,7 +1215,7 @@ export default function WhatsAppGroups() {
                                                     <button
                                                         onClick={() => handleRestoreGroup(group.id)}
                                                         title="Restaurar grupo (solo administración/moderación)"
-                                                        className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#E3FCEF] dark:hover:bg-[#0A3622] text-[#059669] dark:text-[#10b981] hover:text-[#047857] dark:hover:text-[#34d399] transition cursor-pointer flex items-center justify-center"
+                                                        className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#E8F1EE] dark:hover:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892] hover:text-[#3A6354] dark:hover:text-[#82BBA6] transition cursor-pointer flex items-center justify-center"
                                                     >
                                                         <RotateCcw size={15} />
                                                     </button>
@@ -1281,7 +1281,7 @@ export default function WhatsAppGroups() {
                                             }}
                                             className="w-full text-left p-2.5 hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-xs font-semibold text-[#172B4D] dark:text-slate-200 border-b last:border-b-0 border-[#DFE1E6]/50 dark:border-[#3E4C5E]/50 cursor-pointer bg-transparent"
                                         >
-                                            <span className="text-[#0052CC] dark:text-[#4C9AFF] font-extrabold mr-1.5">[{c.codigo}]</span>
+                                            <span className="text-[#3B6988] dark:text-[#6BA3C8] font-extrabold mr-1.5">[{c.codigo}]</span>
                                             <span>{c.nombre}</span>
                                         </button>
                                     ))}
@@ -1325,13 +1325,13 @@ export default function WhatsAppGroups() {
                         <div className="flex flex-col gap-2">
                             <label className="text-xs font-extrabold text-[#172B4D] dark:text-slate-200 flex items-center justify-between">
                                 <span className="flex items-center gap-1.5">
-                                    <ImageIcon size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <ImageIcon size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <span>Adjuntar imagen representativa (Opcional)</span>
                                 </span>
-                                {isCompressingImg && <span className="text-[11px] text-[#0052CC] dark:text-[#4C9AFF] animate-pulse">Procesando imagen...</span>}
+                                {isCompressingImg && <span className="text-[11px] text-[#3B6988] dark:text-[#6BA3C8] animate-pulse">Procesando imagen...</span>}
                             </label>
                             <div className="flex items-center gap-2">
-                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#DEEBFF] dark:bg-[#0E1624] dark:hover:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
+                                <label className="flex items-center justify-center gap-2 px-4 py-2.5 bg-[#F4F5F7] hover:bg-[#E6EFF5] dark:bg-[#0E1624] dark:hover:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl font-extrabold text-xs cursor-pointer transition shadow-2xs w-full sm:w-auto">
                                     <ImageIcon size={15} />
                                     <span>Seleccionar imagen desde tu dispositivo</span>
                                     <input
@@ -1365,10 +1365,10 @@ export default function WhatsAppGroups() {
                                     required
                                     checked={acceptedTerms}
                                     onChange={(e) => setAcceptedTerms(e.target.checked)}
-                                    className="w-4 h-4 mt-0.5 rounded accent-[#0052CC] shrink-0 cursor-pointer"
+                                    className="w-4 h-4 mt-0.5 rounded accent-[#3B6988] shrink-0 cursor-pointer"
                                 />
                                 <span className="text-[11px] sm:text-xs leading-relaxed">
-                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaro que <strong>soy el único responsable legal del enlace y contenido que comparto</strong> en este espacio estudiantil independiente.
+                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> y declaro que <strong>soy el único responsable legal del enlace y contenido que comparto</strong> en este espacio estudiantil independiente.
                                 </span>
                             </label>
                         </div>
@@ -1461,7 +1461,7 @@ export default function WhatsAppGroups() {
                             <span className="text-[10px] text-[#7A869A] mt-1 block">Los cambios se verán reflejados al instante en el Foro y en tus Grupos compartidos.</span>
 
                             <div className="p-2.5 rounded-xl bg-amber-50/70 dark:bg-[#4A3A1A]/30 border border-amber-200/80 dark:border-amber-700/40 text-[11px] text-slate-700 dark:text-slate-300 leading-snug">
-                                Al participar aceptas los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaras ser el único responsable legal de los grupos y enlaces que compartas.
+                                Al participar aceptas los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> y declaras ser el único responsable legal de los grupos y enlaces que compartas.
                             </div>
 
                             <div className="flex items-center justify-end gap-3 pt-2 border-t border-[#DFE1E6] dark:border-[#3E4C5E]">
@@ -1571,7 +1571,7 @@ export default function WhatsAppGroups() {
                             <div className="flex flex-col gap-2.5 max-h-[280px] overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-2xl bg-white dark:bg-[#1C2636]">
                                 <div className="bg-[#F4F5F7] dark:bg-[#0E1624] px-4 py-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between text-xs font-bold text-[#5E6C84] dark:text-slate-300">
                                     <span className="flex items-center gap-2">
-                                        <CheckCircle size={14} className="text-emerald-500" />
+                                        <CheckCircle size={14} className="text-[#4A7C6A] dark:text-[#6BA892]" />
                                         <span>Filas listas para importar ({csvParsedRows.filter(r => r.isValid).length} de {csvParsedRows.length} válidas)</span>
                                     </span>
                                     <span className="text-[11px] text-[#7A869A]">Vista Previa</span>
@@ -1590,7 +1590,7 @@ export default function WhatsAppGroups() {
                                             </div>
                                             <div className="shrink-0">
                                                 {row.isValid ? (
-                                                    <span className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-extrabold text-[10px]">Válido</span>
+                                                    <span className="bg-[#E8F1EE] dark:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892] px-2 py-0.5 rounded-full font-extrabold text-[10px]">Válido</span>
                                                 ) : (
                                                     <span className="bg-red-500/15 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full font-bold text-[10px]" title={row.errorMsg}>Error: {row.errorMsg}</span>
                                                 )}
@@ -1608,10 +1608,10 @@ export default function WhatsAppGroups() {
                                     required
                                     checked={csvAcceptedTerms}
                                     onChange={(e) => setCsvAcceptedTerms(e.target.checked)}
-                                    className="w-4 h-4 mt-0.5 rounded accent-[#0052CC] shrink-0 cursor-pointer"
+                                    className="w-4 h-4 mt-0.5 rounded accent-[#3B6988] shrink-0 cursor-pointer"
                                 />
                                 <span className="text-[11px] sm:text-xs leading-relaxed">
-                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#0052CC] dark:text-[#4C9AFF]">Términos de Servicio</Link> y declaro que <strong>asumo la responsabilidad legal de los enlaces y datos</strong> importados a este directorio comunitario.
+                                    Acepto los <Link to="/normas#terminos" target="_blank" className="font-bold underline text-[#3B6988] dark:text-[#6BA3C8]">Términos de Servicio</Link> y declaro que <strong>asumo la responsabilidad legal de los enlaces y datos</strong> importados a este directorio comunitario.
                                 </span>
                             </label>
                         </div>
@@ -1683,7 +1683,7 @@ export default function WhatsAppGroups() {
                             value={customPrompt.value}
                             onChange={(e) => setCustomPrompt({ ...customPrompt, value: e.target.value })}
                             placeholder={customPrompt.placeholder}
-                            className="w-full px-3 py-2 text-xs sm:text-sm rounded-lg border border-[#DFE1E6] dark:border-[#2D3A4F] bg-white dark:bg-[#0E1624] text-[#172B4D] dark:text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#0052CC]"
+                            className="w-full px-3 py-2 text-xs sm:text-sm rounded-lg border border-[#DFE1E6] dark:border-[#2D3A4F] bg-white dark:bg-[#0E1624] text-[#172B4D] dark:text-[#E2E8F0] focus:outline-none focus:ring-2 focus:ring-[#3B6988]"
                         />
                         <div className="flex justify-end gap-2 pt-2">
                             <Button

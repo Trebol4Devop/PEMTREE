@@ -158,8 +158,8 @@ export const SCREENS = {
         titulo: 'Regla: traslapes',
         tema: true,
         descripcion:
-          'El armador aplica las reglas de la facultad sobre traslapes: un traslape de 50 minutos o más es un ' +
-          'error; uno menor es solo una advertencia. Laboratorios y prácticas permiten traslaparse con la ' +
+          'El armador aplica las reglas de la facultad sobre traslapes: un traslape mayor a 50 minutos es un ' +
+          'error; uno de hasta 50 minutos es solo una advertencia. Laboratorios y prácticas permiten traslaparse con la ' +
           'magistral.',
       },
       {
