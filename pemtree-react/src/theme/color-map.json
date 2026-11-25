@@ -166,7 +166,7 @@
   "graph": {
     "_desc": "Colores del grafo SVG (NodeRenderer.js + EdgeRenderer.js) — variedad semántica justificada, cambios mínimos",
     "primarySectionText": { "current": "#ffffff", "target": "#ffffff" },
-    "codeCompleted":      { "light": { "current": "#ffffff", "target": "#ffffff" }, "dark": { "current": "#6ee7b7", "target": "#6ee7b7" } },
+    "codeCompleted":      { "light": { "current": "#ffffff", "target": "#ffffff" }, "dark": { "current": "#ffffff", "target": "#ffffff" } },
 
     "nodeFill": {
       "default":      { "light": { "current": "#f4f6f7", "target": "#F4F5F7" },  "dark": { "current": "#1f2937", "target": "#1f2937" } },
@@ -339,17 +339,27 @@
     },
 
     "conflictColors": {
-      "error":   { "current": "#dc2626", "target": "#e74c3c" },
+      "error":   { "current": "#e74c3c", "target": "#e74c3c" },
       "warning": { "current": "#d97706", "target": "#d97706" },
       "_nota": "error: #dc2626 → error-base #e74c3c para consistencia con el resto del sistema."
-    }
+    },
+
+    "dayHeaderBg":      { "light": { "current": "#E6EFF5", "target": "#E6EFF5" }, "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+    "dayHeaderText":    { "light": { "current": "#3B6988", "target": "#3B6988" }, "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "slateAccent":      { "light": { "current": "#3B6988", "target": "#3B6988" }, "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "slateAccentBg":    { "light": { "current": "#E6EFF5", "target": "#E6EFF5" }, "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+    "countMagBg":       { "light": { "current": "#E6EFF5", "target": "#E6EFF5" }, "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+    "countMagText":     { "light": { "current": "#3B6988", "target": "#3B6988" }, "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "countLabBg":       { "light": { "current": "#FDECE4", "target": "#FDECE4" }, "dark": { "current": "#3B1E14", "target": "#3B1E14" } },
+    "countLabText":     { "light": { "current": "#C25E3A", "target": "#C25E3A" }, "dark": { "current": "#F09A7A", "target": "#F09A7A" } },
+    "blockText":        { "light": { "current": "#1E293B", "target": "#1E293B" }, "dark": { "current": "#1E293B", "target": "#1E293B" } }
   },
 
   "exportModal": {
     "_desc": "Modal de exportación de horario",
     "palettes": {
-      "_desc": "Paletas de colores para cursos (NO se tocan — son datos funcionales)",
-      "_nota": "Estas paletas son funcionales, definen los colores de los cursos en el horario. No son parte del tema visual."
+      "_desc": "Paletas de colores para cursos en src/theme/palettes.js",
+      "_nota": "Default usa paleta desaturada con fondo pastel, borde izquierdo de 4px y texto #1E293B alineada con el Planificador."
     }
   },
 

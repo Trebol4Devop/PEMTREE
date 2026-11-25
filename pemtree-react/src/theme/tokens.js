@@ -66,7 +66,7 @@ export const PRIMARY_SECTION_TEXT = '#ffffff';
 
 export const CODE_COMPLETED = {
   light: '#ffffff',
-  dark: '#6ee7b7',
+  dark: '#ffffff',
 };
 
 /* ── Edge / arrow colours used by EdgeRenderer ───────────────── */
@@ -103,4 +103,29 @@ export const WARNING_COLORS = {
   socialHum: '#2563eb',
   idioma: '#d97706',
   critica: '#e74c3c',
+};
+
+/* ── Schedule Builder UI tokens (aligned with vacation cards) ── */
+
+export const SCHEDULE_TOKENS = {
+  light: {
+    dayHeaderBg: '#E6EFF5',
+    dayHeaderText: '#3B6988',
+    dayHeaderDivider: 'rgba(59, 105, 136, 0.15)',
+    slatePrimary: '#3B6988',
+    slateSurface: '#E6EFF5',
+    blockText: '#1E293B',
+    labStripeSoft: 'rgba(30, 41, 59, 0.045)',
+    labStripeSolid: 'rgba(255, 255, 255, 0.1)',
+  },
+  dark: {
+    dayHeaderBg: '#1A2B38',
+    dayHeaderText: '#6BA3C8',
+    dayHeaderDivider: 'rgba(255, 255, 255, 0.12)',
+    slatePrimary: '#6BA3C8',
+    slateSurface: '#1A2B38',
+    blockText: '#1E293B',
+    labStripeSoft: 'rgba(30, 41, 59, 0.045)',
+    labStripeSolid: 'rgba(255, 255, 255, 0.1)',
+  },
 };

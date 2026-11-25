@@ -12,7 +12,8 @@ import {
 } from '../modules/data/scraper';
 import { getPensumKey } from '../modules/data/cursos';
 import { cargarCatalogo, getCatalogo, getCarreraDePensum, getPensumInfo } from '../modules/data/catalogo';
-import { PALETAS, getCursoColor, getTextColor, getPaletteAccent } from '../theme/palettes';
+import { PALETAS, getCursoColor, getCursoBlockColors, getTextColor, getPaletteAccent } from '../theme/palettes';
+import { SCHEDULE_TOKENS } from '../theme/tokens';
 import ExportModal from './ExportModal';
 import DocenteReviews from './DocenteReviews';
 import { WarningBanner, Modal, Button } from './ui';
@@ -704,15 +705,17 @@ export default function ScheduleBuilder({ openHelp }) {
         const gridX = PAD + TIME_W;
         const gridY = PAD + HEADER_H;
 
-        // ── day headers (palette accent color) ────────────────────────────
-        const headerBg = getPaletteAccent(settingsOverride.paletteName);
-        const headerTextColor = getTextColor(headerBg);
+        // ── day headers ─────────────────────────────────────────────────
+        const schedTokens = isDark ? SCHEDULE_TOKENS.dark : SCHEDULE_TOKENS.light;
+        const useDefaultHeader = settingsOverride.paletteName === 'Default';
+        const headerBg = useDefaultHeader ? schedTokens.dayHeaderBg : getPaletteAccent(settingsOverride.paletteName);
+        const headerTextColor = useDefaultHeader ? schedTokens.dayHeaderText : getTextColor(headerBg);
         ctx.fillStyle = headerBg;
         ctx.fillRect(PAD, PAD, W - PAD * 2, HEADER_H);
 
         DIAS_SEMANA.forEach((dia, i) => {
             const x = gridX + i * COL_W;
-            ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+            ctx.strokeStyle = useDefaultHeader ? schedTokens.dayHeaderDivider : 'rgba(255,255,255,0.2)';
             ctx.lineWidth = 0.5;
             ctx.beginPath();
             ctx.moveTo(x, PAD);
@@ -721,7 +724,7 @@ export default function ScheduleBuilder({ openHelp }) {
             drawText(
                 dia.substring(0, 3).toUpperCase(),
                 x + COL_W / 2, PAD + HEADER_H / 2,
-                COL_W - 4, 10, headerTextColor, 'center', '600'
+                COL_W - 4, 10, headerTextColor, 'center', useDefaultHeader ? '700' : '600'
             );
         });
 
@@ -859,8 +862,8 @@ export default function ScheduleBuilder({ openHelp }) {
             }
         }
 
-        function drawLabStripes(blockX, blockY, bw, bh) {
-            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+        function drawLabStripes(blockX, blockY, bw, bh, isSoft = false) {
+            ctx.strokeStyle = isSoft ? schedTokens.labStripeSoft : schedTokens.labStripeSolid;
             ctx.lineWidth = 3;
             const sp = 6;
             for (let sy = -bh * 2; sy < bh * 2; sy += sp) {
@@ -874,13 +877,17 @@ export default function ScheduleBuilder({ openHelp }) {
 
         const BLOCK_R = 6;
 
-        function drawBlockShell(blockX, blockY, bw, bh, color) {
+        function drawBlockShell(blockX, blockY, bw, bh, bgColor, borderColor, isSoft = false) {
             ctx.save();
             roundRect(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1, BLOCK_R);
             ctx.clip();
             fillBlockBackground(blockX + 1.5, blockY + 0.5, bw - 3, bh - 1);
-            ctx.fillStyle = blockHasBg ? (color + 'CC') : color;
+            ctx.fillStyle = blockHasBg ? (bgColor + 'CC') : bgColor;
             ctx.fill();
+            if (isSoft && borderColor) {
+                ctx.fillStyle = borderColor;
+                ctx.fillRect(blockX + 1.5, blockY + 0.5, 4, bh - 1);
+            }
             ctx.restore();
         }
 
@@ -1003,17 +1010,17 @@ export default function ScheduleBuilder({ openHelp }) {
             const bw = COL_W + 1;
             const bh = blockH + 1;
 
-            const color = getCursoColor(activo.codigo, activePalette);
+            const blockColors = getCursoBlockColors(activo.codigo, activePalette);
             
             ctx.save();
             ctx.shadowColor = 'rgba(0,0,0,0.15)';
             ctx.shadowBlur = 4;
             ctx.shadowOffsetY = 2;
-            drawBlockShell(blockX, blockY, bw, bh, color);
+            drawBlockShell(blockX, blockY, bw, bh, blockColors.bg, blockColors.border, blockColors.isSoft);
             ctx.restore();
 
             if (esLaboratorio(activo)) {
-                drawLabStripes(blockX, blockY, bw, bh);
+                drawLabStripes(blockX, blockY, bw, bh, blockColors.isSoft);
             }
 
             ctx.save();
@@ -1030,7 +1037,7 @@ export default function ScheduleBuilder({ openHelp }) {
             ctx.stroke();
             ctx.restore();
 
-            const tc = getTextColor(color);
+            const tc = blockColors.text;
             drawGroupContent(group.sections, activeIdx, blockX, blockY, bw, bh, tc);
 
             renderedGroupKeysCanvas.add(gk);
@@ -1041,7 +1048,8 @@ export default function ScheduleBuilder({ openHelp }) {
 
         // ── 2. Render individual sections, excluding pair-overlap windows ──
         for (const seccion of allSelected) {
-            const color = getCursoColor(seccion.codigo, activePalette);
+            const blockColors = getCursoBlockColors(seccion.codigo, activePalette);
+            const color = blockColors.bg;
             const iniMin = mins(seccion.inicio);
             const finMin = mins(seccion.final);
 
@@ -1124,9 +1132,14 @@ export default function ScheduleBuilder({ openHelp }) {
                 ctx.fillStyle = blocksBg ? (color + 'CC') : color;
                 ctx.fill();
 
+                if (blockColors.isSoft) {
+                    ctx.fillStyle = blockColors.border;
+                    ctx.fillRect(blockX + 1.5, blockY + 0.5, 4, bh - 1);
+                }
+
                 // lab stripe pattern
                 if (esLaboratorio(seccion)) {
-                    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+                    ctx.strokeStyle = blockColors.isSoft ? schedTokens.labStripeSoft : schedTokens.labStripeSolid;
                     ctx.lineWidth = 3;
                     const sp = 6;
                     for (let sy = -bh * 2; sy < bh * 2; sy += sp) {
@@ -1151,10 +1164,10 @@ export default function ScheduleBuilder({ openHelp }) {
                 }
 
                 // text content
-                const padX = 5;
+                const padX = blockColors.isSoft ? 8 : 5;
                 const padY = 3;
                 const fSize = 10;
-                const tc = getTextColor(color);
+                const tc = blockColors.text;
                 const tcProf = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
                 const tcRoom = tc === '#ffffff' ? 'rgba(255,255,255,0.85)' : 'rgba(30,41,59,0.75)';
                 const tcTipo = tc === '#ffffff' ? 'rgba(255,255,255,1.0)' : 'rgba(30,41,59,1.0)';
@@ -1559,8 +1572,9 @@ export default function ScheduleBuilder({ openHelp }) {
                         }
                         visibleRowSpan = Math.max(1, visibleRowSpan);
 
-                        const color     = getCursoColor(activo.codigo, activePalette);
-                        const textColor = getTextColor(color);
+                        const blockColors = getCursoBlockColors(activo.codigo, activePalette);
+                        const color       = blockColors.bg;
+                        const textColor   = blockColors.text;
 
                         const blockContent = (
                             <>
@@ -1602,7 +1616,7 @@ export default function ScheduleBuilder({ openHelp }) {
 
                         blocks.push(
                             <div key={`group-block-${groupKey(groupForSlot)}`}
-                                className={`schedule-block schedule-block-merged schedule-block-group ${groupForSlot.sections.length > 2 ? 'schedule-block-group-multi' : ''} ${esLaboratorio(activo) ? 'lab' : ''}`}
+                                className={`schedule-block schedule-block-merged schedule-block-group ${!blockColors.isSoft ? 'schedule-block-solid' : ''} ${groupForSlot.sections.length > 2 ? 'schedule-block-group-multi' : ''} ${esLaboratorio(activo) ? 'lab' : ''}`}
                                 title={blockTitle}
                                 style={{
                                     gridColumn: diaIdx + 2,
@@ -1610,6 +1624,7 @@ export default function ScheduleBuilder({ openHelp }) {
                                     backgroundColor: color,
                                     color: textColor,
                                     border: '2px solid #d97706',
+                                    borderLeft: blockColors.isSoft ? `4px solid ${blockColors.border}` : '2px solid #d97706',
                                     zIndex: 2,
                                     position: 'relative',
                                     minHeight: '80px'
@@ -1670,8 +1685,9 @@ export default function ScheduleBuilder({ openHelp }) {
                     }
                     visibleRowSpan = Math.max(1, visibleRowSpan);
 
-                    const color       = getCursoColor(seccion.codigo, activePalette);
-                    const textColor   = getTextColor(color);
+                    const blockColors = getCursoBlockColors(seccion.codigo, activePalette);
+                    const color       = blockColors.bg;
+                    const textColor   = blockColors.text;
                     const conf        = hasConflict(seccion);
                     const borderColor = conf.status === 'error' ? '#e74c3c' : conf.status === 'warning' ? '#d97706' : 'transparent';
 
@@ -1691,7 +1707,7 @@ export default function ScheduleBuilder({ openHelp }) {
 
                     blocks.push(
                         <div key={`block-${sl}-${dia}`}
-                            className={`schedule-block ${esLaboratorio(seccion) ? 'lab' : ''}`}
+                            className={`schedule-block ${!blockColors.isSoft ? 'schedule-block-solid' : ''} ${esLaboratorio(seccion) ? 'lab' : ''}`}
                             data-type={seccion.tipo}
                             title={blockTitle}
                             style={{
@@ -1700,6 +1716,7 @@ export default function ScheduleBuilder({ openHelp }) {
                                 backgroundColor: color,
                                 color: textColor,
                                 border: `1px solid ${borderColor}`,
+                                borderLeft: blockColors.isSoft ? `4px solid ${blockColors.border}` : `1px solid ${borderColor}`,
                                 zIndex: 2,
                                 position: 'relative'
                             }}
@@ -1872,18 +1889,12 @@ export default function ScheduleBuilder({ openHelp }) {
                 </div>
             )}
             <div className={`schedule-grid ${clusterEnabled ? 'cluster-active-grid' : ''}`} style={{ display: 'grid', gridTemplateColumns: `50px repeat(7, 1fr)` }}>
-            {(() => {
-                const headerBg = getPaletteAccent(exportSettings.paletteName);
-                const headerColor = getTextColor(headerBg);
-                return <>
-                <div className="schedule-cell schedule-header-cell" style={{ backgroundColor: headerBg }}></div>
+                <div className="schedule-cell schedule-header-cell"></div>
                 {DIAS_SEMANA.map(dia => (
-                    <div key={dia} className="schedule-cell schedule-header-cell" style={{ backgroundColor: headerBg, color: headerColor }}>
+                    <div key={dia} className="schedule-cell schedule-header-cell">
                     {dia.substring(0, 3).toUpperCase()}
                     </div>
                 ))}
-                </>;
-            })()}
             {renderGrid()}
             </div>
             </div>
