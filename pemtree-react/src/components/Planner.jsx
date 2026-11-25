@@ -159,13 +159,11 @@ function getPlannedIds(plan) {
     return ids;
 }
 
-function sumLineCredits(line, resolveMap, suficiencias) {
+function sumLineCredits(line, resolveMap) {
     if (!line || !resolveMap) return 0;
-    const sufSet = new Set(suficiencias);
     let total = 0;
     for (const ids of Object.values(line.plan || {})) {
         for (const id of ids) {
-            if (sufSet.has(id)) continue;
             const c = resolveMap.get(id);
             if (c) total += parseInt(c.creditos, 10) || 0;
         }
@@ -513,8 +511,8 @@ export default function Planner({ currentPensum, openHelp }) {
 
     const lineCredits = useCallback((line) => {
         const resolveMap = simultaneous ? mergedCursoMap : cursoMap;
-        return sumLineCredits(line, resolveMap, suficiencias);
-    }, [simultaneous, mergedCursoMap, suficiencias]);
+        return sumLineCredits(line, resolveMap);
+    }, [simultaneous, mergedCursoMap]);
 
     const updateLine = useCallback((lineId, updater) => {
         setLines(prev => {
@@ -628,7 +626,7 @@ export default function Planner({ currentPensum, openHelp }) {
             const course = mergedCursoMap.get(courseId);
             if (course) {
                 const currentCredits = targetCourses
-                    .filter(id => !suficiencias.includes(id))
+                    .filter(id => id !== courseId)
                     .map(id => mergedCursoMap.get(id))
                     .filter(Boolean)
                     .reduce((sum, c) => sum + (c.creditos || 0), 0);
@@ -662,6 +660,10 @@ export default function Planner({ currentPensum, openHelp }) {
                     let found = false;
                     for (let i = 0; i < targetOrder; i++) {
                         if ((linePlan[lineBlocks[i].id] || []).includes(prereqId)) { found = true; break; }
+                    }
+                    // Los cursos aprobados por suficiencia desbloquean sus postrequisitos en el mismo semestre
+                    if (!found && targetCourses.includes(prereqId) && suficiencias.includes(prereqId)) {
+                        found = true;
                     }
                     if (!found) {
                         const pc = mergedCursoMap.get(prereqId);
@@ -1104,7 +1106,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                             );
                                         } else if (block.type === 'vacation_hidden') {
                                             el = (
-                                                <div key={block.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.5rem' }}>
+                                                <div key={block.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '0 0.5rem', flexShrink: 0 }}>
                                                     <button 
                                                         className="planner-add-semester"
                                                         style={{ padding: '0.3rem 0.5rem', fontSize: '0.75rem', height: 'fit-content' }}

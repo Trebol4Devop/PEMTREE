@@ -389,7 +389,6 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
     } catch {
         suficiencias = [];
     }
-    const sufSet = new Set(suficiencias);
 
     const promedioRaw = localStorage.getItem(`pemtree_promedio_${key}`);
     const parsedPromedio = promedioRaw !== null ? parseFloat(promedioRaw) : NaN;
@@ -418,9 +417,7 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
                     const c = cursoMap.get(cid);
                     if (c) {
                         semCourses.push({ id: c.id, codigo: c.codigo, nombre: c.nombre, creditos: c.creditos });
-                        if (!sufSet.has(cid)) {
-                            semCredits += Number(c.creditos) || 0;
-                        }
+                        semCredits += Number(c.creditos) || 0;
                     }
                 }
                 const semParidad = i % 2 === 1 ? 'impar' : 'par';
@@ -450,9 +447,7 @@ export function buildRecuento({ catalogo, cursos = [], cursoMap = new Map(), pen
                         const c = cursoMap.get(cid);
                         if (c) {
                             vacCourses.push({ id: c.id, codigo: c.codigo, nombre: c.nombre, creditos: c.creditos });
-                            if (!sufSet.has(cid)) {
-                                vacCredits += Number(c.creditos) || 0;
-                            }
+                            vacCredits += Number(c.creditos) || 0;
                         }
                     }
                     const vacParidad = i % 2 === 1 ? 'impar' : 'par';

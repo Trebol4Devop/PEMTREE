@@ -547,6 +547,7 @@ html.dark .planner-warning-close {
     display: flex;
     gap: 12px;
     align-items: flex-start;
+    flex-shrink: 0;
 }
 
 .planner-year-separator {
@@ -911,6 +912,7 @@ html.dark .planner-block-empty {
     gap: 4px;
     min-width: 120px;
     min-height: 120px;
+    flex-shrink: 0;
     border: 2px dashed #DFE1E6;
     border-radius: 10px;
     background: transparent;
@@ -1786,6 +1788,10 @@ html.dark .planner-pool-close:hover {
     }
 
     .planner-blocks-row {
+        gap: 8px;
+    }
+
+    .planner-year-group {
         gap: 8px;
     }
 

@@ -316,7 +316,7 @@ export default function ScheduleBuilder({ openHelp }) {
                     if (t <= 0) continue;
                     const aFlex = esTraslapePermitido(a);
                     const bFlex = esTraslapePermitido(b);
-                    if (!(aFlex || bFlex) && t >= 50) continue;
+                    if (!(aFlex || bFlex) && t > 50) continue;
                     adj.get(a).add(b);
                     adj.get(b).add(a);
                 }
@@ -377,10 +377,10 @@ export default function ScheduleBuilder({ openHelp }) {
             if (esTraslapePermitido(seccion) || esTraslapePermitido(other)) continue;
 
             const traslape = calcularTraslapeMinutos(seccion, other);
-            if (traslape >= 50) {
+            if (traslape > 50) {
                 return { status: 'error', reason: `Traslape ${traslape}min con ${other.codigo} ${other.seccion}` };
             }
-            if (traslape > 0 && traslape < 50) {
+            if (traslape > 0 && traslape <= 50) {
                 if (validation.traslapesMenores50 && validation.traslapesMenores50.length > 0) {
                     return { status: 'warning', reason: `Traslape ${traslape}min (aceptable)` };
                 }
@@ -1865,7 +1865,7 @@ export default function ScheduleBuilder({ openHelp }) {
                     {validation.conflictos?.slice(0, 3).map((c, i) => (
                         <span key={i}>{c.curso1.codigo} ↔ {c.curso2.codigo} ({c.minutos}min){i < Math.min(validation.conflictos.length, 3) - 1 ? ', ' : ''}</span>
                     ))}
-                    {validation.traslapesMenores50?.length > 0 && ` (+${validation.traslapesMenores50.length} menores de 50min)`}
+                    {validation.traslapesMenores50?.length > 0 && ` (+${validation.traslapesMenores50.length} de hasta 50min)`}
                     {validation.conflictos?.length > 3 && ` y ${validation.conflictos.length - 3} más`}
                     </span>
                 </div>
@@ -1949,7 +1949,12 @@ export default function ScheduleBuilder({ openHelp }) {
                         const first = group[0];
                         const allSlotsSelected = group.every(s => isSectionSelected(s));
                         const anySelected = group.some(s => isSectionSelected(s));
-                        const conf = hasConflict(first);
+                        const conf = group.reduce((acc, s) => {
+                            const c = hasConflict(s);
+                            if (c.status === 'error') return c;
+                            if (c.status === 'warning' && acc.status !== 'error') return c;
+                            return acc;
+                        }, { status: 'valid', reason: null });
                         const hasRestrictions = !!first.restricciones;
                         const restrictionDetail = typeof first.restricciones === 'string' ? first.restricciones : null;
                         const restrictionHover = restrictionDetail || 'Esta sección tiene restricciones. Verifica los requisitos con tu catedrático o en el portal oficial de la Facultad.';
