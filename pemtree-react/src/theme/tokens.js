@@ -62,9 +62,11 @@ export const SECTION_TEXT = {
   dark: '#f1f5f9',    // target: text_primary dark
 };
 
+export const PRIMARY_SECTION_TEXT = '#ffffff';
+
 export const CODE_COMPLETED = {
-  light: '#4A7C6A',   // success_base
-  dark: '#6BA892',    // success_base dark
+  light: '#ffffff',
+  dark: '#6ee7b7',
 };
 
 /* ── Edge / arrow colours used by EdgeRenderer ───────────────── */

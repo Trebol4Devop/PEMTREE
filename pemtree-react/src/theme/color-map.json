@@ -15,7 +15,7 @@
       "primary":          "#0052CC",
       "primary_hover":    "#0747A6",
       "primary_light":    "#DEEBFF",
-      "success_base":     "#059669",
+      "success_base":     "#4A7C6A",
       "error_base":       "#e74c3c"
     },
     "_tokens_base_dark": {
@@ -30,7 +30,7 @@
       "primary":          "#4C9AFF",
       "primary_hover":    "#2684FF",
       "primary_light":    "#0C295E",
-      "success_base":     "#10b981",
+      "success_base":     "#6BA892",
       "error_base":       "#ef4444"
     }
   },
@@ -137,6 +137,18 @@
   },
 
   "navbar": {
+    "activeText": {
+      "_desc": "Texto de pestaña activa en navbar (alineado con azul pizarra)",
+      "light": { "current": "#3B6988", "target": "#3B6988" },
+      "dark":  { "current": "#6BA3C8", "target": "#6BA3C8" },
+      "_ubicaciones": ["Navbar.jsx (boardLinkClass, mobile menu)"]
+    },
+    "activeBg": {
+      "_desc": "Fondo suave de pestaña activa en navbar",
+      "light": { "current": "#E6EFF5", "target": "#E6EFF5" },
+      "dark":  { "current": "#1A2B38", "target": "#1A2B38" },
+      "_ubicaciones": ["Navbar.jsx (boardLinkClass, mobile menu)"]
+    },
     "subtleBg": {
       "_desc": "Fondo sutil del badge PENSUM en navbar",
       "light": { "current": "#EEF2F6", "target": "#F4F5F7" },
@@ -145,19 +157,21 @@
     },
     "hoverBg": {
       "_desc": "Fondo hover en navbar y botones",
-      "light": { "current": "#F4F5F7", "target": "#F4F5F7" },
-      "dark":  { "current": "#3E4C5E", "target": "#3E4C5E" },
+      "light": { "current": "#F8FAFC", "target": "#F8FAFC" },
+      "dark":  { "current": "#253247", "target": "#253247" },
       "_ubicaciones": ["Navbar.jsx", "Visualizer.jsx (zoom controls, toolbar buttons)"]
     }
   },
 
   "graph": {
     "_desc": "Colores del grafo SVG (NodeRenderer.js + EdgeRenderer.js) — variedad semántica justificada, cambios mínimos",
+    "primarySectionText": { "current": "#ffffff", "target": "#ffffff" },
+    "codeCompleted":      { "light": { "current": "#ffffff", "target": "#ffffff" }, "dark": { "current": "#6ee7b7", "target": "#6ee7b7" } },
 
     "nodeFill": {
       "default":      { "light": { "current": "#f4f6f7", "target": "#F4F5F7" },  "dark": { "current": "#1f2937", "target": "#1f2937" } },
       "selected":     { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#2d3748", "target": "#2d3748" } },
-      "completed":    { "light": { "current": "#d4efdf", "target": "#d4efdf" },  "dark": { "current": "#064e3b", "target": "#064e3b" } },
+      "completed":    { "light": { "current": "#E8F1EE", "target": "#E8F1EE" },  "dark": { "current": "#1A2B25", "target": "#1A2B25" } },
       "available":    { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1e3a8a", "target": "#1e3a8a" } },
       "highlighted":  { "light": { "current": "#e8f6f3", "target": "#e8f6f3" },  "dark": { "current": "#1f3c7a", "target": "#1f3c7a" } },
       "criticalPath": { "light": { "current": "#fdedec", "target": "#fdedec" },  "dark": { "current": "#7f1d1d", "target": "#7f1d1d" } },
@@ -168,7 +182,7 @@
 
     "nodeStroke": {
       "selected":     { "light": { "current": "#e67e22", "target": "#e67e22" },  "dark": { "current": "#f59e0b", "target": "#f59e0b" } },
-      "completed":    { "light": { "current": "#059669", "target": "#059669" },  "dark": { "current": "#10b981", "target": "#10b981" } },
+      "completed":    { "light": { "current": "#4A7C6A", "target": "#4A7C6A" },  "dark": { "current": "#6BA892", "target": "#6BA892" } },
       "available":    { "light": { "current": "#3498db", "target": "#0052CC" },  "dark": { "current": "#3b82f6", "target": "#4C9AFF" } },
       "highlighted":  { "light": { "current": "#14ab85", "target": "#14ab85" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
       "critical":     { "light": { "current": "#e74c3c", "target": "#e74c3c" },  "dark": { "current": "#ef4444", "target": "#ef4444" } },
@@ -189,8 +203,8 @@
 
     "nodeCodeCompleted": {
       "_desc": "Color del código cuando el curso está completado — unificado con success-base",
-      "light": { "current": "#059669", "target": "#059669" },
-      "dark":  { "current": "#10b981", "target": "#10b981" }
+      "light": { "current": "#4A7C6A", "target": "#4A7C6A" },
+      "dark":  { "current": "#6BA892", "target": "#6BA892" }
     },
 
     "edgeStroke": {
@@ -235,10 +249,10 @@
     "_desc": "Colores de estado (success, warning, error, info) usados en badges, chips, alerts",
 
     "success": {
-      "text":   { "light": { "current": "#006644", "target": "#059669" },  "dark": { "current": "#10b981", "target": "#10b981" } },
-      "bg":     { "light": { "current": "#E3FCEF", "target": "#E3FCEF" },  "dark": { "current": "#0A3622", "target": "#0A3622" } },
-      "border": { "light": { "current": "#36B37E", "target": "#059669" },  "dark": { "current": "#36B37E", "target": "#10b981" } },
-      "_nota": "text light: #006644 → success-base #059669. border: unificado con success-base en cada modo.",
+      "text":   { "light": { "current": "#4A7C6A", "target": "#4A7C6A" },  "dark": { "current": "#6BA892", "target": "#6BA892" } },
+      "bg":     { "light": { "current": "#E8F1EE", "target": "#E8F1EE" },  "dark": { "current": "#1A2B25", "target": "#1A2B25" } },
+      "border": { "light": { "current": "#B7D3C9", "target": "#4A7C6A" },  "dark": { "current": "#2D4A40", "target": "#6BA892" } },
+      "_nota": "Unificado con el verde salvia de suficiencia (#4A7C6A / #6BA892).",
       "_ubicaciones": ["Visualizer.jsx (info card badge)", "Home.jsx (feature icon)"]
     },
     "warning": {
@@ -342,12 +356,19 @@
   "planner": {
     "_desc": "Componente Planner (arrastrar cursos por semestres)",
     "containerBg":         { "light": { "current": "#FAFBFC", "target": "#FAFBFC" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
-    "poolBg":              { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
+    "poolBg":              { "light": { "current": "#F8FAFC", "target": "#F8FAFC" },  "dark": { "current": "#141E2B", "target": "#141E2B" } },
+    "poolCountText":       { "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "poolCountBg":         { "light": { "current": "#E6EFF5", "target": "#E6EFF5" },  "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+    "poolSearchBg":        { "light": { "current": "#FFFFFF", "target": "#FFFFFF" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
     "chipBg":              { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1f2937", "target": "#1f2937" } },
     "semesterBg":          { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1C2636", "target": "#1C2636" } },
     "warningBannerBg":     { "light": { "current": "#FFFBEB", "target": "#FFF0B3" },  "dark": { "current": "#422006", "target": "#5C4000" } },
     "warningBannerBorder": { "light": { "current": "#F59E0B", "target": "#F59E0B" },  "dark": { "current": "#F59E0B", "target": "#F59E0B" } },
-    "_nota": "warningBannerBg unificado con statusColors.warning.bg.",
+    "vacationPrimary":     { "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "vacationHeaderBg":    { "light": { "current": "#E6EFF5", "target": "#E6EFF5" },  "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+    "vacationCardBg":      { "light": { "current": "#F8FAFC", "target": "#F8FAFC" },  "dark": { "current": "#141E2B", "target": "#141E2B" } },
+    "vacationNumber":      { "light": { "current": "#8FA3B3", "target": "#8FA3B3" },  "dark": { "current": "#94a3b8", "target": "#94a3b8" } },
+    "_nota": "warningBannerBg unificado con statusColors.warning.bg. Vacaciones usan Azul Pizarra (#3B6988 / #E6EFF5 / #F8FAFC / #8FA3B3).",
     "_ubicaciones": ["index.css (líneas ~297-1483)"]
   },
 
@@ -377,12 +398,12 @@
   "courseChip": {
     "_desc": "Chips de cursos en el planner",
     "suficiencia": {
-      "primary":         { "current": "#059669", "target": "#059669" },
-      "secondary":       { "current": "#d1fae5", "target": "#d1fae5" },
-      "text":            { "current": "#065f46", "target": "#059669" },
-      "center":          { "current": "#ecfdf5", "target": "#E3FCEF" },
-      "completedStroke": { "light": { "current": "#059669", "target": "#059669" },  "dark": { "current": "#10b981", "target": "#10b981" } },
-      "_nota": "text: #065f46 → success-base #059669. center: #ecfdf5 → statusColors.success.bg #E3FCEF."
+      "primary":         { "current": "#4A7C6A", "target": "#4A7C6A" },
+      "secondary":       { "current": "#D5E6DF", "target": "#D5E6DF" },
+      "text":            { "current": "#4A7C6A", "target": "#4A7C6A" },
+      "center":          { "current": "#E8F1EE", "target": "#E8F1EE" },
+      "completedStroke": { "light": { "current": "#4A7C6A", "target": "#4A7C6A" },  "dark": { "current": "#6BA892", "target": "#6BA892" } },
+      "_nota": "Verde salvia (#4A7C6A / #D5E6DF / #E8F1EE) sin borde en tarjetas."
     }
   }
 }
