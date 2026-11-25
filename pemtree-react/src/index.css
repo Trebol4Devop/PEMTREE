@@ -2,6 +2,47 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    input[type="checkbox"] {
+        position: relative;
+        appearance: none;
+        -webkit-appearance: none;
+        width: 14px;
+        height: 14px;
+        border: none;
+        outline: none;
+        border-radius: 4px;
+        background: #DFE1E6;
+        cursor: pointer;
+        flex-shrink: 0;
+        vertical-align: middle;
+        transition: background-color 0.15s ease;
+    }
+    input[type="checkbox"]:checked {
+        background: #3B6988;
+    }
+    input[type="checkbox"]:checked::after {
+        content: '';
+        position: absolute;
+        left: 4.5px;
+        top: 1.5px;
+        width: 4px;
+        height: 8px;
+        border: solid #FFFFFF;
+        border-width: 0 2px 2px 0;
+        transform: rotate(45deg);
+    }
+    html.dark input[type="checkbox"] {
+        background: #2D333B;
+    }
+    html.dark input[type="checkbox"]:checked {
+        background: #6BA3C8;
+    }
+    html.dark input[type="checkbox"]:checked::after {
+        border-color: #0E1624;
+    }
+}
+
 @keyframes animacion-inicio {
     to { opacity: 1; transform: translateY(0); }
 }
@@ -318,7 +359,6 @@ html.dark .schedule-simultanea-toggle {
     color: #cbd5e1;
 }
 .schedule-simultanea-toggle input {
-    accent-color: #0052CC;
     cursor: pointer;
     margin: 0;
 }
@@ -2108,39 +2148,49 @@ html.dark .schedule-toolbar-title h3 {
 .schedule-course-counts span {
     font-size: 0.65rem;
     font-weight: 600;
-    padding: 0.1rem 0.35rem;
-    border-radius: 3px;
-    line-height: 1;
+    padding: 0.2rem 0.55rem;
+    border-radius: 9999px;
+    line-height: 1.1;
 }
 
 .schedule-count-mag {
-    background: transparent;
-    color: #2563eb;
+    background: #E6EFF5;
+    color: #3B6988;
 }
 
 .schedule-count-lab {
-    background: transparent;
-    color: #e74c3c;
+    background: #FDECE4;
+    color: #C25E3A;
 }
 
 .schedule-count-pra {
-    background: transparent;
-    color: #7c3aed;
+    background: #ECEBFA;
+    color: #6B66B8;
 }
 
 .schedule-count-other {
-    background: transparent;
-    color: var(--text-secondary);
+    background: #E8F1EE;
+    color: #4A7C6A;
 }
 
 html.dark .schedule-count-mag {
-    background: transparent;
-    color: #60a5fa;
+    background: #1A2B38;
+    color: #6BA3C8;
 }
 
 html.dark .schedule-count-lab {
-    background: transparent;
-    color: #f87171;
+    background: #3B1E14;
+    color: #F09A7A;
+}
+
+html.dark .schedule-count-pra {
+    background: #232142;
+    color: #A6A2E8;
+}
+
+html.dark .schedule-count-other {
+    background: #1A2B25;
+    color: #6BA892;
 }
 
 /* Period Tabs */
@@ -2173,14 +2223,14 @@ html.dark .schedule-count-lab {
 }
 
 .schedule-period-tab.active {
-    background: transparent;
-    color: #0052CC;
+    background: #E6EFF5;
+    color: #3B6988;
     font-weight: 700;
 }
 
 html.dark .schedule-period-tab.active {
-    background: transparent;
-    color: #4C9AFF;
+    background: #1A2B38;
+    color: #6BA3C8;
 }
 
 /* Search and Filters */
@@ -2225,8 +2275,9 @@ html.dark .schedule-search input {
 
 .schedule-modalidad-select {
     padding: 0.4rem 0.6rem;
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
+    background: var(--bg-secondary);
+    border: none;
+    outline: none;
     border-radius: 12px;
     font-size: 0.8rem;
     color: var(--text-primary);
@@ -2235,6 +2286,7 @@ html.dark .schedule-search input {
 
 html.dark .schedule-modalidad-select {
     background: var(--bg-elevated);
+    border: none;
     color: var(--text-primary);
 }
 
@@ -2338,14 +2390,19 @@ html.dark .schedule-cell {
 }
 
 .schedule-header-cell {
-    background: #0052CC;
-    color: white;
-    font-weight: 600;
+    background: #E6EFF5;
+    color: #3B6988;
+    font-weight: 700;
     font-size: 0.7rem;
     height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
+}
+
+html.dark .schedule-header-cell {
+    background: #1A2B38;
+    color: #6BA3C8;
 }
 
 .schedule-time-cell {
@@ -2533,7 +2590,7 @@ html.dark .schedule-separator-dots {
     flex-shrink: 0;
 }
 
-html.dark .schedule-block {
+html.dark .schedule-block.schedule-block-solid {
     text-shadow: 0 1px 2px rgba(0,0,0,0.3);
 }
 
@@ -2655,7 +2712,7 @@ html.dark .schedule-course-item:hover {
 
 .schedule-pin-btn.active {
     opacity: 1;
-    color: #0052CC;
+    color: #3B6988;
     background: transparent;
 }
 
@@ -2665,7 +2722,7 @@ html.dark .schedule-course-item:hover {
 }
 
 html.dark .schedule-pin-btn.active {
-    color: #4C9AFF;
+    color: #6BA3C8;
     background: transparent;
 }
 
@@ -2729,9 +2786,15 @@ html.dark .schedule-course-sections {
 }
 
 .schedule-section-item.selected .schedule-section-check {
-    background: var(--primary);
-    border-color: var(--border);
+    background: #3B6988;
+    border-color: #3B6988;
     color: white;
+}
+
+html.dark .schedule-section-item.selected .schedule-section-check {
+    background: #6BA3C8;
+    border-color: #6BA3C8;
+    color: #0E1624;
 }
 
 .schedule-section-info {
@@ -2761,17 +2824,21 @@ html.dark .schedule-course-sections {
     flex-shrink: 0;
     margin-right: 0.25rem;
 }
-.schedule-section-badge.type-lab { background: transparent; color: #2563eb; }
-.schedule-section-badge.type-pra { background: transparent; color: #7c3aed; }
-.schedule-section-badge.type-dib { background: transparent; color: #d97706; }
-.schedule-section-badge.type-td { background: transparent; color: #0891b2; }
+.schedule-section-badge.type-lab { background: transparent; color: #C25E3A; }
+.schedule-section-badge.type-pra { background: transparent; color: #6B66B8; }
+.schedule-section-badge.type-dib { background: transparent; color: #C48F35; }
+.schedule-section-badge.type-td { background: transparent; color: #2E7D87; }
 
 .schedule-section-label {
     display: inline-flex;
     font-size: 0.6rem;
     font-weight: 700;
-    color: #0052CC;
+    color: #3B6988;
     margin-right: 0.3rem;
+}
+
+html.dark .schedule-section-label {
+    color: #6BA3C8;
 }
 
 .schedule-section-group {
@@ -3087,18 +3154,18 @@ html.dark .schedule-error {
 
 .schedule-btn:hover:not(:disabled) {
     background: transparent;
-    color: #0052CC;
+    color: #3B6988;
 }
 
 .schedule-btn.cluster-active {
-    background: transparent;
-    color: #0052CC;
+    background: #E6EFF5;
+    color: #3B6988;
     font-weight: 700;
 }
 
 .schedule-btn.cluster-active:hover:not(:disabled) {
-    background: transparent;
-    color: #0747A6;
+    background: #D5E4EE;
+    color: #2C526B;
 }
 
 .schedule-btn:disabled {
@@ -3112,23 +3179,23 @@ html.dark .schedule-btn {
 }
 html.dark .schedule-btn:hover:not(:disabled),
 html.dark .schedule-btn.cluster-active {
-    color: #4C9AFF;
+    color: #6BA3C8;
 }
 
 html.dark .schedule-btn:hover:not(:disabled) {
-    background: #4C9AFF;
-    border-color: #4C9AFF;
-    color: #0E1624;
+    background: #1A2B38;
+    border-color: #6BA3C8;
+    color: #6BA3C8;
 }
 html.dark .schedule-btn.cluster-active {
-    background: #4C9AFF;
-    border-color: #4C9AFF;
-    color: #0E1624;
+    background: #1A2B38;
+    border-color: #6BA3C8;
+    color: #6BA3C8;
 }
 html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
-    background: #2684FF;
-    border-color: #2684FF;
-    color: #0E1624;
+    background: #233849;
+    border-color: #6BA3C8;
+    color: #8FC0E0;
 }
 
 /* ── Schedule toolbar: mobile layout ────────────────────────── */
@@ -3172,6 +3239,16 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
 }
 
 .schedule-block.lab {
+    background-image: repeating-linear-gradient(
+        45deg,
+        transparent,
+        transparent 3px,
+        rgba(30,41,59,0.045) 3px,
+        rgba(30,41,59,0.045) 6px
+    );
+}
+
+.schedule-block.schedule-block-solid.lab {
     background-image: repeating-linear-gradient(
         45deg,
         transparent,
@@ -3235,8 +3312,8 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
     font-weight: 800;
     padding: 0.05rem 0.3rem;
     border-radius: 3px;
-    background: rgba(0,0,0,0.3);
-    color: #fff;
+    background: rgba(30, 41, 59, 0.12);
+    color: inherit;
     line-height: 1.1;
     flex-shrink: 0;
 }
@@ -3248,8 +3325,8 @@ html.dark .schedule-btn.cluster-active:hover:not(:disabled) {
     font-weight: 800;
     padding: 0.05rem 0.3rem;
     border-radius: 3px;
-    background: rgba(0,0,0,0.35);
-    color: #fff;
+    background: rgba(30, 41, 59, 0.14);
+    color: inherit;
     margin-left: 0.3rem;
     line-height: 1.1;
     letter-spacing: 0.02em;
