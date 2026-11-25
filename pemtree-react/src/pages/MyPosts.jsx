@@ -309,7 +309,7 @@ export default function MyPosts() {
         { label: 'Publicaciones', value: kpis.totalPosts, icon: MessageSquare, color: 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' },
         { label: 'Comentarios míos', value: kpis.totalMyComments, icon: CornerDownRight, color: 'text-[#0284C7] dark:text-[#38BDF8] bg-sky-50 dark:bg-[#0C3E5F]' },
         { label: 'Me gusta recibidos', value: kpis.totalLikesReceived, icon: ThumbsUp, color: 'text-[#D97706] dark:text-[#FBBF24] bg-[#FFF3C4] dark:bg-[#422006]' },
-        { label: 'Comentarios recibidos', value: kpis.totalCommentsReceived, icon: MessageSquare, color: 'text-[#059669] dark:text-[#10B981] bg-[#E3FCEF] dark:bg-[#0A3622]' },
+        { label: 'Comentarios recibidos', value: kpis.totalCommentsReceived, icon: MessageSquare, color: 'text-[#4A7C6A] dark:text-[#6BA892] bg-[#E8F1EE] dark:bg-[#1A2B25]' },
         { label: 'Respuestas a mis comentarios', value: kpis.totalRepliesReceived, icon: Users, color: 'text-[#7C3AED] dark:text-[#B8ACFF] bg-[#F3E8FF] dark:bg-[#281E5B]' },
         { label: 'Participantes', value: kpis.participants.length, icon: Users, color: 'text-[#BF2600] dark:text-[#FF6369] bg-[#FFEBE6] dark:bg-[#450A0A]' }
     ];
@@ -586,7 +586,7 @@ export default function MyPosts() {
                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                             customAlert.type === 'error' ? 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]' :
                             customAlert.type === 'warning' ? 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]' :
-                            customAlert.type === 'success' ? 'bg-[#E3FCEF] dark:bg-[#0A3622] text-[#059669] dark:text-[#10b981]' :
+                            customAlert.type === 'success' ? 'bg-[#E8F1EE] dark:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892]' :
                             'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
                         }`}>
                             {customAlert.type === 'error' ? <AlertTriangle size={28} /> : <Info size={28} />}

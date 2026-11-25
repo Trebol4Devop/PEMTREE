@@ -12,7 +12,7 @@ export const BASE_COLORS = {
     fill: 'white',
     stroke: '#ccc',
     text: '#172B4D',          // target: text_primary
-    completado: '#059669',     // success_base
+    completado: '#4A7C6A',     // success_base
     disponible: '#0052CC',    // primary
     bloqueado: '#bdc3c7',
     selected: '#e67e22',
@@ -23,7 +23,7 @@ export const BASE_COLORS = {
     fill: '#1a1f2e',
     stroke: '#2c3e50',
     text: '#f1f5f9',          // target: text_primary dark
-    completado: '#10b981',    // success_base dark
+    completado: '#6BA892',    // success_base dark
     disponible: '#4C9AFF',    // primary dark
     bloqueado: '#9ca3af',
     selected: '#f59e0b',
@@ -40,7 +40,7 @@ export function getBaseColors(isDark) {
 
 export const NODE_FILLS = {
   selected:       { light: '#FFFFFF', dark: '#2d3748' },
-  completado:     { light: '#d4efdf', dark: '#064e3b' },
+  completado:     { light: '#E8F1EE', dark: '#1A2B25' },
   disponible:     { light: '#FFFFFF', dark: '#1e3a8a' },
   highlighted:    { light: '#e8f6f3', dark: '#1f3c7a' },
   critical:       { light: '#fdedec', dark: '#7f1d1d' },
@@ -63,8 +63,8 @@ export const SECTION_TEXT = {
 };
 
 export const CODE_COMPLETED = {
-  light: '#059669',   // success_base
-  dark: '#10b981',    // success_base dark
+  light: '#4A7C6A',   // success_base
+  dark: '#6BA892',    // success_base dark
 };
 
 /* ── Edge / arrow colours used by EdgeRenderer ───────────────── */

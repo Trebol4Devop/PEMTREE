@@ -52,7 +52,7 @@ export default function AuthCallback() {
 
                 {status === 'success' && (
                     <>
-                        <CheckCircle2 className="w-10 h-10 text-[#059669] dark:text-[#10B981]" />
+                        <CheckCircle2 className="w-10 h-10 text-[#4A7C6A] dark:text-[#6BA892]" />
                         <h2 className="text-lg font-bold text-[#172B4D] dark:text-slate-100">
                             ¡Sesión iniciada con éxito!
                         </h2>

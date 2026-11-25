@@ -204,7 +204,7 @@ export default function Notifications() {
                                     </div>
                                 ) : pushState.enabled ? (
                                     <div className="flex flex-col gap-3">
-                                        <div className="flex items-center gap-2 text-[#059669] dark:text-[#10b981] text-xs font-bold">
+                                        <div className="flex items-center gap-2 text-[#4A7C6A] dark:text-[#6BA892] text-xs font-bold">
                                             <Bell size={15} />
                                             <span>Notificaciones del navegador activadas</span>
                                         </div>

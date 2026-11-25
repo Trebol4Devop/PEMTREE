@@ -174,7 +174,7 @@ const CommentLayerItem = ({
                                         e.stopPropagation();
                                         handleRestoreComment(post.id, comment.id);
                                     }}
-                                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
+                                    className={`flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-semibold transition cursor-pointer text-[#4A7C6A] hover:bg-[#E8F1EE] dark:text-[#6BA892] dark:hover:bg-[#1A2B25]`}
                                     title="Restaurar comentario (solo administración/moderación)"
                                 >
                                     <RotateCcw size={12} />
@@ -1334,7 +1334,7 @@ export default function Forum() {
                                                                 e.stopPropagation();
                                                                 handleRestorePost(post.id);
                                                             }}
-                                                            className={`p-1 rounded-lg transition cursor-pointer ml-1 flex items-center gap-1 text-[#059669] hover:bg-[#E3FCEF] dark:text-[#10b981] dark:hover:bg-[#0A3622]`}
+                                                            className={`p-1 rounded-lg transition cursor-pointer ml-1 flex items-center gap-1 text-[#4A7C6A] hover:bg-[#E8F1EE] dark:text-[#6BA892] dark:hover:bg-[#1A2B25]`}
                                                             title="Restaurar publicación (solo administración/moderación)"
                                                         >
                                                             <RotateCcw size={13} />
@@ -1738,7 +1738,7 @@ export default function Forum() {
                         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center ${
                             customAlert.type === 'error' ? 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]' :
                             customAlert.type === 'warning' ? 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]' :
-                            customAlert.type === 'success' ? 'bg-[#E3FCEF] dark:bg-[#0A3622] text-[#059669] dark:text-[#10b981]' :
+                            customAlert.type === 'success' ? 'bg-[#E8F1EE] dark:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892]' :
                             'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
                         }`}>
                             {customAlert.type === 'error' ? <AlertCircle size={28} /> :
@@ -1907,7 +1907,7 @@ export default function Forum() {
                         <div className="max-h-[60vh] overflow-y-auto flex flex-col gap-3 pr-1">
                             {adminReports.length === 0 ? (
                                 <div className="text-center py-10 flex flex-col items-center gap-2">
-                                    <CheckCircle2 size={36} className="text-[#059669] dark:text-[#10b981]" />
+                                    <CheckCircle2 size={36} className="text-[#4A7C6A] dark:text-[#6BA892]" />
                                     <p className="text-sm font-bold text-[#172B4D] dark:text-slate-200">¡Todo en orden!</p>
                                     <p className="text-xs text-[#7A869A] dark:text-slate-400">Actualmente no hay reportes de mal comportamiento registrados en la base de datos.</p>
                                 </div>
