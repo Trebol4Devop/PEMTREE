@@ -154,9 +154,9 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     aria-label={user ? 'Mi Cuenta · Recomendaciones' : 'Iniciar sesión para recomendar'}
                     title={user ? 'Mi Cuenta · Recomendaciones activas' : 'Iniciar sesión para opinar y recomendar'}
                 >
-                    <CircleUserRound size={18} className={`sm:w-5 sm:h-5 ${user ? 'text-[#059669] dark:text-[#10B981]' : 'text-[#0052CC] dark:text-[#4C9AFF]'}`} />
+                    <CircleUserRound size={18} className={`sm:w-5 sm:h-5 ${user ? 'text-[#4A7C6A] dark:text-[#6BA892]' : 'text-[#0052CC] dark:text-[#4C9AFF]'}`} />
                     {user && (
-                        <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-[#059669]" />
+                        <span className="absolute top-0 right-0 w-2 h-2 rounded-full bg-[#4A7C6A] dark:bg-[#6BA892]" />
                     )}
                 </button>
 
@@ -193,7 +193,7 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                         className="w-full text-left py-2 px-2 sm:px-3 rounded text-slate-700 dark:text-slate-200 hover:text-[#0052CC] dark:hover:text-[#4C9AFF] bg-transparent border-none cursor-pointer text-xs sm:text-sm font-semibold flex items-center justify-between"
                     >
                         <span>{user ? 'Mi Cuenta (Recomendaciones)' : 'Iniciar sesión / Recomendaciones'}</span>
-                        {user && <span className="w-2 h-2 rounded-full bg-[#059669]" />}
+                        {user && <span className="w-2 h-2 rounded-full bg-[#4A7C6A] dark:bg-[#6BA892]" />}
                     </button>
                     <div className="border-t border-[#DFE1E6] dark:border-[#3E4C5E] my-1 pt-2 px-1 flex items-center gap-1.5">
                         <a

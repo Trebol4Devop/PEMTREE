@@ -443,7 +443,7 @@ export default function Visualizer() {
         return ids.map(id => {
             const c = cursoMap.get(id);
             if (!c) return null;
-            const statusColor = c.completado ? '#059669' : (c.cursando ? '#B45309' : (c.disponible ? '#0052CC' : '#5E6C84'));
+            const statusColor = c.completado ? '#4A7C6A' : (c.cursando ? '#B45309' : (c.disponible ? '#0052CC' : '#5E6C84'));
 
             const handleBadgeEnter = (e) => {
                 tooltipManagerRef.current?.mostrar(e, c);
@@ -619,7 +619,7 @@ export default function Visualizer() {
                         const shOk = ruta.socialHumCreditos >= 8;
                         return (
                             <>
-                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${creditosOk ? (isDarkMode ? 'text-green-300' : 'text-green-700') : (isDarkMode ? 'text-red-300' : 'text-red-700')}`}>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${creditosOk ? (isDarkMode ? 'text-[#6BA892]' : 'text-[#4A7C6A]') : (isDarkMode ? 'text-red-300' : 'text-red-700')}`}>
                                     <span className="max-sm:hidden">Créditos: </span><span className="sm:hidden">Cr: </span>{ruta.creditosTotales}/300 {creditosOk ? '✓' : '✗'}
                                 </span>
                                 <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${shOk ? (isDarkMode ? 'text-blue-300' : 'text-blue-700') : (isDarkMode ? 'text-red-300' : 'text-red-700')}`}>
@@ -713,7 +713,7 @@ export default function Visualizer() {
                     </div>
 
                     <div className="flex items-center gap-2 mb-[12px]">
-                        <span className={`px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider border-0 bg-transparent ${selectedCourse.completado ? 'text-[#059669]' : (selectedCourse.cursando ? 'text-[#B45309]' : (selectedCourse.disponible ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-[#BF2600] dark:text-[#FF6369]'))}`}>
+                        <span className={`px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider border-0 bg-transparent ${selectedCourse.completado ? 'text-[#4A7C6A] dark:text-[#6BA892]' : (selectedCourse.cursando ? 'text-[#B45309]' : (selectedCourse.disponible ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-[#BF2600] dark:text-[#FF6369]'))}`}>
                             {selectedCourse.completado ? 'Completado' : (selectedCourse.cursando ? 'Cursando' : (selectedCourse.disponible ? 'Disponible' : 'Bloqueado'))}
                         </span>
                         {!selectedCourse.completado && selectedCourse.enRutaCritica && (
@@ -736,7 +736,7 @@ export default function Visualizer() {
                         onClick={() => handleCycleEstado(selectedCourse.id)}
                         className={`w-full p-[10px] mt-[5px] rounded-[6px] font-bold cursor-pointer transition-all flex items-center justify-center gap-[8px] border-0 bg-transparent hover:opacity-80
                         ${selectedCourse.completado 
-                            ? 'text-[#059669] dark:text-[#10b981]' 
+                            ? 'text-[#4A7C6A] dark:text-[#6BA892]' 
                             : selectedCourse.cursando
                             ? 'text-[#4C9AFF]'
                             : (isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]')}`}

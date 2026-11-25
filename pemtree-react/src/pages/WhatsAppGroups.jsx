@@ -1150,7 +1150,7 @@ export default function WhatsAppGroups() {
                                             </span>
 
                                             <div className="flex items-center gap-1 font-semibold text-[#5E6C84] dark:text-slate-300 text-xs">
-                                                <CheckCircle2 size={14} className="text-[#059669] dark:text-[#10b981]" />
+                                                <CheckCircle2 size={14} className="text-[#4A7C6A] dark:text-[#6BA892]" />
                                                 <span>{group.upvotes || 0} útiles</span>
                                             </div>
                                         </div>
@@ -1215,7 +1215,7 @@ export default function WhatsAppGroups() {
                                                     <button
                                                         onClick={() => handleRestoreGroup(group.id)}
                                                         title="Restaurar grupo (solo administración/moderación)"
-                                                        className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#E3FCEF] dark:hover:bg-[#0A3622] text-[#059669] dark:text-[#10b981] hover:text-[#047857] dark:hover:text-[#34d399] transition cursor-pointer flex items-center justify-center"
+                                                        className="py-2 px-2.5 rounded-xl border border-[#DFE1E6] dark:border-[#3E4C5E] bg-transparent hover:bg-[#E8F1EE] dark:hover:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892] hover:text-[#3A6354] dark:hover:text-[#82BBA6] transition cursor-pointer flex items-center justify-center"
                                                     >
                                                         <RotateCcw size={15} />
                                                     </button>
@@ -1571,7 +1571,7 @@ export default function WhatsAppGroups() {
                             <div className="flex flex-col gap-2.5 max-h-[280px] overflow-hidden border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-2xl bg-white dark:bg-[#1C2636]">
                                 <div className="bg-[#F4F5F7] dark:bg-[#0E1624] px-4 py-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] flex items-center justify-between text-xs font-bold text-[#5E6C84] dark:text-slate-300">
                                     <span className="flex items-center gap-2">
-                                        <CheckCircle size={14} className="text-emerald-500" />
+                                        <CheckCircle size={14} className="text-[#4A7C6A] dark:text-[#6BA892]" />
                                         <span>Filas listas para importar ({csvParsedRows.filter(r => r.isValid).length} de {csvParsedRows.length} válidas)</span>
                                     </span>
                                     <span className="text-[11px] text-[#7A869A]">Vista Previa</span>
@@ -1590,7 +1590,7 @@ export default function WhatsAppGroups() {
                                             </div>
                                             <div className="shrink-0">
                                                 {row.isValid ? (
-                                                    <span className="bg-emerald-500/15 text-emerald-700 dark:text-emerald-400 px-2 py-0.5 rounded-full font-extrabold text-[10px]">Válido</span>
+                                                    <span className="bg-[#E8F1EE] dark:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892] px-2 py-0.5 rounded-full font-extrabold text-[10px]">Válido</span>
                                                 ) : (
                                                     <span className="bg-red-500/15 text-red-600 dark:text-red-400 px-2 py-0.5 rounded-full font-bold text-[10px]" title={row.errorMsg}>Error: {row.errorMsg}</span>
                                                 )}

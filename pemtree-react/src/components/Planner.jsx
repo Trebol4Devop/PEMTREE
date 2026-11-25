@@ -955,7 +955,7 @@ export default function Planner({ currentPensum, openHelp }) {
                     )}
                     {simultaneous && secondLoading && <span className="planner-promedio-limit">Cargando...</span>}
                     {simultaneous && secondPensum && !secondLoading && (
-                        <span className="planner-promedio-limit" style={{ color: '#059669' }}>
+                        <span className="planner-promedio-limit" style={{ color: '#4A7C6A' }}>
                             +{secondCursoMap.size} cursos
                         </span>
                     )}
@@ -1266,7 +1266,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                     addToast('¡Enlace copiado al portapapeles!');
                                     setTimeout(() => setLinkCopied(false), 3000);
                                 }}
-                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer border-0 bg-transparent ${linkCopied ? 'text-[#059669]' : 'text-[#0052CC] dark:text-[#4C9AFF] hover:opacity-80'}`}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer border-0 bg-transparent ${linkCopied ? 'text-[#4A7C6A] dark:text-[#6BA892]' : 'text-[#0052CC] dark:text-[#4C9AFF] hover:opacity-80'}`}
                             >
                                 {linkCopied ? <Check size={14} /> : <Copy size={14} />}
                                 <span>{linkCopied ? '¡Copiado!' : 'Copiar'}</span>
@@ -1282,7 +1282,7 @@ export default function Planner({ currentPensum, openHelp }) {
                         <button
                             type="button"
                             onClick={handleDownloadJSON}
-                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border-0 bg-transparent text-[#059669] dark:text-[#34D399] hover:opacity-80 w-full sm:w-auto justify-center"
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border-0 bg-transparent text-[#4A7C6A] dark:text-[#6BA892] hover:opacity-80 w-full sm:w-auto justify-center"
                         >
                             <Download size={15} />
                             <span>Descargar Archivo (.json)</span>

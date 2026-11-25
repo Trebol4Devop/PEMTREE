@@ -92,14 +92,14 @@ export default function AuthModal({ isOpen, onClose }) {
                                     <h3 className="font-extrabold text-sm sm:text-base text-[#172B4D] dark:text-white truncate">
                                         {displayName}
                                     </h3>
-                                    <ShieldCheck size={16} className="text-[#059669] dark:text-[#10B981] shrink-0" title="Sesión activa verificada" />
+                                    <ShieldCheck size={16} className="text-[#4A7C6A] dark:text-[#6BA892] shrink-0" title="Sesión activa verificada" />
                                 </div>
                                 {email && (
                                     <p className="text-xs text-[#5E6C84] dark:text-slate-400 truncate mt-0.5">
                                         {email}
                                     </p>
                                 )}
-                                <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-[#059669] dark:text-[#10B981] bg-[#E3FCEF] dark:bg-[#0A3622] px-2 py-0.5 rounded-md uppercase tracking-wider">
+                                <span className="inline-flex items-center gap-1 mt-1 text-[10px] font-bold text-[#4A7C6A] dark:text-[#6BA892] bg-[#E8F1EE] dark:bg-[#1A2B25] px-2 py-0.5 rounded-md uppercase tracking-wider">
                                     Listo para opinar
                                 </span>
                             </div>
@@ -154,7 +154,7 @@ export default function AuthModal({ isOpen, onClose }) {
 
                         <div className="flex flex-col gap-2 p-3 bg-[#FAFBFC] dark:bg-[#0E1624] border border-[#DFE1E6] dark:border-[#3E4C5E] rounded-xl text-xs text-[#5E6C84] dark:text-slate-300">
                             <div className="flex items-start gap-2">
-                                <ThumbsUp size={14} className="text-[#059669] dark:text-[#10B981] shrink-0 mt-0.5" />
+                                <ThumbsUp size={14} className="text-[#4A7C6A] dark:text-[#6BA892] shrink-0 mt-0.5" />
                                 <span><strong>Vota en tiempo real:</strong> Recomienda secciones en el Armador de Horarios y Planificador.</span>
                             </div>
                             <div className="flex items-start gap-2">

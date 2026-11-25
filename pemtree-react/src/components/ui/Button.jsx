@@ -13,7 +13,7 @@ export default function Button({
     secondary: 'bg-transparent hover:opacity-80 text-[#172B4D] hover:text-[#0052CC] dark:text-slate-100 dark:hover:text-[#4C9AFF]',
     danger: 'bg-transparent hover:opacity-80 text-[#BF2600] hover:text-[#A32000] dark:text-[#FF6369] dark:hover:text-[#FF858A]',
     ghost: 'bg-transparent hover:opacity-80 text-[#5E6C84] hover:text-[#172B4D] dark:text-slate-300 dark:hover:text-white',
-    success: 'bg-transparent hover:opacity-80 text-[#059669] hover:text-[#047857] dark:text-[#10b981] dark:hover:text-[#34d399]',
+    success: 'bg-transparent hover:opacity-80 text-[#4A7C6A] hover:text-[#3A6354] dark:text-[#6BA892] dark:hover:text-[#82BBA6]',
   };
 
   const sizes = {

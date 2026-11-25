@@ -3,7 +3,7 @@ import { ThumbsUp, ThumbsDown, LogIn } from 'lucide-react';
 import { cargarReputacion, getReputacionSeccion, recomendarSeccion } from '../modules/data/catalogo';
 
 function nivelSentimiento(pct) {
-    if (pct >= 70) return { label: 'Muy recomendada', color: '#2E9E5B' };
+    if (pct >= 70) return { label: 'Muy recomendada', color: '#4A7C6A' };
     if (pct >= 50) return { label: 'Recomendaciones mixtas', color: '#B7791F' };
     return { label: 'Poco recomendada', color: '#C0392B' };
 }
