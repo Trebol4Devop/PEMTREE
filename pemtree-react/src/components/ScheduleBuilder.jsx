@@ -1743,7 +1743,7 @@ export default function ScheduleBuilder({ openHelp }) {
                 <span> Este sitio es un proyecto comunitario independiente y no es una página oficial de la Facultad de Ingeniería ni de la Universidad de San Carlos de Guatemala. Los horarios y planes reflejados aquí son de referencia pública y podrían diferir del portal oficial. Verifica siempre en <a href="https://portal.ingenieria.usac.edu.gt" target="_blank" rel="noopener noreferrer">portal.ingenieria.usac.edu.gt</a>.</span>
             </WarningBanner>
         )}
-        <div className="schedule-toolbar bg-white dark:bg-[#1C2636] border border-[#DFE1E6] dark:border-[#3E4C5E] text-[#172B4D] dark:text-slate-100 transition-colors duration-300">
+        <div className="schedule-toolbar bg-white dark:bg-[#1C2636] text-[#172B4D] dark:text-slate-100 transition-colors duration-300">
         <div className="schedule-toolbar-title">
         <Calendar size={18} className="max-sm:hidden" />
         <h3 className="max-sm:hidden">Armador de Horarios</h3>
