@@ -112,12 +112,21 @@ html.dark .logo-trebol-blue {
     transform-box: fill-box; 
     transform-origin: center center; 
     cursor: pointer;
+    filter: drop-shadow(0 2px 4px rgba(15, 23, 42, 0.08));
     will-change: transform, filter;
+}
+
+html.dark .node-group {
+    filter: drop-shadow(0 2px 6px rgba(0, 0, 0, 0.35));
 }
 
 .node-group:hover {
     transform: scale(1.008);
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12));
+    filter: drop-shadow(0 4px 8px rgba(15, 23, 42, 0.14));
+}
+
+html.dark .node-group:hover {
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.45));
 }
 
 #grafica-group {
@@ -173,10 +182,6 @@ html.dark .logo-trebol-blue {
 .node-group.node-dimmed:hover { 
     transform: none; 
     filter: grayscale(100%) opacity(0.55) !important; 
-}
-
-.node-group:hover { 
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,0.12)); 
 }
 
 .semester-label {
@@ -325,7 +330,7 @@ html.dark .planner-container {
     width: 260px;
     min-width: 220px;
     border-right: 1px solid #DFE1E6;
-    background: #fff;
+    background: #F8FAFC;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -333,7 +338,7 @@ html.dark .planner-container {
 }
 html.dark .planner-pool-wrapper {
     border-color: #3E4C5E;
-    background: #1C2636;
+    background: #141E2B;
 }
 
 .planner-pool {
@@ -349,10 +354,10 @@ html.dark .planner-pool-wrapper {
     align-items: center;
     justify-content: space-between;
     padding: 12px 14px 8px;
-    border-bottom: 1px solid #F4F5F7;
+    border-bottom: 1px solid #E2E8F0;
 }
 html.dark .planner-pool-header {
-    border-color: #2D333B;
+    border-color: #2D3A4F;
 }
 .planner-pool-header-text {
     display: flex;
@@ -398,14 +403,14 @@ html.dark .planner-pool-title {
 .planner-pool-count {
     font-size: 0.65rem;
     font-weight: 700;
-    color: #0052CC;
-    background: transparent;
+    color: #3B6988;
+    background: #E6EFF5;
     padding: 1px 7px;
     border-radius: 10px;
 }
 html.dark .planner-pool-count {
-    color: #4C9AFF;
-    background: transparent;
+    color: #6BA3C8;
+    background: #1A2B38;
 }
 
 .planner-pool-search {
@@ -414,12 +419,12 @@ html.dark .planner-pool-count {
     gap: 6px;
     margin: 8px 10px;
     padding: 6px 10px;
-    border: none;
+    border: 1px solid #E2E8F0;
     border-radius: 12px;
-    background: #F4F5F7;
+    background: #FFFFFF;
 }
 html.dark .planner-pool-search {
-    border: none;
+    border: 1px solid #2D3A4F;
     background: #0E1624;
 }
 
@@ -753,10 +758,10 @@ html.dark .planner-block-vacation .planner-sem-diagonal-corner {
     background: linear-gradient(135deg, #6BA3C8 0%, #6BA3C8 36%, transparent 37%);
 }
 .planner-block-vacation .planner-sem-number {
-    color: #64748b;
+    color: #8FA3B3;
 }
 html.dark .planner-block-vacation .planner-sem-number {
-    color: #cbd5e1;
+    color: #94a3b8;
 }
 .planner-block-vacation .planner-sem-title {
     color: #3B6988;
@@ -1359,12 +1364,14 @@ html.dark .planner-add-line-bottom:hover {
     background: #fff;
     cursor: grab;
     position: relative;
+    filter: drop-shadow(0 1px 3px rgba(15, 23, 42, 0.08));
     transition: filter 0.12s ease, transform 0.12s ease;
     user-select: none;
     will-change: transform, filter;
 }
 html.dark .planner-chip {
     background: #1f2937;
+    filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
 }
 .planner-chip:hover {
     transform: scale(1.008);

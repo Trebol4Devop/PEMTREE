@@ -70,10 +70,10 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
     })();
 
     const boardLinkClass = (active) =>
-        `px-2 sm:px-3 py-1.5 rounded-lg transition-transform duration-150 active:scale-[0.96] cursor-pointer no-underline whitespace-nowrap text-xs sm:text-sm font-medium bg-transparent ${
+        `px-2.5 sm:px-3 py-1.5 rounded-lg border-0 transition-all duration-150 active:scale-[0.96] cursor-pointer no-underline whitespace-nowrap text-xs sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-[#3B6988]/30 dark:focus-visible:ring-[#6BA3C8]/30 ${
             active
-                ? 'text-[#0052CC] dark:text-[#4C9AFF] font-semibold'
-                : 'text-[#5E6C84] dark:text-slate-300 hover:text-[#172B4D] dark:hover:text-white'
+                ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] font-semibold'
+                : 'bg-transparent text-[#5E6C84] dark:text-slate-300 font-medium hover:text-[#172B4D] dark:hover:text-white hover:bg-[#F8FAFC] dark:hover:bg-[#253247]/60'
         }`;
 
     const homeLinkClass = 'flex items-center gap-1.5 sm:gap-2 px-2 sm:px-3 py-1.5 rounded-lg transition-transform duration-150 active:scale-[0.96] cursor-pointer no-underline shrink-0 text-sm sm:text-base tracking-tight font-bold';
@@ -172,19 +172,19 @@ export default function Navbar({ isDarkMode, onToggleTheme }) {
                     <div className="px-2.5 py-1.5 text-[11px] font-semibold text-[#5E6C84] dark:text-slate-400 bg-transparent rounded-lg border-0 text-center mb-1">
                         Espacio estudiantil independiente no oficial
                     </div>
-                    <Link to="/" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline bg-transparent ${currentView === 'home' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-slate-700 dark:text-slate-200 hover:text-[#0052CC] dark:hover:text-[#4C9AFF]'}`}>
+                    <Link to="/" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded-lg no-underline focus:outline-none ${currentView === 'home' ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] font-semibold' : 'bg-transparent text-slate-700 dark:text-slate-200 hover:text-[#3B6988] dark:hover:text-[#6BA3C8]'}`}>
                         Inicio
                     </Link>
-                    <Link to="/visualizador" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline bg-transparent ${currentView === 'graph' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-slate-700 dark:text-slate-200 hover:text-[#0052CC] dark:hover:text-[#4C9AFF]'}`}>
+                    <Link to="/visualizador" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded-lg no-underline focus:outline-none ${currentView === 'graph' ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] font-semibold' : 'bg-transparent text-slate-700 dark:text-slate-200 hover:text-[#3B6988] dark:hover:text-[#6BA3C8]'}`}>
                         Visualizador
                     </Link>
-                    <Link to="/visualizador?view=planner" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline bg-transparent ${currentView === 'planner' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-slate-700 dark:text-slate-200 hover:text-[#0052CC] dark:hover:text-[#4C9AFF]'}`}>
+                    <Link to="/visualizador?view=planner" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded-lg no-underline focus:outline-none ${currentView === 'planner' ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] font-semibold' : 'bg-transparent text-slate-700 dark:text-slate-200 hover:text-[#3B6988] dark:hover:text-[#6BA3C8]'}`}>
                         Planificador
                     </Link>
-                    <Link to="/visualizador?view=schedule" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline bg-transparent ${currentView === 'schedule' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-slate-700 dark:text-slate-200 hover:text-[#0052CC] dark:hover:text-[#4C9AFF]'}`}>
+                    <Link to="/visualizador?view=schedule" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded-lg no-underline focus:outline-none ${currentView === 'schedule' ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] font-semibold' : 'bg-transparent text-slate-700 dark:text-slate-200 hover:text-[#3B6988] dark:hover:text-[#6BA3C8]'}`}>
                         Horarios
                     </Link>
-                    <Link to="/recuento" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded no-underline bg-transparent ${currentView === 'recuento' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-slate-700 dark:text-slate-200 hover:text-[#0052CC] dark:hover:text-[#4C9AFF]'}`}>
+                    <Link to="/recuento" onClick={() => setMobileMenuOpen(false)} className={`w-full text-left py-2 px-2 sm:px-3 rounded-lg no-underline focus:outline-none ${currentView === 'recuento' ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] font-semibold' : 'bg-transparent text-slate-700 dark:text-slate-200 hover:text-[#3B6988] dark:hover:text-[#6BA3C8]'}`}>
                         Recuento
                     </Link>
                     <button
