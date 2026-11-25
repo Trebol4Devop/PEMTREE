@@ -962,21 +962,21 @@ export default function Planner({ currentPensum, openHelp }) {
                     <span className="planner-promedio-limit">Máx: {maxCredits} cr/sem</span>
                     <button
                         type="button"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer border shadow-sm bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30 hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E]"
+                        className="flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer border-0 bg-transparent text-[#172B4D] dark:text-[#f1f5f9] hover:opacity-70"
                         onClick={() => setShowShareModal(true)}
                         title="Compartir o exportar tu planificación"
+                        aria-label="Compartir o exportar tu planificación"
                     >
-                        <Share2 size={15} />
-                        <span className="hidden sm:inline">Compartir / Exportar</span>
+                        <Share2 size={16} />
                     </button>
                     <button
                         type="button"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition-all cursor-pointer border shadow-sm bg-white dark:bg-[#1C2636] text-[#059669] dark:text-[#34D399] border-[#059669]/30 dark:border-[#34D399]/30 hover:bg-[#D1FAE5] dark:hover:bg-[#064E3B]"
+                        className="flex items-center justify-center p-1.5 rounded-md transition-all cursor-pointer border-0 bg-transparent text-[#172B4D] dark:text-[#f1f5f9] hover:opacity-70"
                         onClick={() => { setSharedPlanData(null); setShowImportModal(true); }}
                         title="Importar planificación"
+                        aria-label="Importar planificación"
                     >
-                        <Upload size={15} />
-                        <span className="hidden sm:inline">Importar</span>
+                        <Upload size={16} />
                     </button>
                     <button
                         className="planner-pool-toggle-bar"
@@ -1266,7 +1266,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                     addToast('¡Enlace copiado al portapapeles!');
                                     setTimeout(() => setLinkCopied(false), 3000);
                                 }}
-                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer ${linkCopied ? 'bg-[#059669] text-white' : 'bg-[#0052CC] dark:bg-[#4C9AFF] text-white hover:bg-[#003D99]'}`}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer border-0 bg-transparent ${linkCopied ? 'text-[#059669]' : 'text-[#0052CC] dark:text-[#4C9AFF] hover:opacity-80'}`}
                             >
                                 {linkCopied ? <Check size={14} /> : <Copy size={14} />}
                                 <span>{linkCopied ? '¡Copiado!' : 'Copiar'}</span>
@@ -1282,7 +1282,7 @@ export default function Planner({ currentPensum, openHelp }) {
                         <button
                             type="button"
                             onClick={handleDownloadJSON}
-                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border border-[#059669] text-[#059669] dark:text-[#34D399] dark:border-[#34D399] hover:bg-[#059669]/10 w-full sm:w-auto justify-center"
+                            className="flex items-center gap-1.5 px-3.5 py-2 rounded-md text-xs font-bold transition cursor-pointer border-0 bg-transparent text-[#059669] dark:text-[#34D399] hover:opacity-80 w-full sm:w-auto justify-center"
                         >
                             <Download size={15} />
                             <span>Descargar Archivo (.json)</span>

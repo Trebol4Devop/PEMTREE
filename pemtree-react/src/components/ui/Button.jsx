@@ -6,14 +6,14 @@ export default function Button({
   className = '',
   ...props
 }) {
-  const baseStyle = 'inline-flex items-center justify-center font-bold transition duration-200 focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 dark:focus:ring-[#4C9AFF]/30 disabled:opacity-50 disabled:cursor-not-allowed';
+  const baseStyle = 'inline-flex items-center justify-center font-bold transition duration-200 border-0 bg-transparent focus:outline-none focus:ring-2 focus:ring-[#0052CC]/30 dark:focus:ring-[#4C9AFF]/30 disabled:opacity-50 disabled:cursor-not-allowed';
 
   const variants = {
-    primary: 'bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] shadow-sm',
-    secondary: 'bg-[#F4F5F7] hover:bg-[#EBECF0] dark:bg-[#2D333B] dark:hover:bg-[#3E4C5E] text-[#172B4D] dark:text-slate-100 border border-[#DFE1E6] dark:border-[#3E4C5E]',
-    danger: 'bg-[#BF2600] hover:bg-[#A32000] dark:bg-[#FF6369] dark:hover:bg-[#FF858A] text-white',
-    ghost: 'bg-transparent hover:bg-[#F4F5F7] dark:hover:bg-[#3E4C5E] text-[#5E6C84] dark:text-slate-300',
-    success: 'bg-[#059669] hover:bg-[#047857] dark:bg-[#10b981] dark:hover:bg-[#059669] text-white',
+    primary: 'bg-transparent hover:opacity-80 text-[#0052CC] hover:text-[#0747A6] dark:text-[#4C9AFF] dark:hover:text-[#79B8FF]',
+    secondary: 'bg-transparent hover:opacity-80 text-[#172B4D] hover:text-[#0052CC] dark:text-slate-100 dark:hover:text-[#4C9AFF]',
+    danger: 'bg-transparent hover:opacity-80 text-[#BF2600] hover:text-[#A32000] dark:text-[#FF6369] dark:hover:text-[#FF858A]',
+    ghost: 'bg-transparent hover:opacity-80 text-[#5E6C84] hover:text-[#172B4D] dark:text-slate-300 dark:hover:text-white',
+    success: 'bg-transparent hover:opacity-80 text-[#059669] hover:text-[#047857] dark:text-[#10b981] dark:hover:text-[#34d399]',
   };
 
   const sizes = {

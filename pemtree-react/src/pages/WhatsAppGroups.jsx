@@ -966,7 +966,7 @@ export default function WhatsAppGroups() {
                             placeholder="Buscar por curso, sección, título o descripción..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border border-transparent focus:border-[#0052CC] dark:focus:border-[#4C9AFF] focus:outline-none transition"
+                            className="w-full pl-10 pr-9 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border-0 focus:outline-none transition"
                         />
                         {searchQuery && (
                             <button 
@@ -984,7 +984,7 @@ export default function WhatsAppGroups() {
                             <select
                                 value={selectedCursoFilter}
                                 onChange={(e) => setSelectedCursoFilter(e.target.value)}
-                                className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
+                                className="bg-transparent text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3.5 py-2.5 rounded-xl border-0 focus:outline-none cursor-pointer w-full sm:w-auto max-w-[260px] truncate"
                             >
                                 <option value="">Todos los Cursos</option>
                                 {availableCursosInGroups.map(cursoName => (
@@ -1001,7 +1001,7 @@ export default function WhatsAppGroups() {
                                     setCsvError('');
                                     setIsCsvModalOpen(true);
                                 }}
-                                className="flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0043A4] dark:bg-[#0C295E] dark:hover:bg-[#1A3A75] text-white dark:text-[#4C9AFF] border border-transparent dark:border-[#4C9AFF]/30 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shadow-xs shrink-0 cursor-pointer w-full sm:w-auto"
+                                className="flex items-center justify-center gap-2 bg-transparent text-[#0052CC] dark:text-[#4C9AFF] hover:opacity-80 border-0 font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition-all shrink-0 cursor-pointer w-full sm:w-auto"
                                 title="Cargar masivamente cursos desde archivo CSV"
                             >
                                 <FileSpreadsheet size={16} strokeWidth={2.5} />

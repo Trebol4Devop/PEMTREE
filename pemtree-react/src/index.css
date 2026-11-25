@@ -251,8 +251,8 @@ html.dark .estado-badge {
 
 /* Mejorar contraste de los badges de prerequisitos */
 html.dark .badge {
-    background-color: rgba(255,255,255,0.05) !important;
-    border: 1px solid rgba(255,255,255,0.1) !important;
+    background-color: transparent !important;
+    border: none !important;
 }
 
 /* Mejorar botón de completar en tarjeta de info */
@@ -300,16 +300,16 @@ html.dark input {
     border-radius: 5px;
     font-size: 0.62rem;
     font-weight: 700;
-    background: var(--bg-secondary, #F4F5F7);
-    border: 1px solid var(--border, #DFE1E6);
+    background: transparent;
+    border: none;
     color: var(--text-secondary, #5E6C84);
     cursor: pointer;
     white-space: nowrap;
     user-select: none;
 }
 html.dark .schedule-simultanea-toggle {
-    background: #0E1624;
-    border-color: #3E4C5E;
+    background: transparent;
+    border: none;
     color: #cbd5e1;
 }
 .schedule-simultanea-toggle input {
@@ -356,9 +356,19 @@ html.dark .planner-pool-header {
 }
 .planner-pool-header-text {
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+    align-items: center;
     min-width: 0;
-    gap: 2px;
+    gap: 6px;
+}
+.planner-pool-dot {
+    color: #172B4D;
+    font-size: 0.75rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+html.dark .planner-pool-dot {
+    color: #f1f5f9;
 }
 .planner-pool-subtitle {
     font-size: 0.7rem;
@@ -367,7 +377,7 @@ html.dark .planner-pool-header {
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 180px;
+    max-width: 140px;
 }
 html.dark .planner-pool-subtitle {
     color: #f1f5f9;
@@ -389,13 +399,13 @@ html.dark .planner-pool-title {
     font-size: 0.65rem;
     font-weight: 700;
     color: #0052CC;
-    background: #DEEBFF;
+    background: transparent;
     padding: 1px 7px;
     border-radius: 10px;
 }
 html.dark .planner-pool-count {
     color: #4C9AFF;
-    background: #0C295E;
+    background: transparent;
 }
 
 .planner-pool-search {
@@ -404,12 +414,12 @@ html.dark .planner-pool-count {
     gap: 6px;
     margin: 8px 10px;
     padding: 6px 10px;
-    border: 1px solid #DFE1E6;
+    border: none;
     border-radius: 12px;
-    background: #FAFBFC;
+    background: #F4F5F7;
 }
 html.dark .planner-pool-search {
-    border-color: #3E4C5E;
+    border: none;
     background: #0E1624;
 }
 
@@ -654,26 +664,26 @@ html.dark .planner-block-header-vacation {
     font-size: 0.7rem;
     font-weight: 600;
     color: #5E6C84;
-    background: #EEF2F6;
+    background: transparent;
     padding: 2px 8px;
     border-radius: 8px;
 }
 html.dark .planner-block-credits {
     color: #94a3b8;
-    background: #0E1624;
+    background: transparent;
 }
 
 .planner-block-capacity {
     font-size: 0.7rem;
     font-weight: 700;
     color: #92400E;
-    background: #FEF3C7;
+    background: transparent;
     padding: 2px 8px;
     border-radius: 8px;
 }
 html.dark .planner-block-capacity {
     color: #FCD34D;
-    background: #78350F;
+    background: transparent;
 }
 
 /* --- Promedio bar --- */
@@ -703,41 +713,46 @@ html.dark .planner-promedio-label {
 }
 
 .planner-promedio-input {
-    width: 80px;
-    padding: 5px 8px;
-    border: 1px solid #DFE1E6;
+    width: 48px;
+    padding: 4px 6px;
+    border: none;
     border-radius: 6px;
     font-size: 0.8rem;
     font-weight: 600;
     color: #172B4D;
-    background: #fff;
+    background: #F4F5F7;
     text-align: center;
+    -moz-appearance: textfield;
+}
+.planner-promedio-input::-webkit-inner-spin-button,
+.planner-promedio-input::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
 }
 html.dark .planner-promedio-input {
-    border-color: #3E4C5E;
+    border: none;
     background: #0E1624;
     color: #f1f5f9;
 }
 .planner-promedio-input:focus {
     outline: none;
-    border-color: #0052CC;
 }
 html.dark .planner-promedio-input:focus {
-    border-color: #4C9AFF;
+    outline: none;
 }
 
 .planner-promedio-limit {
     font-size: 0.7rem;
     font-weight: 700;
     color: #0052CC;
-    background: #DEEBFF;
+    background: transparent;
     padding: 3px 10px;
     border-radius: 8px;
     white-space: nowrap;
 }
 html.dark .planner-promedio-limit {
     color: #4C9AFF;
-    background: #0C295E;
+    background: transparent;
 }
 
 .planner-last-updated {
@@ -757,26 +772,28 @@ html.dark .planner-last-updated {
     gap: 4px;
     margin-left: auto;
     padding: 5px 10px;
-    border: 1px solid #0052CC;
+    border: none;
     border-radius: 6px;
-    background: #0052CC;
-    color: #fff;
+    background: transparent;
+    color: #0052CC;
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;
     white-space: nowrap;
-    transition: background 0.15s;
+    transition: opacity 0.15s;
 }
 html.dark .planner-pool-toggle-bar {
-    background: #4C9AFF;
-    color: #0E1624;
-    border-color: #4C9AFF;
+    background: transparent;
+    color: #4C9AFF;
+    border: none;
 }
 .planner-pool-toggle-bar:hover {
-    background: #0747A6;
+    background: transparent;
+    opacity: 0.8;
 }
 html.dark .planner-pool-toggle-bar:hover {
-    background: #3888FF;
+    background: transparent;
+    opacity: 0.8;
 }
 .planner-pool-toggle-label {
     font-size: 0.7rem;
@@ -800,13 +817,41 @@ html.dark .planner-simultaneous-label {
 }
 
 .planner-simultaneous-checkbox {
+    position: relative;
+    appearance: none;
+    -webkit-appearance: none;
     width: 14px;
     height: 14px;
-    accent-color: #0052CC;
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background: #DFE1E6;
     cursor: pointer;
+    flex-shrink: 0;
+    transition: background-color 0.15s ease;
+}
+.planner-simultaneous-checkbox:checked {
+    background: #0052CC;
+}
+.planner-simultaneous-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    left: 4.5px;
+    top: 1.5px;
+    width: 4px;
+    height: 8px;
+    border: solid #FFFFFF;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
 }
 html.dark .planner-simultaneous-checkbox {
-    accent-color: #4C9AFF;
+    background: #2D333B;
+}
+html.dark .planner-simultaneous-checkbox:checked {
+    background: #4C9AFF;
+}
+html.dark .planner-simultaneous-checkbox:checked::after {
+    border-color: #0E1624;
 }
 
 /* --- Credit bar --- */
@@ -913,51 +958,44 @@ html.dark .planner-block-empty {
     min-width: 120px;
     min-height: 120px;
     flex-shrink: 0;
-    border: 2px dashed #DFE1E6;
+    border: none;
     border-radius: 10px;
     background: transparent;
     color: #5E6C84;
     font-size: 0.7rem;
     font-weight: 700;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    transition: color 0.15s;
 }
 .planner-add-semester:hover {
-    border-color: #0052CC;
     color: #0052CC;
-    background: #F0F7FF;
+    background: transparent;
 }
 html.dark .planner-add-semester {
-    border-color: #3E4C5E;
     color: #94a3b8;
 }
 html.dark .planner-add-semester:hover {
-    border-color: #4C9AFF;
     color: #4C9AFF;
-    background: #0C295E;
+    background: transparent;
 }
 
 /* --- Remove semester button --- */
 .planner-remove-semester {
-    border-style: solid;
-    border-color: #F4F5F7;
+    border: none;
     color: #5E6C84;
-    background: #F4F5F7;
+    background: transparent;
 }
 .planner-remove-semester:hover {
-    border-color: #BF2600;
     color: #BF2600;
-    background: #FFEBE6;
+    background: transparent;
 }
 html.dark .planner-remove-semester {
-    border-color: #2D333B;
     color: #94a3b8;
-    background: #2D333B;
+    background: transparent;
 }
 html.dark .planner-remove-semester:hover {
-    border-color: #F87171;
     color: #F87171;
-    background: #450A0A;
+    background: transparent;
 }
 
 /* --- Lines bar (planning variants) --- */
@@ -1072,11 +1110,11 @@ html.dark .planner-line-header-name {
     gap: 2px;
     padding: 3px 9px;
     border-radius: 999px;
-    background: #DEEBFF;
+    background: transparent;
     color: #0052CC;
     font-size: 0.7rem;
     font-weight: 700;
-    border: 1px solid #0052CC40;
+    border: none;
     white-space: nowrap;
 }
 .planner-line-header-credits strong {
@@ -1084,9 +1122,9 @@ html.dark .planner-line-header-name {
     font-size: 0.78rem;
 }
 html.dark .planner-line-header-credits {
-    background: #0C295E;
+    background: transparent;
     color: #4C9AFF;
-    border-color: #4C9AFF40;
+    border: none;
 }
 .planner-line-header-actions {
     display: inline-flex;
@@ -1105,28 +1143,28 @@ html.dark .planner-line-header-credits {
     background: transparent;
     color: #5E6C84;
     cursor: pointer;
-    transition: background 0.15s, color 0.15s, opacity 0.15s;
+    transition: color 0.15s, opacity 0.15s;
     opacity: 0.7;
 }
 .planner-line-action-btn:hover {
     opacity: 1;
-    background: #DFE1E6;
+    background: transparent;
     color: #172B4D;
 }
 .planner-line-action-btn-danger:hover {
     color: #BF2600;
-    background: #FFEBE6;
+    background: transparent;
 }
 html.dark .planner-line-action-btn {
     color: #94a3b8;
 }
 html.dark .planner-line-action-btn:hover {
-    background: #3E4C5E;
+    background: transparent;
     color: #f1f5f9;
 }
 html.dark .planner-line-action-btn-danger:hover {
     color: #F87171;
-    background: #450A0A;
+    background: transparent;
 }
 .planner-add-line-bottom {
     display: flex;
@@ -1134,28 +1172,25 @@ html.dark .planner-line-action-btn-danger:hover {
     justify-content: center;
     gap: 8px;
     padding: 14px;
-    border: 2px dashed #DFE1E6;
+    border: none;
     border-radius: 12px;
     background: transparent;
     color: #5E6C84;
     font-size: 0.85rem;
     font-weight: 700;
     cursor: pointer;
-    transition: border-color 0.15s, color 0.15s, background 0.15s;
+    transition: color 0.15s;
 }
 .planner-add-line-bottom:hover {
-    border-color: #0052CC;
     color: #0052CC;
-    background: #F0F7FF;
+    background: transparent;
 }
 html.dark .planner-add-line-bottom {
-    border-color: #3E4C5E;
     color: #94a3b8;
 }
 html.dark .planner-add-line-bottom:hover {
-    border-color: #4C9AFF;
     color: #4C9AFF;
-    background: #0C295E;
+    background: transparent;
 }
 
 /* ============================================
@@ -1416,7 +1451,7 @@ html.dark .planner-chip-ghost-name {
     z-index: 3;
 }
 
-/* Iconos con fondo de superficie neutro para asegurar contraste sobre el chip */
+/* Iconos de advertencia sin borde ni fondo */
 .planner-chip-warn {
     display: inline-flex;
     align-items: center;
@@ -1424,9 +1459,9 @@ html.dark .planner-chip-ghost-name {
     width: 15px;
     height: 15px;
     border-radius: 3px;
-    background: rgba(255, 255, 255, 0.9);
-    border: 1px solid rgba(23, 43, 77, 0.18);
-    box-shadow: 0 1px 2px rgba(23, 43, 77, 0.18);
+    background: transparent;
+    border: none;
+    box-shadow: none;
     color: #64748b;
     font-size: 8px;
     font-weight: 800;
@@ -1434,9 +1469,9 @@ html.dark .planner-chip-ghost-name {
     cursor: help;
 }
 html.dark .planner-chip-warn {
-    background: rgba(30, 41, 59, 0.92);
-    border-color: rgba(148, 163, 184, 0.4);
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    background: transparent;
+    border: none;
+    box-shadow: none;
     color: #94a3b8;
 }
 
@@ -1922,32 +1957,32 @@ html.dark .schedule-toolbar-title h3 {
 }
 
 .schedule-count-mag {
-    background: rgba(37, 99, 235, 0.12);
+    background: transparent;
     color: #2563eb;
 }
 
 .schedule-count-lab {
-    background: rgba(220, 38, 38, 0.12);
+    background: transparent;
     color: #e74c3c;
 }
 
 .schedule-count-pra {
-    background: rgba(124, 58, 237, 0.12);
+    background: transparent;
     color: #7c3aed;
 }
 
 .schedule-count-other {
-    background: var(--bg-secondary);
+    background: transparent;
     color: var(--text-secondary);
 }
 
 html.dark .schedule-count-mag {
-    background: rgba(59, 130, 246, 0.2);
+    background: transparent;
     color: #60a5fa;
 }
 
 html.dark .schedule-count-lab {
-    background: rgba(239, 68, 68, 0.2);
+    background: transparent;
     color: #f87171;
 }
 
@@ -1955,10 +1990,10 @@ html.dark .schedule-count-lab {
 .schedule-period-tabs {
     display: flex;
     gap: 0.25rem;
-    background: var(--bg-primary);
+    background: transparent;
     padding: 0.25rem;
     border-radius: 12px;
-    border: 1px solid var(--border);
+    border: none;
 }
 
 .schedule-period-tab {
@@ -1976,18 +2011,19 @@ html.dark .schedule-count-lab {
 }
 
 .schedule-period-tab:hover:not(.active) {
-    background: var(--bg-secondary);
+    background: transparent;
     color: var(--text-primary);
 }
 
 .schedule-period-tab.active {
-    background: #0052CC;
-    color: white;
+    background: transparent;
+    color: #0052CC;
+    font-weight: 700;
 }
 
 html.dark .schedule-period-tab.active {
-    background: #4C9AFF;
-    color: #0E1624;
+    background: transparent;
+    color: #4C9AFF;
 }
 
 /* Search and Filters */
@@ -2005,9 +2041,12 @@ html.dark .schedule-period-tab.active {
     align-items: center;
     gap: 0.5rem;
     padding: 0.4rem 0.6rem;
-    background: var(--bg-primary);
-    border: 1px solid var(--border);
+    background: #F4F5F7;
+    border: none;
     border-radius: 12px;
+}
+html.dark .schedule-search {
+    background: #0E1624;
 }
 
 .schedule-search input {
@@ -2453,24 +2492,24 @@ html.dark .schedule-course-item:hover {
 }
 
 .schedule-pin-btn:hover {
-    background: var(--bg-secondary);
+    background: transparent;
     color: var(--text-primary);
 }
 
 .schedule-pin-btn.active {
     opacity: 1;
     color: #0052CC;
-    background: rgba(0, 82, 204, 0.1);
+    background: transparent;
 }
 
 .schedule-pin-btn.active:hover {
     color: #e74c3c;
-    background: rgba(220, 38, 38, 0.1);
+    background: transparent;
 }
 
 html.dark .schedule-pin-btn.active {
     color: #4C9AFF;
-    background: rgba(76, 154, 255, 0.15);
+    background: transparent;
 }
 
 .schedule-course-code {
@@ -2565,10 +2604,10 @@ html.dark .schedule-course-sections {
     flex-shrink: 0;
     margin-right: 0.25rem;
 }
-.schedule-section-badge.type-lab { background: #2563eb; color: white; }
-.schedule-section-badge.type-pra { background: #7c3aed; color: white; }
-.schedule-section-badge.type-dib { background: #d97706; color: white; }
-.schedule-section-badge.type-td { background: #0891b2; color: white; }
+.schedule-section-badge.type-lab { background: transparent; color: #2563eb; }
+.schedule-section-badge.type-pra { background: transparent; color: #7c3aed; }
+.schedule-section-badge.type-dib { background: transparent; color: #d97706; }
+.schedule-section-badge.type-td { background: transparent; color: #0891b2; }
 
 .schedule-section-label {
     display: inline-flex;
@@ -2628,7 +2667,8 @@ html.dark .schedule-course-sections {
     cursor: help;
     margin-left: 0.2rem;
     padding: 0.1rem 0.2rem;
-    border: 1px solid #e74c3c;
+    border: none;
+    background: transparent;
     border-radius: 2px;
     line-height: 1;
 }
@@ -2705,13 +2745,13 @@ html.dark .schedule-section-status.error {
     flex-shrink: 0;
     align-self: center;
     padding: 0.3rem 0.5rem;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border);
+    background: transparent;
+    border: none;
     border-radius: 4px;
 }
 
 html.dark .schedule-reco {
-    background: var(--bg-elevated);
+    background: transparent;
 }
 
 .schedule-reco-pct {
@@ -2728,8 +2768,8 @@ html.dark .schedule-reco {
     height: 1.2rem;
     padding: 0;
     border-radius: 3px;
-    border: 1px solid var(--border);
-    background: var(--bg-elevated);
+    border: none;
+    background: transparent;
     color: var(--text-secondary);
     cursor: pointer;
     line-height: 1;
@@ -2738,49 +2778,46 @@ html.dark .schedule-reco {
 }
 
 .schedule-reco-btn:hover {
-    background: var(--bg-overlay);
+    background: transparent;
+    opacity: 0.8;
 }
 
 .schedule-reco-btn.up.active,
 .schedule-reco-btn.up:hover {
-    border-color: #2E9E5B;
     color: #2E9E5B;
 }
 
 .schedule-reco-btn.down.active,
 .schedule-reco-btn.down:hover {
-    border-color: #C0392B;
     color: #C0392B;
 }
 
 .schedule-reco-btn.up.active {
-    background: rgba(46, 158, 91, 0.12);
+    background: transparent;
 }
 
 .schedule-reco-btn.down.active {
-    background: rgba(192, 57, 43, 0.12);
+    background: transparent;
 }
 
 .schedule-reco-btn.login {
-    border-color: #0052CC;
     color: #0052CC;
-    background: rgba(0, 82, 204, 0.08);
+    background: transparent;
 }
 
 html.dark .schedule-reco-btn.login {
     color: #4C9AFF;
-    border-color: #4C9AFF;
-    background: rgba(76, 154, 255, 0.12);
+    background: transparent;
 }
 
 .schedule-reco-btn.login:hover {
-    background: #0052CC;
-    color: #fff;
+    background: transparent;
+    opacity: 0.8;
 }
 
 html.dark .schedule-reco-btn.login:hover {
-    background: #4C9AFF;
-    color: #0E1624;
+    background: transparent;
+    opacity: 0.8;
 }
 
 .schedule-reco-btn:disabled {
@@ -2879,8 +2916,8 @@ html.dark .schedule-error {
     justify-content: center;
     gap: 0.3rem;
     padding: 0.4rem 0.6rem;
-    border: 1px solid var(--border);
-    background: var(--bg-primary);
+    border: none;
+    background: transparent;
     border-radius: 4px;
     font-size: 0.75rem;
     color: var(--text-primary);
@@ -2892,21 +2929,19 @@ html.dark .schedule-error {
 }
 
 .schedule-btn:hover:not(:disabled) {
-    background: #0052CC;
-    border-color: #0052CC;
-    color: white;
+    background: transparent;
+    color: #0052CC;
 }
 
 .schedule-btn.cluster-active {
-    background: #0052CC;
-    border-color: #0052CC;
-    color: white;
+    background: transparent;
+    color: #0052CC;
+    font-weight: 700;
 }
 
 .schedule-btn.cluster-active:hover:not(:disabled) {
-    background: #0747A6;
-    border-color: #0747A6;
-    color: white;
+    background: transparent;
+    color: #0747A6;
 }
 
 .schedule-btn:disabled {
@@ -2915,8 +2950,12 @@ html.dark .schedule-error {
 }
 
 html.dark .schedule-btn {
-    background: var(--bg-elevated);
+    background: transparent;
     color: var(--text-primary);
+}
+html.dark .schedule-btn:hover:not(:disabled),
+html.dark .schedule-btn.cluster-active {
+    color: #4C9AFF;
 }
 
 html.dark .schedule-btn:hover:not(:disabled) {
@@ -3311,7 +3350,7 @@ html.dark .export-modal-section h3 {
     align-items: center;
     gap: 0.35rem;
     padding: 0.5rem;
-    border: 2px solid #e5e7eb;
+    border: none;
     border-radius: 8px;
     background: transparent;
     cursor: pointer;
@@ -3321,21 +3360,23 @@ html.dark .export-modal-section h3 {
 }
 
 .export-palette-btn:hover {
-    border-color: #9ca3af;
+    opacity: 0.85;
 }
 
 .export-palette-btn.active {
-    border-color: #0052CC;
-    background: rgba(0, 82, 204, 0.06);
+    background: transparent;
+    outline: none;
 }
-
-html.dark .export-palette-btn {
-    border-color: #334155;
+.export-palette-btn.active .export-palette-label {
+    color: #0052CC;
+    font-weight: 700;
 }
 
 html.dark .export-palette-btn.active {
-    border-color: #4C9AFF;
-    background: rgba(76, 154, 255, 0.1);
+    background: transparent;
+}
+html.dark .export-palette-btn.active .export-palette-label {
+    color: #4C9AFF;
 }
 
 .export-palette-swatches {
@@ -3368,7 +3409,7 @@ html.dark .export-palette-label {
 
 .export-font-btn {
     padding: 0.4rem 0.75rem;
-    border: 1.5px solid #e5e7eb;
+    border: none;
     border-radius: 6px;
     background: transparent;
     cursor: pointer;
@@ -3378,23 +3419,21 @@ html.dark .export-palette-label {
 }
 
 .export-font-btn:hover {
-    border-color: #9ca3af;
-}
-
-.export-font-btn.active {
-    border-color: #0052CC;
-    background: rgba(0, 82, 204, 0.06);
     color: #0052CC;
 }
 
+.export-font-btn.active {
+    background: transparent;
+    color: #0052CC;
+    font-weight: 700;
+}
+
 html.dark .export-font-btn {
-    border-color: #334155;
     color: #cbd5e1;
 }
 
 html.dark .export-font-btn.active {
-    border-color: #4C9AFF;
-    background: rgba(76, 154, 255, 0.1);
+    background: transparent;
     color: #4C9AFF;
 }
 
@@ -3459,7 +3498,7 @@ html.dark .export-bg-preview-empty {
 
 .export-bg-mode-btn {
     padding: 0.3rem 0.6rem;
-    border: 1.5px solid #e5e7eb;
+    border: none;
     border-radius: 5px;
     background: transparent;
     cursor: pointer;
@@ -3469,23 +3508,21 @@ html.dark .export-bg-preview-empty {
 }
 
 .export-bg-mode-btn:hover {
-    border-color: #9ca3af;
-}
-
-.export-bg-mode-btn.active {
-    border-color: #0052CC;
-    background: rgba(0, 82, 204, 0.06);
     color: #0052CC;
 }
 
+.export-bg-mode-btn.active {
+    background: transparent;
+    color: #0052CC;
+    font-weight: 700;
+}
+
 html.dark .export-bg-mode-btn {
-    border-color: #334155;
     color: #cbd5e1;
 }
 
 html.dark .export-bg-mode-btn.active {
-    border-color: #4C9AFF;
-    background: rgba(76, 154, 255, 0.1);
+    background: transparent;
     color: #4C9AFF;
 }
 
@@ -3500,7 +3537,7 @@ html.dark .export-bg-mode-btn.active {
     align-items: center;
     gap: 0.35rem;
     padding: 0.35rem 0.7rem;
-    border: 1.5px solid #e5e7eb;
+    border: none;
     border-radius: 6px;
     background: transparent;
     cursor: pointer;
@@ -3510,18 +3547,15 @@ html.dark .export-bg-mode-btn.active {
 }
 
 .export-bg-upload-btn:hover {
-    border-color: #0052CC;
     color: #0052CC;
 }
 
 .export-bg-remove-btn:hover {
-    border-color: #e74c3c;
     color: #e74c3c;
 }
 
 html.dark .export-bg-upload-btn,
 html.dark .export-bg-remove-btn {
-    border-color: #334155;
     color: #cbd5e1;
 }
 
@@ -3540,7 +3574,7 @@ html.dark .export-modal-footer {
 
 .export-modal-cancel-btn {
     padding: 0.5rem 1rem;
-    border: 1.5px solid #DFE1E6;
+    border: none;
     border-radius: 8px;
     background: transparent;
     cursor: pointer;
@@ -3551,16 +3585,17 @@ html.dark .export-modal-footer {
 }
 
 .export-modal-cancel-btn:hover {
-    background: #f3f4f6;
+    background: transparent;
+    opacity: 0.8;
 }
 
 html.dark .export-modal-cancel-btn {
-    border-color: #334155;
     color: #94a3b8;
 }
 
 html.dark .export-modal-cancel-btn:hover {
-    background: #334155;
+    background: transparent;
+    opacity: 0.8;
 }
 
 .export-modal-download-btn {
@@ -3570,25 +3605,27 @@ html.dark .export-modal-cancel-btn:hover {
     padding: 0.5rem 1.25rem;
     border: none;
     border-radius: 8px;
-    background: #0052CC;
+    background: transparent;
     cursor: pointer;
     font-size: 0.8rem;
     font-weight: 600;
-    color: white;
-    transition: background 0.15s;
+    color: #0052CC;
+    transition: opacity 0.15s;
 }
 
 .export-modal-download-btn:hover {
-    background: #0043a6;
+    background: transparent;
+    opacity: 0.8;
 }
 
 html.dark .export-modal-download-btn {
-    background: #4C9AFF;
-    color: #0f172a;
+    background: transparent;
+    color: #4C9AFF;
 }
 
 html.dark .export-modal-download-btn:hover {
-    background: #3b82f6;
+    background: transparent;
+    opacity: 0.8;
 }
 
 /* Theme Toggle */
@@ -3602,7 +3639,7 @@ html.dark .export-modal-download-btn:hover {
     align-items: center;
     gap: 0.4rem;
     padding: 0.45rem 0.9rem;
-    border: 1.5px solid #e5e7eb;
+    border: none;
     border-radius: 6px;
     background: transparent;
     cursor: pointer;
@@ -3613,23 +3650,21 @@ html.dark .export-modal-download-btn:hover {
 }
 
 .export-theme-btn:hover {
-    border-color: #9ca3af;
-}
-
-.export-theme-btn.active {
-    border-color: #0052CC;
-    background: rgba(0, 82, 204, 0.06);
     color: #0052CC;
 }
 
+.export-theme-btn.active {
+    background: transparent;
+    color: #0052CC;
+    font-weight: 700;
+}
+
 html.dark .export-theme-btn {
-    border-color: #334155;
     color: #cbd5e1;
 }
 
 html.dark .export-theme-btn.active {
-    border-color: #4C9AFF;
-    background: rgba(76, 154, 255, 0.1);
+    background: transparent;
     color: #4C9AFF;
 }
 
@@ -3677,7 +3712,7 @@ html.dark .export-preview-empty {
     align-items: center;
     gap: 0.4rem;
     padding: 0.4rem 0.9rem;
-    border: 1.5px solid #e5e7eb;
+    border: none;
     border-radius: 6px;
     background: transparent;
     cursor: pointer;
@@ -3688,7 +3723,6 @@ html.dark .export-preview-empty {
 }
 
 .export-preview-btn:hover:not(:disabled) {
-    border-color: #0052CC;
     color: #0052CC;
 }
 
@@ -3698,7 +3732,6 @@ html.dark .export-preview-empty {
 }
 
 html.dark .export-preview-btn {
-    border-color: #334155;
     color: #cbd5e1;
 }
 

@@ -1200,7 +1200,7 @@ export default function Forum() {
                             placeholder="Buscar por curso, catedrático, palabra en comentarios o alias..."
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border border-transparent focus:border-[#0052CC] dark:focus:border-[#4C9AFF] focus:outline-none transition"
+                            className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 placeholder-[#7A869A] dark:placeholder-slate-500 text-xs sm:text-sm font-medium border-0 focus:outline-none transition"
                         />
                     </div>
 
@@ -1209,24 +1209,24 @@ export default function Forum() {
                         <select
                             value={selectedCarrera}
                             onChange={(e) => setSelectedCarrera(e.target.value)}
-                            className="bg-[#F4F5F7] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 focus:outline-none focus:border-[#0052CC] dark:focus:border-[#4C9AFF] cursor-pointer"
+                            className="bg-transparent text-[#172B4D] dark:text-slate-200 text-xs font-bold px-3 py-2.5 rounded-xl border-0 focus:outline-none cursor-pointer"
                         >
                             {CARRERAS.map(c => (
                                 <option key={c.id} value={c.id}>{c.label}</option>
                             ))}
                         </select>
 
-                        <div className="flex items-center gap-1 bg-[#F4F5F7] dark:bg-[#0E1624] p-1 rounded-xl border border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 text-xs font-bold w-full sm:w-auto">
+                        <div className="flex items-center gap-1 bg-transparent p-1 rounded-xl border-0 text-xs font-bold w-full sm:w-auto">
                             <button
                                 onClick={() => setSortBy('recent')}
-                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 ${sortBy === 'recent' ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
+                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 border-0 bg-transparent ${sortBy === 'recent' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
                             >
                                 <Clock size={13} />
                                 <span>Recientes</span>
                             </button>
                             <button
                                 onClick={() => setSortBy('likes')}
-                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 ${sortBy === 'likes' ? 'bg-white dark:bg-[#1C2636] text-[#0052CC] dark:text-[#4C9AFF] shadow-xs' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
+                                className={`flex-1 sm:flex-initial px-3 py-2 sm:py-1.5 rounded-lg transition cursor-pointer flex items-center justify-center gap-1.5 border-0 bg-transparent ${sortBy === 'likes' ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-[#5E6C84] dark:text-slate-400 hover:text-[#172B4D]'}`}
                             >
                                 <ThumbsUp size={13} />
                                 <span>Populares</span>
