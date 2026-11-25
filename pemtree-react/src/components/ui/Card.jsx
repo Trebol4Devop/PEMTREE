@@ -8,7 +8,7 @@ export default function Card({
 }) {
   const paddingClass = padding === true ? 'p-5 sm:p-6' : (padding === false || padding === 'none' ? '' : padding);
   const hoverClass = hoverable
-    ? 'hover:border-[#0052CC]/50 dark:hover:border-[#4C9AFF]/50 hover:shadow-md transition-all duration-200 cursor-pointer'
+    ? 'hover:border-[#3B6988]/50 dark:hover:border-[#6BA3C8]/50 hover:shadow-md transition-all duration-200 cursor-pointer'
     : '';
 
   return (

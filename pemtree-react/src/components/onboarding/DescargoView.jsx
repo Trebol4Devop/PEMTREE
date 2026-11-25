@@ -17,7 +17,7 @@ export default function DescargoView({ isDarkMode }) {
         <ul className="space-y-2">
           {DISCLAIMER.points.map((point, i) => (
             <li key={i} className={`flex items-start gap-2 text-xs sm:text-sm ${isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}`}>
-              <span className="text-[#0052CC] dark:text-[#4C9AFF] mt-0.5 flex-shrink-0 font-bold">-</span>
+              <span className="text-[#3B6988] dark:text-[#6BA3C8] mt-0.5 flex-shrink-0 font-bold">-</span>
               <span>{point}</span>
             </li>
           ))}
@@ -33,7 +33,7 @@ export default function DescargoView({ isDarkMode }) {
               href={link.url}
               target="_blank"
               rel="noopener noreferrer"
-              className={`flex items-center gap-2 text-xs sm:text-sm font-semibold hover:underline ${isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]'}`}
+              className={`flex items-center gap-2 text-xs sm:text-sm font-semibold hover:underline ${isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]'}`}
             >
               <ChevronRight size={14} className="flex-shrink-0" />
               {link.label}

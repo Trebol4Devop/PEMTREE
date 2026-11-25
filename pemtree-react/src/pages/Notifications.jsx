@@ -17,7 +17,7 @@ const TYPE_ICONS = {
 };
 
 const TYPE_COLORS = {
-    comment: 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]',
+    comment: 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8]',
     reply: 'bg-[#E6FFFA] dark:bg-[#042F2E] text-[#00875A] dark:text-[#4ADE80]',
     like: 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]',
     new_post: 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]'
@@ -61,7 +61,7 @@ function ToggleSwitch({ checked, onChange, label, description }) {
                 role="switch"
                 aria-checked={checked}
                 onClick={onChange}
-                className={`relative w-11 h-6 rounded-full transition shrink-0 cursor-pointer border-none ${checked ? 'bg-[#0052CC] dark:bg-[#4C9AFF]' : 'bg-[#DFE1E6] dark:bg-[#3E4C5E]'}`}
+                className={`relative w-11 h-6 rounded-full transition shrink-0 cursor-pointer border-none ${checked ? 'bg-[#3B6988] dark:bg-[#6BA3C8]' : 'bg-[#DFE1E6] dark:bg-[#3E4C5E]'}`}
             >
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${checked ? 'translate-x-5' : 'translate-x-0'}`} />
             </button>
@@ -127,16 +127,16 @@ export default function Notifications() {
             <Seo title="Notificaciones del Foro" description="Revisa las notificaciones del foro de PEMTREE y configura las alertas del navegador." pathname="/notificaciones" />
 
             {/* Header Banner */}
-            <div className="w-full bg-gradient-to-r from-[#0052CC] to-[#0747A6] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-8 px-4 shrink-0 text-white shadow-sm">
+            <div className="w-full bg-gradient-to-r from-[#3B6988] to-[#2C526B] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-8 px-4 shrink-0 text-white shadow-sm">
                 <div className="max-w-5xl mx-auto flex items-start gap-4">
-                    <div className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-[#4C9AFF]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
-                        <Bell size={24} className="text-white dark:text-[#4C9AFF]" />
+                    <div className="w-12 h-12 rounded-2xl bg-white/10 dark:bg-[#6BA3C8]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
+                        <Bell size={24} className="text-white dark:text-[#6BA3C8]" />
                     </div>
                     <div>
                         <div className="flex items-center gap-2 flex-wrap">
                             <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight">Notificaciones del Foro</h1>
                             {unreadCount > 0 && (
-                                <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#6BA3C8]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                                     {unreadCount} sin leer
                                 </span>
                             )}
@@ -154,13 +154,13 @@ export default function Notifications() {
             <div className="max-w-5xl w-full mx-auto px-4 py-8 flex flex-col gap-6">
                 {loading ? (
                     <div className="bg-white dark:bg-[#1C2636] rounded-2xl p-12 border border-[#DFE1E6] dark:border-[#3E4C5E] text-center flex flex-col items-center justify-center gap-3">
-                        <div className="w-8 h-8 border-3 border-[#0052CC] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-3 border-[#3B6988] border-t-transparent rounded-full animate-spin"></div>
                         <p className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando notificaciones...</p>
                     </div>
                 ) : !user ? (
                     <div className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs overflow-hidden">
                         <div className="p-6 sm:p-8 flex flex-col items-center text-center gap-4">
-                            <div className="w-16 h-16 rounded-full bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center">
                                 <Bell size={30} />
                             </div>
                             <div>
@@ -190,7 +190,7 @@ export default function Notifications() {
                             {/* Notificaciones del navegador */}
                             <div className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs p-5 sm:p-6">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <Bell size={18} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <Bell size={18} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm sm:text-base font-extrabold text-[#172B4D] dark:text-slate-100">Notificaciones del navegador</h3>
                                 </div>
                                 <p className="text-[11px] sm:text-xs text-[#5E6C84] dark:text-slate-400 mb-4 leading-relaxed">
@@ -226,7 +226,7 @@ export default function Notifications() {
                                     <button
                                         onClick={togglePush}
                                         disabled={pushState.checking}
-                                        className="flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer w-full disabled:opacity-60"
+                                        className="flex items-center justify-center gap-2 bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] text-white dark:text-[#0E1624] font-bold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer w-full disabled:opacity-60"
                                     >
                                         <Bell size={16} />
                                         <span>{pushState.checking ? 'Activando...' : 'Activar notificaciones del navegador'}</span>
@@ -244,7 +244,7 @@ export default function Notifications() {
                             {/* Preferencias por tipo */}
                             <div className="bg-white dark:bg-[#1C2636] rounded-2xl border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-xs p-5 sm:p-6">
                                 <div className="flex items-center gap-2 mb-1">
-                                    <ShieldCheck size={18} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <ShieldCheck size={18} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm sm:text-base font-extrabold text-[#172B4D] dark:text-slate-100">Qué notificaciones recibir</h3>
                                 </div>
                                 <p className="text-[11px] sm:text-xs text-[#5E6C84] dark:text-slate-400 mb-2 leading-relaxed">
@@ -279,7 +279,7 @@ export default function Notifications() {
                                         <button
                                             type="button"
                                             onClick={() => setShowCarreras(prev => !prev)}
-                                            className="text-[11px] font-bold text-[#0052CC] dark:text-[#4C9AFF] cursor-pointer bg-transparent border-none flex items-center gap-1"
+                                            className="text-[11px] font-bold text-[#3B6988] dark:text-[#6BA3C8] cursor-pointer bg-transparent border-none flex items-center gap-1"
                                         >
                                             <span>Elige las carreras a seguir</span>
                                             <span className={`transition-transform duration-200 ${showCarreras ? 'rotate-180' : ''}`}>▾</span>
@@ -295,7 +295,7 @@ export default function Notifications() {
                                                             onClick={() => toggleCarrera(c.id)}
                                                             className={`text-[11px] font-bold px-2.5 py-1.5 rounded-lg border transition cursor-pointer ${
                                                                 selected
-                                                                    ? 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] border-[#0052CC]/30 dark:border-[#4C9AFF]/30'
+                                                                    ? 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] border-[#3B6988]/30 dark:border-[#6BA3C8]/30'
                                                                     : 'bg-[#F4F5F7] dark:bg-[#0E1624] text-[#42526E] dark:text-slate-300 border-[#DFE1E6]/60 dark:border-[#3E4C5E]/60 hover:bg-[#EBECF0] dark:hover:bg-[#2E3C50]'
                                                             }`}
                                                         >
@@ -325,7 +325,7 @@ export default function Notifications() {
                                 {unreadCount > 0 && (
                                     <button
                                         onClick={markAllAsRead}
-                                        className="flex items-center gap-1.5 text-[11px] font-bold text-[#0052CC] hover:underline dark:text-[#4C9AFF] bg-transparent border-none cursor-pointer shrink-0"
+                                        className="flex items-center gap-1.5 text-[11px] font-bold text-[#3B6988] hover:underline dark:text-[#6BA3C8] bg-transparent border-none cursor-pointer shrink-0"
                                     >
                                         <CheckCheck size={14} />
                                         <span>Marcar todas como leídas</span>
@@ -381,7 +381,7 @@ export default function Notifications() {
                                                                 <Link
                                                                     to={`/foro?post=${n.post_id}`}
                                                                     onClick={(e) => e.stopPropagation()}
-                                                                    className="text-[10px] font-bold text-[#0052CC] dark:text-[#4C9AFF] hover:underline no-underline"
+                                                                    className="text-[10px] font-bold text-[#3B6988] dark:text-[#6BA3C8] hover:underline no-underline"
                                                                 >
                                                                     Ver publicación →
                                                                 </Link>
@@ -389,7 +389,7 @@ export default function Notifications() {
                                                         </div>
                                                     </div>
                                                     {isUnread && (
-                                                        <span className="w-2.5 h-2.5 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] shrink-0 mt-2" title="Sin leer" />
+                                                        <span className="w-2.5 h-2.5 rounded-full bg-[#3B6988] dark:bg-[#6BA3C8] shrink-0 mt-2" title="Sin leer" />
                                                     )}
                                                     <button
                                                         onClick={(e) => {

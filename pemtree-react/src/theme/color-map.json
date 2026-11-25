@@ -12,9 +12,9 @@
       "text_muted":       "#7A869A",
       "border_default":   "#DFE1E6",
       "border_subtle":    "#F4F5F7",
-      "primary":          "#0052CC",
-      "primary_hover":    "#0747A6",
-      "primary_light":    "#DEEBFF",
+      "primary":          "#3B6988",
+      "primary_hover":    "#2C526B",
+      "primary_light":    "#E6EFF5",
       "success_base":     "#4A7C6A",
       "error_base":       "#e74c3c"
     },
@@ -27,9 +27,9 @@
       "text_muted":       "#94a3b8",
       "border_default":   "#3E4C5E",
       "border_subtle":    "#334155",
-      "primary":          "#4C9AFF",
-      "primary_hover":    "#2684FF",
-      "primary_light":    "#0C295E",
+      "primary":          "#6BA3C8",
+      "primary_hover":    "#5690B6",
+      "primary_light":    "#1A2B38",
       "success_base":     "#6BA892",
       "error_base":       "#ef4444"
     }
@@ -76,11 +76,11 @@
       "_ubicaciones": ["Visualizer.jsx (timestamp)", "index.css (schedule)"]
     },
     "brand": {
-      "_desc": "Texto del logo PEMTREE en navbar — unificado con primary",
-      "light": { "current": "#013ea6", "target": "#0052CC" },
+      "_desc": "Texto del logo PEMTREE en navbar — conserva azul de marca",
+      "light": { "current": "#0052CC", "target": "#0052CC" },
       "dark":  { "current": "#f1f5f9", "target": "#f1f5f9" },
       "_ubicaciones": ["Navbar.jsx"],
-      "_nota": "Era #013ea6, casi idéntico a primary #0052CC. Se unifica."
+      "_nota": "Excepción solicitada: el logo PEMTREE conserva #0052CC."
     }
   },
 
@@ -101,24 +101,24 @@
   },
 
   "primary": {
-    "_desc": "Color de acento principal (botones, links, activos) — unifica #0052CC, #013ea6, #0065FF en light",
-    "light": { "current": "#0052CC", "target": "#0052CC" },
-    "dark":  { "current": "#4C9AFF", "target": "#4C9AFF" },
+    "_desc": "Color de acento principal (botones, links, activos) — unifica #3B6988, #013ea6, #3B6988 en light",
+    "light": { "current": "#3B6988", "target": "#3B6988" },
+    "dark":  { "current": "#6BA3C8", "target": "#6BA3C8" },
     "_ubicaciones": ["Navbar.jsx (CTA, links activos)", "Home.jsx (hero badge, CTA)", "Visualizer.jsx (toolbar, credits badge)", "index.css (focused inputs)"],
-    "_nota": "En light: #013ea6 y #0065FF colapsados aquí. En dark: #3b82f6 y #60a5fa colapsados aquí."
+    "_nota": "En light: #013ea6 y #3B6988 colapsados aquí. En dark: #3b82f6 y #60a5fa colapsados aquí."
   },
 
   "primaryHover": {
     "_desc": "Hover del color principal",
-    "light": { "current": "#0747A6", "target": "#0747A6" },
-    "dark":  { "current": "#2684FF", "target": "#2684FF" },
+    "light": { "current": "#2C526B", "target": "#2C526B" },
+    "dark":  { "current": "#5690B6", "target": "#5690B6" },
     "_ubicaciones": ["Navbar.jsx (CTA hover)", "Home.jsx (CTA hover)"]
   },
 
   "primaryLight": {
     "_desc": "Fondo sutil con tint del color principal (badges, chips)",
-    "light": { "current": "#DEEBFF", "target": "#DEEBFF" },
-    "dark":  { "current": "#0C295E", "target": "#0C295E" },
+    "light": { "current": "#E6EFF5", "target": "#E6EFF5" },
+    "dark":  { "current": "#1A2B38", "target": "#1A2B38" },
     "_ubicaciones": ["Navbar.jsx (nav link activo)", "Home.jsx (hero badge, feature icon)", "Visualizer.jsx (credits badge, search result hover)"]
   },
 
@@ -190,7 +190,7 @@
       "pathSocialHum":{ "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
       "pathIdioma":   { "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
       "pathGeneric":  { "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
-      "_nota": "available y highlighted dark: #3b82f6 y #60a5fa colapsados a primary dark #4C9AFF."
+      "_nota": "available y highlighted dark: #3b82f6 y #60a5fa colapsados a primary dark #6BA3C8."
     },
 
     "nodeText": {
@@ -213,13 +213,13 @@
       "active":   { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
       "critical": { "light": { "current": "#C45D5D", "target": "#C45D5D" },  "dark": { "current": "#E88B8B", "target": "#E88B8B" } },
       "suggested":{ "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
-      "_nota": "active light: #2c3e50 → text-primary #172B4D. active dark: #0747A6 → primary dark #4C9AFF. critical dark: #e74c3c → error-base dark #ef4444."
+      "_nota": "active light: #2c3e50 → text-primary #172B4D. active dark: #2C526B → primary dark #6BA3C8. critical dark: #e74c3c → error-base dark #ef4444."
     },
 
     "arrowheadFill": {
       "default":  { "light": { "current": "#2c3e50", "target": "#172B4D" },  "dark": { "current": "#2c3e50", "target": "#f1f5f9" } },
       "selected": { "light": { "current": "#f39c12", "target": "#f39c12" },  "dark": { "current": "#f39c12", "target": "#f39c12" } },
-      "active":   { "light": { "current": "#0747A6", "target": "#0052CC" },  "dark": { "current": "#0747A6", "target": "#4C9AFF" } },
+      "active":   { "light": { "current": "#2C526B", "target": "#3B6988" },  "dark": { "current": "#2C526B", "target": "#6BA3C8" } },
       "_nota": "default: #2c3e50 → text-primary en ambos modos. active unificado con primary."
     },
 
@@ -269,10 +269,10 @@
       "_ubicaciones": ["Visualizer.jsx (info card badge)", "ScheduleBuilder.jsx (conflict border)"]
     },
     "info": {
-      "text":   { "light": { "current": "#0052CC", "target": "#0052CC" },  "dark": { "current": "#4C9AFF", "target": "#4C9AFF" } },
-      "bg":     { "light": { "current": "#DEEBFF", "target": "#DEEBFF" },  "dark": { "current": "#0C295E", "target": "#0C295E" } },
-      "border": { "light": { "current": "#4C9AFF", "target": "#0052CC" },  "dark": { "current": "#4C9AFF", "target": "#4C9AFF" } },
-      "_nota": "info text y border ya coinciden con primary. border light: #4C9AFF → primary light #0052CC.",
+      "text":   { "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+      "bg":     { "light": { "current": "#E6EFF5", "target": "#E6EFF5" },  "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+      "border": { "light": { "current": "#6BA3C8", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+      "_nota": "info text y border ya coinciden con primary. border light: #6BA3C8 → primary light #3B6988.",
       "_ubicaciones": ["Visualizer.jsx (info card badge)"]
     }
   },
@@ -284,9 +284,9 @@
     "closeBtnBg":      { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
     "closeBtnHover":   { "light": { "current": "#EBECF0", "target": "#DFE1E6" },  "dark": { "current": "#3E4C5E", "target": "#3E4C5E" } },
     "buttonCompletado":{ "current": "#10b981", "target": "#10b981" },
-    "buttonCursando":  { "current": "#3b82f6", "target": "#4C9AFF" },
-    "buttonDisponible":{ "light": { "current": "#0052CC", "target": "#0052CC" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
-    "_nota": "closeBtnHover light: #EBECF0 → border-default #DFE1E6. buttonCursando: #3b82f6 → primary dark #4C9AFF. buttonDisponible dark: #60a5fa → primary dark #4C9AFF."
+    "buttonCursando":  { "current": "#3b82f6", "target": "#6BA3C8" },
+    "buttonDisponible":{ "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#60a5fa", "target": "#6BA3C8" } },
+    "_nota": "closeBtnHover light: #EBECF0 → border-default #DFE1E6. buttonCursando: #3b82f6 → primary dark #6BA3C8. buttonDisponible dark: #60a5fa → primary dark #6BA3C8."
   },
 
   "rutaCriticaModal": {
@@ -310,10 +310,10 @@
     "disclaimerBg":     { "light": { "current": "#FFFBEB", "target": "#FFF0B3" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
     "disclaimerBorder": { "light": { "current": "#F59E0B", "target": "#F59E0B" },  "dark": { "current": "#F59E0B", "target": "#F59E0B" } },
     "disclaimerTitle":  { "light": { "current": "#92400E", "target": "#A54800" },  "dark": { "current": "#FCD34D", "target": "#fbbf24" } },
-    "link":             { "light": { "current": "#0065FF", "target": "#0052CC" },  "dark": { "current": "#60A5FA", "target": "#4C9AFF" } },
+    "link":             { "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#60A5FA", "target": "#6BA3C8" } },
     "closeBtnBg":       { "light": { "current": "#F4F5F7", "target": "#F4F5F7" },  "dark": { "current": "#2D333B", "target": "#2D333B" } },
     "closeBtnHover":    { "light": { "current": "#EBECF0", "target": "#DFE1E6" },  "dark": { "current": "#3E4C5E", "target": "#3E4C5E" } },
-    "_nota": "tableHeaderBg light: #EBECF0 → border-default #DFE1E6. link: #0065FF/#60A5FA → primary tokens. disclaimerTitle dark: #FCD34D → warning #fbbf24."
+    "_nota": "tableHeaderBg light: #EBECF0 → border-default #DFE1E6. link: #3B6988/#60A5FA → primary tokens. disclaimerTitle dark: #FCD34D → warning #fbbf24."
   },
 
   "scheduleBuilder": {
@@ -387,9 +387,9 @@
     "heroOverlay":          { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
     "heroSvgLine":          { "current": "#FFAB00", "target": "#FFAB00" },
     "teamCardBg":           { "light": { "current": "#F7F8FA", "target": "#F4F5F7" },  "dark": { "current": "#151F30", "target": "#1C2636" } },
-    "teamCardHoverBorder":  { "light": { "current": "#DEEBFF", "target": "#DEEBFF" },  "dark": { "current": "#2B3A55", "target": "#3E4C5E" } },
-    "teamAvatarGradientFrom":{ "light": { "current": "#E6EEF5", "target": "#DEEBFF" },  "dark": { "current": "#24324A", "target": "#1C2636" } },
-    "teamAvatarGradientTo":  { "light": { "current": "#DCE6EF", "target": "#DEEBFF" },  "dark": { "current": "#1B263A", "target": "#0E1624" } },
+    "teamCardHoverBorder":  { "light": { "current": "#E6EFF5", "target": "#E6EFF5" },  "dark": { "current": "#2B3A55", "target": "#3E4C5E" } },
+    "teamAvatarGradientFrom":{ "light": { "current": "#E6EEF5", "target": "#E6EFF5" },  "dark": { "current": "#24324A", "target": "#1C2636" } },
+    "teamAvatarGradientTo":  { "light": { "current": "#DCE6EF", "target": "#E6EFF5" },  "dark": { "current": "#1B263A", "target": "#0E1624" } },
     "footerBg":             { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#0E1624", "target": "#0E1624" } },
     "techStackText":        { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#E2E8F0", "target": "#f1f5f9" } },
     "teamRoleBg":           { "light": { "current": "#111827", "target": "#172B4D" },  "dark": { "current": "#CBD5E1", "target": "#cbd5e1" } },
@@ -398,10 +398,10 @@
   },
 
   "scrollbar": {
-    "_desc": "Estilos de scrollbar",
-    "thumb":      { "light": { "current": "#c1c9d2", "target": "#DFE1E6" },  "dark": { "current": "#475569", "target": "#3E4C5E" } },
-    "thumbHover": { "light": { "current": "#a0aab5", "target": "#7A869A" },  "dark": { "current": "#64748b", "target": "#94a3b8" } },
-    "_nota": "thumb → border-default tokens. thumbHover → text-muted tokens.",
+    "_desc": "Estilos de scrollbar adaptativos al color del pensum (--primary)",
+    "thumb":      { "light": { "current": "color-mix(in srgb, var(--primary, #3B6988) 45%, transparent)", "target": "var(--primary)" }, "dark": { "current": "color-mix(in srgb, var(--primary, #6BA3C8) 40%, transparent)", "target": "var(--primary)" } },
+    "thumbHover": { "light": { "current": "color-mix(in srgb, var(--primary, #3B6988) 75%, transparent)", "target": "var(--primary)" }, "dark": { "current": "color-mix(in srgb, var(--primary, #6BA3C8) 70%, transparent)", "target": "var(--primary)" } },
+    "_nota": "Usa --primary del pensum activo (fallback #3B6988 / #6BA3C8) con color-mix.",
     "_ubicaciones": ["index.css"]
   },
 

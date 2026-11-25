@@ -144,8 +144,8 @@ function ScheduleSymbol({ blue, neutral }) {
 }
 
 function DestinationCard({ destination, colors, isDarkMode, onGo }) {
-    const blue = isDarkMode ? '#4C9AFF' : '#0052CC';
-    const blueLight = isDarkMode ? '#0C295E' : '#DEEBFF';
+    const blue = isDarkMode ? '#6BA3C8' : '#3B6988';
+    const blueLight = isDarkMode ? '#1A2B38' : '#E6EFF5';
     const neutral = isDarkMode ? '#3E4C5E' : '#E4E7EC';
     const pensum = colors?.color1 || blue;
     const pensumSecondary = colors?.color2 || blueLight;
@@ -226,7 +226,7 @@ function DestinationCard({ destination, colors, isDarkMode, onGo }) {
             </div>
 
             <div className="mt-2 px-0.5 text-center">
-                <h4 className="font-bold text-sm text-[#172B4D] dark:text-slate-100 group-hover:text-[#0052CC] dark:group-hover:text-[#4C9AFF] transition-colors leading-snug">
+                <h4 className="font-bold text-sm text-[#172B4D] dark:text-slate-100 group-hover:text-[#3B6988] dark:group-hover:text-[#6BA3C8] transition-colors leading-snug">
                     {destination.title}
                 </h4>
                 <p className="text-[11px] text-[#5E6C84] dark:text-slate-400 mt-0.5 leading-snug">

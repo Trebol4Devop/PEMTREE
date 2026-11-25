@@ -26,8 +26,8 @@ export default function Input({
           bg-white dark:bg-[#0E1624] 
           text-[#172B4D] dark:text-slate-100
           border-[#DFE1E6] dark:border-[#3E4C5E]
-          focus:border-[#0052CC] focus:ring-2 focus:ring-[#0052CC]/20
-          dark:focus:border-[#4C9AFF] dark:focus:ring-[#4C9AFF]/20
+          focus:border-[#3B6988] focus:ring-2 focus:ring-[#3B6988]/20
+          dark:focus:border-[#6BA3C8] dark:focus:ring-[#6BA3C8]/20
           placeholder-[#7A869A] dark:placeholder-slate-500
           ${error ? 'border-[#BF2600] dark:border-[#FF6369] focus:ring-[#BF2600]/20' : ''}`}
         {...props}

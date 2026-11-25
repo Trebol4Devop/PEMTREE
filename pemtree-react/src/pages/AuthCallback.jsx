@@ -40,7 +40,7 @@ export default function AuthCallback() {
             <div className="max-w-md w-full p-8 rounded-2xl bg-[#FAFBFC] dark:bg-[#151D2A] border border-[#DFE1E6] dark:border-[#3E4C5E] shadow-sm flex flex-col items-center gap-4">
                 {status === 'loading' && (
                     <>
-                        <Loader2 className="w-10 h-10 text-[#0052CC] dark:text-[#4C9AFF] animate-spin" />
+                        <Loader2 className="w-10 h-10 text-[#3B6988] dark:text-[#6BA3C8] animate-spin" />
                         <h2 className="text-lg font-bold text-[#172B4D] dark:text-slate-100">
                             Conectando con la Comunidad...
                         </h2>
@@ -74,7 +74,7 @@ export default function AuthCallback() {
                         <button
                             type="button"
                             onClick={() => navigate('/', { replace: true })}
-                            className="mt-2 text-xs font-semibold px-4 py-2 rounded-lg bg-[#0052CC] hover:bg-[#0747A6] text-white transition-colors cursor-pointer"
+                            className="mt-2 text-xs font-semibold px-4 py-2 rounded-lg bg-[#3B6988] hover:bg-[#2C526B] text-white transition-colors cursor-pointer"
                         >
                             Regresar a PEMTREE
                         </button>

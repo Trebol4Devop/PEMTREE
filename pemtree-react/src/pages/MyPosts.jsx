@@ -306,7 +306,7 @@ export default function MyPosts() {
     };
 
     const kpiCards = [
-        { label: 'Publicaciones', value: kpis.totalPosts, icon: MessageSquare, color: 'text-[#0052CC] dark:text-[#4C9AFF] bg-[#DEEBFF] dark:bg-[#0C295E]' },
+        { label: 'Publicaciones', value: kpis.totalPosts, icon: MessageSquare, color: 'text-[#3B6988] dark:text-[#6BA3C8] bg-[#E6EFF5] dark:bg-[#1A2B38]' },
         { label: 'Comentarios míos', value: kpis.totalMyComments, icon: CornerDownRight, color: 'text-[#0284C7] dark:text-[#38BDF8] bg-sky-50 dark:bg-[#0C3E5F]' },
         { label: 'Me gusta recibidos', value: kpis.totalLikesReceived, icon: ThumbsUp, color: 'text-[#D97706] dark:text-[#FBBF24] bg-[#FFF3C4] dark:bg-[#422006]' },
         { label: 'Comentarios recibidos', value: kpis.totalCommentsReceived, icon: MessageSquare, color: 'text-[#4A7C6A] dark:text-[#6BA892] bg-[#E8F1EE] dark:bg-[#1A2B25]' },
@@ -319,16 +319,16 @@ export default function MyPosts() {
             <Seo title="Mis Publicaciones" description="Administra tus publicaciones y consulta tus interacciones con la comunidad en el foro de PEMTREE." pathname="/mis-publicaciones" />
 
             {/* Header Banner */}
-            <div className="w-full bg-gradient-to-r from-[#0052CC] to-[#0747A6] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-10 px-4 shrink-0 text-white shadow-sm">
+            <div className="w-full bg-gradient-to-r from-[#3B6988] to-[#2C526B] dark:from-[#0E1624] dark:to-[#1C2636] border-b border-[#DFE1E6] dark:border-[#3E4C5E] py-10 px-4 shrink-0 text-white shadow-sm">
                 <div className="max-w-5xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
                     <div className="flex items-start gap-4">
-                        <div className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-[#4C9AFF]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
-                            <BarChart3 size={28} className="text-white dark:text-[#4C9AFF]" />
+                        <div className="w-14 h-14 rounded-2xl bg-white/10 dark:bg-[#6BA3C8]/15 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/20">
+                            <BarChart3 size={28} className="text-white dark:text-[#6BA3C8]" />
                         </div>
                         <div>
                             <div className="flex items-center gap-2 flex-wrap">
                                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight">Mis Publicaciones</h1>
-                                <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#4C9AFF]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
+                                <span className="text-[11px] font-extrabold bg-white/20 dark:bg-[#6BA3C8]/20 text-white dark:text-[#7DD3FC] px-2.5 py-0.5 rounded-full uppercase tracking-wider">
                                     Panel de interacción
                                 </span>
                                 <span className="text-[11px] font-bold bg-black/25 dark:bg-black/40 text-white/90 px-2.5 py-0.5 rounded-full border border-white/15">
@@ -375,7 +375,7 @@ export default function MyPosts() {
                             <span>Ir al Foro</span>
                         </Link>
                         {user && (
-                            <Link to="/foro" className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#0052CC] hover:bg-[#0747A6] dark:bg-[#4C9AFF] dark:hover:bg-[#2684FF] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0 no-underline">
+                            <Link to="/foro" className="flex-1 sm:flex-initial flex items-center justify-center gap-2 bg-[#3B6988] hover:bg-[#2C526B] dark:bg-[#6BA3C8] dark:hover:bg-[#5690B6] text-white dark:text-[#0E1624] font-extrabold text-xs sm:text-sm px-4 py-2.5 rounded-xl transition shadow-md cursor-pointer shrink-0 no-underline">
                                 <Plus size={16} />
                                 <span>Nueva Publicación</span>
                             </Link>
@@ -394,7 +394,7 @@ export default function MyPosts() {
                     </Card>
                 ) : !user ? (
                     <Card className="text-center py-16 px-6 flex flex-col items-center gap-4">
-                        <div className="w-16 h-16 rounded-2xl bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF] flex items-center justify-center">
+                        <div className="w-16 h-16 rounded-2xl bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8] flex items-center justify-center">
                             <BarChart3 size={32} />
                         </div>
                         <div>
@@ -418,7 +418,7 @@ export default function MyPosts() {
                     </Card>
                 ) : loading ? (
                     <div className="flex flex-col items-center justify-center py-16 gap-3">
-                        <div className="w-8 h-8 border-3 border-[#0052CC] border-t-transparent rounded-full animate-spin"></div>
+                        <div className="w-8 h-8 border-3 border-[#3B6988] border-t-transparent rounded-full animate-spin"></div>
                         <span className="text-sm font-semibold text-[#5E6C84] dark:text-slate-400">Cargando tu panel...</span>
                     </div>
                 ) : (
@@ -442,14 +442,14 @@ export default function MyPosts() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <Card className="flex flex-col gap-3">
                                 <div className="flex items-center gap-2">
-                                    <ThumbsUp size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <ThumbsUp size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm font-extrabold text-[#172B4D] dark:text-white">Me gusta por publicación</h3>
                                 </div>
                                 <SimpleBars data={likesPerPostData} isDark={isDarkMode} emptyText="Todavía no has recibido me gusta." />
                             </Card>
                             <Card className="flex flex-col gap-3">
                                 <div className="flex items-center gap-2">
-                                    <MessageSquare size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <MessageSquare size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm font-extrabold text-[#172B4D] dark:text-white">Comentarios recibidos por publicación</h3>
                                 </div>
                                 <SimpleBars data={commentsPerPostData} isDark={isDarkMode} emptyText="Aún no has recibido comentarios." />
@@ -460,14 +460,14 @@ export default function MyPosts() {
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                             <Card className="flex flex-col gap-3">
                                 <div className="flex items-center gap-2">
-                                    <Clock size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <Clock size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm font-extrabold text-[#172B4D] dark:text-white">Mi actividad (últimas 8 semanas)</h3>
                                 </div>
                                 <SimpleBars data={activityData} orientation="vertical" height={180} isDark={isDarkMode} emptyText="Aún no tienes actividad." />
                             </Card>
                             <Card className="flex flex-col gap-3">
                                 <div className="flex items-center gap-2">
-                                    <Users size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <Users size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm font-extrabold text-[#172B4D] dark:text-white">Participantes más activos</h3>
                                 </div>
                                 <SimpleBars data={participantsBarData} isDark={isDarkMode} emptyText="Aún nadie ha interactuado con tu contenido." />
@@ -478,7 +478,7 @@ export default function MyPosts() {
                         <Card className="flex flex-col gap-3">
                             <div className="flex items-center justify-between gap-2 flex-wrap">
                                 <div className="flex items-center gap-2">
-                                    <Activity size={15} className="text-[#0052CC] dark:text-[#4C9AFF]" />
+                                    <Activity size={15} className="text-[#3B6988] dark:text-[#6BA3C8]" />
                                     <h3 className="text-sm font-extrabold text-[#172B4D] dark:text-white">Interacciones recientes de otros estudiantes</h3>
                                 </div>
                                 <span className="text-[10px] font-bold text-[#7A869A] dark:text-slate-400">Últimas {recentInteractions.length}</span>
@@ -494,7 +494,7 @@ export default function MyPosts() {
                                             <div className={`w-7 h-7 rounded-lg flex items-center justify-center shrink-0 mt-0.5 ${
                                                 item.type === 'like'
                                                     ? 'bg-[#FFF3C4] dark:bg-[#422006] text-[#D97706] dark:text-[#FBBF24]'
-                                                    : 'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
+                                                    : 'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8]'
                                             }`}>
                                                 <item.icon size={14} />
                                             </div>
@@ -561,7 +561,7 @@ export default function MyPosts() {
                                                         </div>
                                                     </div>
                                                     <div className="flex items-center gap-1.5 shrink-0">
-                                                        <Link to="/foro" className="p-2 rounded-lg text-[#7A869A] hover:text-[#0052CC] dark:text-slate-400 dark:hover:text-[#4C9AFF] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] transition cursor-pointer" title="Ver en el foro">
+                                                        <Link to="/foro" className="p-2 rounded-lg text-[#7A869A] hover:text-[#3B6988] dark:text-slate-400 dark:hover:text-[#6BA3C8] hover:bg-[#E6EFF5] dark:hover:bg-[#1A2B38] transition cursor-pointer" title="Ver en el foro">
                                                             <ExternalLink size={15} />
                                                         </Link>
                                                         <button onClick={() => handleHidePost(post.id)} className="p-2 rounded-lg text-[#7A869A] hover:text-[#B45309] dark:text-slate-400 dark:hover:text-[#FBBF24] hover:bg-amber-500/10 transition cursor-pointer" title="Ocultar publicación">
@@ -587,7 +587,7 @@ export default function MyPosts() {
                             customAlert.type === 'error' ? 'bg-[#FFEBE6] dark:bg-[#450A0A] text-[#BF2600] dark:text-[#FF6369]' :
                             customAlert.type === 'warning' ? 'bg-[#FFF0B3] dark:bg-[#422006] text-[#B45309] dark:text-[#FBBF24]' :
                             customAlert.type === 'success' ? 'bg-[#E8F1EE] dark:bg-[#1A2B25] text-[#4A7C6A] dark:text-[#6BA892]' :
-                            'bg-[#DEEBFF] dark:bg-[#0C295E] text-[#0052CC] dark:text-[#4C9AFF]'
+                            'bg-[#E6EFF5] dark:bg-[#1A2B38] text-[#3B6988] dark:text-[#6BA3C8]'
                         }`}>
                             {customAlert.type === 'error' ? <AlertTriangle size={28} /> : <Info size={28} />}
                         </div>
