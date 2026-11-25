@@ -43,7 +43,7 @@ export default function HelpModal({ screenKey, isDarkMode, onClose }) {
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
               className={`flex-1 flex items-center justify-center gap-1.5 max-sm:gap-1 px-2 py-3 text-sm max-sm:text-xs font-semibold transition border-b-2 border-t-0 border-x-0 bg-transparent cursor-pointer ${isActive
-                ? 'border-[#0052CC] text-[#0052CC] dark:border-[#4C9AFF] dark:text-[#4C9AFF]'
+                ? 'border-[#3B6988] text-[#3B6988] dark:border-[#6BA3C8] dark:text-[#6BA3C8]'
                 : (isDarkMode ? 'border-transparent text-slate-400 hover:text-slate-200' : 'border-transparent text-[#5E6C84] hover:text-[#172B4D]')
               }`}
             >

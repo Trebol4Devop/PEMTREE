@@ -1233,9 +1233,9 @@ export default function Planner({ currentPensum, openHelp }) {
                                 const body = encodeURIComponent('¡Hola!\n\nTe comparto mi planificación universitaria de cursos en PEMTREE. Puedes abrirla directamente en este enlace:\n\n' + currentShareLink);
                                 window.location.href = 'mailto:?subject=' + subject + '&body=' + body;
                             }}
-                            className="flex items-center gap-3 p-3.5 rounded-lg border border-[#0052CC]/40 bg-[#0052CC]/10 dark:bg-[#4C9AFF]/15 hover:bg-[#0052CC]/20 transition cursor-pointer text-left"
+                            className="flex items-center gap-3 p-3.5 rounded-lg border border-[#3B6988]/40 bg-[#3B6988]/10 dark:bg-[#6BA3C8]/15 hover:bg-[#3B6988]/20 transition cursor-pointer text-left"
                         >
-                            <div className="p-2 rounded-full bg-[#0052CC] dark:bg-[#4C9AFF] text-white shrink-0">
+                            <div className="p-2 rounded-full bg-[#3B6988] dark:bg-[#6BA3C8] text-white shrink-0">
                                 <Mail size={20} />
                             </div>
                             <div className="min-w-0">
@@ -1266,7 +1266,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                     addToast('¡Enlace copiado al portapapeles!');
                                     setTimeout(() => setLinkCopied(false), 3000);
                                 }}
-                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer border-0 bg-transparent ${linkCopied ? 'text-[#4A7C6A] dark:text-[#6BA892]' : 'text-[#0052CC] dark:text-[#4C9AFF] hover:opacity-80'}`}
+                                className={`flex items-center gap-1.5 px-3 py-2 rounded-md text-xs font-bold transition shrink-0 cursor-pointer border-0 bg-transparent ${linkCopied ? 'text-[#4A7C6A] dark:text-[#6BA892]' : 'text-[#3B6988] dark:text-[#6BA3C8] hover:opacity-80'}`}
                             >
                                 {linkCopied ? <Check size={14} /> : <Copy size={14} />}
                                 <span>{linkCopied ? '¡Copiado!' : 'Copiar'}</span>
@@ -1299,8 +1299,8 @@ export default function Planner({ currentPensum, openHelp }) {
             >
                 {sharedPlanData ? (
                     <div className="text-sm text-[#172B4D] dark:text-[#CBD5E1] space-y-4">
-                        <div className="p-4 rounded-lg bg-[#DEEBFF] dark:bg-[#0C295E] border border-[#0052CC]/30">
-                            <h4 className="font-bold text-sm text-[#0052CC] dark:text-[#4C9AFF] flex items-center gap-2 mb-1">
+                        <div className="p-4 rounded-lg bg-[#E6EFF5] dark:bg-[#1A2B38] border border-[#3B6988]/30">
+                            <h4 className="font-bold text-sm text-[#3B6988] dark:text-[#6BA3C8] flex items-center gap-2 mb-1">
                                 <Check size={18} /> Planificación encontrada lista para importar
                             </h4>
                             <p className="text-xs text-[#172B4D] dark:text-slate-200 mt-1">
@@ -1337,7 +1337,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                 1. Selecciona un archivo (.json) descargado previamente:
                             </label>
                             <label className="flex flex-col items-center justify-center border-2 border-dashed border-[#CBD5E1] dark:border-[#3E4C5E] rounded-lg p-6 cursor-pointer hover:bg-slate-50 dark:hover:bg-[#1C2636] transition-colors">
-                                <Upload size={28} className="text-[#0052CC] dark:text-[#4C9AFF] mb-2" />
+                                <Upload size={28} className="text-[#3B6988] dark:text-[#6BA3C8] mb-2" />
                                 <span className="text-xs sm:text-sm font-bold text-[#172B4D] dark:text-slate-200 text-center">Haz clic para buscar o arrastra tu archivo JSON</span>
                                 <span className="text-[0.68rem] text-slate-500 mt-1">Archivo exportado desde PEMTREE</span>
                                 <input
@@ -1393,7 +1393,7 @@ export default function Planner({ currentPensum, openHelp }) {
                                             addToast('El código no se pudo procesar. Verifica que esté completo.');
                                         }
                                     }}
-                                    className="px-3.5 py-2 rounded-md bg-[#0052CC] dark:bg-[#4C9AFF] text-white text-xs font-bold hover:bg-[#003D99] transition cursor-pointer"
+                                    className="px-3.5 py-2 rounded-md bg-[#3B6988] dark:bg-[#6BA3C8] text-white text-xs font-bold hover:bg-[#003D99] transition cursor-pointer"
                                 >
                                     Cargar
                                 </button>

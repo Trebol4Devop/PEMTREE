@@ -13,7 +13,7 @@ export default function SimpleBars({
     const values = data.map(d => Number(d.value) || 0);
     const max = Math.max(...values, 1);
 
-    const fill = isDark ? '#4C9AFF' : '#0052CC';
+    const fill = isDark ? '#6BA3C8' : '#3B6988';
     const track = isDark ? 'rgba(76, 154, 255, 0.16)' : 'rgba(0, 82, 204, 0.10)';
     const textColor = isDark ? '#CBD5E1' : '#172B4D';
     const mutedColor = isDark ? '#94A3B8' : '#7A869A';

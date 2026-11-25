@@ -37,7 +37,7 @@ export default function TutorialSlides({ screenKey, isDarkMode, onFinish, onOpen
 
       <div className={`rounded-2xl p-4 sm:p-5 border transition-colors ${isDarkMode ? 'bg-[#1C2636] border-[#3E4C5E]' : 'bg-[#F4F5F7] border-[#DFE1E6]'}`}>
         <div className="flex items-start gap-3 sm:gap-4">
-          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex-shrink-0 flex items-center justify-center ${isDarkMode ? 'bg-[#0C295E] text-[#4C9AFF]' : 'bg-[#DEEBFF] text-[#0052CC]'}`}>
+          <div className={`w-10 h-10 sm:w-12 sm:h-12 rounded-2xl flex-shrink-0 flex items-center justify-center ${isDarkMode ? 'bg-[#1A2B38] text-[#6BA3C8]' : 'bg-[#E6EFF5] text-[#3B6988]'}`}>
             <Icono size={18} className="sm:hidden" />
             <Icono size={22} className="hidden sm:block" />
           </div>
@@ -68,7 +68,7 @@ export default function TutorialSlides({ screenKey, isDarkMode, onFinish, onOpen
               key={i}
               onClick={() => setStep(i)}
               aria-label={`Ir al paso ${i + 1}: ${p.titulo}`}
-              className={`h-2 rounded-full transition-all cursor-pointer border-none p-0 ${i === step ? 'w-6 bg-[#0052CC] dark:bg-[#4C9AFF]' : 'w-2 bg-[#DFE1E6] dark:bg-[#3E4C5E] hover:bg-[#B3BAC5] dark:hover:bg-[#4C586A]'}`}
+              className={`h-2 rounded-full transition-all cursor-pointer border-none p-0 ${i === step ? 'w-6 bg-[#3B6988] dark:bg-[#6BA3C8]' : 'w-2 bg-[#DFE1E6] dark:bg-[#3E4C5E] hover:bg-[#B3BAC5] dark:hover:bg-[#4C586A]'}`}
             />
           ))}
         </div>
@@ -102,7 +102,7 @@ export default function TutorialSlides({ screenKey, isDarkMode, onFinish, onOpen
       {onOpenHelp && (
         <button
           onClick={onOpenHelp}
-          className={`mt-3 self-start max-sm:w-full max-sm:text-center text-xs font-semibold underline underline-offset-2 cursor-pointer border-none bg-transparent p-0 ${isDarkMode ? 'text-[#4C9AFF] hover:text-[#85C4FF]' : 'text-[#0052CC] hover:text-[#0747A6]'}`}
+          className={`mt-3 self-start max-sm:w-full max-sm:text-center text-xs font-semibold underline underline-offset-2 cursor-pointer border-none bg-transparent p-0 ${isDarkMode ? 'text-[#6BA3C8] hover:text-[#85C4FF]' : 'text-[#3B6988] hover:text-[#2C526B]'}`}
         >
           Ver también normativo y descargo
         </button>

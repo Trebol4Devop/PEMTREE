@@ -55,7 +55,7 @@ export default function Maintenance() {
                         </Link>
                     </div>
 
-                    <Link to="/" className="inline-flex items-center gap-1 text-xs font-semibold text-[#0052CC] dark:text-[#4C9AFF] hover:underline no-underline">
+                    <Link to="/" className="inline-flex items-center gap-1 text-xs font-semibold text-[#3B6988] dark:text-[#6BA3C8] hover:underline no-underline">
                         <ArrowLeft size={13} />
                         <span>Volver a la página principal</span>
                     </Link>
