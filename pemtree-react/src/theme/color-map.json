@@ -172,10 +172,10 @@
       "default":      { "light": { "current": "#f4f6f7", "target": "#F4F5F7" },  "dark": { "current": "#1f2937", "target": "#1f2937" } },
       "selected":     { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#2d3748", "target": "#2d3748" } },
       "completed":    { "light": { "current": "#E8F1EE", "target": "#E8F1EE" },  "dark": { "current": "#1A2B25", "target": "#1A2B25" } },
-      "available":    { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1e3a8a", "target": "#1e3a8a" } },
+      "available":    { "light": { "current": "#ffffff", "target": "#FFFFFF" },  "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
       "highlighted":  { "light": { "current": "#e8f6f3", "target": "#e8f6f3" },  "dark": { "current": "#1f3c7a", "target": "#1f3c7a" } },
-      "criticalPath": { "light": { "current": "#fdedec", "target": "#fdedec" },  "dark": { "current": "#7f1d1d", "target": "#7f1d1d" } },
-      "pathSocialHum":{ "light": { "current": "#dbeafe", "target": "#dbeafe" },  "dark": { "current": "#1e3a5f", "target": "#1e3a5f" } },
+      "criticalPath": { "light": { "current": "#F9E6E6", "target": "#F9E6E6" },  "dark": { "current": "#3D1E1E", "target": "#3D1E1E" } },
+      "pathSocialHum":{ "light": { "current": "#E6EFF5", "target": "#E6EFF5" },  "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
       "pathIdioma":   { "light": { "current": "#fef3c7", "target": "#fef3c7" },  "dark": { "current": "#78350f", "target": "#78350f" } },
       "pathGeneric":  { "light": { "current": "#fef3c7", "target": "#fef3c7" },  "dark": { "current": "#78350f", "target": "#78350f" } }
     },
@@ -183,11 +183,11 @@
     "nodeStroke": {
       "selected":     { "light": { "current": "#e67e22", "target": "#e67e22" },  "dark": { "current": "#f59e0b", "target": "#f59e0b" } },
       "completed":    { "light": { "current": "#4A7C6A", "target": "#4A7C6A" },  "dark": { "current": "#6BA892", "target": "#6BA892" } },
-      "available":    { "light": { "current": "#3498db", "target": "#0052CC" },  "dark": { "current": "#3b82f6", "target": "#4C9AFF" } },
-      "highlighted":  { "light": { "current": "#14ab85", "target": "#14ab85" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
-      "critical":     { "light": { "current": "#e74c3c", "target": "#e74c3c" },  "dark": { "current": "#ef4444", "target": "#ef4444" } },
+      "available":    { "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+      "highlighted":  { "light": { "current": "#4A7C6A", "target": "#4A7C6A" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+      "critical":     { "light": { "current": "#C45D5D", "target": "#C45D5D" },  "dark": { "current": "#E88B8B", "target": "#E88B8B" } },
       "blocked":      { "light": { "current": "#bdc3c7", "target": "#bdc3c7" },  "dark": { "current": "#9ca3af", "target": "#9ca3af" } },
-      "pathSocialHum":{ "light": { "current": "#2563eb", "target": "#2563eb" },  "dark": { "current": "#60a5fa", "target": "#4C9AFF" } },
+      "pathSocialHum":{ "light": { "current": "#3B6988", "target": "#3B6988" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
       "pathIdioma":   { "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
       "pathGeneric":  { "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
       "_nota": "available y highlighted dark: #3b82f6 y #60a5fa colapsados a primary dark #4C9AFF."
@@ -210,8 +210,8 @@
     "edgeStroke": {
       "default":  { "light": { "current": "#bdc3c7", "target": "#bdc3c7" },  "dark": { "current": "#7f8c8d", "target": "#7f8c8d" } },
       "selected": { "light": { "current": "#f39c12", "target": "#f39c12" },  "dark": { "current": "#f39c12", "target": "#f39c12" } },
-      "active":   { "light": { "current": "#2c3e50", "target": "#172B4D" },  "dark": { "current": "#0747A6", "target": "#4C9AFF" } },
-      "critical": { "light": { "current": "#e74c3c", "target": "#e74c3c" },  "dark": { "current": "#e74c3c", "target": "#ef4444" } },
+      "active":   { "light": { "current": "#172B4D", "target": "#172B4D" },  "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+      "critical": { "light": { "current": "#C45D5D", "target": "#C45D5D" },  "dark": { "current": "#E88B8B", "target": "#E88B8B" } },
       "suggested":{ "light": { "current": "#d97706", "target": "#d97706" },  "dark": { "current": "#fbbf24", "target": "#fbbf24" } },
       "_nota": "active light: #2c3e50 → text-primary #172B4D. active dark: #0747A6 → primary dark #4C9AFF. critical dark: #e74c3c → error-base dark #ef4444."
     },
@@ -405,7 +405,7 @@
     "_ubicaciones": ["index.css"]
   },
 
-  "courseChip": {
+    "courseChip": {
     "_desc": "Chips de cursos en el planner",
     "suficiencia": {
       "primary":         { "current": "#4A7C6A", "target": "#4A7C6A" },
@@ -415,5 +415,37 @@
       "completedStroke": { "light": { "current": "#4A7C6A", "target": "#4A7C6A" },  "dark": { "current": "#6BA892", "target": "#6BA892" } },
       "_nota": "Verde salvia (#4A7C6A / #D5E6DF / #E8F1EE) sin borde en tarjetas."
     }
+  },
+
+  "recuento": {
+    "_desc": "Página de Recuento Académico (Recuento.jsx)",
+    "headerBg":       { "light": { "current": "#E6EFF5", "target": "#E6EFF5" }, "dark": { "current": "#1A2B38", "target": "#1A2B38" } },
+    "headerTitle":    { "light": { "current": "#1E3A4C", "target": "#1E3A4C" }, "dark": { "current": "#f1f5f9", "target": "#f1f5f9" } },
+    "headerSubtitle": { "light": { "current": "#475569", "target": "#475569" }, "dark": { "current": "#cbd5e1", "target": "#cbd5e1" } },
+    "headerIcon":     { "light": { "current": "#3B6988", "target": "#3B6988" }, "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "accent":         { "light": { "current": "#3B6988", "target": "#3B6988" }, "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "accentHover":    { "light": { "current": "#2C526B", "target": "#2C526B" }, "dark": { "current": "#5690B6", "target": "#5690B6" } },
+    "_nota": "Sin bordes en cards, divisores, pestañas ni bloques internos."
+  },
+
+  "checkbox": {
+    "_desc": "Checkboxes globales sin borde (index.css @layer base)",
+    "uncheckedBg": { "light": { "current": "#DFE1E6", "target": "#DFE1E6" }, "dark": { "current": "#2D333B", "target": "#2D333B" } },
+    "checkedBg":   { "light": { "current": "#3B6988", "target": "#3B6988" }, "dark": { "current": "#6BA3C8", "target": "#6BA3C8" } },
+    "checkMark":   { "light": { "current": "#FFFFFF", "target": "#FFFFFF" }, "dark": { "current": "#0E1624", "target": "#0E1624" } }
+  },
+
+  "careerPalettes": {
+    "_desc": "Filtro en memoria sobre carreras[].colores de catalogo.json (src/theme/palettes.js -> CAREER_PALETTES)",
+    "ambiental":           { "color1": "#C8726A", "color2": "#F7E4E2", "color3": "#C8726A" },
+    "ciencias_y_sistemas": { "color1": "#E68A49", "color2": "#FCD9BE", "color3": "#E68A49" },
+    "civil":               { "color1": "#C94A4A", "color2": "#F9DFDF", "color3": "#C94A4A" },
+    "electrica":           { "color1": "#2582A6", "color2": "#D6ECF4", "color3": "#2582A6" },
+    "electronica":         { "color1": "#4A96C4", "color2": "#DFEFF8", "color3": "#4A96C4" },
+    "industrial":          { "color1": "#6E8A3E", "color2": "#E4EDD5", "color3": "#6E8A3E" },
+    "mecanica":            { "color1": "#4B8B4B", "color2": "#DCEFD9", "color3": "#4B8B4B" },
+    "mecanica_electrica":  { "color1": "#4A74A8", "color2": "#DCE6F2", "color3": "#4A74A8" },
+    "mecanica_industrial": { "color1": "#227C75", "color2": "#D3ECEA", "color3": "#227C75" },
+    "quimica":             { "color1": "#7A4B9E", "color2": "#ECE2F5", "color3": "#7A4B9E" }
   }
 }

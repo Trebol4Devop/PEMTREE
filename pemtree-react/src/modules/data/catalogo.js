@@ -12,6 +12,7 @@
 // La reputación se une por (claveNombre|rol) en cargarReputacion().
 
 import { supabase, isSupabaseConfigured } from '../../lib/supabase';
+import { aplicarFiltroPaletaCarreras } from '../../theme/palettes';
 
 const CATALOGO_URL = '/json/catalogo.json';
 
@@ -46,7 +47,7 @@ export async function cargarCatalogo(force = false) {
             return res.json();
         })
         .then(data => {
-            catalogo = data;
+            catalogo = aplicarFiltroPaletaCarreras(data);
             docenteIndex = null;
             return catalogo;
         })

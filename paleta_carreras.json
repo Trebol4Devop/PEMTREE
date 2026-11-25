@@ -1,0 +1,269 @@
+{
+  "_descripcion": "Paleta de colores por carrera y sus pensums (extraída de pemtree-react/public/json/catalogo.json)",
+  "carreras": [
+    {
+      "id": "ambiental",
+      "nombre": "Ingeniería Ambiental",
+      "colores": {
+        "color1": "#D38078",
+        "color2": "#F9E4E1",
+        "color3": "#D38078"
+      },
+      "pensums": [
+        {
+          "id": "ambiental_25",
+          "file": "ambiental_25.json",
+          "nombre": "Ingeniería Ambiental (2025)",
+          "cohort": "2025",
+          "clar": true
+        },
+        {
+          "id": "ambiental_ant",
+          "file": "ambiental_ant.json",
+          "nombre": "Ingeniería Ambiental (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "ciencias_y_sistemas",
+      "nombre": "Ingeniería en Ciencias y Sistemas",
+      "colores": {
+        "color1": "#F79645",
+        "color2": "#FCD2B4",
+        "color3": "#F79645"
+      },
+      "pensums": [
+        {
+          "id": "ciencias_y_sistemas_22",
+          "file": "ciencias_y_sistemas_22.json",
+          "nombre": "Ingeniería en Ciencias y Sistemas (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "ciencias_y_sistemas_25",
+          "file": "ciencias_y_sistemas_25.json",
+          "nombre": "Ingeniería en Ciencias y Sistemas (2025)",
+          "cohort": "2025",
+          "clar": true
+        },
+        {
+          "id": "ciencias_y_sistemas_ant",
+          "file": "ciencias_y_sistemas_ant.json",
+          "nombre": "Ingeniería en Ciencias y Sistemas (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "civil",
+      "nombre": "Ingeniería Civil",
+      "colores": {
+        "color1": "#FF272B",
+        "color2": "#FFC1CA",
+        "color3": "#FF272B"
+      },
+      "pensums": [
+        {
+          "id": "civil_2017",
+          "file": "civil_2017.json",
+          "nombre": "Ingeniería Civil (Antiguo 2017)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        },
+        {
+          "id": "civil_22",
+          "file": "civil_22.json",
+          "nombre": "Ingeniería Civil (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "civil_ant17",
+          "file": "civil_ant17.json",
+          "nombre": "Ingeniería Civil (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "electrica",
+      "nombre": "Ingeniería Eléctrica",
+      "colores": {
+        "color1": "#00A3D2",
+        "color2": "#84D3F8",
+        "color3": "#00A3D2"
+      },
+      "pensums": [
+        {
+          "id": "electrica_22",
+          "file": "electrica_22.json",
+          "nombre": "Ingeniería Eléctrica (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "electrica_ant",
+          "file": "electrica_ant.json",
+          "nombre": "Ingeniería Eléctrica (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "electronica",
+      "nombre": "Ingenieria Electrónica",
+      "colores": {
+        "color1": "#4DC1ED",
+        "color2": "#B0E2F7",
+        "color3": "#4DC1ED"
+      },
+      "pensums": [
+        {
+          "id": "electronica_22",
+          "file": "electronica_22.json",
+          "nombre": "Ingeniería Electrónica (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "electronica_ant",
+          "file": "electronica_ant.json",
+          "nombre": "Ingeniería Electrónica (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "industrial",
+      "nombre": "Ingeniería Industrial",
+      "colores": {
+        "color1": "#76933C",
+        "color2": "#D7E3BC",
+        "color3": "#76933C"
+      },
+      "pensums": [
+        {
+          "id": "industrial_22",
+          "file": "industrial_22.json",
+          "nombre": "Ingeniería Industrial (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "industrial_ant",
+          "file": "industrial_ant.json",
+          "nombre": "Ingeniería Industrial (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "mecanica",
+      "nombre": "Ingeniería Mecánica",
+      "colores": {
+        "color1": "#549E44",
+        "color2": "#AAE5AA",
+        "color3": "#549E44"
+      },
+      "pensums": [
+        {
+          "id": "mecanica_22",
+          "file": "mecanica_22.json",
+          "nombre": "Ingeniería Mecánica (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "mecanica_ant",
+          "file": "mecanica_ant.json",
+          "nombre": "Ingeniería Mecánica (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "mecanica_electrica",
+      "nombre": "Ingienería Mecánica Eléctrica",
+      "colores": {
+        "color1": "#4E81BD",
+        "color2": "#B7CCE3",
+        "color3": "#4E81BD"
+      },
+      "pensums": [
+        {
+          "id": "mecanica_electrica_22",
+          "file": "mecanica_electrica_22.json",
+          "nombre": "Ingeniería Mecánica Eléctrica (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "mecanica_electrica_ant",
+          "file": "mecanica_electrica_ant.json",
+          "nombre": "Ingeniería Mecánica Eléctrica (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "mecanica_industrial",
+      "nombre": "Ingeniería Mecánica Industrial",
+      "colores": {
+        "color1": "#028177",
+        "color2": "#7CD7CD",
+        "color3": "#028177"
+      },
+      "pensums": [
+        {
+          "id": "mecanica_industrial_22",
+          "file": "mecanica_industrial_22.json",
+          "nombre": "Ingeniería Mecánica Industrial (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "mecanica_industrial_ant",
+          "file": "mecanica_industrial_ant.json",
+          "nombre": "Ingeniería Mecánica Industrial (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    },
+    {
+      "id": "quimica",
+      "nombre": "Ingeniería Quimíca",
+      "colores": {
+        "color1": "#7030A0",
+        "color2": "#EADDFF",
+        "color3": "#7030A0"
+      },
+      "pensums": [
+        {
+          "id": "quimica_22",
+          "file": "quimica_22.json",
+          "nombre": "Ingeniería Química (2022)",
+          "cohort": "2022",
+          "clar": true
+        },
+        {
+          "id": "quimica_ant",
+          "file": "quimica_ant.json",
+          "nombre": "Ingeniería Química (Antiguo)",
+          "cohort": "ANTERIOR",
+          "clar": false
+        }
+      ]
+    }
+  ]
+}
