@@ -89,3 +89,47 @@ export function getTextColor(hex) {
 export function getPaletteAccent(paletteName) {
   return (PALETAS[paletteName] || PALETAS.Default)[0];
 }
+
+/**
+ * Paleta curada por carrera (filtro en memoria sobre catalogo.json).
+ * Permite regenerar catalogo.json sin perder los ajustes visuales por carrera.
+ */
+export const CAREER_PALETTES = {
+  ambiental:           { color1: '#C8726A', color2: '#F7E4E2', color3: '#C8726A' },
+  ciencias_y_sistemas: { color1: '#E68A49', color2: '#FCD9BE', color3: '#E68A49' },
+  civil:               { color1: '#C94A4A', color2: '#F9DFDF', color3: '#C94A4A' },
+  electrica:           { color1: '#2582A6', color2: '#D6ECF4', color3: '#2582A6' },
+  electronica:         { color1: '#4A96C4', color2: '#DFEFF8', color3: '#4A96C4' },
+  industrial:          { color1: '#6E8A3E', color2: '#E4EDD5', color3: '#6E8A3E' },
+  mecanica:            { color1: '#4B8B4B', color2: '#DCEFD9', color3: '#4B8B4B' },
+  mecanica_electrica:  { color1: '#4A74A8', color2: '#DCE6F2', color3: '#4A74A8' },
+  mecanica_industrial: { color1: '#227C75', color2: '#D3ECEA', color3: '#227C75' },
+  quimica:             { color1: '#7A4B9E', color2: '#ECE2F5', color3: '#7A4B9E' },
+};
+
+/**
+ * Transforma los colores crudos de una carrera provenientes de catalogo.json
+ * aplicando la paleta curada del tema sin mutar el archivo fuente.
+ */
+export function transformarColoresCarrera(carreraId, rawColores = {}) {
+  const override = CAREER_PALETTES[carreraId];
+  if (!override) return rawColores || {};
+  return {
+    ...(rawColores || {}),
+    ...override,
+  };
+}
+
+/**
+ * Aplica el filtro de paleta de carreras en memoria sobre el objeto catalogo.
+ */
+export function aplicarFiltroPaletaCarreras(catalogoData) {
+  if (!catalogoData || !Array.isArray(catalogoData.carreras)) return catalogoData;
+  return {
+    ...catalogoData,
+    carreras: catalogoData.carreras.map(c => ({
+      ...c,
+      colores: transformarColoresCarrera(c.id, c.colores),
+    })),
+  };
+}
