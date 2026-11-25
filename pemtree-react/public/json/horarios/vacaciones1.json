@@ -19,7 +19,8 @@
     "catedratico": "HELEN JEANNETH MARTINEZ SUM",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0008",
@@ -41,7 +42,8 @@
     "catedratico": "HELEN JEANNETH MARTINEZ SUM",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0009",
@@ -63,7 +65,8 @@
     "catedratico": "CARLOS LEONEL MUÑOZ LEMUS",
     "auxiliar": "MARÍA PAULA LIGNYE LOYO MIRANDA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0011",
@@ -85,7 +88,8 @@
     "catedratico": "SORAYA DEL ROSARIO MARTINEZ SUM",
     "auxiliar": "MARÍA PAULA LIGNYE LOYO MIRANDA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0028",
@@ -107,7 +111,8 @@
     "catedratico": "MARILYN CARIBEL ROJAS MALDONADO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -129,7 +134,8 @@
     "catedratico": "ERICK GEOVANI AGUSTIN MARROQUIN",
     "auxiliar": "JOSÉ DANIEL FUENTES OROZCO",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0103",
@@ -151,7 +157,8 @@
     "catedratico": "CARLOS AUGUSTO MORALES SANTACRUZ",
     "auxiliar": "ABEL ALEJANDRO SALGUERO UCELO",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0107",
@@ -173,7 +180,8 @@
     "catedratico": "NERY AMILCAR MEJIA GODINEZ",
     "auxiliar": "BERTI GABRIELA ZEPEDA SANDOVAL",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0112",
@@ -195,7 +203,8 @@
     "catedratico": "RAMON BENJAMIN PIEDRASANTA BATZ",
     "auxiliar": "EDWIN JOSUÉ CASTILLO MENÉNDEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0114",
@@ -217,7 +226,8 @@
     "catedratico": "RAMON BENJAMIN PIEDRASANTA BATZ",
     "auxiliar": "EDWIN JOSUÉ CASTILLO MENÉNDEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0116",
@@ -239,7 +249,8 @@
     "catedratico": "JUAN ORLANDO LOPEZ OROZCO",
     "auxiliar": "LUDDIN FERNANDO ALVAREZ CAMEY",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0118",
@@ -261,7 +272,8 @@
     "catedratico": "RAMON BENJAMIN PIEDRASANTA BATZ",
     "auxiliar": "EDWIN JOSUÉ CASTILLO MENÉNDEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -280,10 +292,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "BRIAN  ENRIQUE CHICOL  MORALES",
+    "catedratico": "BRIAN ENRIQUE CHICOL MORALES",
     "auxiliar": "JOSE PABLO MARTINEZ BONILLA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -302,10 +315,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
+    "catedratico": "PAMELA CRISTINA SIKAHALL URIZAR",
     "auxiliar": "LUIS ARTURO SABAN LOPEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -327,7 +341,8 @@
     "catedratico": "JORGE GILBERTO GONZALEZ PADILLA",
     "auxiliar": "PEDRO PABLO MOLINA MARTÍNEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0218",
@@ -349,7 +364,8 @@
     "catedratico": "SAUL CABEZAS DURAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0252",
@@ -371,7 +387,8 @@
     "catedratico": "LUIS MANUEL SANDOVAL MENDOZA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0285",
@@ -393,7 +410,8 @@
     "catedratico": "EDGAR RENE ORNELIS HOIL",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -415,7 +433,8 @@
     "catedratico": "GLENDA AZUCENA BORRAYO RUIZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0311",
@@ -437,7 +456,8 @@
     "catedratico": "JOSÉ ESTUARDO GALINDO ESCOBAR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0314",
@@ -459,7 +479,8 @@
     "catedratico": "YEFRY VALENTIN ROSALES JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0318",
@@ -481,7 +502,8 @@
     "catedratico": "OMAR ENRIQUE MEDRANO MENDEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0354",
@@ -503,7 +525,8 @@
     "catedratico": "MERCEDES ESTHER ROQUEL CHAVEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0390",
@@ -525,7 +548,8 @@
     "catedratico": "ESDRAS FELICIANO MIRANDA OROZCO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0410",
@@ -547,7 +571,8 @@
     "catedratico": "SERGIO ALEJANDRO RECINOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0528",
@@ -569,7 +594,8 @@
     "catedratico": "ESDRAS FELICIANO MIRANDA OROZCO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0601",
@@ -591,7 +617,8 @@
     "catedratico": "NORA LEONOR GARCIA TOBAR",
     "auxiliar": "NORA LEONOR GARCIA TOBAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0603",
@@ -613,7 +640,8 @@
     "catedratico": "SELVIN ESTUARDO JOACHIN JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0630",
@@ -635,7 +663,8 @@
     "catedratico": "ALBERTO EULALIO HERNANDEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0634",
@@ -657,7 +686,8 @@
     "catedratico": "JOSE ROLANDO CHAVEZ SALAZAR",
     "auxiliar": "ALBERTO EULALIO HERNANDEZ GARCIA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0640",
@@ -679,7 +709,8 @@
     "catedratico": "JOSE ROLANDO CHAVEZ SALAZAR",
     "auxiliar": "JOSE ROLANDO CHAVEZ SALAZAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0642",
@@ -701,7 +732,8 @@
     "catedratico": "HUGO LEONEL ALVARADO DE LEON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0643",
@@ -723,7 +755,8 @@
     "catedratico": "LAURA ROSMERY BRIONES ZELADA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0653",
@@ -745,7 +778,8 @@
     "catedratico": "EDWIN JOSUE IXPATA REYES",
     "auxiliar": "OWEN TORRES RIVERA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0654",
@@ -767,7 +801,8 @@
     "catedratico": "ERWIN DANILO GONZALEZ TREJO",
     "auxiliar": "ERWIN DANILO GONZALEZ TREJO",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0656",
@@ -789,7 +824,8 @@
     "catedratico": "BYRON GERARDO CHOCOOJ BARRIENTOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0660",
@@ -811,7 +847,8 @@
     "catedratico": "VICTOR HUGO GARCIA ROQUE",
     "auxiliar": "VICTOR HUGO GARCIA ROQUE",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0662",
@@ -833,7 +870,8 @@
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0664",
@@ -855,7 +893,8 @@
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0665",
@@ -877,7 +916,8 @@
     "catedratico": "NORA LEONOR GARCIA TOBAR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0708",
@@ -899,7 +939,8 @@
     "catedratico": "BYRON GERARDO CHOCOOJ BARRIENTOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0722",
@@ -921,7 +962,8 @@
     "catedratico": "JORGE LUIS ALVAREZ MEJIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0729",
@@ -943,7 +985,8 @@
     "catedratico": "YESSENIA JANIRA MARROQUÍN MARTÍNEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0732",
@@ -965,7 +1008,8 @@
     "catedratico": "LADY MARIEBELIA ELIAS ESTRADA",
     "auxiliar": "JACQUELIN ANDREA GARCÍA FLORES",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0734",
@@ -987,7 +1031,8 @@
     "catedratico": "MARVIN ANTONIO MATEO VALLADARES",
     "auxiliar": "MARCO ANTONIO TAX ALVAREZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0736",
@@ -1009,7 +1054,8 @@
     "catedratico": "LADY MARIEBELIA ELIAS ESTRADA",
     "auxiliar": "ASTRID SARAÍ CHOXÍN SAMAYOA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0768",
@@ -1031,7 +1077,8 @@
     "catedratico": "HERMAN IGOR VELIZ LINARES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0770",
@@ -1053,7 +1100,8 @@
     "catedratico": "NEFTALI DE JESUS CALDERON MENDEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0772",
@@ -1075,7 +1123,8 @@
     "catedratico": "EDGAR RENE ORNELIS HOIL",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0778",
@@ -1097,7 +1146,8 @@
     "catedratico": "LUIS FERNANDO ESPINO BARRIOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0781",
@@ -1119,7 +1169,8 @@
     "catedratico": "LUIS FERNANDO ESPINO BARRIOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0798",
@@ -1141,7 +1192,8 @@
     "catedratico": "MARLON FRANCISCO ORELLANA LOPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0960",
@@ -1163,7 +1215,8 @@
     "catedratico": "CARLOS AUGUSTO MORALES SANTACRUZ",
     "auxiliar": "DÁMARIS MAGALI ARCE GUZMÁN",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0964",
@@ -1185,7 +1238,8 @@
     "catedratico": "CARLOS ALBERTO ARIAS LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0972",
@@ -1207,7 +1261,8 @@
     "catedratico": "LUIS FERNANDO ESPINO BARRIOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "3116",
@@ -1229,7 +1284,8 @@
     "catedratico": "JUAN ORLANDO LOPEZ OROZCO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "3118",
@@ -1251,7 +1307,8 @@
     "catedratico": "RAMON BENJAMIN PIEDRASANTA BATZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "3656",
@@ -1273,7 +1330,8 @@
     "catedratico": "BYRON GERARDO CHOCOOJ BARRIENTOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "3662",
@@ -1295,7 +1353,8 @@
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "3664",
@@ -1317,7 +1376,8 @@
     "catedratico": "NANCY MARIA GUTIERREZ SAMAYOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "7905",
@@ -1339,7 +1399,8 @@
     "catedratico": "EDWIN JOSUE IXPATA REYES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0285",
@@ -1361,7 +1422,8 @@
     "catedratico": "ALAN RODRIGO PAMAL DE LEÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0601",
@@ -1383,7 +1445,8 @@
     "catedratico": "NORA LEONOR GARCIA TOBAR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0603",
@@ -1405,7 +1468,8 @@
     "catedratico": "SELVIN ESTUARDO JOACHIN JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0630",
@@ -1427,7 +1491,8 @@
     "catedratico": "GERSON ABSALON ORTIZ CORONA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0634",
@@ -1449,7 +1514,8 @@
     "catedratico": "ALBERTO EULALIO HERNANDEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0640",
@@ -1471,7 +1537,8 @@
     "catedratico": "JOSE ROLANDO CHAVEZ SALAZAR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0653",
@@ -1493,7 +1560,8 @@
     "catedratico": "OWEN TORRES RIVERA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0654",
@@ -1515,7 +1583,8 @@
     "catedratico": "ERWIN DANILO GONZALEZ TREJO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0660",
@@ -1537,7 +1606,8 @@
     "catedratico": "VICTOR HUGO GARCIA ROQUE",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0665",
@@ -1559,7 +1629,8 @@
     "catedratico": "JAQUELYN CAROLINA CHITAY LUX",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0729",
@@ -1581,7 +1652,8 @@
     "catedratico": "KERVIN ADOLFO CARDONA RAMÍREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0768",
@@ -1603,7 +1675,8 @@
     "catedratico": "RUBEN ALEJANDRO RALDA MEJIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0770",
@@ -1625,7 +1698,8 @@
     "catedratico": "TOBÍAS FRANCISCO ZAMORA SANTOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0772",
@@ -1647,7 +1721,8 @@
     "catedratico": "JORGE ALEJANDRO DE LEÓN BATRES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0778",
@@ -1669,7 +1744,8 @@
     "catedratico": "DIEGO JOSUE GUEVARA ABAJ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0781",
@@ -1691,7 +1767,8 @@
     "catedratico": "CARLOS FERNANDO ENRIQUE LOPEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0798",
@@ -1713,7 +1790,8 @@
     "catedratico": "ESTUARDO SEBASTIÁN VALLE BANCES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0964",
@@ -1735,7 +1813,8 @@
     "catedratico": "CARLOS JOSÉ BLANCO GUZMÁN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0972",
@@ -1757,7 +1836,8 @@
     "catedratico": "ROBERTO MIGUEL GARCÍA SANTIZO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -1779,7 +1859,8 @@
     "catedratico": "FABIOLA BEATRIZ RAMIREZ PINTO",
     "auxiliar": "DILAN CARLOS ROLANDO GARCÍA MÉNDEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0103",
@@ -1801,7 +1882,8 @@
     "catedratico": "MARIO RENE DE LEON GARCIA",
     "auxiliar": "EDVIN YAHIR PERNILLO MORATAYA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0107",
@@ -1823,7 +1905,8 @@
     "catedratico": "JOSE ALFREDO GONZALEZ DIAZ",
     "auxiliar": "DIANA LISSETH MORALES MORALES",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0112",
@@ -1845,7 +1928,8 @@
     "catedratico": "CARLOS ALBERTO GARRIDO LOPEZ",
     "auxiliar": "BRAYAN ALEXANDER MEJÍA BARRIENTOS",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0114",
@@ -1867,7 +1951,8 @@
     "catedratico": "JOSE ALFREDO GONZALEZ DIAZ",
     "auxiliar": "BRAYAN ALEXANDER MEJÍA BARRIENTOS",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -1886,10 +1971,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
+    "catedratico": "PAMELA CRISTINA SIKAHALL URIZAR",
     "auxiliar": "LUIS ARTURO SABAN LOPEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0250",
@@ -1911,7 +1997,8 @@
     "catedratico": "LUIS MANUEL SANDOVAL MENDOZA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -1933,7 +2020,8 @@
     "catedratico": "STAFF",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0302",
@@ -1955,7 +2043,8 @@
     "catedratico": "OMAR ENRIQUE MEDRANO MENDEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0653",
@@ -1977,7 +2066,8 @@
     "catedratico": "EDWIN JOSUE IXPATA REYES",
     "auxiliar": "OWEN TORRES RIVERA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0708",
@@ -1999,7 +2089,8 @@
     "catedratico": "ALBERTO EULALIO HERNANDEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0732",
@@ -2021,7 +2112,8 @@
     "catedratico": "KAREN LUCRECIA HURTARTE PINEDA",
     "auxiliar": "YERVIS MAURICIO LÓPEZ ESTRADA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "7905",
@@ -2043,7 +2135,8 @@
     "catedratico": "ERWIN DANILO GONZALEZ TREJO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0653",
@@ -2065,7 +2158,8 @@
     "catedratico": "OWEN TORRES RIVERA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "7905",
@@ -2087,7 +2181,8 @@
     "catedratico": "ERWIN DANILO GONZALEZ TREJO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2109,7 +2204,8 @@
     "catedratico": "ANGEL DANIEL LOPEZ LOPEZ",
     "auxiliar": "JOSE DANIEL ELÍAS TEJAXUN SAY",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0103",
@@ -2131,7 +2227,8 @@
     "catedratico": "JUAN ORLANDO LOPEZ OROZCO",
     "auxiliar": "GABRIEL CANDELARIO ICUTE YUCUTE",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0112",
@@ -2153,7 +2250,8 @@
     "catedratico": "GERSON JONATAN RAMIREZ BACH",
     "auxiliar": "VICTOR DANIEL TEPÁZ MORENTE",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -2175,7 +2273,8 @@
     "catedratico": "YEFRY VALENTIN ROSALES JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2197,7 +2296,8 @@
     "catedratico": "LUIS CARLOS LEONARDO BOLANOS MENDEZ",
     "auxiliar": "STHEEVEN ADONIAS COC CHAN",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0103",
@@ -2219,7 +2319,8 @@
     "catedratico": "GERSON JONATAN RAMIREZ BACH",
     "auxiliar": "SOFIA PAOLA ARDIANO SOLIS",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2241,7 +2342,8 @@
     "catedratico": "AMAHAN SANCHEZ ALVAREZ",
     "auxiliar": "HERIBERTO ALEJANDRO VELÁSQUEZ Y VELÁSQUEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2263,7 +2365,8 @@
     "catedratico": "SILVIA CAROLINA LEMUS CASTRO",
     "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2285,7 +2388,8 @@
     "catedratico": "TONY YOBANY BARRERA DONIS",
     "auxiliar": "CRISTHIAN RODRIGO MEJIA CACAO",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2304,10 +2408,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "JUAN CARLOS JEREZ  JUAREZ",
+    "catedratico": "JUAN CARLOS JEREZ JUAREZ",
     "auxiliar": "ELSA JULISSA GARCÍA LÉMUS",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -2329,7 +2434,8 @@
     "catedratico": "LAURA ROSMERY BRIONES ZELADA",
     "auxiliar": "JASMINE MELISSA MARCELA VÁSQUEZ MORALES",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -2348,7 +2454,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -2366,7 +2473,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -2385,7 +2493,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -2403,7 +2512,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -2422,7 +2532,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -2440,7 +2551,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0252",
@@ -2459,7 +2571,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0252",
@@ -2477,7 +2590,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -2496,7 +2610,8 @@
     "catedratico": "LUIS MARIANO ALVAREZ MURALLES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -2514,7 +2629,8 @@
     "catedratico": "LUIS MARIANO ALVAREZ MURALLES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0302",
@@ -2536,7 +2652,8 @@
     "catedratico": "OMAR ENRIQUE MEDRANO MENDEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0311",
@@ -2558,7 +2675,8 @@
     "catedratico": "WILLIAM OSWALDO PINEDA GUIXON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0314",
@@ -2580,7 +2698,8 @@
     "catedratico": "YEFRY VALENTIN ROSALES JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0348",
@@ -2602,7 +2721,8 @@
     "catedratico": "DENNIS ANDRÉ GONZÁLEZ FLORES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0453",
@@ -2621,7 +2741,8 @@
     "catedratico": "MIGDALIA AZUCENA DEL CID",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0453",
@@ -2639,7 +2760,8 @@
     "catedratico": "MIGDALIA AZUCENA DEL CID",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0510",
@@ -2661,7 +2783,8 @@
     "catedratico": "MYNOR RODERICO FIGUEROA FUENTES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0532",
@@ -2683,7 +2806,8 @@
     "catedratico": "FREDY MAURICIO MONROY PERALTA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "4258",
@@ -2705,7 +2829,8 @@
     "catedratico": "MYNOR RODERICO FIGUEROA FUENTES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "4510",
@@ -2727,7 +2852,8 @@
     "catedratico": "MYNOR RODERICO FIGUEROA FUENTES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -2746,7 +2872,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -2764,7 +2891,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -2783,7 +2911,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -2801,7 +2930,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -2820,7 +2950,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -2838,7 +2969,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0250",
@@ -2857,7 +2989,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0250",
@@ -2875,7 +3008,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0252",
@@ -2894,7 +3028,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0252",
@@ -2912,7 +3047,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -2931,7 +3067,8 @@
     "catedratico": "ERICKA ALEXANDRA CASTILLO DE LEON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -2949,7 +3086,8 @@
     "catedratico": "ERICKA ALEXANDRA CASTILLO DE LEON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0302",
@@ -2971,7 +3109,8 @@
     "catedratico": "OMAR ENRIQUE MEDRANO MENDEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0316",
@@ -2993,7 +3132,8 @@
     "catedratico": "YEFRY VALENTIN ROSALES JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0322",
@@ -3015,7 +3155,8 @@
     "catedratico": "CARLOS ANDRES PÉREZ TORRES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0348",
@@ -3037,7 +3178,8 @@
     "catedratico": "NATALIE GIULIANA ECHEVERRIA CHANG",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0455",
@@ -3056,7 +3198,8 @@
     "catedratico": "MILTON LENIN HERNANDEZ GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0455",
@@ -3074,7 +3217,8 @@
     "catedratico": "MILTON LENIN HERNANDEZ GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3093,7 +3237,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3111,7 +3256,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3130,7 +3276,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3148,7 +3295,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3167,7 +3315,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3185,7 +3334,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0250",
@@ -3204,7 +3354,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0250",
@@ -3222,7 +3373,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0324",
@@ -3244,7 +3396,8 @@
     "catedratico": "WILLIAM OSWALDO PINEDA GUIXON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0348",
@@ -3266,7 +3419,8 @@
     "catedratico": "DENNIS ANDRÉ GONZÁLEZ FLORES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3285,7 +3439,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3303,7 +3458,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3322,7 +3478,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3340,7 +3497,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3359,7 +3517,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3377,7 +3536,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0348",
@@ -3399,7 +3559,8 @@
     "catedratico": "DIANA ALEJANDRA PACAY GARCÍA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3418,7 +3579,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3436,7 +3598,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3455,7 +3618,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3473,7 +3637,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3492,7 +3657,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3510,7 +3676,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3529,7 +3696,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3547,7 +3715,8 @@
     "catedratico": "JOHAN ESTIVEN SABÁN LÓPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3566,7 +3735,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3584,7 +3754,8 @@
     "catedratico": "JORGE PABLO ORTIZ SOTO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3603,7 +3774,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3621,7 +3793,8 @@
     "catedratico": "JUAN MIGUEL MONTEALEGRE GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3640,7 +3813,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3658,7 +3832,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3677,7 +3852,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3695,7 +3871,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3714,7 +3891,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3732,7 +3910,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3751,7 +3930,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3769,7 +3949,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3788,7 +3969,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3806,7 +3988,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3825,7 +4008,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3843,7 +4027,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3862,7 +4047,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3880,7 +4066,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3899,7 +4086,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -3917,7 +4105,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3936,7 +4125,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -3954,7 +4144,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3973,7 +4164,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -3991,7 +4183,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4010,7 +4203,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4028,7 +4222,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -4047,7 +4242,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -4065,7 +4261,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -4084,7 +4281,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -4102,7 +4300,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4121,7 +4320,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4139,7 +4339,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -4158,7 +4359,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -4176,7 +4378,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -4195,7 +4398,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -4213,7 +4417,8 @@
     "catedratico": "LUIS ENRIQUE IZQUIERDO OCHOA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4232,7 +4437,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4250,7 +4456,8 @@
     "catedratico": "PEDRO PABLO GUZMAN MILIAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -4269,7 +4476,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0152",
@@ -4287,7 +4495,8 @@
     "catedratico": "SERGIO LUIS VALDÉZ PÉREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0522",
@@ -4309,7 +4518,8 @@
     "catedratico": "CARLOS ENRIQUE CHICOL CABRERA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0258",
@@ -4331,7 +4541,8 @@
     "catedratico": "MYNOR RODERICO FIGUEROA FUENTES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0008",
@@ -4353,7 +4564,8 @@
     "catedratico": "HELEN JEANNETH MARTINEZ SUM",
     "auxiliar": "MARÍA PAULA LIGNYE LOYO MIRANDA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0009",
@@ -4375,7 +4587,8 @@
     "catedratico": "CARLOS LEONEL MUÑOZ LEMUS",
     "auxiliar": "KARLA JUDITH MONZÓN BARRERA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0011",
@@ -4397,7 +4610,8 @@
     "catedratico": "SORAYA DEL ROSARIO MARTINEZ SUM",
     "auxiliar": "KARLA JUDITH MONZÓN BARRERA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0101",
@@ -4416,10 +4630,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "EMELINE LORENA  PAREDES SANTIZO",
+    "catedratico": "EMELINE LORENA PAREDES SANTIZO",
     "auxiliar": "SAUL ALEJANDRO CIFUENTES VIVAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0103",
@@ -4441,7 +4656,8 @@
     "catedratico": "MARIO GUSTAVO LOPEZ HERNANDEZ",
     "auxiliar": "MICHELLE CAROLINA RIZZO LÓPEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -4463,7 +4679,8 @@
     "catedratico": "LUIS ADOLFO DE LEON GOMEZ",
     "auxiliar": "JOSE DANIEL ELÍAS TEJAXUN SAY",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -4485,7 +4702,8 @@
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
     "auxiliar": "LUIS ANGEL AGUILAR CHAMALE",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0170",
@@ -4507,7 +4725,8 @@
     "catedratico": "JORGE GILBERTO GONZALEZ PADILLA",
     "auxiliar": "JOSE ALFREDO AGUILAR CHAMALE",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0172",
@@ -4526,10 +4745,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "PAMELA  CRISTINA SIKAHALL  URIZAR",
+    "catedratico": "PAMELA CRISTINA SIKAHALL URIZAR",
     "auxiliar": "ANGEL FERNANDO NAJERA CON",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0212",
@@ -4551,7 +4771,8 @@
     "catedratico": "ENDOR STEVE ORTIZ DEL CID",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0216",
@@ -4573,7 +4794,8 @@
     "catedratico": "DABNEY IVAN MENDOZA CENTENO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0244",
@@ -4595,7 +4817,8 @@
     "catedratico": "LUIS EDUARDO DURAN CORDOVA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0246",
@@ -4617,7 +4840,8 @@
     "catedratico": "CARLOS EDUARDO GUZMAN SALAZAR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0249",
@@ -4639,7 +4863,8 @@
     "catedratico": "RONY DANIEL HERNANDEZ GOMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0282",
@@ -4661,7 +4886,8 @@
     "catedratico": "WALTER ROLANDO SALAZAR GONZÁLEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0286",
@@ -4683,7 +4909,8 @@
     "catedratico": "LUIS EDUARDO PORTILLO ESPAÑA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0300",
@@ -4705,7 +4932,8 @@
     "catedratico": "JOSE MAURICIO ARRIOLA DONIS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0314",
@@ -4727,7 +4955,8 @@
     "catedratico": "MARIA FERNANDA BARAHONA CHACÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0316",
@@ -4749,7 +4978,8 @@
     "catedratico": "BRYAN ALEJANDRO CASTAÑON MARTINEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0322",
@@ -4771,7 +5001,8 @@
     "catedratico": "CARLOS ANDRES PÉREZ TORRES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0324",
@@ -4793,7 +5024,8 @@
     "catedratico": "WILLIAM OSWALDO PINEDA GUIXON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0332",
@@ -4812,10 +5044,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "VICTOR\tCAROL HERNANDEZ MONZON",
+    "catedratico": "VICTOR CAROL HERNANDEZ MONZON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0348",
@@ -4837,7 +5070,8 @@
     "catedratico": "LUIS FERNANDO GONZÁLEZ VILLAGRÁN",
     "auxiliar": "JEREMY EMMANUEL BARRIOS ARANA",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0354",
@@ -4859,7 +5093,8 @@
     "catedratico": "EMMETT ECHEVERRIA VALENZUELA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0358",
@@ -4881,7 +5116,8 @@
     "catedratico": "GERSON JOÉL ORTEGA MORALES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0362",
@@ -4903,7 +5139,8 @@
     "catedratico": "GIORGIO ENMANUEL ALEJANDRO LÓPEZ PARDO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0455",
@@ -4925,7 +5162,8 @@
     "catedratico": "MILTON LENIN HERNANDEZ GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0666",
@@ -4947,7 +5185,8 @@
     "catedratico": "ERICKA ALEXANDRA CASTILLO DE LEON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0706",
@@ -4969,7 +5208,8 @@
     "catedratico": "BRYAN ALEJANDRO CASTAÑON MARTINEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0732",
@@ -4991,7 +5231,8 @@
     "catedratico": "LUIS ANGEL CAXAJ SEQUEN",
     "auxiliar": "MARCO ANTONIO TAX ALVAREZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0734",
@@ -5013,7 +5254,8 @@
     "catedratico": "LUIS ANGEL CAXAJ SEQUEN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0736",
@@ -5035,7 +5277,8 @@
     "catedratico": "JUAN JOSE DE LEON TRABANINO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0092",
@@ -5057,7 +5300,8 @@
     "catedratico": "HERMAN IGOR VELIZ LINARES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0147",
@@ -5079,7 +5323,8 @@
     "catedratico": "BAYRON ARMANDO CUYAN CULAJAY",
     "auxiliar": "JOSÉ VICENTE BOTÓN LÓPEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -5101,7 +5346,8 @@
     "catedratico": "RICARDO ENRIQUE CONTRERAS FOLGAR",
     "auxiliar": "WERNNER STEV VÁSQUEZ BRAN",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0281",
@@ -5123,7 +5369,8 @@
     "catedratico": "SERGIO ARNALDO MENDEZ AGUILAR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0283",
@@ -5145,7 +5392,8 @@
     "catedratico": "JOSE MANUEL RUIZ JUAREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0320",
@@ -5167,7 +5415,8 @@
     "catedratico": "MARIA FERNANDA BARAHONA CHACÓN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0332",
@@ -5186,10 +5435,11 @@
       "jueves",
       "viernes"
     ],
-    "catedratico": "VICTOR\tCAROL HERNANDEZ MONZON",
+    "catedratico": "VICTOR CAROL HERNANDEZ MONZON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0390",
@@ -5211,7 +5461,8 @@
     "catedratico": "ESDRAS FELICIANO MIRANDA OROZCO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0392",
@@ -5233,7 +5484,8 @@
     "catedratico": "ROBERTO GUZMAN ORTIZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0418",
@@ -5255,7 +5507,8 @@
     "catedratico": "JORGE EMILIO GODINEZ LEMUS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0436",
@@ -5277,7 +5530,8 @@
     "catedratico": "MARIO RENE SANTIZO CALDERON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0486",
@@ -5299,7 +5553,8 @@
     "catedratico": "ORLANDO POSADAS VALDEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0522",
@@ -5321,7 +5576,8 @@
     "catedratico": "CARLOS ENRIQUE CHICOL CABRERA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0524",
@@ -5343,7 +5599,8 @@
     "catedratico": "MILTON ALEXANDER FUENTES OROZCO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0670",
@@ -5365,7 +5622,8 @@
     "catedratico": "MARIA ALEJANDRA MA VILLATORO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0720",
@@ -5387,7 +5645,8 @@
     "catedratico": "MIGUEL ANGEL CANCINOS RENDON",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0724",
@@ -5409,7 +5668,8 @@
     "catedratico": "JORGE LUIS ALVAREZ MEJIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0732",
@@ -5431,7 +5691,8 @@
     "catedratico": "LILIANA WALESKA GONZALEZ FUNES",
     "auxiliar": "MARCO ANTONIO TAX ALVAREZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0771",
@@ -5453,7 +5714,8 @@
     "catedratico": "JAIME FRANCISCO YUMAN RAMIREZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0773",
@@ -5475,7 +5737,8 @@
     "catedratico": "JENNY SHARAI MONTENEGRO CONTRERAS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0775",
@@ -5497,7 +5760,8 @@
     "catedratico": "MARLON FRANCISCO ORELLANA LOPEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0777",
@@ -5519,7 +5783,8 @@
     "catedratico": "MARIO JOSE BAUTISTA FUENTES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0780",
@@ -5541,7 +5806,8 @@
     "catedratico": "MARCO TULIO ALDANA PRILLWITZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0785",
@@ -5563,7 +5829,8 @@
     "catedratico": "CLAUDIA LICETH ROJAS MORALES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0787",
@@ -5585,7 +5852,8 @@
     "catedratico": "VICTOR BLADIMIR CASTELLANOS ALBEÑO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0796",
@@ -5607,7 +5875,8 @@
     "catedratico": "ASUNCION MARIANA SIC SOR",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0970",
@@ -5629,7 +5898,8 @@
     "catedratico": "ALLAN ALBERTO MORATAYA GÓMEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0975",
@@ -5651,7 +5921,8 @@
     "catedratico": "MARIO JOSE BAUTISTA FUENTES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0281",
@@ -5673,7 +5944,8 @@
     "catedratico": "CAMILO ERNESTO SINCAL SIPAC",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0283",
@@ -5695,7 +5967,8 @@
     "catedratico": "DOUGLAS JOSUE MARTINEZ HUIT",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0720",
@@ -5717,7 +5990,8 @@
     "catedratico": "BRYAN GERARDO PÁEZ MORALES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0724",
@@ -5739,7 +6013,8 @@
     "catedratico": "SERGIO ANDRÉS LARIOS FAJARDO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0771",
@@ -5761,7 +6036,8 @@
     "catedratico": "FERNANDO JOSE VICENTE VELASQUEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0773",
@@ -5783,7 +6059,8 @@
     "catedratico": "DIEGO ALEJANDRO JUAREZ BRAN",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0775",
@@ -5805,7 +6082,8 @@
     "catedratico": "JOSHUA ALEXANDER VÁSQUEZ DEL AGUILA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0777",
@@ -5827,7 +6105,8 @@
     "catedratico": "CARLOS FERNANDO ENRIQUE LOPEZ GARCIA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0780",
@@ -5849,7 +6128,8 @@
     "catedratico": "JUAN PABLO SAMAYOA RUÍZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0785",
@@ -5871,7 +6151,8 @@
     "catedratico": "LUIS RENE YAQUIAN RECINOS",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0787",
@@ -5893,7 +6174,8 @@
     "catedratico": "BRYAN GERARDO PÁEZ MORALES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0796",
@@ -5915,7 +6197,8 @@
     "catedratico": "JOHNNY WHILLMAN ALDANA OSORIO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0970",
@@ -5937,7 +6220,8 @@
     "catedratico": "RONI EDUARDO VÁSQUEZ FLORES",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0975",
@@ -5959,7 +6243,8 @@
     "catedratico": "JUAN PEDRO VALLE LEMA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0150",
@@ -5981,7 +6266,8 @@
     "catedratico": "JORGE GILBERTO GONZALEZ PADILLA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0320",
@@ -6003,7 +6289,8 @@
     "catedratico": "MIGDALIA AZUCENA DEL CID",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0453",
@@ -6025,7 +6312,8 @@
     "catedratico": "MILTON LENIN HERNANDEZ GONZALEZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0460",
@@ -6047,7 +6335,8 @@
     "catedratico": "MIGDALIA AZUCENA DEL CID",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0526",
@@ -6069,7 +6358,8 @@
     "catedratico": "MILTON ALEXANDER FUENTES OROZCO",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0532",
@@ -6091,7 +6381,8 @@
     "catedratico": "FREDY MAURICIO MONROY PERALTA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0700",
@@ -6113,7 +6404,8 @@
     "catedratico": "ERIC RONALDO RUIZ MATIAS",
     "auxiliar": "JOSÉ RODRIGO MOLINA SÁNCHEZ",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0506",
@@ -6135,7 +6427,8 @@
     "catedratico": "ROBERTO GUZMAN ORTIZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0508",
@@ -6157,7 +6450,8 @@
     "catedratico": "FREDY MAURICIO MONROY PERALTA",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   },
   {
     "codigo": "0510",
@@ -6179,6 +6473,7 @@
     "catedratico": "ROBERTO GUZMAN ORTIZ",
     "auxiliar": "SIN AUXILIAR",
     "restricciones": false,
-    "fuente": "vacaciones1"
+    "fuente": "vacaciones1",
+    "tipoPeriodo": "vacaciones-impar"
   }
 ]
