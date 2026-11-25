@@ -853,9 +853,14 @@ export default function Recuento() {
                                 <Link to="/grupos" className="text-[#3B6988] dark:text-[#6BA3C8] hover:underline no-underline">
                                     Ver grupos
                                 </Link>
-                                <Link to="/foro" className="text-[#3B6988] dark:text-[#6BA3C8] hover:underline no-underline">
+                                <a
+                                    href="https://zanate.pages.dev"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-[#3B6988] dark:text-[#6BA3C8] hover:underline no-underline"
+                                >
                                     Ir al foro
-                                </Link>
+                                </a>
                             </div>
                         </div>
 

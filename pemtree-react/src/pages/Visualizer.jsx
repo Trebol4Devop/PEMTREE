@@ -486,10 +486,10 @@ export default function Visualizer() {
             <Seo pensum={currentPensum} pathname="/visualizador" />
             <div className={`flex-1 flex flex-col w-full h-full bg-[#FAFBFC] dark:bg-[#0E1624] text-[#172B4D] dark:text-slate-100 font-sans transition-colors duration-300 ${activeView === 'graph' ? 'overflow-hidden' : ''}`}>
             
-            <div className={`flex flex-col lg:flex-row items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
+            <div className={`flex flex-row flex-wrap lg:flex-nowrap items-center justify-between p-3 max-sm:p-2 sm:p-2.5 border-b border-[#DFE1E6] dark:border-[#3E4C5E] bg-white dark:bg-[#1C2636] shadow-sm z-20 shrink-0 gap-2 sm:gap-2.5 lg:gap-3 select-none overflow-x-auto transition-colors duration-300 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                 
                 {/* Graph-only buttons */}
-                <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-transparent p-1.5 sm:p-2 rounded-lg shrink-0">
+                <div className="order-1 flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-transparent p-1.5 sm:p-2 max-sm:p-0.5 rounded-lg shrink-0">
                     <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
@@ -530,7 +530,7 @@ export default function Visualizer() {
                 </div>
 
                 {/* Selectors y búsqueda */}
-                <div className={`flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
+                <div className={`order-3 lg:order-2 flex flex-col sm:flex-row items-stretch gap-1.5 sm:gap-2 w-full lg:w-auto min-w-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <div className="flex items-center gap-1.5 min-w-0 sm:flex-1 lg:w-48 bg-[#F4F5F7] dark:bg-[#0E1624] border-0 rounded px-2 sm:px-2.5 py-1.5 max-sm:py-1 transition-all" ref={searchContainerRef}>
                         <Search size={12} className="shrink-0 text-[#5E6C84] dark:text-slate-400" />
                         <input
@@ -544,7 +544,7 @@ export default function Visualizer() {
                         />
                     </div>
                 </div>
-                <div className={`flex items-center gap-1.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
+                <div className={`order-2 lg:order-3 flex items-center gap-1 max-sm:gap-0.5 sm:gap-2 lg:gap-3 ml-auto shrink-0 ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                     <button
                         type="button"
                         onClick={openHelp}
