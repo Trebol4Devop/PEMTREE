@@ -3,7 +3,7 @@ import CourseChip from './CourseChip';
 export default function SemesterBlock({ semesterNum, courses, maxCredits, suficiencias, onDrop, onRemoveChip, onToggleSuficiencia, mergedMap, advertenciasMap, blockId }) {
     const regularCourses = courses.filter(c => !suficiencias.includes(c.id));
     const suficienciaCourses = courses.filter(c => suficiencias.includes(c.id));
-    const totalCredits = regularCourses.reduce((sum, c) => sum + (c.creditos || 0), 0);
+    const totalCredits = courses.reduce((sum, c) => sum + (c.creditos || 0), 0);
     const ratio = maxCredits > 0 ? totalCredits / maxCredits : 0;
     const isOver = totalCredits > maxCredits;
     const isNear = ratio >= 0.8 && !isOver;
