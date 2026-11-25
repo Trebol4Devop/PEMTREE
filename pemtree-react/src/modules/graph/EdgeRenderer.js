@@ -169,7 +169,7 @@ determinarEstiloArista(fromNode, toNode, selectedNode, showCriticalPath, temaOsc
 
         const polygonBlue = document.createElementNS(this.svgNS, "polygon");
         polygonBlue.setAttribute("points", "0 0, 10 3.5, 0 7");
-        polygonBlue.setAttribute("fill", "#0747A6");
+        polygonBlue.setAttribute("fill", EDGE_COLORS.dark.active);
         markerBlue.appendChild(polygonBlue);
         
         defs.appendChild(marker);

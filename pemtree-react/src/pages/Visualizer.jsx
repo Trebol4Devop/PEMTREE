@@ -443,7 +443,7 @@ export default function Visualizer() {
         return ids.map(id => {
             const c = cursoMap.get(id);
             if (!c) return null;
-            const statusColor = c.completado ? '#4A7C6A' : (c.cursando ? '#B45309' : (c.disponible ? '#0052CC' : '#5E6C84'));
+            const statusColor = c.completado ? '#4A7C6A' : (c.cursando ? '#B45309' : (c.disponible ? '#3B6988' : '#5E6C84'));
 
             const handleBadgeEnter = (e) => {
                 tooltipManagerRef.current?.mostrar(e, c);
@@ -490,7 +490,7 @@ export default function Visualizer() {
                 
                 {/* Graph-only buttons */}
                 <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 lg:gap-2 bg-transparent p-1.5 sm:p-2 rounded-lg shrink-0">
-                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
+                    <button onClick={handleToggleRutaCritica} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${showCriticalPath ? (isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Compass size={12} className="max-sm:hidden" /> <Compass size={10} className="sm:hidden" /> <span className="max-sm:hidden">Ruta Crítica</span><span className="sm:hidden">RC</span>
                     </button>
 
@@ -501,7 +501,7 @@ export default function Visualizer() {
                                     <button
                                         key={ruta.id}
                                         onClick={() => handlePathChange(ruta.id)}
-                                        className={`px-1 sm:px-1.5 py-0.5 text-[0.55rem] sm:text-[0.65rem] font-bold rounded transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${activePathId === ruta.id ? (isDarkMode ? 'text-[#4C9AFF] underline underline-offset-4' : 'text-[#0052CC] underline underline-offset-4') : (isDarkMode ? 'text-slate-400 hover:text-white' : 'text-[#5E6C84] hover:text-[#172B4D]')}`}
+                                        className={`px-1 sm:px-1.5 py-0.5 text-[0.55rem] sm:text-[0.65rem] font-bold rounded transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${activePathId === ruta.id ? (isDarkMode ? 'text-[#6BA3C8] underline underline-offset-4' : 'text-[#3B6988] underline underline-offset-4') : (isDarkMode ? 'text-slate-400 hover:text-white' : 'text-[#5E6C84] hover:text-[#172B4D]')}`}
                                     >
                                         <span className="max-sm:hidden">{ruta.nombre}</span>
                                         <span className="sm:hidden">{ruta.id === 'mas_rapida' ? 'Ráp.' : ruta.id === 'mas_flexible' ? 'Flex.' : 'Bal.'}</span>
@@ -513,18 +513,18 @@ export default function Visualizer() {
                                     type="checkbox"
                                     checked={idiomaEquivalencia}
                                     onChange={handleIdiomaEquivalencia}
-                                    className="w-2.5 h-2.5 sm:w-3 sm:h-3 accent-[#0052CC]"
+                                    className="w-2.5 h-2.5 sm:w-3 sm:h-3 accent-[#3B6988]"
                                 />
                                 <span className={isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}><span className="max-sm:hidden">Eq. Idioma</span><span className="sm:hidden">Eq.ID</span></span>
                             </label>
                         </>
                     )}
 
-                    <button onClick={handleToggleHideLines} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${hidePathLines ? (isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`} title={hidePathLines ? 'Mostrar líneas' : 'Ocultar líneas'}>
+                    <button onClick={handleToggleHideLines} className={`flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${hidePathLines ? (isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`} title={hidePathLines ? 'Mostrar líneas' : 'Ocultar líneas'}>
                         <EyeOff size={12} className="max-sm:hidden" /> <EyeOff size={10} className="sm:hidden" /> <span className="max-sm:hidden">Sin Líneas</span><span className="sm:hidden">Sin</span>
                     </button>
 
-                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
+                    <button onClick={handleToggleOptativos} className={`flex items-center justify-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1.5 max-sm:py-1 text-[0.65rem] sm:text-[0.75rem] lg:text-xs font-bold rounded-md transition border-0 bg-transparent cursor-pointer whitespace-nowrap ${showOptional ? (isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]') : 'text-current hover:opacity-80'} ${activeView === 'planner' || activeView === 'schedule' ? 'hidden' : ''}`}>
                         <Layers size={12} className="max-sm:hidden" /> <Layers size={10} className="sm:hidden" /> <span className="max-sm:hidden">Optativos</span><span className="sm:hidden">Opt</span>
                     </button>
                 </div>
@@ -548,7 +548,7 @@ export default function Visualizer() {
                     <button
                         type="button"
                         onClick={openHelp}
-                        className="w-7 h-7 sm:w-8 sm:h-8 min-w-[28px] sm:min-w-[32px] min-h-[28px] sm:min-h-[32px] p-0 flex-none rounded-full border-0 bg-transparent text-[#0052CC] dark:text-[#4C9AFF] font-extrabold text-xs sm:text-sm flex items-center justify-center hover:opacity-80 transition cursor-pointer"
+                        className="w-7 h-7 sm:w-8 sm:h-8 min-w-[28px] sm:min-w-[32px] min-h-[28px] sm:min-h-[32px] p-0 flex-none rounded-full border-0 bg-transparent text-[#3B6988] dark:text-[#6BA3C8] font-extrabold text-xs sm:text-sm flex items-center justify-center hover:opacity-80 transition cursor-pointer"
                         aria-label="Ayuda"
                         title="Ayuda"
                     >
@@ -556,11 +556,11 @@ export default function Visualizer() {
                     </button>
 
                     <div className="flex items-center justify-center space-x-1 sm:space-x-1.5 bg-transparent px-1.5 sm:px-2 py-1 max-sm:py-0.5 rounded border-0 transition-colors duration-300">
-                        <span className="text-[0.6rem] sm:text-[10px] lg:text-[10px] font-bold text-[#0052CC] dark:text-[#4C9AFF] uppercase tracking-wider whitespace-nowrap">Créditos:</span>
-                        <span className="text-[0.65rem] sm:text-xs lg:text-xs font-extrabold text-[#0052CC] dark:text-[#4C9AFF]">{creditosAprobados}</span>
+                        <span className="text-[0.6rem] sm:text-[10px] lg:text-[10px] font-bold text-[#3B6988] dark:text-[#6BA3C8] uppercase tracking-wider whitespace-nowrap">Créditos:</span>
+                        <span className="text-[0.65rem] sm:text-xs lg:text-xs font-extrabold text-[#3B6988] dark:text-[#6BA3C8]">{creditosAprobados}</span>
                     </div>
 
-                    <button onClick={handleLimpiar} className="flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 rounded bg-transparent text-[#BF2600] dark:text-red-400 hover:opacity-80 transition border-0 cursor-pointer text-[0.65rem] sm:text-xs lg:text-xs font-bold whitespace-nowrap" title="Limpiar Selección">
+                    <button onClick={handleLimpiar} className="flex items-center justify-center gap-1 px-2 sm:px-3 py-1.5 max-sm:py-1 rounded bg-transparent text-[#C45D5D] dark:text-[#E88B8B] hover:opacity-80 transition border-0 cursor-pointer text-[0.65rem] sm:text-xs lg:text-xs font-bold whitespace-nowrap" title="Limpiar Selección">
                         <RotateCcw size={12} className="max-sm:hidden" /> <RotateCcw size={11} className="sm:hidden" />
                         <span className="max-sm:hidden">Reiniciar</span><span className="sm:hidden">Reset</span>
                     </button>
@@ -576,7 +576,7 @@ export default function Visualizer() {
                                 <button
                                     key={curso.id}
                                     onClick={() => handleSelectSearch(curso)}
-                                    className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
+                                    className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#E6EFF5] dark:hover:bg-[#1A2B38] hover:text-[#3B6988] dark:hover:text-[#6BA3C8] cursor-pointer"
                                 >
                                     <span className="font-bold mr-[5px] text-[0.65rem] sm:text-xs">{curso.codigo}</span>
                                     <span className="text-[0.65rem] sm:text-xs">{curso.nombre}</span>
@@ -588,7 +588,7 @@ export default function Visualizer() {
                             <button
                                 key={curso.id}
                                 onClick={() => handleSelectSearch(curso)}
-                                className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#DEEBFF] dark:hover:bg-[#0C295E] hover:text-[#0052CC] dark:hover:text-[#4C9AFF] cursor-pointer"
+                                className="w-full text-left px-[10px] py-[8px] text-[0.75rem] sm:text-[0.85rem] transition-colors border-b border-[#F4F5F7] dark:border-[#3E4C5E] last:border-0 text-[#172B4D] dark:text-slate-200 bg-white dark:bg-[#1C2636] hover:bg-[#E6EFF5] dark:hover:bg-[#1A2B38] hover:text-[#3B6988] dark:hover:text-[#6BA3C8] cursor-pointer"
                             >
                                 <span className="font-bold mr-[5px] text-[0.65rem] sm:text-xs">{curso.codigo}</span>
                                 <span className="text-[0.65rem] sm:text-xs">{curso.nombre}</span>
@@ -619,10 +619,10 @@ export default function Visualizer() {
                         const shOk = ruta.socialHumCreditos >= 8;
                         return (
                             <>
-                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${creditosOk ? (isDarkMode ? 'text-[#6BA892]' : 'text-[#4A7C6A]') : (isDarkMode ? 'text-red-300' : 'text-red-700')}`}>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${creditosOk ? (isDarkMode ? 'text-[#6BA892]' : 'text-[#4A7C6A]') : (isDarkMode ? 'text-[#E88B8B]' : 'text-[#C45D5D]')}`}>
                                     <span className="max-sm:hidden">Créditos: </span><span className="sm:hidden">Cr: </span>{ruta.creditosTotales}/300 {creditosOk ? '✓' : '✗'}
                                 </span>
-                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${shOk ? (isDarkMode ? 'text-blue-300' : 'text-blue-700') : (isDarkMode ? 'text-red-300' : 'text-red-700')}`}>
+                                <span className={`flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent ${shOk ? (isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]') : (isDarkMode ? 'text-[#E88B8B]' : 'text-[#C45D5D]')}`}>
                                     <span className="max-sm:hidden">Social Hum: </span><span className="sm:hidden">SH: </span>{ruta.socialHumCreditos}/8 {shOk ? '✓' : '✗'}
                                 </span>
                                 <span className="flex items-center gap-0.5 sm:gap-1 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded-md font-semibold bg-transparent">
@@ -671,13 +671,13 @@ export default function Visualizer() {
                             ×
                         </button>
                         <div className="flex items-center gap-2 mb-3">
-                            <Compass size={20} className={isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]'} />
+                            <Compass size={20} className={isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]'} />
                             <h2 className="text-base sm:text-lg font-extrabold m-0">Ruta Crítica</h2>
                         </div>
                         <div className={`text-[0.8rem] sm:text-sm leading-relaxed space-y-2.5 ${isDarkMode ? 'text-slate-300' : 'text-[#5E6C84]'}`}>
                             <p>La ruta crítica muestra <strong>tres opciones</strong> para completar la carrera:</p>
                             <div className={`rounded-lg p-3 space-y-1.5 ${isDarkMode ? 'bg-[#0E1624]' : 'bg-[#F4F5F7]'}`}>
-                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle" style={{backgroundColor: '#e74c3c'}}></span><strong>Más Rápida</strong> — mínima cantidad de cursos para graduarte en el menor tiempo.</p>
+                                <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle" style={{backgroundColor: '#C45D5D'}}></span><strong>Más Rápida</strong> — mínima cantidad de cursos para graduarte en el menor tiempo.</p>
                                 <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle border-2 border-dashed" style={{borderColor: '#d97706', backgroundColor: 'transparent'}}></span><strong>Más Flexible</strong> — redistribuye la carga para equilibrar créditos por semestre.</p>
                                 <p><span className="inline-block w-3 h-3 rounded-sm mr-1.5 align-middle border-2 border-dashed" style={{borderColor: '#d97706', backgroundColor: 'transparent'}}></span><strong>Balanceada</strong> — incluye <em>todos</em> los electivos disponibles.</p>
                             </div>
@@ -695,7 +695,7 @@ export default function Visualizer() {
                                 <p className="text-[0.75rem] sm:text-xs mt-0.5">Esta función es <strong>únicamente ilustrativa</strong>. no garantiza la planificación exacta de tu carrera.</p>
                             </div>
                         </div>
-                        <button onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }} className="w-full mt-4 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer border-0 bg-transparent transition-all text-[#0052CC] dark:text-[#4C9AFF] hover:opacity-80">
+                        <button onClick={() => { setShowRutaCriticaInfo(false); localStorage.setItem('pemtree_rutacritica_visto', 'true'); }} className="w-full mt-4 px-4 py-2.5 rounded-lg font-bold text-sm cursor-pointer border-0 bg-transparent transition-all text-[#3B6988] dark:text-[#6BA3C8] hover:opacity-80">
                             Entendido
                         </button>
                     </div>
@@ -713,7 +713,7 @@ export default function Visualizer() {
                     </div>
 
                     <div className="flex items-center gap-2 mb-[12px]">
-                        <span className={`px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider border-0 bg-transparent ${selectedCourse.completado ? 'text-[#4A7C6A] dark:text-[#6BA892]' : (selectedCourse.cursando ? 'text-[#B45309]' : (selectedCourse.disponible ? 'text-[#0052CC] dark:text-[#4C9AFF]' : 'text-[#BF2600] dark:text-[#FF6369]'))}`}>
+                        <span className={`px-[8px] py-[4px] rounded-[4px] text-[0.70rem] font-bold uppercase tracking-wider border-0 bg-transparent ${selectedCourse.completado ? 'text-[#4A7C6A] dark:text-[#6BA892]' : (selectedCourse.cursando ? 'text-[#B45309]' : (selectedCourse.disponible ? 'text-[#3B6988] dark:text-[#6BA3C8]' : 'text-[#C45D5D] dark:text-[#E88B8B]'))}`}>
                             {selectedCourse.completado ? 'Completado' : (selectedCourse.cursando ? 'Cursando' : (selectedCourse.disponible ? 'Disponible' : 'Bloqueado'))}
                         </span>
                         {!selectedCourse.completado && selectedCourse.enRutaCritica && (
@@ -738,8 +738,8 @@ export default function Visualizer() {
                         ${selectedCourse.completado 
                             ? 'text-[#4A7C6A] dark:text-[#6BA892]' 
                             : selectedCourse.cursando
-                            ? 'text-[#4C9AFF]'
-                            : (isDarkMode ? 'text-[#4C9AFF]' : 'text-[#0052CC]')}`}
+                            ? 'text-[#6BA3C8]'
+                            : (isDarkMode ? 'text-[#6BA3C8]' : 'text-[#3B6988]')}`}
                     >
                         {selectedCourse.completado ? (
                             <><CheckCircle2 size={16} /> Completado</>
