@@ -60,7 +60,7 @@ jobs:
               if (issue.pull_request || issue.state !== 'open') continue;
 
               const sections = new Map(
-                (issue.body || '').split(/^### /m).slice(1).map((section) => {
+                (issue.body || '').split(/^#{2,6} /m).slice(1).map((section) => {
                   const [heading, ...content] = section.split(/\r?\n/);
                   return [heading.trim(), content.join('\n').trim()];
                 }),
