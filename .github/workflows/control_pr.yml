@@ -2,13 +2,12 @@ name: control_pr
 
 on:
   pull_request:
-    types: [opened, edited]
+    types: [opened, edited, reopened, synchronize]
     branches:
       - main
       - develop
 
 permissions:
-  contents: read
   issues: read
   pull-requests: read
 
@@ -18,15 +17,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Validar Issue de tarea definida
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const pullRequest = context.payload.pull_request;
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: node <<'NODE'
+          const { readFileSync } = require('node:fs');
+
+          async function main() {
+            const event = JSON.parse(readFileSync(process.env.GITHUB_EVENT_PATH, 'utf8'));
+            const pullRequest = event.pull_request;
+            const repository = process.env.GITHUB_REPOSITORY;
+            const token = process.env.GITHUB_TOKEN;
             const references = [...new Set([...`${pullRequest.title}\n${pullRequest.body || ''}`.matchAll(/#(\d+)\b/g)].map((match) => Number(match[1])))];
 
             if (references.length === 0) {
-              core.setFailed('El título o la descripción debe referenciar un Issue con formato #123.');
-              return;
+              throw new Error('El título o la descripción debe referenciar un Issue con formato #123.');
             }
 
             const requiredSections = [
@@ -38,17 +42,20 @@ jobs:
             let matchingIssue;
 
             for (const issueNumber of references) {
-              let issue;
-              try {
-                ({ data: issue } = await github.rest.issues.get({
-                  ...context.repo,
-                  issue_number: issueNumber,
-                }));
-              } catch (error) {
-                if (error.status === 404) continue;
-                throw error;
+              const response = await fetch(`https://api.github.com/repos/${repository}/issues/${issueNumber}`, {
+                headers: {
+                  Accept: 'application/vnd.github+json',
+                  Authorization: `Bearer ${token}`,
+                  'X-GitHub-Api-Version': '2022-11-28',
+                },
+              });
+
+              if (response.status === 404) continue;
+              if (!response.ok) {
+                throw new Error(`No se pudo consultar el Issue #${issueNumber}: HTTP ${response.status}.`);
               }
 
+              const issue = await response.json();
               if (issue.pull_request || issue.state !== 'open') continue;
 
               const sections = new Map(
@@ -73,8 +80,14 @@ jobs:
             }
 
             if (!matchingIssue) {
-              core.setFailed('Ninguna referencia apunta a un Issue abierto y válido con los campos requeridos de tarea definida.');
-              return;
+              throw new Error('Ninguna referencia apunta a un Issue abierto y válido con los campos requeridos de tarea definida.');
             }
 
-            core.info(`Issue de tarea definida validado: #${matchingIssue}.`);
+            console.log(`Issue de tarea definida validado: #${matchingIssue}.`);
+          }
+
+          main().catch((error) => {
+            console.error(error);
+            process.exitCode = 1;
+          });
+        NODE
