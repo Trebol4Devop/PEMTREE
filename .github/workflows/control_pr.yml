@@ -19,7 +19,8 @@ jobs:
       - name: Validar Issue de tarea definida
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: node <<'NODE'
+        run: |
+          node <<'NODE'
           const { readFileSync } = require('node:fs');
 
           async function main() {
@@ -90,4 +91,4 @@ jobs:
             console.error(error);
             process.exitCode = 1;
           });
-        NODE
+          NODE
