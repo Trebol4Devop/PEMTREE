@@ -36,7 +36,6 @@ jobs:
 
             const requiredSections = [
               'Objetivo del cambio',
-              'Criterios de aceptación (checklist)',
               'Archivos o módulos permitidos a modificar',
               'Rama base destino',
             ];
@@ -69,7 +68,7 @@ jobs:
                 const value = sections.get(section);
                 return value && value !== '_No response_';
               });
-              const acceptanceCriteria = sections.get('Criterios de aceptación (checklist)') || '';
+              const acceptanceCriteria = sections.get('Criterios de aceptación (checklist)') || sections.get('Criterios de aceptación') || '';
               const hasChecklist = /^\s*[-*] \[[ xX]\] .+/m.test(acceptanceCriteria);
               const baseBranch = (sections.get('Rama base destino') || '').replace(/`/g, '').trim();
               const hasValidBaseBranch = ['main', 'develop'].includes(baseBranch);
