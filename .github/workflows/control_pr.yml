@@ -1,0 +1,80 @@
+name: control_pr
+
+on:
+  pull_request:
+    types: [opened, edited]
+    branches:
+      - main
+      - develop
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  control_pr:
+    name: control_pr
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validar Issue de tarea definida
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const pullRequest = context.payload.pull_request;
+            const references = [...new Set([...`${pullRequest.title}\n${pullRequest.body || ''}`.matchAll(/#(\d+)\b/g)].map((match) => Number(match[1])))];
+
+            if (references.length === 0) {
+              core.setFailed('El título o la descripción debe referenciar un Issue con formato #123.');
+              return;
+            }
+
+            const requiredSections = [
+              'Objetivo del cambio',
+              'Criterios de aceptación (checklist)',
+              'Archivos o módulos permitidos a modificar',
+              'Rama base destino',
+            ];
+            let matchingIssue;
+
+            for (const issueNumber of references) {
+              let issue;
+              try {
+                ({ data: issue } = await github.rest.issues.get({
+                  ...context.repo,
+                  issue_number: issueNumber,
+                }));
+              } catch (error) {
+                if (error.status === 404) continue;
+                throw error;
+              }
+
+              if (issue.pull_request || issue.state !== 'open') continue;
+
+              const sections = new Map(
+                (issue.body || '').split(/^### /m).slice(1).map((section) => {
+                  const [heading, ...content] = section.split(/\r?\n/);
+                  return [heading.trim(), content.join('\n').trim()];
+                }),
+              );
+              const hasRequiredSections = requiredSections.every((section) => {
+                const value = sections.get(section);
+                return value && value !== '_No response_';
+              });
+              const acceptanceCriteria = sections.get('Criterios de aceptación (checklist)') || '';
+              const hasChecklist = /^\s*[-*] \[[ xX]\] .+/m.test(acceptanceCriteria);
+              const baseBranch = sections.get('Rama base destino');
+              const hasValidBaseBranch = ['main', 'develop'].includes(baseBranch);
+
+              if (hasRequiredSections && hasChecklist && hasValidBaseBranch) {
+                matchingIssue = issueNumber;
+                break;
+              }
+            }
+
+            if (!matchingIssue) {
+              core.setFailed('Ninguna referencia apunta a un Issue abierto y válido con los campos requeridos de tarea definida.');
+              return;
+            }
+
+            core.info(`Issue de tarea definida validado: #${matchingIssue}.`);

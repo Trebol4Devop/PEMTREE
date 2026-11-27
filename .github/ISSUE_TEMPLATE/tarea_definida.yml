@@ -1,0 +1,40 @@
+name: Tarea definida
+description: Define el objetivo, los criterios de aceptación y el alcance antes de iniciar cambios.
+title: "[Tarea] "
+body:
+  - type: textarea
+    id: objetivo
+    attributes:
+      label: Objetivo del cambio
+      description: Describe el resultado que se busca.
+      placeholder: Describe el objetivo de forma concreta.
+    validations:
+      required: true
+  - type: textarea
+    id: criterios
+    attributes:
+      label: Criterios de aceptación (checklist)
+      description: Escribe cada criterio en una línea con formato - [ ] Criterio verificable.
+      placeholder: |
+        - [ ] Primer criterio verificable
+        - [ ] Segundo criterio verificable
+    validations:
+      required: true
+  - type: textarea
+    id: archivos_permitidos
+    attributes:
+      label: Archivos o módulos permitidos a modificar
+      description: Enumera los archivos, carpetas o módulos incluidos en el alcance.
+      placeholder: "- ruta/al/archivo.ext"
+    validations:
+      required: true
+  - type: dropdown
+    id: rama_base
+    attributes:
+      label: Rama base destino
+      description: Selecciona la rama a la que se dirigirá el Pull Request.
+      options:
+        - main
+        - develop
+    validations:
+      required: true
