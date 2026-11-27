@@ -71,7 +71,7 @@ jobs:
               });
               const acceptanceCriteria = sections.get('Criterios de aceptación (checklist)') || '';
               const hasChecklist = /^\s*[-*] \[[ xX]\] .+/m.test(acceptanceCriteria);
-              const baseBranch = sections.get('Rama base destino');
+              const baseBranch = (sections.get('Rama base destino') || '').replace(/`/g, '').trim();
               const hasValidBaseBranch = ['main', 'develop'].includes(baseBranch);
 
               if (hasRequiredSections && hasChecklist && hasValidBaseBranch) {
