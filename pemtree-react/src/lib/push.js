@@ -1,7 +1,7 @@
 import { supabase, isSupabaseConfigured } from './supabase';
 
 // Clave pública VAPID (solo la pública viaja al navegador; la privada vive en la edge function send-push).
-export const VAPID_PUBLIC_KEY = 'BE7gCE2RKGsy9PShbZUPuXV9EJTmIEE8QCa116_u9lJu2Y9AskxRBE5QIEt3WJuW-jucRI2fRPZF210ygUaVCR8';
+export const VAPID_PUBLIC_KEY = import.meta.env.VITE_VAPID_PUBLIC_KEY || '';
 
 export const isPushSupported = () =>
     typeof window !== 'undefined' &&
@@ -84,6 +84,9 @@ export async function enablePushNotifications(userId) {
 
     let sub = await reg.pushManager.getSubscription();
     if (!sub) {
+        if (!VAPID_PUBLIC_KEY) {
+            return { ok: false, reason: 'missing_vapid_key' };
+        }
         let lastErr = null;
         for (let attempt = 1; attempt <= 3; attempt += 1) {
             try {
