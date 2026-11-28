@@ -442,32 +442,6 @@ export default function ScheduleBuilder({ openHelp }) {
         return idx === -1 ? 0 : idx;
     }
 
-    function cycleGroup(group) {
-        const activeIdx = getGroupActiveIndex(group);
-        const next = group.sections[(activeIdx + 1) % group.sections.length];
-        for (const s of group.sections) {
-            if (isSectionSelected(s)) toggleSection(s);
-        }
-        toggleSection(next);
-    }
-
-    function toggleSection(seccion) {
-        setSelectedSections(prev => {
-            const key = seccion.codigo;
-            const id = getSectionId(seccion);
-            const tipoKey = `${seccion.codigo}|${seccion.tipo || ''}`;
-            const existing = prev[key] || [];
-            const isSelected = existing.some(s => getSectionId(s) === id);
-
-            if (isSelected) {
-                return { ...prev, [key]: existing.filter(s => getSectionId(s) !== id) };
-            } else {
-                const filtered = existing.filter(s => `${s.codigo}|${s.tipo || ''}` !== tipoKey);
-                return { ...prev, [key]: [...filtered, seccion] };
-            }
-        });
-    }
-
     function removeSection(seccion) {
         setSelectedSections(prev => {
             const key = seccion.codigo;
