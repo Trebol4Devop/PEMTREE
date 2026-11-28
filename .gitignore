@@ -4,7 +4,11 @@
 
 node_modules/
 dist/
+.vite/
 .parcel-cache/
+.env
+.env.*
+!.env.example
 
 # Database backups and SQL scripts
 pemtree.sql
