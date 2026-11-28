@@ -17,7 +17,7 @@ import { Modal, Input, Textarea, Select, Button, EmptyState } from '../component
 import HelpButton from '../components/onboarding/HelpButton';
 import { useScreenWelcome } from '../context/OnboardingContext';
 
-const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
+const ADMIN_UID = import.meta.env.VITE_ADMIN_UID || '';
 
 // UIDs y/o emails de Moderadores autorizados para la gestión y carga masiva por CSV de grupos estudiantiles
 const MODERATOR_UIDS = [
@@ -157,7 +157,7 @@ export default function WhatsAppGroups() {
 
     const checkUserRoles = useCallback(async (sessionUser) => {
         setUser(sessionUser ?? null);
-        let isAdminUser = sessionUser?.id === ADMIN_UID || sessionUser?.email === 'emanu@gmail.com';
+        let isAdminUser = Boolean(ADMIN_UID && sessionUser?.id === ADMIN_UID);
         let isModUser = Boolean(
             isAdminUser ||
             (sessionUser?.id && MODERATOR_UIDS.includes(sessionUser.id)) ||
