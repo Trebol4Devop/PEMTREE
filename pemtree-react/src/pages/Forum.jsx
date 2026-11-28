@@ -39,7 +39,7 @@ const CARRERAS = [
     { id: 'quimica', label: 'Ingeniería Química' }
 ];
 
-const ADMIN_UID = '10884922-e583-409e-b3e8-8a875ddaa5d9';
+const ADMIN_UID = import.meta.env.VITE_ADMIN_UID || '';
 
 const buildCommentTree = (comments = []) => {
     const map = {};
@@ -530,7 +530,7 @@ export default function Forum() {
 
     const checkUserRoles = useCallback(async (sessionUser) => {
         setUser(sessionUser ?? null);
-        let isAdminUser = sessionUser?.id === ADMIN_UID || sessionUser?.email === 'emanu@gmail.com';
+        let isAdminUser = Boolean(ADMIN_UID && sessionUser?.id === ADMIN_UID);
         let isModUser = Boolean(
             isAdminUser ||
             sessionUser?.user_metadata?.role === 'moderator' ||
@@ -560,7 +560,7 @@ export default function Forum() {
                 if (u) {
                     fetchUserLikes(u.id);
                     fetchUserReports(u.id);
-                    if (u.id === ADMIN_UID) fetchAdminReports();
+                    if (ADMIN_UID && u.id === ADMIN_UID) fetchAdminReports();
                     checkAndPromptProfile(u);
                 }
             });
@@ -571,7 +571,7 @@ export default function Forum() {
                 if (u) {
                     fetchUserLikes(u.id);
                     fetchUserReports(u.id);
-                    if (u.id === ADMIN_UID || isAdmin) {
+                    if ((ADMIN_UID && u.id === ADMIN_UID) || isAdmin) {
                         fetchAdminReports();
                     } else {
                         setAdminReports([]);
