@@ -1,7 +1,18 @@
 {
   "name": "pemtree-react",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.0.0",
+  "description": "PEMTREE - Red Estudiantil de Ingeniería FIUSAC: visualizador de pensum, planificador académico, constructor de horarios y comunidad.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Trebol4Devop/PEMTREE.git",
+    "directory": "pemtree-react"
+  },
+  "engines": {
+    "node": ">=20",
+    "pnpm": ">=9"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
