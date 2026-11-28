@@ -19,7 +19,7 @@ import DocenteReviews from './DocenteReviews';
 import { WarningBanner, Modal, Button } from './ui';
 import HelpButton from './onboarding/HelpButton';
 
-const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado', 'domingo'];
+const DIAS_SEMANA = ['lunes', 'martes', 'miercoles', 'jueves', 'viernes', 'sabado'];
 const HORA_INICIO = 6;
 
 const PERIODS = [
@@ -1888,7 +1888,7 @@ export default function ScheduleBuilder({ openHelp }) {
                 </div>
                 </div>
             )}
-            <div className={`schedule-grid ${clusterEnabled ? 'cluster-active-grid' : ''}`} style={{ display: 'grid', gridTemplateColumns: `50px repeat(7, 1fr)` }}>
+            <div className={`schedule-grid ${clusterEnabled ? 'cluster-active-grid' : ''}`} style={{ display: 'grid', gridTemplateColumns: `50px repeat(${DIAS_SEMANA.length}, 1fr)` }}>
                 <div className="schedule-cell schedule-header-cell"></div>
                 {DIAS_SEMANA.map(dia => (
                     <div key={dia} className="schedule-cell schedule-header-cell">
